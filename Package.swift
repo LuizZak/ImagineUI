@@ -6,21 +6,29 @@ import PackageDescription
 let package = Package(
     name: "ImagineUI",
     products: [
-        // Products define the executables and libraries produced by a package, and make them visible to other packages.
         .library(
             name: "ImagineUI",
             targets: ["ImagineUI"]),
     ],
     dependencies: [
-        // Dependencies declare other packages that this package depends on.
-        // .package(url: /* package url */, from: "1.0.0"),
+        .package(url: "https://github.com/LuizZak/CassowarySwift.git", .branch("master")),
+        .package(url: "https://github.com/LuizZak/swift-blend2d.git", .branch("master"))
     ],
     targets: [
-        // Targets are the basic building blocks of a package. A target can define a module or a test suite.
-        // Targets can depend on other targets in this package, and on products in packages which this package depends on.
         .target(
             name: "ImagineUI",
-            dependencies: []),
+            dependencies: ["Cassowary", "SwiftBlend2D"]),
+        .target(
+            name: "_CLibPNG",
+            linkerSettings: [
+                .linkedFramework("z")
+            ]),
+        .target(
+            name: "_LibPNG",
+            dependencies: ["_CLibPNG"]),
+        .target(
+            name: "TestUtils",
+            dependencies: ["SwiftBlend2D", "LibPNG"]),
         .testTarget(
             name: "ImagineUITests",
             dependencies: ["ImagineUI"]),
