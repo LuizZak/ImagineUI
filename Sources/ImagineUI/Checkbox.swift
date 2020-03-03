@@ -1,6 +1,6 @@
 import SwiftBlend2D
 
-public typealias CheckboxStateWillChangeEventArgs = CancelableValueChangedEventArgs<Checkbox.State>
+public typealias CheckboxStateWillChangeEventArgs = CancellableValueChangedEventArgs<Checkbox.State>
 
 open class Checkbox: ControlView {
     open var checkboxState: State = .unchecked {
@@ -15,7 +15,7 @@ open class Checkbox: ControlView {
     ///
     /// Event listeners have a chance to cancel the event by switching `cancel`
     /// to `true` during the event dispatch round.
-    @Event public var stateWillChange: CancelableValueChangeEvent<Checkbox, Checkbox.State>
+    @Event public var stateWillChange: CancelablleValueChangeEvent<Checkbox, Checkbox.State>
 
     public init(location: Vector2, title: String) {
         super.init(bounds: .empty)
@@ -26,8 +26,8 @@ open class Checkbox: ControlView {
         mouseDownSelected = true
     }
 
-    open override func onStateChanged(_ oldState: ControlViewState, _ state: ControlViewState) {
-        super.onStateChanged(oldState, state)
+    open override func onStateChanged(_ event: ValueChangedEventArgs<ControlViewState>) {
+        super.onStateChanged(event)
 
         invalidateControlGraphics()
     }
@@ -78,7 +78,7 @@ open class Checkbox: ControlView {
     }
 
     func invokeStateWillChangeEvent(newState: State) {
-        if !_stateWillChange.publishCancelableChangeEvent(sender: self, old: checkboxState, new: newState) {
+        if !_stateWillChange.publishCancellableChangeEvent(sender: self, old: checkboxState, new: newState) {
             checkboxState = newState
         }
     }

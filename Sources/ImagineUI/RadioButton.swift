@@ -22,8 +22,8 @@ open class RadioButton: ControlView {
         addSubview(label)
     }
     
-    open override func onStateChanged(_ oldState: ControlViewState, _ state: ControlViewState) {
-        super.onStateChanged(oldState, state)
+    open override func onStateChanged(_ event: ValueChangedEventArgs<ControlViewState>) {
+        super.onStateChanged(event)
         
         invalidateControlGraphics()
     }

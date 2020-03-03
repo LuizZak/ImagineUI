@@ -147,13 +147,6 @@ open class View {
         let cookie = context.saveWithCookie()
 
         context.transform(transform.asBLMatrix2D)
-
-//        context.setStrokeStyle(BLRgba32.red)
-//        context.setStrokeWidth(1)
-//        context.strokeRect(bounds.asBLRect)
-//        context.setFillStyle(BLRgba32.red)
-//        context.fillCircle(x: 0, y: 0, radius: 2)
-
         if clipToBounds {
             context.clipToRect(boundsForRedraw().asBLRect)
         }

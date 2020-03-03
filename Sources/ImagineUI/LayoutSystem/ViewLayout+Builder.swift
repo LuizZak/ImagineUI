@@ -2,6 +2,14 @@ public extension View.Layout {
     func makeConstraints(_ builder: (LayoutAnchorUpdateCreator) -> Void) {
         builder(LayoutAnchorUpdateCreator(layout: self))
     }
+    
+    func remakeConstraints(_ builder: (LayoutAnchorUpdateCreator) -> Void) {
+        for constraint in view.constraints {
+            constraint.removeConstraint()
+        }
+        
+        builder(LayoutAnchorUpdateCreator(layout: self))
+    }
 
     func updateConstraints(_ builder: (LayoutAnchorUpdateBuilder) -> Void) {
         builder(LayoutAnchorUpdateBuilder(layout: self))
