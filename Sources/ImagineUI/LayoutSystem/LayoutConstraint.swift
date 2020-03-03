@@ -207,40 +207,10 @@ public protocol LayoutAnchorType {
     var kind: AnchorKind { get }
 }
 
-internal protocol InternalLayoutAnchorType: LayoutAnchorType {
-    var owner: View { get }
-    
-    func getVariable() -> Variable
-    func makeRelativeExpression(relative: View) -> Expression
-    func makeExpression(relative: View) -> Expression
-    
-    func isEqual(to other: InternalLayoutAnchorType) -> Bool
-}
-
-public struct LayoutAnchor<T>: LayoutAnchorType, Equatable, CustomStringConvertible {
+internal struct InternalLayoutAnchor: LayoutAnchorType, Equatable {
+    var kind: AnchorKind
     var owner: View
-    public var kind: AnchorKind
-
-    public var orientation: LayoutConstraintOrientation {
-        switch kind {
-        case .left, .width, .right, .centerX:
-            return .horizontal
-            
-        case .top, .height, .bottom, .centerY, .firstBaseline:
-            return .vertical
-        }
-    }
-
-    public var description: String {
-        return getVariable().name
-    }
-
-    public static func == (lhs: LayoutAnchor, rhs: LayoutAnchor) -> Bool {
-        return lhs.owner === rhs.owner && lhs.kind == rhs.kind
-    }
-}
-
-extension LayoutAnchor: InternalLayoutAnchorType {
+    
     func getVariable() -> Variable {
         switch kind {
         case .width:
@@ -284,8 +254,41 @@ extension LayoutAnchor: InternalLayoutAnchorType {
         return getVariable() - makeRelativeExpression(relative: relative)
     }
     
-    func isEqual(to other: InternalLayoutAnchorType) -> Bool {
+    func isEqual(to other: InternalLayoutAnchor) -> Bool {
         return other.owner === owner && other.kind == kind
+    }
+    
+    public static func == (lhs: InternalLayoutAnchor, rhs: InternalLayoutAnchor) -> Bool {
+        return lhs.owner === rhs.owner && lhs.kind == rhs.kind
+    }
+}
+
+public struct LayoutAnchor<T>: LayoutAnchorType, Equatable, CustomStringConvertible {
+    var owner: View
+    public var kind: AnchorKind
+
+    public var orientation: LayoutConstraintOrientation {
+        switch kind {
+        case .left, .width, .right, .centerX:
+            return .horizontal
+            
+        case .top, .height, .bottom, .centerY, .firstBaseline:
+            return .vertical
+        }
+    }
+
+    public var description: String {
+        return toInternalLayoutAnchor().getVariable().name
+    }
+
+    public static func == (lhs: LayoutAnchor, rhs: LayoutAnchor) -> Bool {
+        return lhs.owner === rhs.owner && lhs.kind == rhs.kind
+    }
+}
+
+extension LayoutAnchor {
+    func toInternalLayoutAnchor() -> InternalLayoutAnchor {
+        return InternalLayoutAnchor(kind: kind, owner: owner)
     }
 }
 
@@ -295,8 +298,8 @@ public class LayoutConstraint: Hashable {
     /// The view that effectively contains this constraint
     var containerView: View
 
-    internal let firstCast: InternalLayoutAnchorType
-    internal let secondCast: InternalLayoutAnchorType?
+    internal let firstCast: InternalLayoutAnchor
+    internal let secondCast: InternalLayoutAnchor?
     
     public let first: LayoutAnchorType
     public let second: LayoutAnchorType?
@@ -332,8 +335,8 @@ public class LayoutConstraint: Hashable {
     }
 
     private init(containerView: View,
-                 first: InternalLayoutAnchorType,
-                 second: InternalLayoutAnchorType,
+                 first: InternalLayoutAnchor,
+                 second: InternalLayoutAnchor,
                  relationship: Relationship,
                  offset: Double,
                  multiplier: Double,
@@ -351,7 +354,7 @@ public class LayoutConstraint: Hashable {
     }
     
     private init(containerView: View,
-                 first: InternalLayoutAnchorType,
+                 first: InternalLayoutAnchor,
                  relationship: Relationship,
                  offset: Double,
                  priority: Double) {
@@ -443,8 +446,12 @@ public class LayoutConstraint: Hashable {
                                  multiplier: Double = 1,
                                  priority: Double = Strength.STRONG) -> LayoutConstraint {
 
-        return _create(first: first, second: second, relationship: relationship,
-                       offset: offset, multiplier: multiplier, priority: priority)
+        return _create(first: first.toInternalLayoutAnchor(),
+                       second: second.toInternalLayoutAnchor(),
+                       relationship: relationship,
+                       offset: offset,
+                       multiplier: multiplier,
+                       priority: priority)
     }
 
     @discardableResult
@@ -453,12 +460,15 @@ public class LayoutConstraint: Hashable {
                                  offset: Double = 0,
                                  priority: Double = Strength.STRONG) -> LayoutConstraint {
 
-        return _create(first: first, relationship: relationship, offset: offset, priority: priority)
+        return _create(first: first.toInternalLayoutAnchor(),
+                       relationship: relationship,
+                       offset: offset,
+                       priority: priority)
     }
 
     @discardableResult
-    internal static func _create(first: InternalLayoutAnchorType,
-                                 second: InternalLayoutAnchorType,
+    internal static func _create(first: InternalLayoutAnchor,
+                                 second: InternalLayoutAnchor,
                                  relationship: Relationship = .equal,
                                  offset: Double = 0,
                                  multiplier: Double = 1,
@@ -490,7 +500,7 @@ public class LayoutConstraint: Hashable {
     }
 
     @discardableResult
-    internal static func _create(first: InternalLayoutAnchorType,
+    internal static func _create(first: InternalLayoutAnchor,
                                  relationship: Relationship = .equal,
                                  offset: Double = 0,
                                  priority: Double = Strength.STRONG) -> LayoutConstraint {
@@ -518,20 +528,12 @@ public class LayoutConstraint: Hashable {
                                  multiplier: Double = 1,
                                  priority: Double = Strength.STRONG) -> LayoutConstraint {
 
-        let constraint = first.owner.constraints.first {
-            ($0.firstCast as? LayoutAnchor<T>) == first && ($0.secondCast as? LayoutAnchor<T>) == second
-        }
-
-        if let constraint = constraint {
-            constraint.relationship = relationship
-            constraint.offset = offset
-            constraint.multiplier = multiplier
-            constraint.priority = priority
-
-            return constraint
-        } else {
-            fatalError("Could not find constraint anchoring \(first) to \(second) to update")
-        }
+        return _update(first: first.toInternalLayoutAnchor(),
+                       second: second.toInternalLayoutAnchor(),
+                       relationship: relationship,
+                       offset: offset,
+                       multiplier: multiplier,
+                       priority: priority)
     }
 
     @discardableResult
@@ -541,25 +543,16 @@ public class LayoutConstraint: Hashable {
                                  multiplier: Double = 1,
                                  priority: Double = Strength.STRONG) -> LayoutConstraint {
 
-        let constraint = first.owner.constraints.first {
-            ($0.first as? LayoutAnchor<T>) == first && $0.second == nil
-        }
-
-        if let constraint = constraint {
-            constraint.relationship = relationship
-            constraint.offset = offset
-            constraint.multiplier = multiplier
-            constraint.priority = priority
-
-            return constraint
-        } else {
-            fatalError("Could not find constraint anchoring \(first) to update")
-        }
+        return _update(first: first.toInternalLayoutAnchor(),
+                       relationship: relationship,
+                       offset: offset,
+                       multiplier: multiplier,
+                       priority: priority)
     }
 
     @discardableResult
-    internal static func _update(first: InternalLayoutAnchorType,
-                                 second: InternalLayoutAnchorType,
+    internal static func _update(first: InternalLayoutAnchor,
+                                 second: InternalLayoutAnchor,
                                  relationship: Relationship = .equal,
                                  offset: Double = 0,
                                  multiplier: Double = 1,
@@ -582,7 +575,7 @@ public class LayoutConstraint: Hashable {
     }
 
     @discardableResult
-    internal static func _update(first: InternalLayoutAnchorType,
+    internal static func _update(first: InternalLayoutAnchor,
                                  relationship: Relationship = .equal,
                                  offset: Double = 0,
                                  multiplier: Double = 1,
