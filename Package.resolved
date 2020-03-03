@@ -15,7 +15,16 @@
         "repositoryURL": "https://github.com/LuizZak/swift-blend2d.git",
         "state": {
           "branch": "master",
-          "revision": "4fb7edc03687d07bcf993f0327fea491cdfea907",
+          "revision": "9112ae1708f0f5c6367bef32b18e6b6b95541298",
+          "version": null
+        }
+      },
+      {
+        "package": "LibPNG",
+        "repositoryURL": "https://github.com/LuizZak/swift-libpng.git",
+        "state": {
+          "branch": "master",
+          "revision": "a847b56393a128f7bf4f60be269895cf8ed5e990",
           "version": null
         }
       }

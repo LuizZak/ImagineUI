@@ -12,25 +12,18 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/LuizZak/CassowarySwift.git", .branch("master")),
-        .package(url: "https://github.com/LuizZak/swift-blend2d.git", .branch("master"))
+        .package(url: "https://github.com/LuizZak/swift-blend2d.git", .branch("master")),
+        .package(url: "https://github.com/LuizZak/swift-libpng.git", .branch("master"))
     ],
     targets: [
         .target(
             name: "ImagineUI",
             dependencies: ["Cassowary", "SwiftBlend2D"]),
         .target(
-            name: "_CLibPNG",
-            linkerSettings: [
-                .linkedFramework("z")
-            ]),
-        .target(
-            name: "_LibPNG",
-            dependencies: ["_CLibPNG"]),
-        .target(
             name: "TestUtils",
             dependencies: ["SwiftBlend2D", "LibPNG"]),
         .testTarget(
             name: "ImagineUITests",
-            dependencies: ["ImagineUI"]),
+            dependencies: ["ImagineUI", "TestUtils"]),
     ]
 )
