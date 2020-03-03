@@ -1,0 +1,34 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "Cassowary",
+        "repositoryURL": "https://github.com/LuizZak/CassowarySwift.git",
+        "state": {
+          "branch": "master",
+          "revision": "501161c0e6e21f1efa4ed4e8eb3af0685d8b5097",
+          "version": null
+        }
+      },
+      {
+        "package": "SwiftBlend2D",
+        "repositoryURL": "https://github.com/LuizZak/swift-blend2d.git",
+        "state": {
+          "branch": "master",
+          "revision": "9112ae1708f0f5c6367bef32b18e6b6b95541298",
+          "version": null
+        }
+      },
+      {
+        "package": "LibPNG",
+        "repositoryURL": "https://github.com/LuizZak/swift-libpng.git",
+        "state": {
+          "branch": "master",
+          "revision": "a847b56393a128f7bf4f60be269895cf8ed5e990",
+          "version": null
+        }
+      }
+    ]
+  },
+  "version": 1
+}
