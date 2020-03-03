@@ -92,21 +92,102 @@ public enum DebugDraw {
             let bottom = max(firstBounds.bottomLeft, secondBounds.bottomLeft)
             
             drawLine(start: top, end: bottom, tangentLength: 0, to: context)
+            
+        case (.left, .left):
+            if firstBounds.topLeft.x < secondBounds.topLeft.x {
+                connectHorizontalEdges(
+                    edge1: (topLeft: firstBounds.topLeft, height: firstBounds.height),
+                    edge2: (topLeft: secondBounds.topLeft, height: secondBounds.height),
+                    to: context)
+            } else {
+                connectHorizontalEdges(
+                    edge1: (topLeft: secondBounds.topLeft, height: secondBounds.height),
+                    edge2: (topLeft: firstBounds.topLeft, height: firstBounds.height),
+                    to: context)
+            }
+            
+        case (.left, .right):
+            if firstBounds.topLeft.x < secondBounds.topRight.x {
+                connectHorizontalEdges(
+                    edge1: (topLeft: firstBounds.topLeft, height: firstBounds.height),
+                    edge2: (topLeft: secondBounds.topRight, height: secondBounds.height),
+                    to: context)
+            } else {
+                connectHorizontalEdges(
+                    edge1: (topLeft: secondBounds.topRight, height: secondBounds.height),
+                    edge2: (topLeft: firstBounds.topLeft, height: firstBounds.height),
+                    to: context)
+            }
+            
+        case (.right, .left):
+            if firstBounds.topRight.x < secondBounds.topLeft.x {
+                connectHorizontalEdges(
+                    edge1: (topLeft: firstBounds.topRight, height: firstBounds.height),
+                    edge2: (topLeft: secondBounds.topLeft, height: secondBounds.height),
+                    to: context)
+            } else {
+                connectHorizontalEdges(
+                    edge1: (topLeft: secondBounds.topLeft, height: secondBounds.height),
+                    edge2: (topLeft: firstBounds.topRight, height: firstBounds.height),
+                    to: context)
+            }
+            
+        case (.right, .right):
+            if firstBounds.topRight.x < secondBounds.topRight.x {
+                connectHorizontalEdges(
+                    edge1: (topLeft: firstBounds.topRight, height: firstBounds.height),
+                    edge2: (topLeft: secondBounds.topRight, height: secondBounds.height),
+                    to: context)
+            } else {
+                connectHorizontalEdges(
+                    edge1: (topLeft: secondBounds.topRight, height: secondBounds.height),
+                    edge2: (topLeft: firstBounds.topRight, height: firstBounds.height),
+                    to: context)
+            }
         default:
             break
         }
     }
     
-    private static func drawLine(start: Vector2, end: Vector2, tangentLength: Double, to context: BLContext) {
-        let tangentLeft = (end - start).normalized().leftRotated() * tangentLength
-        let tangentRight = (end - start).normalized().rightRotated() * tangentLength
+    private static func connectHorizontalEdges(edge1: (topLeft: Vector2, height: Double),
+                                               edge2: (topLeft: Vector2, height: Double),
+                                               to context: BLContext) {
         
+        let center2 = edge2.topLeft.y + edge2.height / 2
+        
+        let edge1BottomLeft = Vector2(x: edge1.topLeft.x, y: edge1.topLeft.y + edge1.height)
+        
+        let edge1Top = min(edge1.topLeft.y, center2)
+        let edge1Bottom = max(edge1BottomLeft.y, center2)
+        
+        // Only draw first edge if the horizontal line to be drawn is outside the
+        // range of the boundary
+        if center2 < edge1.topLeft.y || center2 > edge1.topLeft.y + edge1.height {
+            drawLine(start: Vector2(x: edge1.topLeft.x, y: edge1Top),
+                     end: Vector2(x: edge1.topLeft.x, y: edge1Bottom),
+                     tangentLength: 0,
+                     to: context)
+        }
+        
+        drawLine(start: Vector2(x: edge1.topLeft.x, y: center2),
+                 end: Vector2(x: edge2.topLeft.x, y: center2),
+                 tangentLength: 3,
+                 to: context)
+    }
+    
+    private static func drawLine(start: Vector2, end: Vector2, tangentLength: Double, to context: BLContext) {
         context.setStrokeWidth(1)
         context.setStrokeStyle(BLRgba32.lightBlue)
         
         context.strokeLine(p0: start.asBLPoint, p1: end.asBLPoint)
-        context.strokeLine(p0: (start + tangentLeft).asBLPoint, p1: (start + tangentRight).asBLPoint)
-        context.strokeLine(p0: (end + tangentLeft).asBLPoint, p1: (end + tangentRight).asBLPoint)
+        
+        if tangentLength > 0 {
+            let tangentLeft = (end - start).normalized().leftRotated() * tangentLength
+            let tangentRight = (end - start).normalized().rightRotated() * tangentLength
+            
+            context.strokeLine(p0: (start + tangentLeft).asBLPoint, p1: (start + tangentRight).asBLPoint)
+            context.strokeLine(p0: (end + tangentLeft).asBLPoint, p1: (end + tangentRight).asBLPoint)
+        }
     }
     
     public enum DebugDrawFlags {
