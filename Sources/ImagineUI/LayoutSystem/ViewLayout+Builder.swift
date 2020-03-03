@@ -112,7 +112,7 @@ public class LayoutAnchorCreator<T> {
 
     @discardableResult
     public func equalTo(_ other: View, offset: Double = 0, multiplier: Double = 1) -> LayoutConstraint {
-        LayoutConstraint._create(first: anchor,
+        LayoutConstraint._create(first: anchor.toInternalLayoutAnchor(),
                                  second: anchorOnOtherView(anchor.kind, other),
                                  offset: offset,
                                  multiplier: multiplier)
@@ -134,7 +134,7 @@ public class LayoutAnchorCreator<T> {
 
     @discardableResult
     public func lessThanOrEqualTo(_ other: View, offset: Double = 0, multiplier: Double = 1) -> LayoutConstraint {
-        LayoutConstraint._create(first: anchor,
+        LayoutConstraint._create(first: anchor.toInternalLayoutAnchor(),
                                  second: anchorOnOtherView(anchor.kind, other),
                                  relationship: .lessThanOrEqual,
                                  offset: offset,
@@ -157,7 +157,7 @@ public class LayoutAnchorCreator<T> {
 
     @discardableResult
     public func greaterThanOrEqualTo(_ other: View, offset: Double = 0, multiplier: Double = 1) -> LayoutConstraint {
-        LayoutConstraint._create(first: anchor,
+        LayoutConstraint._create(first: anchor.toInternalLayoutAnchor(),
                                  second: anchorOnOtherView(anchor.kind, other),
                                  relationship: .greaterThanOrEqual,
                                  offset: offset,
@@ -187,7 +187,7 @@ public class LayoutAnchorUpdater<T> {
 
     @discardableResult
     public func equalTo(_ other: View, offset: Double = 0, multiplier: Double = 1) -> LayoutConstraint {
-        LayoutConstraint._update(first: anchor,
+        LayoutConstraint._update(first: anchor.toInternalLayoutAnchor(),
                                  second: anchorOnOtherView(anchor.kind, other),
                                  offset: offset,
                                  multiplier: multiplier)
@@ -209,7 +209,7 @@ public class LayoutAnchorUpdater<T> {
 
     @discardableResult
     public func lessThanOrEqualTo(_ other: View, offset: Double = 0, multiplier: Double = 1) -> LayoutConstraint {
-        LayoutConstraint._update(first: anchor,
+        LayoutConstraint._update(first: anchor.toInternalLayoutAnchor(),
                                  second: anchorOnOtherView(anchor.kind, other),
                                  relationship: .lessThanOrEqual,
                                  offset: offset,
@@ -232,7 +232,7 @@ public class LayoutAnchorUpdater<T> {
 
     @discardableResult
     public func greaterThanOrEqualTo(_ other: View, offset: Double = 0, multiplier: Double = 1) -> LayoutConstraint {
-        LayoutConstraint._update(first: anchor,
+        LayoutConstraint._update(first: anchor.toInternalLayoutAnchor(),
                                  second: anchorOnOtherView(anchor.kind, other),
                                  relationship: .greaterThanOrEqual,
                                  offset: offset,
@@ -240,25 +240,25 @@ public class LayoutAnchorUpdater<T> {
     }
 }
 
-private func anchorOnOtherView(_ kind: AnchorKind, _ view: View) -> InternalLayoutAnchorType {
+private func anchorOnOtherView(_ kind: AnchorKind, _ view: View) -> InternalLayoutAnchor {
     switch kind {
     case .width:
-        return view.layout.width
+        return view.layout.width.toInternalLayoutAnchor()
     case .height:
-        return view.layout.height
+        return view.layout.height.toInternalLayoutAnchor()
     case .left:
-        return view.layout.left
+        return view.layout.left.toInternalLayoutAnchor()
     case .top:
-        return view.layout.top
+        return view.layout.top.toInternalLayoutAnchor()
     case .right:
-        return view.layout.right
+        return view.layout.right.toInternalLayoutAnchor()
     case .bottom:
-        return view.layout.bottom
+        return view.layout.bottom.toInternalLayoutAnchor()
     case .centerX:
-        return view.layout.centerX
+        return view.layout.centerX.toInternalLayoutAnchor()
     case .centerY:
-        return view.layout.centerY
+        return view.layout.centerY.toInternalLayoutAnchor()
     case .firstBaseline:
-        return view.layout.firstBaseline
+        return view.layout.firstBaseline.toInternalLayoutAnchor()
     }
 }

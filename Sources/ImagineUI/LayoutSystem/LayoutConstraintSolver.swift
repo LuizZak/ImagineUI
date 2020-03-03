@@ -273,33 +273,13 @@ public class LayoutConstraintSolverCache {
     fileprivate struct ConstraintDefinition: Equatable {
         var constraint: Constraint
         var containerView: View
-        var first: InternalLayoutAnchorType
-        var second: InternalLayoutAnchorType?
+        var first: InternalLayoutAnchor
+        var second: InternalLayoutAnchor?
         var relationship: Relationship
         var offset: Double
         var multiplier: Double 
         var priority: Double
         var isEnabled: Bool
-        
-        static func == (lhs: ConstraintDefinition, rhs: ConstraintDefinition) -> Bool {
-            if (lhs.second == nil) != (rhs.second == nil) {
-                return false
-            }
-            if let lSecond = lhs.second, let rSecond = rhs.second {
-                if !lSecond.isEqual(to: rSecond) {
-                    return false
-                }
-            }
-            
-            return lhs.constraint == rhs.constraint
-                && lhs.containerView === rhs.containerView
-                && lhs.first.isEqual(to: rhs.first)
-                && lhs.relationship == rhs.relationship
-                && lhs.offset == rhs.offset
-                && lhs.multiplier == rhs.multiplier
-                && lhs.priority == rhs.priority
-                && lhs.isEnabled == rhs.isEnabled
-        }
     }
     
     fileprivate struct StateDiff {
