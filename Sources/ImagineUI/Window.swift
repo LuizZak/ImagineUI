@@ -114,9 +114,7 @@ public class Window: ControlView {
     /// - Parameter enabledOnly: Whether to only consider views that have
     /// interactivity enabled. See `ControlView.interactionEnabled`
     public func hitTestControl(point: Vector2, enabledOnly: Bool = true) -> ControlView? {
-        let views = subviews.compactMap { $0 as? ControlView }
-
-        for controlView in views {
+        for case let controlView as ControlView in subviews {
             let local = controlView.convert(point: point, from: self)
 
             if let control = controlView.hitTestControl(local, enabledOnly: enabledOnly) {

@@ -485,6 +485,10 @@ open class View {
     /// - Parameter inflatingArea: Used to inflate the area of the view to
     /// perform less precise hit tests.
     public func contains(point: Vector2, inflatingArea: Vector2 = .zero) -> Bool {
+        if inflatingArea == .zero {
+            return bounds.contains(point)
+        }
+        
         return bounds.insetBy(x: -inflatingArea.x, y: -inflatingArea.y).contains(point)
     }
 
