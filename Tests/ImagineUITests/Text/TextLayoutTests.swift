@@ -233,7 +233,7 @@ class TextLayoutTests: SnapshotTestCase {
         sut.renderText(in: ctx, location: .zero)
         
         ctx.end()
-        assertImageMatch(img, record: true)
+        assertImageMatch(img)
     }
     
     func makeSut(text: String) -> TextLayout {
