@@ -315,7 +315,7 @@ public class TextLayout: TextLayoutType {
                 context.save()
                 backColor.setFillInContext(context)
                 
-                var bounds: BLRect
+                let bounds: BLRect
                 if let boundsType = segment.textSegment.attribute(named: .backgroundColorBounds, type: TextBackgroundBoundsAttribute.self) {
                     bounds = boundsForBackground(segment: segment, line: line, type: boundsType)
                 } else {
