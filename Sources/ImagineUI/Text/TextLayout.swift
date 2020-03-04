@@ -315,9 +315,11 @@ public class TextLayout: TextLayoutType {
                 context.save()
                 backColor.setFillInContext(context)
                 
-                var bounds = segment.bounds
+                var bounds: BLRect
                 if let boundsType = segment.textSegment.attribute(named: .backgroundColorBounds, type: TextBackgroundBoundsAttribute.self) {
                     bounds = boundsForBackground(segment: segment, line: line, type: boundsType)
+                } else {
+                    bounds = boundsForBackground(segment: segment, line: line, type: .segmentBounds)
                 }
                 
                 if let radius = segment.textSegment.attribute(named: .cornerRadius, type: Vector2.self) {
