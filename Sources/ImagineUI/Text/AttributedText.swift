@@ -429,7 +429,8 @@ public extension AttributedText.AttributeName {
     /// Specifies the type of bounds to use when rendering any available background
     /// color attribute.
     ///
-    /// Defaults to `segmentBounds`.
+    /// Behavior or rendering matches `TextBackgroundBoundsAttribute.segmentBounds`,
+    /// if not specified.
     ///
     /// Should be a `TextBackgroundBoundsAttribute` attribute type.
     static let backgroundColorBounds = Self(rawValue: "backgroundColorBounds")
