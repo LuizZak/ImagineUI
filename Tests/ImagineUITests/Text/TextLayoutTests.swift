@@ -91,61 +91,50 @@ class TextLayoutTests: SnapshotTestCase {
     
     func testRenderInitWithAttributedText() {
         var attributedText = AttributedText()
-        
         attributedText.append("small", attributes: [.font: makeFont(size: 10)])
         attributedText.append("\nmedium", attributes: [.font: makeFont(size: 20)])
         attributedText.append("\nlarge", attributes: [.font: makeFont(size: 30)])
-        
         let sut = makeSut(attributedText: attributedText)
-        
         let img = BLImage(width: Int(sut.size.x),
                           height: Int(sut.size.y),
                           format: .prgb32)
-        
         let ctx = BLContext(image: img)!
         ctx.compOp = .sourceCopy
         ctx.setFillStyle(BLRgba32.transparentBlack)
         ctx.fillAll()
-        
         ctx.compOp = .sourceOver
         ctx.setFillStyle(BLRgba32.black)
+        
         sut.fillText(in: ctx, location: .zero)
         
         ctx.end()
-        
         assertImageMatch(img, #function)
     }
     
     func testRenderInitWithAttributedTextFontChangeDuringSentence() {
         var attributedText = AttributedText()
-        
         attributedText.append("small", attributes: [.font: makeFont(size: 10)])
         attributedText.append("medium", attributes: [.font: makeFont(size: 20)])
         attributedText.append("large", attributes: [.font: makeFont(size: 30)])
-        
         let sut = makeSut(attributedText: attributedText)
-        
         let img = BLImage(width: Int(sut.size.x),
                           height: Int(sut.size.y),
                           format: .prgb32)
-        
         let ctx = BLContext(image: img)!
         ctx.compOp = .sourceCopy
         ctx.setFillStyle(BLRgba32.transparentBlack)
         ctx.fillAll()
-        
         ctx.compOp = .sourceOver
         ctx.setFillStyle(BLRgba32.black)
+        
         sut.fillText(in: ctx, location: .zero)
         
         ctx.end()
-        
         assertImageMatch(img, #function)
     }
     
-    func testRenderAttributedText() {
+    func testRenderAttributedTextBackgroundColor() {
         var attributedText = AttributedText()
-        
         attributedText.append("small", attributes: [
             .font: makeFont(size: 10),
             .backgroundColor: BLRgba32.red
@@ -160,9 +149,7 @@ class TextLayoutTests: SnapshotTestCase {
             .foregroundColor: BLRgba64.gray,
             .cornerRadius: Vector2(x: 4, y: 4)
         ])
-        
         let sut = makeSut(attributedText: attributedText)
-        
         let img = BLImage(width: Int(sut.size.x),
                           height: Int(sut.size.y),
                           format: .prgb32)
@@ -171,13 +158,49 @@ class TextLayoutTests: SnapshotTestCase {
         ctx.compOp = .sourceCopy
         ctx.setFillStyle(BLRgba32.transparentBlack)
         ctx.fillAll()
-        
         ctx.compOp = .sourceOver
         ctx.setFillStyle(BLRgba32.black)
+        
         sut.renderText(in: ctx, location: .zero)
         
         ctx.end()
+        assertImageMatch(img, #function)
+    }
+    
+    func testRenderBaselineBackgroundBounds() {
+        var attributedText = AttributedText()
+        attributedText.append("small", attributes: [
+            .font: makeFont(size: 10),
+            .backgroundColor: BLRgba32.red,
+            .backgroundColorBounds: TextBackgroundBoundsAttribute.largestBaselineBounds
+        ])
+        attributedText.append("medium", attributes: [
+            .font: makeFont(size: 20),
+            .backgroundColor: BLRgba32.blue,
+            .backgroundColorBounds: TextBackgroundBoundsAttribute.largestBaselineBounds
+        ])
+        attributedText.append("large", attributes: [
+            .font: makeFont(size: 30),
+            .backgroundColor: BLRgba32.green,
+            .foregroundColor: BLRgba64.gray,
+            .cornerRadius: Vector2(x: 4, y: 4),
+            .backgroundColorBounds: TextBackgroundBoundsAttribute.largestBaselineBounds
+        ])
+        let sut = makeSut(attributedText: attributedText)
+        let img = BLImage(width: Int(sut.size.x),
+                          height: Int(sut.size.y),
+                          format: .prgb32)
         
+        let ctx = BLContext(image: img)!
+        ctx.compOp = .sourceCopy
+        ctx.setFillStyle(BLRgba32.transparentBlack)
+        ctx.fillAll()
+        ctx.compOp = .sourceOver
+        ctx.setFillStyle(BLRgba32.black)
+        
+        sut.renderText(in: ctx, location: .zero)
+        
+        ctx.end()
         assertImageMatch(img, #function)
     }
     

@@ -308,6 +308,10 @@ public struct AttributedText: Equatable {
             assert(cornerRadius is Vector2,
                    "Attribute AttributeName.cornerRadius is not a Vector2 type")
         }
+        if let boundsAttribute = attributes[.backgroundColorBounds] {
+            assert(boundsAttribute is TextBackgroundBoundsAttribute,
+                   "Attribute AttributeName.backgroundColorBounds is not a type")
+        }
     }
     
     public struct TextSegment: Equatable {
@@ -394,8 +398,17 @@ public extension AttributedText.AttributeName {
     static let backgroundColor = Self(rawValue: "backgroundColor")
     static let foregroundColor = Self(rawValue: "foregroundColor")
     
+    /// Specifies the type of bounds to use when rendering any available background
+    /// color attribute.
+    ///
+    /// Defaults to `segmentBounds`.
+    ///
+    /// Should be a `TextBackgroundBoundsAttribute` attribute type.
+    static let backgroundColorBounds = Self(rawValue: "backgroundColorBounds")
+    
     /// Specifies the radius of the corner of the rectangle to draw along with
     /// the `backgroundColor` attribute.
-    /// Should be a `Vector2TextAttribute` attribute type
+    ///
+    /// Should be a `Vector2` attribute type.
     static let cornerRadius = Self(rawValue: "cornerRadius")
 }
