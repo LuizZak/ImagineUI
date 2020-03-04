@@ -371,6 +371,34 @@ public struct AttributedText: Equatable {
     }
 }
 
+// MARK: - Rendering
+public extension AttributedText {
+    /// Renders this attributed text to a given context.
+    ///
+    /// - Parameter context: The context to render the text to.
+    /// - Parameter origin: The top-left origin of the text in respect to the
+    /// context.
+    /// - Parameter baseFont: The base font to use when a text segment specifies
+    /// no font attribute. Does not override fonts specified by attributes.
+    /// - Parameter horizontalAlignment: Horizontal alignment of the text layout.
+    /// - Parameter verticalAlignment: Vertical alignment of the text layout.
+    func render(to context: BLContext,
+                origin: BLPoint,
+                baseFont: BLFont,
+                horizontalAlignment: HorizontalTextAlignment = .leading,
+                verticalAlignment: VerticalTextAlignment = .near) {
+        
+        let layout = TextLayout(font: baseFont,
+                                attributedText: self,
+                                horizontalAlignment: horizontalAlignment,
+                                verticalAlignment: verticalAlignment)
+        
+        layout.renderText(in: context, location: origin)
+    }
+}
+
+// MARK: -
+
 /// Describes a type that can be used as a text attribute value in an
 /// `AttributedText`'s attributes dictionary
 public protocol TextAttributeType {
