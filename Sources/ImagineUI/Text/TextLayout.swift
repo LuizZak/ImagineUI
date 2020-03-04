@@ -315,10 +315,17 @@ public class TextLayout: TextLayoutType {
                 context.save()
                 backColor.setFillInContext(context)
                 
-                if let radius = segment.textSegment.attribute(named: .cornerRadius, type: Vector2.self) {
-                    context.fillRoundRect(BLRoundRect(rect: segment.bounds, radius: radius.asBLPoint))
+                var bounds: BLRect
+                if let boundsType = segment.textSegment.attribute(named: .backgroundColorBounds, type: TextBackgroundBoundsAttribute.self) {
+                    bounds = boundsForBackground(segment: segment, line: line, type: boundsType)
                 } else {
-                    context.fillRect(segment.bounds)
+                    bounds = boundsForBackground(segment: segment, line: line, type: .segmentBounds)
+                }
+                
+                if let radius = segment.textSegment.attribute(named: .cornerRadius, type: Vector2.self) {
+                    context.fillRoundRect(BLRoundRect(rect: bounds, radius: radius.asBLPoint))
+                } else {
+                    context.fillRect(bounds)
                 }
                 
                 context.restore()
@@ -332,6 +339,16 @@ public class TextLayout: TextLayoutType {
                                  font: segment.font)
             
             context.restore()
+        }
+    }
+    
+    private func boundsForBackground(segment: LineSegment, line: Line, type: TextBackgroundBoundsAttribute) -> BLRect {
+        switch type {
+        case .segmentBounds:
+            return segment.bounds
+            
+        case .largestBaselineBounds:
+            return segment.bounds.resized(width: segment.bounds.w, height: line.bounds.h).offsetBy(x: 0, y: -segment.bounds.y)
         }
     }
     

@@ -121,6 +121,7 @@ public struct Rectangle: Equatable, Codable {
     }
     
     /// Initializes an empty Rectangle instance
+    @inlinable
     public init() {
         x = 0
         y = 0
@@ -132,6 +133,7 @@ public struct Rectangle: Equatable, Codable {
     /// all supplied points.
     ///
     /// If no points are supplied, an empty Rectangle is created instead.
+    @inlinable
     public init(of points: Vector2...) {
         self = Rectangle(points: points)
     }
@@ -140,6 +142,7 @@ public struct Rectangle: Equatable, Codable {
     /// coordinates.
     /// The coordinates are not checked for ordering, and will be directly
     /// assigned to `minimum` and `maximum` properties.
+    @inlinable
     public init(min: Vector2, max: Vector2) {
         (x, y) = (min.x, min.y)
         width = max.x - min.x
@@ -147,6 +150,7 @@ public struct Rectangle: Equatable, Codable {
     }
 
     /// Initializes a Rectangle with the coordinates of a rectangle
+    @inlinable
     public init(x: Double, y: Double, width: Double, height: Double) {
         self.x = x
         self.y = y
@@ -155,16 +159,19 @@ public struct Rectangle: Equatable, Codable {
     }
 
     /// Initializes a Rectangle with the location + size of a rectangle
+    @inlinable
     public init(location: Vector2, size: Vector2) {
         self.init(min: location, max: location + size)
     }
 
     /// Initializes a Rectangle with the corners of a rectangle
+    @inlinable
     public init(left: Double, top: Double, right: Double, bottom: Double) {
         self.init(x: left, y: top, width: right - left, height: bottom - top)
     }
 
     /// Initializes a Rectangle with the coordinates of a rectangle
+    @inlinable
     public init(x: Int, y: Int, width: Int, height: Int) {
         self.init(x: Double(x), y: Double(y), width: Double(width), height: Double(height))
     }

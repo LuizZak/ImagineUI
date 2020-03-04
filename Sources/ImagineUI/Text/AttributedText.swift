@@ -308,6 +308,10 @@ public struct AttributedText: Equatable {
             assert(cornerRadius is Vector2,
                    "Attribute AttributeName.cornerRadius is not a Vector2 type")
         }
+        if let boundsAttribute = attributes[.backgroundColorBounds] {
+            assert(boundsAttribute is TextBackgroundBoundsAttribute,
+                   "Attribute AttributeName.backgroundColorBounds is not a type")
+        }
     }
     
     public struct TextSegment: Equatable {
@@ -367,6 +371,34 @@ public struct AttributedText: Equatable {
     }
 }
 
+// MARK: - Rendering
+public extension AttributedText {
+    /// Renders this attributed text to a given context.
+    ///
+    /// - Parameter context: The context to render the text to.
+    /// - Parameter origin: The top-left origin of the text in respect to the
+    /// context.
+    /// - Parameter baseFont: The base font to use when a text segment specifies
+    /// no font attribute. Does not override fonts specified by attributes.
+    /// - Parameter horizontalAlignment: Horizontal alignment of the text layout.
+    /// - Parameter verticalAlignment: Vertical alignment of the text layout.
+    func render(to context: BLContext,
+                origin: BLPoint,
+                baseFont: BLFont,
+                horizontalAlignment: HorizontalTextAlignment = .leading,
+                verticalAlignment: VerticalTextAlignment = .near) {
+        
+        let layout = TextLayout(font: baseFont,
+                                attributedText: self,
+                                horizontalAlignment: horizontalAlignment,
+                                verticalAlignment: verticalAlignment)
+        
+        layout.renderText(in: context, location: origin)
+    }
+}
+
+// MARK: -
+
 /// Describes a type that can be used as a text attribute value in an
 /// `AttributedText`'s attributes dictionary
 public protocol TextAttributeType {
@@ -394,8 +426,18 @@ public extension AttributedText.AttributeName {
     static let backgroundColor = Self(rawValue: "backgroundColor")
     static let foregroundColor = Self(rawValue: "foregroundColor")
     
+    /// Specifies the type of bounds to use when rendering any available background
+    /// color attribute.
+    ///
+    /// Behavior or rendering matches `TextBackgroundBoundsAttribute.segmentBounds`,
+    /// if not specified.
+    ///
+    /// Should be a `TextBackgroundBoundsAttribute` attribute type.
+    static let backgroundColorBounds = Self(rawValue: "backgroundColorBounds")
+    
     /// Specifies the radius of the corner of the rectangle to draw along with
     /// the `backgroundColor` attribute.
-    /// Should be a `Vector2TextAttribute` attribute type
+    ///
+    /// Should be a `Vector2` attribute type.
     static let cornerRadius = Self(rawValue: "cornerRadius")
 }

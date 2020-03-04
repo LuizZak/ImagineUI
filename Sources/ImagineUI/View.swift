@@ -61,6 +61,15 @@ open class View {
             }
         }
     }
+    
+    open var size: Size {
+        get {
+            return bounds.size
+        }
+        set {
+            bounds.size = newValue
+        }
+    }
 
     open var area: Rectangle {
         get {
@@ -181,12 +190,23 @@ open class View {
         if !needsLayout {
             return
         }
+        
+        /// If no superview is available, perform constraint layout locally,
+        /// instead
+        if superview == nil {
+            performConstraintsLayout()
+        }
 
         needsLayout = false
 
         for subview in subviews {
             subview.performLayout()
         }
+    }
+    
+    internal func performConstraintsLayout() {
+        let solver = LayoutConstraintSolver()
+        solver.solve(viewHierarchy: self, cache: nil)
     }
     
     /// Suspends setNeedsLayout() from affecting this view and its parent
