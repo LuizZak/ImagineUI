@@ -338,6 +338,17 @@ public class TextLayout: TextLayoutType {
                                  at: offset,
                                  font: segment.font)
             
+            if let strokeColor = segment.textSegment.attribute(named: .strokeColor, type: _ColorType.self) {
+                let width = segment.textSegment.attribute(named: .strokeWidth, type: Double.self) ?? 0.0
+                
+                context.setStrokeWidth(width)
+                strokeColor.setStrokeInContext(context)
+                
+                context.strokeGlyphRun(segment.glyphBufferMinusLineBreak.glyphRun,
+                                       at: offset,
+                                       font: segment.font)
+            }
+            
             context.restore()
         }
     }
@@ -701,15 +712,24 @@ public struct TextLayoutHitTestResult {
 
 private protocol _ColorType {
     func setFillInContext(_ context: BLContext)
+    func setStrokeInContext(_ context: BLContext)
 }
 
 extension BLRgba32: _ColorType {
     func setFillInContext(_ context: BLContext) {
         context.setFillStyle(self)
     }
+    
+    func setStrokeInContext(_ context: BLContext) {
+        context.setStrokeStyle(self)
+    }
 }
 extension BLRgba64: _ColorType {
     func setFillInContext(_ context: BLContext) {
         context.setFillStyle(self)
+    }
+    
+    func setStrokeInContext(_ context: BLContext) {
+        context.setStrokeStyle(self)
     }
 }

@@ -4,6 +4,7 @@ extension BLFont: TextAttributeType { }
 extension BLRgba32: TextAttributeType { }
 extension BLRgba64: TextAttributeType { }
 extension Vector2: TextAttributeType { }
+extension Double: TextAttributeType { }
 
 /// Specifies which bounds are used when rendering a background color text
 /// attribute.

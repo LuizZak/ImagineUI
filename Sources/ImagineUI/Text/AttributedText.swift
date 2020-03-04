@@ -299,10 +299,10 @@ public struct AttributedText: Equatable {
                    "Attribute AttributeName.font is not a BLFont type")
         }
         if let backColor = attributes[.backgroundColor] {
-            assertIsColor(backColor, "Attribute AttributeName.backgroundColor is not a BLRgba- color type type")
+            assertIsColor(backColor, "Attribute AttributeName.backgroundColor is not a BLRgba- color type")
         }
         if let foreColor = attributes[.foregroundColor] {
-            assertIsColor(foreColor, "Attribute AttributeName.foregroundColor is not a BLRgba- color type type")
+            assertIsColor(foreColor, "Attribute AttributeName.foregroundColor is not a BLRgba- color type")
         }
         if let cornerRadius = attributes[.cornerRadius] {
             assert(cornerRadius is Vector2,
@@ -311,6 +311,13 @@ public struct AttributedText: Equatable {
         if let boundsAttribute = attributes[.backgroundColorBounds] {
             assert(boundsAttribute is TextBackgroundBoundsAttribute,
                    "Attribute AttributeName.backgroundColorBounds is not a type")
+        }
+        if let strokeColor = attributes[.strokeColor] {
+            assertIsColor(strokeColor, "Attribute AttributeName.strokeColor is not a BLRgba- color type")
+        }
+        if let strokeWidth = attributes[.strokeWidth] {
+            assert(strokeWidth is Double,
+                   "Attribute AttributeName.strokeWidth is not a Double type")
         }
     }
     
@@ -440,4 +447,15 @@ public extension AttributedText.AttributeName {
     ///
     /// Should be a `Vector2` attribute type.
     static let cornerRadius = Self(rawValue: "cornerRadius")
+    
+    /// Specifies the stroke color to draw the text segment with.
+    ///
+    /// Should be either a `BLRgba32` or `BLRgba64` color structure.
+    static let strokeColor = Self(rawValue: "strokeColor")
+    
+    /// Specifies the width of the line to stroke the outlines of the text segment
+    /// with.
+    ///
+    /// Should be a `Double` attribute type.
+    static let strokeWidth = Self(rawValue: "strokeWidth")
 }

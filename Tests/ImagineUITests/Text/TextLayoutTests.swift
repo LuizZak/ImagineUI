@@ -108,7 +108,7 @@ class TextLayoutTests: SnapshotTestCase {
         sut.fillText(in: ctx, location: .zero)
         
         ctx.end()
-        assertImageMatch(img, #function)
+        assertImageMatch(img)
     }
     
     func testRenderInitWithAttributedTextFontChangeDuringSentence() {
@@ -130,7 +130,7 @@ class TextLayoutTests: SnapshotTestCase {
         sut.fillText(in: ctx, location: .zero)
         
         ctx.end()
-        assertImageMatch(img, #function)
+        assertImageMatch(img)
     }
     
     func testRenderAttributedTextBackgroundColor() {
@@ -164,7 +164,7 @@ class TextLayoutTests: SnapshotTestCase {
         sut.renderText(in: ctx, location: .zero)
         
         ctx.end()
-        assertImageMatch(img, #function)
+        assertImageMatch(img)
     }
     
     func testRenderBaselineBackgroundBounds() {
@@ -201,7 +201,39 @@ class TextLayoutTests: SnapshotTestCase {
         sut.renderText(in: ctx, location: .zero)
         
         ctx.end()
-        assertImageMatch(img, #function)
+        assertImageMatch(img)
+    }
+    
+    func testRenderStrokeColor() {
+        var attributedText = AttributedText()
+        attributedText.append("Test text", attributes: [
+            .foregroundColor: BLRgba32.white,
+            .strokeColor: BLRgba32.black,
+            .strokeWidth: 1.0
+        ])
+        attributedText.append(" with stroke", attributes: [
+            .strokeColor: BLRgba32.black,
+            .strokeWidth: 2.0
+        ])
+        attributedText.append(" color", attributes: [
+            .strokeColor: BLRgba32.black,
+            .strokeWidth: 5.0
+        ])
+        let sut = makeSut(attributedText: attributedText)
+        let img = BLImage(width: Int(sut.size.x),
+                          height: Int(sut.size.y),
+                          format: .prgb32)
+        
+        let ctx = BLContext(image: img)!
+        ctx.compOp = .sourceCopy
+        ctx.setFillStyle(BLRgba32.transparentBlack)
+        ctx.fillAll()
+        ctx.compOp = .sourceOver
+        
+        sut.renderText(in: ctx, location: .zero)
+        
+        ctx.end()
+        assertImageMatch(img, record: true)
     }
     
     func makeSut(text: String) -> TextLayout {
