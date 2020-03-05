@@ -303,53 +303,8 @@ public class TextLayout: TextLayoutType {
     }
     
     public func renderText(in context: BLContext, location: BLPoint) {
-        iterateSegments { line, segment in
-            context.save()
-            
-            let offset = line.bounds.topLeft
-                + segment.bounds.topLeft
-                + segment.offset
-                + location
-            
-            if let backColor = segment.textSegment.attribute(named: .backgroundColor, type: _ColorType.self) {
-                context.save()
-                backColor.setFillInContext(context)
-                
-                let bounds: BLRect
-                if let boundsType = segment.textSegment.attribute(named: .backgroundColorBounds, type: TextBackgroundBoundsAttribute.self) {
-                    bounds = boundsForBackground(segment: segment, line: line, type: boundsType)
-                } else {
-                    bounds = boundsForBackground(segment: segment, line: line, type: .segmentBounds)
-                }
-                
-                if let radius = segment.textSegment.attribute(named: .cornerRadius, type: Vector2.self) {
-                    context.fillRoundRect(BLRoundRect(rect: bounds, radius: radius.asBLPoint))
-                } else {
-                    context.fillRect(bounds)
-                }
-                
-                context.restore()
-            }
-            if let foreColor = segment.textSegment.attribute(named: .foregroundColor, type: _ColorType.self) {
-                foreColor.setFillInContext(context)
-            }
-            
-            context.fillGlyphRun(segment.glyphBufferMinusLineBreak.glyphRun,
-                                 at: offset,
-                                 font: segment.font)
-            
-            context.restore()
-        }
-    }
-    
-    private func boundsForBackground(segment: LineSegment, line: Line, type: TextBackgroundBoundsAttribute) -> BLRect {
-        switch type {
-        case .segmentBounds:
-            return segment.bounds
-            
-        case .largestBaselineBounds:
-            return segment.bounds.resized(width: segment.bounds.w, height: line.bounds.h).offsetBy(x: 0, y: -segment.bounds.y)
-        }
+        let renderer = TextLayoutRenderer(textLayout: self)
+        renderer.render(to: context, origin: location)
     }
     
     private func iterateSegments(_ closure: (Line, LineSegment) -> Void) {
@@ -459,6 +414,9 @@ public class TextLayout: TextLayoutType {
         var endIndex: String.Index
         var text: Substring
         var baselineHeight: Float
+        
+        /// Largest underline offset from this line
+        var underlineOffset: Float
         
         /// Boundaries of line, in screen-space coordinates
         var bounds: BLRect
@@ -656,11 +614,13 @@ class LineCollector {
             var segments = self.segments
             var highestDescent: Float = 0
             var highestAscent: Float = 0
+            var highestUnderline: Float = 0
             
             for segment in segments {
                 bounds = bounds.formUnion(segment.bounds.asRectangle)
                 highestAscent = max(highestAscent, segment.font.metrics.ascent)
                 highestDescent = max(highestDescent, segment.font.metrics.descent)
+                highestUnderline = max(highestUnderline, segment.font.metrics.underlinePosition)
             }
             
             // Align segments down to the largest baseline
@@ -685,6 +645,7 @@ class LineCollector {
                 endIndex: endIndex,
                 text: substring,
                 baselineHeight: highestAscent,
+                underlineOffset: highestUnderline,
                 bounds: bounds.withLocation(topLeft.asVector2).asBLRect)
         }
     }
@@ -697,19 +658,4 @@ public struct TextLayoutHitTestResult {
     public var isTrailing: Bool
     public var width: Double
     public var height: Double
-}
-
-private protocol _ColorType {
-    func setFillInContext(_ context: BLContext)
-}
-
-extension BLRgba32: _ColorType {
-    func setFillInContext(_ context: BLContext) {
-        context.setFillStyle(self)
-    }
-}
-extension BLRgba64: _ColorType {
-    func setFillInContext(_ context: BLContext) {
-        context.setFillStyle(self)
-    }
 }

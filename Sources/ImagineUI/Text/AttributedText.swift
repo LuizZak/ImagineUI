@@ -31,6 +31,12 @@ public struct AttributedText: Equatable {
         return segments
     }
     
+    /// Returns a text range that completely covers the entire string text in
+    /// this attributed text
+    public var textRange: TextRange {
+        return TextRange(start: 0, length: length)
+    }
+    
     public init() {
         self.init("")
     }
@@ -108,6 +114,24 @@ public struct AttributedText: Equatable {
         
         for i in indices {
             segments[i] = segments[i].cloneWithAttributes(attributes)
+        }
+        
+        mergeSegments()
+    }
+    
+    public mutating func addAttributes(_ range: TextRange, _ attributes: Attributes) {
+        assertAttributes(attributes)
+        
+        if range.length == 0 {
+            return
+        }
+        
+        splitSegments(in: range)
+        
+        let indices = segmentIndicesIntersecting(range)
+        
+        for i in indices {
+            segments[i] = segments[i].cloneWithAttributes(segments[i].textAttributes.merging(attributes, uniquingKeysWith: { $1 }))
         }
         
         mergeSegments()
@@ -285,33 +309,40 @@ public struct AttributedText: Equatable {
     }
     
     private func assertAttributes(_ attributes: Attributes) {
-        func assertIsColor(_ value: Any, _ description: String) {
-            switch value {
-            case is BLRgba32, is BLRgba64:
-                break
-            default:
-                assertionFailure(description)
+        func assertIsType<T>(_ key: AttributeName, type: T.Type) {
+            if let value = attributes[key] {
+                assert(value is T,
+                       "Attribute AttributeName.\(key.rawValue) is not a \(type) type")
             }
         }
         
-        if let font = attributes[.font] {
-            assert(font is BLFont,
-                   "Attribute AttributeName.font is not a BLFont type")
+        func assertIsColor(_ key: AttributeName) {
+            if let value = attributes[key] {
+                switch value {
+                case is BLRgba32, is BLRgba64:
+                    break
+                default:
+                    assertionFailure("Attribute AttributeName.\(key.rawValue) is not a BLRgba- color type")
+                }
+            }
         }
-        if let backColor = attributes[.backgroundColor] {
-            assertIsColor(backColor, "Attribute AttributeName.backgroundColor is not a BLRgba- color type type")
-        }
-        if let foreColor = attributes[.foregroundColor] {
-            assertIsColor(foreColor, "Attribute AttributeName.foregroundColor is not a BLRgba- color type type")
-        }
-        if let cornerRadius = attributes[.cornerRadius] {
-            assert(cornerRadius is Vector2,
-                   "Attribute AttributeName.cornerRadius is not a Vector2 type")
-        }
-        if let boundsAttribute = attributes[.backgroundColorBounds] {
-            assert(boundsAttribute is TextBackgroundBoundsAttribute,
-                   "Attribute AttributeName.backgroundColorBounds is not a type")
-        }
+        
+        assertIsType(.font, type: BLFont.self)
+        
+        assertIsColor(.foregroundColor)
+        
+        assertIsColor(.backgroundColor)
+        assertIsType(.cornerRadius, type: Vector2.self)
+        assertIsType(.backgroundColorBounds, type: TextBackgroundBoundsAttribute.self)
+        
+        assertIsColor(.strokeColor)
+        assertIsType(.strokeWidth, type: Double.self)
+        
+        assertIsType(.underlineStyle, type: UnderlineStyleTextAttribute.self)
+        assertIsColor(.underlineColor)
+        
+        assertIsType(.strikethroughStyle, type: StrikethroughStyleTextAttribute.self)
+        assertIsColor(.strikethroughColor)
     }
     
     public struct TextSegment: Equatable {
@@ -440,4 +471,37 @@ public extension AttributedText.AttributeName {
     ///
     /// Should be a `Vector2` attribute type.
     static let cornerRadius = Self(rawValue: "cornerRadius")
+    
+    /// Specifies the stroke color to draw the text segment with.
+    ///
+    /// Should be either a `BLRgba32` or `BLRgba64` color structure.
+    static let strokeColor = Self(rawValue: "strokeColor")
+    
+    /// Specifies the width of the line to stroke the outlines of the text segment
+    /// with.
+    ///
+    /// Should be a `Double` attribute type.
+    static let strokeWidth = Self(rawValue: "strokeWidth")
+    
+    /// Specifies the underline style of the text.
+    ///
+    /// Should be an `UnderlineStyleTextAttribute` attribute type.
+    static let underlineStyle = Self(rawValue: "underlineStyle")
+    
+    /// Specifies the color to draw the underline style with.
+    /// If not specified, defaults to the foreground color.
+    ///
+    /// Should be either a `BLRgba32` or `BLRgba64` color structure.
+    static let underlineColor = Self(rawValue: "underlineColor")
+    
+    /// Specifies the strikethrough style of the text.
+    ///
+    /// Should be a `StrikethroughStyleTextAttribute` attribute type.
+    static let strikethroughStyle = Self(rawValue: "strikethroughStyle")
+    
+    /// Specifies the color to draw the strikethrough style with.
+    /// If not specified, defaults to the foreground color.
+    ///
+    /// Should be either a `BLRgba32` or `BLRgba64` color structure.
+    static let strikethroughColor = Self(rawValue: "strikethroughColor")
 }
