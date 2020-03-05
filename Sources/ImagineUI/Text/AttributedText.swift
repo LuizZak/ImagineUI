@@ -285,40 +285,37 @@ public struct AttributedText: Equatable {
     }
     
     private func assertAttributes(_ attributes: Attributes) {
-        func assertIsColor(_ value: Any, _ description: String) {
-            switch value {
-            case is BLRgba32, is BLRgba64:
-                break
-            default:
-                assertionFailure(description)
+        func assertIsType<T>(_ key: AttributeName, type: T.Type) {
+            if let value = attributes[key] {
+                assert(value is T,
+                       "Attribute AttributeName.\(key.rawValue) is not a \(type) type")
             }
         }
         
-        if let font = attributes[.font] {
-            assert(font is BLFont,
-                   "Attribute AttributeName.font is not a BLFont type")
+        func assertIsColor(_ key: AttributeName) {
+            if let value = attributes[key] {
+                switch value {
+                case is BLRgba32, is BLRgba64:
+                    break
+                default:
+                    assertionFailure("Attribute AttributeName.\(key.rawValue) is not a BLRgba- color type")
+                }
+            }
         }
-        if let backColor = attributes[.backgroundColor] {
-            assertIsColor(backColor, "Attribute AttributeName.backgroundColor is not a BLRgba- color type")
-        }
-        if let foreColor = attributes[.foregroundColor] {
-            assertIsColor(foreColor, "Attribute AttributeName.foregroundColor is not a BLRgba- color type")
-        }
-        if let cornerRadius = attributes[.cornerRadius] {
-            assert(cornerRadius is Vector2,
-                   "Attribute AttributeName.cornerRadius is not a Vector2 type")
-        }
-        if let boundsAttribute = attributes[.backgroundColorBounds] {
-            assert(boundsAttribute is TextBackgroundBoundsAttribute,
-                   "Attribute AttributeName.backgroundColorBounds is not a type")
-        }
-        if let strokeColor = attributes[.strokeColor] {
-            assertIsColor(strokeColor, "Attribute AttributeName.strokeColor is not a BLRgba- color type")
-        }
-        if let strokeWidth = attributes[.strokeWidth] {
-            assert(strokeWidth is Double,
-                   "Attribute AttributeName.strokeWidth is not a Double type")
-        }
+        
+        assertIsType(.font, type: BLFont.self)
+        
+        assertIsColor(.foregroundColor)
+        
+        assertIsColor(.backgroundColor)
+        assertIsType(.cornerRadius, type: Vector2.self)
+        assertIsType(.backgroundColorBounds, type: TextBackgroundBoundsAttribute.self)
+        
+        assertIsColor(.strokeColor)
+        assertIsType(.strokeWidth, type: Double.self)
+        
+        assertIsType(.underlineStyle, type: UnderlineStyleAttribute.self)
+        assertIsColor(.underlineColor)
     }
     
     public struct TextSegment: Equatable {
@@ -458,4 +455,15 @@ public extension AttributedText.AttributeName {
     ///
     /// Should be a `Double` attribute type.
     static let strokeWidth = Self(rawValue: "strokeWidth")
+    
+    /// Specifies the underline style of the text.
+    ///
+    /// Should be a `UnderlineStyleAttribute` attribute type.
+    static let underlineStyle = Self(rawValue: "underlineStyle")
+    
+    /// Specifies the color to draw the underline style with.
+    /// If not specified, defaults to the foreground color.
+    ///
+    /// Should be either a `BLRgba32` or `BLRgba64` color structure.
+    static let underlineColor = Self(rawValue: "underlineColor")
 }

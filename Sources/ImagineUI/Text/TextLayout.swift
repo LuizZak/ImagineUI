@@ -311,33 +311,49 @@ public class TextLayout: TextLayoutType {
                 + segment.offset
                 + location
             
+            // Background color attribute
             if let backColor = segment.textSegment.attribute(named: .backgroundColor, type: _ColorType.self) {
                 context.save()
                 backColor.setFillInContext(context)
                 
+                // Background bounds attribute
                 let bounds: BLRect
                 if let boundsType = segment.textSegment.attribute(named: .backgroundColorBounds, type: TextBackgroundBoundsAttribute.self) {
-                    bounds = boundsForBackground(segment: segment, line: line, type: boundsType)
+                    bounds = boundsForBackground(segment: segment,
+                                                 line: line,
+                                                 type: boundsType)
                 } else {
-                    bounds = boundsForBackground(segment: segment, line: line, type: .segmentBounds)
+                    bounds = boundsForBackground(segment: segment,
+                                                 line: line,
+                                                 type: .segmentBounds)
                 }
                 
+                // Corner radius attribute
                 if let radius = segment.textSegment.attribute(named: .cornerRadius, type: Vector2.self) {
-                    context.fillRoundRect(BLRoundRect(rect: bounds, radius: radius.asBLPoint))
+                    context.fillRoundRect(BLRoundRect(rect: bounds,
+                                                      radius: radius.asBLPoint))
                 } else {
                     context.fillRect(bounds)
                 }
                 
                 context.restore()
             }
+            
+            // Foreground color attribute
             if let foreColor = segment.textSegment.attribute(named: .foregroundColor, type: _ColorType.self) {
                 foreColor.setFillInContext(context)
+                foreColor.setStrokeInContext(context)
+            }
+            
+            if let underlineStyle = segment.textSegment.attribute(named: .underlineStyle, type: UnderlineStyleAttribute.self) {
+                // TODO: Implement underline coloring
             }
             
             context.fillGlyphRun(segment.glyphBufferMinusLineBreak.glyphRun,
                                  at: offset,
                                  font: segment.font)
             
+            // Stroke color attribute
             if let strokeColor = segment.textSegment.attribute(named: .strokeColor, type: _ColorType.self) {
                 let width = segment.textSegment.attribute(named: .strokeWidth, type: Double.self) ?? 0.0
                 
@@ -353,7 +369,9 @@ public class TextLayout: TextLayoutType {
         }
     }
     
-    private func boundsForBackground(segment: LineSegment, line: Line, type: TextBackgroundBoundsAttribute) -> BLRect {
+    private func boundsForBackground(segment: LineSegment,
+                                     line: Line,
+                                     type: TextBackgroundBoundsAttribute) -> BLRect {
         switch type {
         case .segmentBounds:
             return segment.bounds

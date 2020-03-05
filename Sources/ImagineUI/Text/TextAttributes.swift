@@ -17,3 +17,10 @@ public enum TextBackgroundBoundsAttribute: TextAttributeType {
     /// from the same line the segment finds itself into.
     case largestBaselineBounds
 }
+
+/// Specifies the styling of an underline or strikethrough of an attributed text's
+/// segment.
+public enum UnderlineStyleAttribute: TextAttributeType {
+    /// A single 1px line running through the text
+    case single
+}
