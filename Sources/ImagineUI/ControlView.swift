@@ -42,7 +42,7 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
         didSet {
             if bounds.size != oldValue.size {
                 _bitmapCache.updateBitmapBounds(boundsForRedraw())
-                onResize(ValueChangedEventArgs(old: oldValue.size, new: bounds.size))
+                onResize(ValueChangedEventArgs(oldValue: oldValue.size, newValue: bounds.size))
             }
         }
     }
@@ -201,7 +201,7 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
 
         _bitmapCache.updateBitmapBounds(bounds)
         _stateManager.onStateChanged = { [weak self] old, new in
-            self?.onStateChanged(ValueChangedEventArgs(old: old, new: new))
+            self?.onStateChanged(ValueChangedEventArgs(oldValue: old, newValue: new))
         }
     }
     

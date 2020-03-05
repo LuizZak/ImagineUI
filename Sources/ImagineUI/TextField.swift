@@ -133,10 +133,10 @@ open class TextField: ControlView {
         _textEngine.caretChanged.addListener(owner: self) { [weak self] (_, event) in
             guard let self = self else { return }
             
-            self.invalidateCaret(at: event.new.location)
-            self.invalidateCaret(at: event.old.location)
-            self.invalidate(bounds: self.getSelectionBounds(caret: event.old))
-            self.invalidate(bounds: self.getSelectionBounds(caret: event.new))
+            self.invalidateCaret(at: event.newValue.location)
+            self.invalidateCaret(at: event.oldValue.location)
+            self.invalidate(bounds: self.getSelectionBounds(caret: event.oldValue))
+            self.invalidate(bounds: self.getSelectionBounds(caret: event.newValue))
 
             self._blinker.restart()
 
@@ -193,7 +193,7 @@ open class TextField: ControlView {
     open override func onStateChanged(_ event: ValueChangedEventArgs<ControlViewState>) {
         super.onStateChanged(event)
 
-        let style = getStyle(forState: event.new)
+        let style = getStyle(forState: event.newValue)
         applyStyle(style)
     }
 
