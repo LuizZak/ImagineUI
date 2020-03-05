@@ -121,6 +121,7 @@ class TextLayoutRenderer {
             let left = BLPoint(x: offset.x, y: offset.y + underlineOffset)
             let right = BLPoint(x: offset.x + segment.bounds.w, y: offset.y + underlineOffset)
             
+            context.setStrokeWidth(Double(segment.font.metrics.underlineThickness))
             context.strokeLine(p0: left, p1: right)
         }
     }
@@ -138,6 +139,7 @@ class TextLayoutRenderer {
             let left = BLPoint(x: offset.x, y: offset.y + strikethroughOffset)
             let right = BLPoint(x: offset.x + segment.bounds.w, y: offset.y + strikethroughOffset)
             
+            context.setStrokeWidth(Double(segment.font.metrics.strikethroughThickness))
             context.strokeLine(p0: left, p1: right)
         }
     }
