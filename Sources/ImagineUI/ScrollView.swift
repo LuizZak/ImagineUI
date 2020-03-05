@@ -334,7 +334,7 @@ public class ScrollBarControl: ControlView {
     open override func onResize(_ event: ValueChangedEventArgs<Size>) {
         super.onResize(event)
         
-        let size = event.new
+        let size = event.newValue
         
         cornerRadius = min(size.x, size.y) / 2
         scrollBarKnob.cornerRadius = cornerRadius

@@ -24,25 +24,25 @@ public typealias PaintEventArgs = BLContext
 
 /// An event argument set for an event that tracks changes to a property
 public struct ValueChangedEventArgs<T> {
-    public var old: T
-    public var new: T
+    public var oldValue: T
+    public var newValue: T
     
-    public init(old: T, new: T) {
-        self.old = old
-        self.new = new
+    public init(oldValue: T, newValue: T) {
+        self.oldValue = oldValue
+        self.newValue = newValue
     }
 }
 
 /// An event argument set for an event that tracks changes to a property, while
 /// exposing a `cancel` that can be changed by clients to cancel the state change
 public class CancellableValueChangedEventArgs<T> {
-    public var old: T
-    public var new: T
+    public var oldValue: T
+    public var newValue: T
     public var cancel: Bool
     
-    public init(old: T, new: T) {
-        self.old = old
-        self.new = new
+    public init(oldValue: T, newValue: T) {
+        self.oldValue = oldValue
+        self.newValue = newValue
         
         cancel = false
     }
@@ -59,12 +59,12 @@ public extension Event {
     }
     
     func publishChangeEvent<Sender, Value>(sender: Sender, old: Value, new: Value) where T == SenderEventArgs<Sender, ValueChangedEventArgs<Value>> {
-        self.publishEvent((sender, ValueChangedEventArgs(old: old, new: new)))
+        self.publishEvent((sender, ValueChangedEventArgs(oldValue: old, newValue: new)))
     }
     
     func publishCancellableChangeEvent<Sender, Value>(sender: Sender, old: Value, new: Value) -> Bool where T == SenderEventArgs<Sender, CancellableValueChangedEventArgs<Value>> {
         
-        let event = CancellableValueChangedEventArgs(old: old, new: new)
+        let event = CancellableValueChangedEventArgs(oldValue: old, newValue: new)
         
         self.publishEvent((sender, event))
         
