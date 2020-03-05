@@ -1,7 +1,7 @@
 import SwiftBlend2D
 
 public class ProgressBar: ControlView {
-    public var progress: Float = 0 {
+    public var progress: Double = 0 {
         didSet {
             progress = min(1, max(0, progress))
             invalidateControlGraphics()
@@ -54,7 +54,7 @@ public class ProgressBar: ControlView {
     
     func boundsForCurrentProgress() -> Rectangle {
         let bounds = progressBarBounds()
-        return bounds.withSize(width: bounds.width * Double(progress),
+        return bounds.withSize(width: bounds.width * progress,
                                height: bounds.height)
     }
 }

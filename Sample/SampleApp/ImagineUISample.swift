@@ -76,8 +76,8 @@ class ImagineUI: Blend2DSample {
         
         let sliderView = SliderView(bounds: .empty)
         sliderView.minimumValue = 0
-        sliderView.maximumValue = 100
-        sliderView.value = 50
+        sliderView.maximumValue = 1
+        sliderView.value = 0.75
 
         let scrollView = ScrollView(bounds: .empty, scrollBarsMode: .vertical)
         scrollView.backColor = .white
@@ -193,6 +193,10 @@ class ImagineUI: Blend2DSample {
 
         button.mouseClicked.addListener(owner: self) { _ in
             label.isVisible.toggle()
+        }
+        
+        sliderView.valueChanged.addListener(owner: self) { (_, event) in
+            progressBar.progress = event.new
         }
         
         window.performLayout()
