@@ -87,63 +87,42 @@ public enum DebugDraw {
         let secondBounds = second.owner.boundsForRedrawOnScreen()
         
         switch (first.kind, second.kind) {
-        case (.left, .left) where constraint.offset == 0:
-            let top = min(firstBounds.topLeft, secondBounds.topLeft)
-            let bottom = max(firstBounds.bottomLeft, secondBounds.bottomLeft)
+        // Horizontal constraints
+        case (.left, .left), (.left, .right), (.right, .left), (.right, .right):
+            let firstEdge = extractEdge(firstBounds, edge: first.kind)
+            let secondEdge = extractEdge(secondBounds, edge: first.kind)
             
-            drawLine(start: top, end: bottom, tangentLength: 0, to: context)
-            
-        case (.left, .left):
-            if firstBounds.topLeft.x < secondBounds.topLeft.x {
-                connectHorizontalEdges(
-                    edge1: (topLeft: firstBounds.topLeft, height: firstBounds.height),
-                    edge2: (topLeft: secondBounds.topLeft, height: secondBounds.height),
-                    to: context)
+            if firstEdge.topLeft.x < secondEdge.topLeft.x {
+                connectHorizontalEdges(edge1: (topLeft: firstEdge.topLeft, height: firstEdge.length),
+                                       edge2: (topLeft: secondEdge.topLeft, height: secondEdge.length),
+                                       context: context)
             } else {
-                connectHorizontalEdges(
-                    edge1: (topLeft: secondBounds.topLeft, height: secondBounds.height),
-                    edge2: (topLeft: firstBounds.topLeft, height: firstBounds.height),
-                    to: context)
+                connectHorizontalEdges(edge1: (topLeft: secondEdge.topLeft, height: secondEdge.length),
+                                       edge2: (topLeft: firstEdge.topLeft, height: firstEdge.length),
+                                       context: context)
             }
             
-        case (.left, .right):
-            if firstBounds.topLeft.x < secondBounds.topRight.x {
-                connectHorizontalEdges(
-                    edge1: (topLeft: firstBounds.topLeft, height: firstBounds.height),
-                    edge2: (topLeft: secondBounds.topRight, height: secondBounds.height),
-                    to: context)
+        // Vertical constraints
+        case (.top, .top), (.top, .bottom), (.bottom, .top), (.bottom, .bottom):
+            let firstEdge = extractEdge(firstBounds, edge: first.kind)
+            let secondEdge = extractEdge(secondBounds, edge: first.kind)
+            
+            if firstEdge.topLeft.y < secondEdge.topLeft.y {
+                connectVerticalEdges(edge1: (topLeft: firstEdge.topLeft, width: firstEdge.length),
+                                     edge2: (topLeft: secondEdge.topLeft, width: secondEdge.length),
+                                     context: context)
             } else {
-                connectHorizontalEdges(
-                    edge1: (topLeft: secondBounds.topRight, height: secondBounds.height),
-                    edge2: (topLeft: firstBounds.topLeft, height: firstBounds.height),
-                    to: context)
+                connectVerticalEdges(edge1: (topLeft: secondEdge.topLeft, width: secondEdge.length),
+                                     edge2: (topLeft: firstEdge.topLeft, width: firstEdge.length),
+                                     context: context)
             }
             
-        case (.right, .left):
-            if firstBounds.topRight.x < secondBounds.topLeft.x {
-                connectHorizontalEdges(
-                    edge1: (topLeft: firstBounds.topRight, height: firstBounds.height),
-                    edge2: (topLeft: secondBounds.topLeft, height: secondBounds.height),
-                    to: context)
-            } else {
-                connectHorizontalEdges(
-                    edge1: (topLeft: secondBounds.topLeft, height: secondBounds.height),
-                    edge2: (topLeft: firstBounds.topRight, height: firstBounds.height),
-                    to: context)
-            }
+        case (.centerX, .centerX):
+            connectCenterX(firstBounds, secondBounds, context: context)
             
-        case (.right, .right):
-            if firstBounds.topRight.x < secondBounds.topRight.x {
-                connectHorizontalEdges(
-                    edge1: (topLeft: firstBounds.topRight, height: firstBounds.height),
-                    edge2: (topLeft: secondBounds.topRight, height: secondBounds.height),
-                    to: context)
-            } else {
-                connectHorizontalEdges(
-                    edge1: (topLeft: secondBounds.topRight, height: secondBounds.height),
-                    edge2: (topLeft: firstBounds.topRight, height: firstBounds.height),
-                    to: context)
-            }
+        case (.centerY, .centerY):
+            connectCenterY(firstBounds, secondBounds, context: context)
+            
         default:
             break
         }
@@ -151,7 +130,7 @@ public enum DebugDraw {
     
     private static func connectHorizontalEdges(edge1: (topLeft: Vector2, height: Double),
                                                edge2: (topLeft: Vector2, height: Double),
-                                               to context: BLContext) {
+                                               context: BLContext) {
         
         let center2 = edge2.topLeft.y + edge2.height / 2
         
@@ -175,9 +154,133 @@ public enum DebugDraw {
                  to: context)
     }
     
+    private static func connectVerticalEdges(edge1: (topLeft: Vector2, width: Double),
+                                             edge2: (topLeft: Vector2, width: Double),
+                                             context: BLContext) {
+        
+        let center2 = edge2.topLeft.x + edge2.width / 2
+        
+        let edge1TopRight = Vector2(x: edge1.topLeft.x + edge1.width, y: edge1.topLeft.y)
+        
+        let edge1Left = min(edge1.topLeft.x, center2)
+        let edge1Right = max(edge1TopRight.x, center2)
+        
+        // Only draw first edge if the vertical line to be drawn is outside the
+        // range of the boundary
+        if center2 < edge1.topLeft.x || center2 > edge1.topLeft.x + edge1.width {
+            drawLine(start: Vector2(x: edge1Left, y: edge1.topLeft.y),
+                     end: Vector2(x: edge1Right, y: edge1.topLeft.y),
+                     tangentLength: 0,
+                     to: context)
+        }
+        
+        drawLine(start: Vector2(x: center2, y: edge1.topLeft.y),
+                 end: Vector2(x: center2, y: edge2.topLeft.y),
+                 tangentLength: 3,
+                 to: context)
+    }
+    
+    private static func connectCenterX(_ rect1: Rectangle,
+                                       _ rect2: Rectangle,
+                                       context: BLContext) {
+        
+        prepareStroke(in: context)
+        
+        let union = rect1.formUnion(rect2)
+        
+        let rect1Top: BLPoint
+        let rect1Bottom: BLPoint
+        let rect2Top: BLPoint
+        let rect2Bottom: BLPoint
+        let lineStart: BLPoint
+        let lineEnd: BLPoint
+        
+        // Draw a horizontal line that centers on the largest of the rectangles,
+        // with the vertical bounds matching the total vertical space occupied
+        // by both rectangles
+        
+        if rect1.height > rect2.height {
+            rect1Top = BLPoint(x: rect1.center.x, y: union.top)
+            rect1Bottom = BLPoint(x: rect1.center.x, y: union.bottom)
+            rect2Top = BLPoint(x: rect2.center.x, y: rect2.top)
+            rect2Bottom = BLPoint(x: rect2.center.x, y: rect2.bottom)
+            
+            lineStart = BLPoint(x: rect1.center.x, y: rect2.center.y)
+            lineEnd = BLPoint(x: rect2.center.x, y: rect2.center.y)
+        } else {
+            rect1Top = BLPoint(x: rect1.center.x, y: rect1.top)
+            rect1Bottom = BLPoint(x: rect1.center.x, y: rect1.bottom)
+            rect2Top = BLPoint(x: rect2.center.x, y: union.top)
+            rect2Bottom = BLPoint(x: rect2.center.x, y: union.bottom)
+            
+            lineStart = BLPoint(x: rect2.center.x, y: rect1.center.y)
+            lineEnd = BLPoint(x: rect1.center.x, y: rect1.center.y)
+        }
+        
+        context.strokeLine(p0: rect1Top, p1: rect1Bottom)
+        context.strokeLine(p0: rect2Top, p1: rect2Bottom)
+        context.strokeLine(p0: lineStart, p1: lineEnd)
+    }
+    
+    private static func connectCenterY(_ rect1: Rectangle,
+                                       _ rect2: Rectangle,
+                                       context: BLContext) {
+        
+        prepareStroke(in: context)
+        
+        let union = rect1.formUnion(rect2)
+        
+        let rect1Left: BLPoint
+        let rect1Right: BLPoint
+        let rect2Left: BLPoint
+        let rect2Right: BLPoint
+        let lineStart: BLPoint
+        let lineEnd: BLPoint
+        
+        // Draw a horizontal line that centers on the largest of the rectangles,
+        // with the vertical bounds matching the total vertical space occupied
+        // by both rectangles
+        
+        if rect1.width > rect2.width {
+            rect1Left = BLPoint(x: union.left, y: rect1.center.y)
+            rect1Right = BLPoint(x: union.right, y: rect1.center.y)
+            rect2Left = BLPoint(x: rect1.left, y: rect2.center.y)
+            rect2Right = BLPoint(x: rect2.right, y: rect2.center.y)
+            
+            lineStart = BLPoint(x: rect2.center.x, y: rect1.center.y)
+            lineEnd = BLPoint(x: rect2.center.x, y: rect2.center.y)
+        } else {
+            rect1Left = BLPoint(x: rect1.left, y: rect1.center.y)
+            rect1Right = BLPoint(x: rect1.right, y: rect1.center.y)
+            rect2Left = BLPoint(x: union.left, y: rect2.center.y)
+            rect2Right = BLPoint(x: union.right, y: rect2.center.y)
+            
+            lineStart = BLPoint(x: rect1.center.x, y: rect2.center.y)
+            lineEnd = BLPoint(x: rect1.center.x, y: rect1.center.y)
+        }
+        
+        context.strokeLine(p0: rect1Left, p1: rect1Right)
+        context.strokeLine(p0: rect2Left, p1: rect2Right)
+        context.strokeLine(p0: lineStart, p1: lineEnd)
+    }
+    
+    private static func extractEdge(_ rectangle: Rectangle, edge: AnchorKind) -> (topLeft: Vector2, length: Double) {
+        switch edge {
+        case .left:
+            return (topLeft: rectangle.topLeft, length: rectangle.height)
+        case .top:
+            return (topLeft: rectangle.topLeft, length: rectangle.width)
+        case .right:
+            return (topLeft: rectangle.topRight, length: rectangle.height)
+        case .bottom:
+            return (topLeft: rectangle.bottomLeft, length: rectangle.width)
+        default:
+            fatalError("Expected a top, left, right, or bottom anchor kind")
+        }
+    }
+    
     private static func drawLine(start: Vector2, end: Vector2, tangentLength: Double, to context: BLContext) {
-        context.setStrokeWidth(1)
-        context.setStrokeStyle(BLRgba32.lightBlue)
+        prepareStroke(in: context)
         
         context.strokeLine(p0: start.asBLPoint, p1: end.asBLPoint)
         
@@ -188,6 +291,11 @@ public enum DebugDraw {
             context.strokeLine(p0: (start + tangentLeft).asBLPoint, p1: (start + tangentRight).asBLPoint)
             context.strokeLine(p0: (end + tangentLeft).asBLPoint, p1: (end + tangentRight).asBLPoint)
         }
+    }
+    
+    private static func prepareStroke(in context: BLContext) {
+        context.setStrokeWidth(1)
+        context.setStrokeStyle(BLRgba32.lightBlue)
     }
     
     public enum DebugDrawFlags {
