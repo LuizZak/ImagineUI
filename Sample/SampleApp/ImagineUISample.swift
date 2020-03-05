@@ -73,6 +73,11 @@ class ImagineUI: Blend2DSample {
         
         let progressBar = ProgressBar(bounds: .empty)
         progressBar.progress = 0.75
+        
+        let sliderView = SliderView(bounds: .empty)
+        sliderView.minimumValue = 0
+        sliderView.maximumValue = 100
+        sliderView.value = 50
 
         window.addSubview(panel)
         window.addSubview(radioButton)
@@ -84,6 +89,7 @@ class ImagineUI: Blend2DSample {
         window.addSubview(label)
         window.addSubview(textField)
         window.addSubview(progressBar)
+        window.addSubview(sliderView)
         panel.addSubview(radioButton)
         panel.addSubview(radioButton2)
         panel.translatesAutoresizingMaskIntoConstraints = false
@@ -96,6 +102,7 @@ class ImagineUI: Blend2DSample {
         label.translatesAutoresizingMaskIntoConstraints = false
         textField.translatesAutoresizingMaskIntoConstraints = false
         progressBar.translatesAutoresizingMaskIntoConstraints = false
+        sliderView.translatesAutoresizingMaskIntoConstraints = false
 
         panel.layout.makeConstraints { make in
             make.top.equalTo(window, offset: 35)
@@ -148,6 +155,12 @@ class ImagineUI: Blend2DSample {
         progressBar.layout.makeConstraints { make in
             make.left.equalTo(panel.layout.right, offset: 15)
             make.top.equalTo(panel, offset: 15)
+            make.width.equalTo(100)
+        }
+        
+        sliderView.layout.makeConstraints { make in
+            make.left.equalTo(progressBar)
+            make.top.equalTo(progressBar.layout.bottom, offset: 5)
             make.width.equalTo(100)
         }
 

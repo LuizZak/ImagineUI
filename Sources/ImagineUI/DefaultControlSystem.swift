@@ -147,6 +147,9 @@ public class DefaultControlSystem: ControlSystem {
             _mouseHoverTarget = nil
             return
         }
+        
+        var event = event
+        event.location = control.convertFromScreen(event.location)
 
         // Make request
         let request = InnerMouseEventRequest(eventType: eventType) { handler in
