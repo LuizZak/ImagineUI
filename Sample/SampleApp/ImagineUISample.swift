@@ -249,11 +249,6 @@ class ImagineUI: Blend2DSample {
         for window in windows {
             window.renderRecursive(in: ctx, region: redrawRegion)
         }
-        
-        // Debug draw
-        for window in windows {
-            DebugDraw.debugDrawRecursive(window, flags: [.constraints], to: ctx)
-        }
 
         redrawRegion.clear()
     }
