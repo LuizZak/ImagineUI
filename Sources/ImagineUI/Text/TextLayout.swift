@@ -415,8 +415,8 @@ public class TextLayout: TextLayoutType {
         var text: Substring
         var baselineHeight: Float
         
-        /// The largest descent height from the line
-        var descentHeight: Float
+        /// Largest underline offset from this line
+        var underlineOffset: Float
         
         /// Boundaries of line, in screen-space coordinates
         var bounds: BLRect
@@ -614,11 +614,13 @@ class LineCollector {
             var segments = self.segments
             var highestDescent: Float = 0
             var highestAscent: Float = 0
+            var highestUnderline: Float = 0
             
             for segment in segments {
                 bounds = bounds.formUnion(segment.bounds.asRectangle)
                 highestAscent = max(highestAscent, segment.font.metrics.ascent)
                 highestDescent = max(highestDescent, segment.font.metrics.descent)
+                highestUnderline = max(highestUnderline, segment.font.metrics.underlinePosition)
             }
             
             // Align segments down to the largest baseline
@@ -643,7 +645,7 @@ class LineCollector {
                 endIndex: endIndex,
                 text: substring,
                 baselineHeight: highestAscent,
-                descentHeight: highestDescent,
+                underlineOffset: highestUnderline,
                 bounds: bounds.withLocation(topLeft.asVector2).asBLRect)
         }
     }

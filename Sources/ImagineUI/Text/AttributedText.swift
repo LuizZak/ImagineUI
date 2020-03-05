@@ -338,8 +338,11 @@ public struct AttributedText: Equatable {
         assertIsColor(.strokeColor)
         assertIsType(.strokeWidth, type: Double.self)
         
-        assertIsType(.underlineStyle, type: UnderlineStyleAttribute.self)
+        assertIsType(.underlineStyle, type: UnderlineStyleTextAttribute.self)
         assertIsColor(.underlineColor)
+        
+        assertIsType(.strikethroughStyle, type: StrikethroughStyleTextAttribute.self)
+        assertIsColor(.strikethroughColor)
     }
     
     public struct TextSegment: Equatable {
@@ -482,7 +485,7 @@ public extension AttributedText.AttributeName {
     
     /// Specifies the underline style of the text.
     ///
-    /// Should be a `UnderlineStyleAttribute` attribute type.
+    /// Should be an `UnderlineStyleTextAttribute` attribute type.
     static let underlineStyle = Self(rawValue: "underlineStyle")
     
     /// Specifies the color to draw the underline style with.
@@ -490,4 +493,15 @@ public extension AttributedText.AttributeName {
     ///
     /// Should be either a `BLRgba32` or `BLRgba64` color structure.
     static let underlineColor = Self(rawValue: "underlineColor")
+    
+    /// Specifies the strikethrough style of the text.
+    ///
+    /// Should be a `StrikethroughStyleTextAttribute` attribute type.
+    static let strikethroughStyle = Self(rawValue: "strikethroughStyle")
+    
+    /// Specifies the color to draw the strikethrough style with.
+    /// If not specified, defaults to the foreground color.
+    ///
+    /// Should be either a `BLRgba32` or `BLRgba64` color structure.
+    static let strikethroughColor = Self(rawValue: "strikethroughColor")
 }

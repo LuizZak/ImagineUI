@@ -18,9 +18,14 @@ public enum TextBackgroundBoundsAttribute: TextAttributeType {
     case largestBaselineBounds
 }
 
-/// Specifies the styling of an underline or strikethrough of an attributed text's
-/// segment.
-public enum UnderlineStyleAttribute: TextAttributeType {
+/// Specifies the styling of an underline of an attributed text's segment.
+public enum UnderlineStyleTextAttribute: TextAttributeType {
+    /// A single 1px line running under the text
+    case single
+}
+
+/// Specifies the styling of a strikethrough of an attributed text's segment.
+public enum StrikethroughStyleTextAttribute: TextAttributeType {
     /// A single 1px line running through the text
     case single
 }

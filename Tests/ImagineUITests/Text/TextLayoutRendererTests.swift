@@ -120,10 +120,10 @@ class TextLayoutRendererTests: SnapshotTestCase {
         var attributedText = AttributedText()
         attributedText.append("Test text")
         attributedText.append(" with underlined", attributes: [
-            .underlineStyle: UnderlineStyleAttribute.single
+            .underlineStyle: UnderlineStyleTextAttribute.single
         ])
         attributedText.append(" text", attributes: [
-            .underlineStyle: UnderlineStyleAttribute.single,
+            .underlineStyle: UnderlineStyleTextAttribute.single,
             .underlineColor: BLRgba32.red
         ])
         attributedText.addAttributes(attributedText.textRange, [
@@ -150,15 +150,79 @@ class TextLayoutRendererTests: SnapshotTestCase {
         var attributedText = AttributedText()
         attributedText.append("Test text with", attributes: [
             .font: makeFont(size: 20),
-            .underlineStyle: UnderlineStyleAttribute.single
+            .underlineStyle: UnderlineStyleTextAttribute.single
         ])
         attributedText.append(" underlined text of", attributes: [
             .font: makeFont(size: 40),
-            .underlineStyle: UnderlineStyleAttribute.single
+            .underlineStyle: UnderlineStyleTextAttribute.single
         ])
         attributedText.append(" different font sizes", attributes: [
             .font: makeFont(size: 60),
-            .underlineStyle: UnderlineStyleAttribute.single
+            .underlineStyle: UnderlineStyleTextAttribute.single
+        ])
+        attributedText.addAttributes(attributedText.textRange, [
+            .foregroundColor: BLRgba32.black
+        ])
+        let sut = makeSut(attributedText: attributedText)
+        let img = BLImage(width: Int(sut.textLayout.size.x),
+                          height: Int(sut.textLayout.size.y),
+                          format: .prgb32)
+        
+        let ctx = BLContext(image: img)!
+        ctx.compOp = .sourceCopy
+        ctx.setFillStyle(BLRgba32.transparentBlack)
+        ctx.fillAll()
+        ctx.compOp = .sourceOver
+        
+        sut.render(to: ctx, origin: .zero)
+        
+        ctx.end()
+        assertImageMatch(img)
+    }
+    
+    func testRenderStrikethroughText() {
+        var attributedText = AttributedText()
+        attributedText.append("Test text")
+        attributedText.append(" with strikethrough", attributes: [
+            .strikethroughStyle: StrikethroughStyleTextAttribute.single
+        ])
+        attributedText.append(" text", attributes: [
+            .strikethroughStyle: StrikethroughStyleTextAttribute.single,
+            .strikethroughColor: BLRgba32.red
+        ])
+        attributedText.addAttributes(attributedText.textRange, [
+            .foregroundColor: BLRgba32.black
+        ])
+        let sut = makeSut(attributedText: attributedText)
+        let img = BLImage(width: Int(sut.textLayout.size.x),
+                          height: Int(sut.textLayout.size.y),
+                          format: .prgb32)
+        
+        let ctx = BLContext(image: img)!
+        ctx.compOp = .sourceCopy
+        ctx.setFillStyle(BLRgba32.transparentBlack)
+        ctx.fillAll()
+        ctx.compOp = .sourceOver
+        
+        sut.render(to: ctx, origin: .zero)
+        
+        ctx.end()
+        assertImageMatch(img)
+    }
+    
+    func testRenderStrikethroughTextWithDifferentFonts() {
+        var attributedText = AttributedText()
+        attributedText.append("Test text with", attributes: [
+            .font: makeFont(size: 20),
+            .strikethroughStyle: StrikethroughStyleTextAttribute.single
+        ])
+        attributedText.append(" strikethrough text of", attributes: [
+            .font: makeFont(size: 40),
+            .strikethroughStyle: StrikethroughStyleTextAttribute.single
+        ])
+        attributedText.append(" different font sizes", attributes: [
+            .font: makeFont(size: 60),
+            .strikethroughStyle: StrikethroughStyleTextAttribute.single
         ])
         attributedText.addAttributes(attributedText.textRange, [
             .foregroundColor: BLRgba32.black

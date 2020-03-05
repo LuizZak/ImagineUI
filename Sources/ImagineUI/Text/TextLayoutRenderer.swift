@@ -53,7 +53,10 @@ class TextLayoutRenderer {
                 foreColor.setStrokeInContext(context)
             }
             
-            if let underlineStyle = segment.textSegment.attribute(named: .underlineStyle, type: UnderlineStyleAttribute.self) {
+            // Underline
+            if let underlineStyle = segment.textSegment.attribute(named: .underlineStyle, type: UnderlineStyleTextAttribute.self) {
+                context.save()
+                
                 if let color = segment.textSegment.attribute(named: .underlineColor, type: _ColorType.self) {
                     color.setStrokeInContext(context)
                 }
@@ -63,6 +66,8 @@ class TextLayoutRenderer {
                                 style: underlineStyle,
                                 offset: offset,
                                 to: context)
+                
+                context.restore()
             }
             
             context.fillGlyphRun(segment.glyphBufferMinusLineBreak.glyphRun,
@@ -81,22 +86,57 @@ class TextLayoutRenderer {
                                        font: segment.font)
             }
             
+            // Strikethrough
+            if let strikethroughStyle = segment.textSegment.attribute(named: .strikethroughStyle, type: StrikethroughStyleTextAttribute.self) {
+                context.save()
+                
+                if let color = segment.textSegment.attribute(named: .strikethroughColor, type: _ColorType.self) {
+                    color.setStrokeInContext(context)
+                }
+                
+                renderStrikethrough(segment: segment,
+                                    line: line,
+                                    style: strikethroughStyle,
+                                    offset: offset,
+                                    to: context)
+                
+                context.restore()
+            }
+            
+            
             context.restore()
         }
     }
     
     private func renderUnderline(segment: LineSegment,
                                  line: Line,
-                                 style: UnderlineStyleAttribute,
+                                 style: UnderlineStyleTextAttribute,
                                  offset: BLPoint,
                                  to context: BLContext) {
         
-        let underlineOffset = Double(line.descentHeight) / 2
+        let underlineOffset = Double(line.underlineOffset)
         
         switch style {
         case .single:
             let left = BLPoint(x: offset.x, y: offset.y + underlineOffset)
             let right = BLPoint(x: offset.x + segment.bounds.w, y: offset.y + underlineOffset)
+            
+            context.strokeLine(p0: left, p1: right)
+        }
+    }
+    
+    private func renderStrikethrough(segment: LineSegment,
+                                     line: Line,
+                                     style: StrikethroughStyleTextAttribute,
+                                     offset: BLPoint,
+                                     to context: BLContext) {
+        
+        let strikethroughOffset = Double(segment.font.metrics.strikethroughPosition)
+        
+        switch style {
+        case .single:
+            let left = BLPoint(x: offset.x, y: offset.y + strikethroughOffset)
+            let right = BLPoint(x: offset.x + segment.bounds.w, y: offset.y + strikethroughOffset)
             
             context.strokeLine(p0: left, p1: right)
         }
