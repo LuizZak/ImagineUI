@@ -212,11 +212,11 @@ class TextLayoutTests: SnapshotTestCase {
             .strokeWidth: 1.0
         ])
         attributedText.append(" with stroke", attributes: [
-            .strokeColor: BLRgba32.black,
+            .strokeColor: BLRgba32.red,
             .strokeWidth: 2.0
         ])
         attributedText.append(" color", attributes: [
-            .strokeColor: BLRgba32.black,
+            .strokeColor: BLRgba32.blue,
             .strokeWidth: 5.0
         ])
         let sut = makeSut(attributedText: attributedText)
