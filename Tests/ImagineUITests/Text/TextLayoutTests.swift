@@ -75,20 +75,6 @@ class TextLayoutTests: SnapshotTestCase {
         XCTAssertEqual(hitTest.textPosition, 10)
     }
     
-    func testBoundsForCharacters() {
-        let sut = makeSut(text: "A string\nAnother line")
-        
-        let result = sut.boundsForCharacters(startIndex: 5, length: 5)
-        
-        XCTAssertEqual(result, [
-            Rectangle(x: 43.037109375, y: 0.0, width: 5.15625, height: 27.236328125),
-            Rectangle(x: 48.193359375, y: 0.0, width: 12.36328125, height: 27.236328125),
-            Rectangle(x: 60.556640625, y: 0.0, width: 12.3046875, height: 27.236328125),
-            Rectangle(x: 72.861328125, y: 0.0, width: 12.001953125, height: 27.236328125),
-            Rectangle(x: 0.0, y: 27.236328125, width: 12.783203125, height: 27.236328125)
-        ])
-    }
-    
     func testRenderInitWithAttributedText() {
         var attributedText = AttributedText()
         attributedText.append("small", attributes: [.font: makeFont(size: 10)])
@@ -133,107 +119,18 @@ class TextLayoutTests: SnapshotTestCase {
         assertImageMatch(img)
     }
     
-    func testRenderAttributedTextBackgroundColor() {
-        var attributedText = AttributedText()
-        attributedText.append("small", attributes: [
-            .font: makeFont(size: 10),
-            .backgroundColor: BLRgba32.red
-        ])
-        attributedText.append("medium", attributes: [
-            .font: makeFont(size: 20),
-            .backgroundColor: BLRgba32.blue
-        ])
-        attributedText.append("large", attributes: [
-            .font: makeFont(size: 30),
-            .backgroundColor: BLRgba32.green,
-            .foregroundColor: BLRgba64.gray,
-            .cornerRadius: Vector2(x: 4, y: 4)
-        ])
-        let sut = makeSut(attributedText: attributedText)
-        let img = BLImage(width: Int(sut.size.x),
-                          height: Int(sut.size.y),
-                          format: .prgb32)
+    func testBoundsForCharacters() {
+        let sut = makeSut(text: "A string\nAnother line")
         
-        let ctx = BLContext(image: img)!
-        ctx.compOp = .sourceCopy
-        ctx.setFillStyle(BLRgba32.transparentBlack)
-        ctx.fillAll()
-        ctx.compOp = .sourceOver
-        ctx.setFillStyle(BLRgba32.black)
+        let result = sut.boundsForCharacters(startIndex: 5, length: 5)
         
-        sut.renderText(in: ctx, location: .zero)
-        
-        ctx.end()
-        assertImageMatch(img)
-    }
-    
-    func testRenderBaselineBackgroundBounds() {
-        var attributedText = AttributedText()
-        attributedText.append("small", attributes: [
-            .font: makeFont(size: 10),
-            .backgroundColor: BLRgba32.red,
-            .backgroundColorBounds: TextBackgroundBoundsAttribute.largestBaselineBounds
+        XCTAssertEqual(result, [
+            Rectangle(x: 43.037109375, y: 0.0, width: 5.15625, height: 27.236328125),
+            Rectangle(x: 48.193359375, y: 0.0, width: 12.36328125, height: 27.236328125),
+            Rectangle(x: 60.556640625, y: 0.0, width: 12.3046875, height: 27.236328125),
+            Rectangle(x: 72.861328125, y: 0.0, width: 12.001953125, height: 27.236328125),
+            Rectangle(x: 0.0, y: 27.236328125, width: 12.783203125, height: 27.236328125)
         ])
-        attributedText.append("medium", attributes: [
-            .font: makeFont(size: 20),
-            .backgroundColor: BLRgba32.blue,
-            .backgroundColorBounds: TextBackgroundBoundsAttribute.largestBaselineBounds
-        ])
-        attributedText.append("large", attributes: [
-            .font: makeFont(size: 30),
-            .backgroundColor: BLRgba32.green,
-            .foregroundColor: BLRgba64.gray,
-            .cornerRadius: Vector2(x: 4, y: 4),
-            .backgroundColorBounds: TextBackgroundBoundsAttribute.largestBaselineBounds
-        ])
-        let sut = makeSut(attributedText: attributedText)
-        let img = BLImage(width: Int(sut.size.x),
-                          height: Int(sut.size.y),
-                          format: .prgb32)
-        
-        let ctx = BLContext(image: img)!
-        ctx.compOp = .sourceCopy
-        ctx.setFillStyle(BLRgba32.transparentBlack)
-        ctx.fillAll()
-        ctx.compOp = .sourceOver
-        ctx.setFillStyle(BLRgba32.black)
-        
-        sut.renderText(in: ctx, location: .zero)
-        
-        ctx.end()
-        assertImageMatch(img)
-    }
-    
-    func testRenderStrokeColor() {
-        var attributedText = AttributedText()
-        attributedText.append("Test text", attributes: [
-            .foregroundColor: BLRgba32.white,
-            .strokeColor: BLRgba32.black,
-            .strokeWidth: 1.0
-        ])
-        attributedText.append(" with stroke", attributes: [
-            .strokeColor: BLRgba32.red,
-            .strokeWidth: 2.0
-        ])
-        attributedText.append(" color", attributes: [
-            .strokeColor: BLRgba32.blue,
-            .strokeWidth: 5.0
-        ])
-        let sut = makeSut(attributedText: attributedText)
-        let img = BLImage(width: Int(sut.size.x),
-                          height: Int(sut.size.y),
-                          format: .prgb32)
-        
-        let ctx = BLContext(image: img)!
-        ctx.compOp = .sourceCopy
-        ctx.setFillStyle(BLRgba32.transparentBlack)
-        ctx.fillAll()
-        ctx.compOp = .sourceOver
-        
-        sut.renderText(in: ctx, location: .zero)
-        
-        ctx.end()
-        assertImageMatch(img)
     }
     
     func makeSut(text: String) -> TextLayout {
