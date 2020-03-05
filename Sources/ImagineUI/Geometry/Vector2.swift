@@ -146,6 +146,19 @@ public struct Vector2: Equatable, CustomStringConvertible, Codable {
     public func normalized() -> Vector2 {
         return Vector2(simd.normalize(theVector))
     }
+    
+    /// Returns a vector that represents this vector's point, rotated 90º counter
+    /// clockwise
+    @inlinable
+    public func leftRotated() -> Vector2 {
+        return Vector2(x: -y, y: x)
+    }
+    
+    /// Returns a vector that represents this vector's point, rotated 90º clockwise
+    @inlinable
+    public func rightRotated() -> Vector2 {
+        return Vector2(x: y, y: -x)
+    }
 
     /// Performs a linear interpolation between `start` and `end` with a specified
     /// factor.

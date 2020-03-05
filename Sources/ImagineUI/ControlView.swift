@@ -42,7 +42,7 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
         didSet {
             if bounds.size != oldValue.size {
                 _bitmapCache.updateBitmapBounds(boundsForRedraw())
-                onResize(oldValue.size, bounds.size)
+                onResize(ValueChangedEventArgs(old: oldValue.size, new: bounds.size))
             }
         }
     }
@@ -201,18 +201,18 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
 
         _bitmapCache.updateBitmapBounds(bounds)
         _stateManager.onStateChanged = { [weak self] old, new in
-            self?.onStateChanged(old, new)
+            self?.onStateChanged(ValueChangedEventArgs(old: old, new: new))
         }
     }
     
     /// Raises the `resized` event
-    open func onResize(_ oldSize: Size, _ size: Size) {
-        _resized.publishChangeEvent(sender: self, old: oldSize, new: size)
+    open func onResize(_ event: ValueChangedEventArgs<Size>) {
+        _resized.publishEvent(sender: self, event)
     }
 
     /// Raises the `stateChanged` event
-    open func onStateChanged(_ oldState: ControlViewState, _ state: ControlViewState) {
-        _stateChanged.publishChangeEvent(sender: self, old: oldState, new: state)
+    open func onStateChanged(_ event: ValueChangedEventArgs<ControlViewState>) {
+        _stateChanged.publishEvent(sender: self, event)
     }
 
     // MARK: - Rendering

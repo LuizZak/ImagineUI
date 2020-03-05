@@ -75,8 +75,8 @@ public class SliderView: ControlView {
         _valueChanged.publishEvent(sender: self, event)
     }
     
-    public override func onStateChanged(_ oldState: ControlViewState, _ state: ControlViewState) {
-        super.onStateChanged(oldState, state)
+    public override func onStateChanged(_ event: ValueChangedEventArgs<ControlViewState>) {
+        super.onStateChanged(event)
         
         invalidateControlGraphics()
     }

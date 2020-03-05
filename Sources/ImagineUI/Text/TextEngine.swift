@@ -65,7 +65,7 @@ class TextEngine: TextEngineType {
     /// Requests that this text engine reload its caret after a change to a text
     /// buffer's contents or length
     public func updateCaretFromTextBuffer() {
-        if caret.start > textBuffer.textLength || caret.end > textBuffer.textLength {
+        if caret.start > textBuffer.textLength {
             setCaret(caret)
         }
     }
@@ -512,7 +512,7 @@ class TextEngine: TextEngineType {
 
     /// Sets the caret range for the text.
     ///
-    /// If `caret.Length > 0`, the caret is treated as a selection range.
+    /// If `caret.length > 0`, the caret is treated as a selection range.
     ///
     /// Calls to this method fire the `caretChanged` event.
     public func setCaret(_ caret: Caret) {

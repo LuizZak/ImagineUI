@@ -38,6 +38,8 @@ class ImagineUI: Blend2DSample {
         window.rootControlSystem = controlSystem
         window.invalidationDelegate = self
 
+        let panel = Panel(bounds: .empty, title: "A Panel")
+
         let radioButton
             = RadioButton(location: Vector2(x: 16, y: 50), title: "Unselected")
         let radioButton2
@@ -69,8 +71,6 @@ class ImagineUI: Blend2DSample {
         textField.text = "Abc"
         textField.placeholderText = "Placeholder"
 
-        let panel = Panel(bounds: .empty, title: "A Panel")
-        
         let progressBar = ProgressBar(bounds: .empty)
         progressBar.progress = 0.75
         
@@ -78,6 +78,16 @@ class ImagineUI: Blend2DSample {
         sliderView.minimumValue = 0
         sliderView.maximumValue = 100
         sliderView.value = 50
+
+        let scrollView = ScrollView(bounds: .empty, scrollBarsMode: .vertical)
+        scrollView.backColor = .white
+        scrollView.contentSize = Size(x: 0, y: 300)
+        
+        let scrollViewLabel = Label(bounds: .empty)
+        scrollViewLabel.text = "A\nScroll\nView"
+        scrollViewLabel.horizontalTextAlignment = .center
+        scrollViewLabel.verticalTextAlignment = .center
+        scrollViewLabel.textColor = .black
 
         window.addSubview(panel)
         window.addSubview(radioButton)
@@ -90,9 +100,10 @@ class ImagineUI: Blend2DSample {
         window.addSubview(textField)
         window.addSubview(progressBar)
         window.addSubview(sliderView)
+        window.addSubview(scrollView)
         panel.addSubview(radioButton)
         panel.addSubview(radioButton2)
-        panel.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.addSubview(scrollViewLabel)
         radioButton.translatesAutoresizingMaskIntoConstraints = false
         radioButton2.translatesAutoresizingMaskIntoConstraints = false
         checkBox1.translatesAutoresizingMaskIntoConstraints = false
@@ -103,6 +114,9 @@ class ImagineUI: Blend2DSample {
         textField.translatesAutoresizingMaskIntoConstraints = false
         progressBar.translatesAutoresizingMaskIntoConstraints = false
         sliderView.translatesAutoresizingMaskIntoConstraints = false
+        panel.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollViewLabel.translatesAutoresizingMaskIntoConstraints = false
 
         panel.layout.makeConstraints { make in
             make.top.equalTo(window, offset: 35)
@@ -137,11 +151,23 @@ class ImagineUI: Blend2DSample {
             make.left.equalTo(checkBox3)
             make.top.equalTo(checkBox3.layout.bottom, offset: 15)
         }
+        
+        progressBar.layout.makeConstraints { make in
+            make.left.equalTo(panel.layout.right, offset: 15)
+            make.top.equalTo(panel, offset: 15)
+            make.width.equalTo(100)
+        }
 
+        sliderView.layout.makeConstraints { make in
+            make.left.equalTo(progressBar)
+            make.top.equalTo(progressBar.layout.bottom, offset: 5)
+            make.width.equalTo(100)
+        }
+        
         label.layout.makeConstraints { make in
-            make.left.equalTo(button)
-            make.top.equalTo(button.layout.bottom, offset: 15)
-            make.width.equalTo(70)
+            make.left.equalTo(sliderView)
+            make.top.equalTo(sliderView.layout.bottom, offset: 15)
+            make.width.equalTo(100)
             make.height.equalTo(50)
         }
 
@@ -152,22 +178,23 @@ class ImagineUI: Blend2DSample {
             make.height.equalTo(33)
         }
         
-        progressBar.layout.makeConstraints { make in
-            make.left.equalTo(panel.layout.right, offset: 15)
-            make.top.equalTo(panel, offset: 15)
-            make.width.equalTo(100)
+        scrollView.layout.makeConstraints { make in
+            make.left.equalTo(window, offset: 10)
+            make.top.equalTo(button.layout.bottom, offset: 10)
+            make.right.equalTo(window, offset: -10)
+            make.bottom.equalTo(window, offset: -10)
         }
         
-        sliderView.layout.makeConstraints { make in
-            make.left.equalTo(progressBar)
-            make.top.equalTo(progressBar.layout.bottom, offset: 5)
-            make.width.equalTo(100)
+        scrollViewLabel.setContentHuggingPriority(.horizontal, 50)
+        scrollViewLabel.setContentHuggingPriority(.vertical, 50)
+        scrollViewLabel.layout.makeConstraints { make in
+            make.edges.equalTo(scrollView.contentView)
         }
 
         button.mouseClicked.addListener(owner: self) { _ in
             label.isVisible.toggle()
         }
-
+        
         window.performLayout()
 
         windows = [window]
@@ -222,6 +249,11 @@ class ImagineUI: Blend2DSample {
         for window in windows {
             window.renderRecursive(in: ctx, region: redrawRegion)
         }
+        
+        // Debug draw
+        for window in windows {
+            DebugDraw.debugDrawRecursive(window, flags: [.constraints], to: ctx)
+        }
 
         redrawRegion.clear()
     }
@@ -236,6 +268,10 @@ class ImagineUI: Blend2DSample {
 
     func mouseUp(event: MouseEventArgs) {
         controlSystem.onMouseUp(event)
+    }
+    
+    func mouseScroll(event: MouseEventArgs) {
+        controlSystem.onMouseWheel(event)
     }
 
     func keyDown(event: KeyEventArgs) {

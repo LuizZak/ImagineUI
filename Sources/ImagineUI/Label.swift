@@ -78,6 +78,7 @@ open class Label: View {
     open var horizontalTextAlignment: HorizontalTextAlignment = .leading {
         didSet {
             clearCachedTextLayout()
+            _bitmapCache.invalidateCache()
             invalidate()
         }
     }
@@ -85,6 +86,7 @@ open class Label: View {
     open var verticalTextAlignment: VerticalTextAlignment = .near {
         didSet {
             clearCachedTextLayout()
+            _bitmapCache.invalidateCache()
             invalidate()
         }
     }
@@ -111,6 +113,7 @@ open class Label: View {
         super.render(in: context)
 
         _bitmapCache.isCachingEnabled = Label.cacheAsBitmap
+        _bitmapCache.updateBitmapBounds(bounds)
         _bitmapCache.cachingOrRendering(context) { context in
             context.setFillStyle(textColor)
             textLayout.renderText(in: context, location: .zero)
@@ -133,13 +136,13 @@ open class Label: View {
 
     private func recreateMinimalTextLayout() {
         clearCachedTextLayout()
+        _bitmapCache.invalidateCache()
 
         minimalTextLayout = TextLayout(font: font, attributedText: attributedText)
     }
 
     private func clearCachedTextLayout() {
         _cachedTextLayout = nil
-        _bitmapCache.invalidateCache()
     }
 
     private func recreateCachedTextLayout() -> TextLayout {

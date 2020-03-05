@@ -142,7 +142,7 @@ open class TextField: ControlView {
 
             self.scrollLabel()
             
-            self.onCaretChanged(event.old, event.new)
+            self.onCaretChanged(event)
         }
 
         _labelContainer.isInteractiveEnabled = false
@@ -186,14 +186,14 @@ open class TextField: ControlView {
     }
 
     /// Raises the `caretChanged` event
-    open func onCaretChanged(_ oldCaret: Caret, _ newCaret: Caret) {
-        _caretChanged.publishChangeEvent(sender: self, old: oldCaret, new: newCaret)
+    open func onCaretChanged(_ event: ValueChangedEventArgs<Caret>) {
+        _caretChanged.publishEvent(sender: self, event)
     }
 
-    open override func onStateChanged(_ oldState: ControlViewState, _ state: ControlViewState) {
-        super.onStateChanged(oldState, state)
+    open override func onStateChanged(_ event: ValueChangedEventArgs<ControlViewState>) {
+        super.onStateChanged(event)
 
-        let style = getStyle(forState: state)
+        let style = getStyle(forState: event.new)
         applyStyle(style)
     }
 
@@ -522,7 +522,19 @@ open class TextField: ControlView {
     private func getCaretBounds() -> Rectangle {
         return getCaretBounds(at: caret.location)
     }
+    
+    private func getCaretBounds(at offset: Int) -> Rectangle {
+        let font = _label.textLayout.font(atLocation: offset)
+        var caretLocation = Rectangle(x: 0, y: 0, width: 1, height: Double(font.metrics.ascent + font.metrics.descent))
 
+        var location = _label.textLayout.locationOfCharacter(index: offset)
+        location = _label.convert(point: location, to: self)
+
+        caretLocation = caretLocation.withLocation(location)
+
+        return caretLocation
+    }
+    
     private func getSelectionBounds() -> Rectangle {
         return getSelectionBounds(caret: caret)
     }
@@ -543,18 +555,6 @@ open class TextField: ControlView {
         return transformed
     }
 
-    private func getCaretBounds(at offset: Int) -> Rectangle {
-        let font = _label.textLayout.font(atLocation: offset)
-        var caretLocation = Rectangle(x: 0, y: 0, width: 1, height: Double(font.metrics.ascent + font.metrics.descent))
-
-        var location = _label.textLayout.locationOfCharacter(index: offset)
-        location = _label.convert(point: location, to: self)
-
-        caretLocation = caretLocation.withLocation(location)
-
-        return caretLocation
-    }
-    
     // MARK: -
 
     open override func canHandle(_ eventRequest: EventRequest) -> Bool {

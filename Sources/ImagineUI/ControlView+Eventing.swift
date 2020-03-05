@@ -13,7 +13,7 @@ public typealias ValueChangeEvent<Sender, Value> = EventSourceWithSender<Sender,
 
 /// A typealias for an event that tracks changes to a property's value, while
 /// enabling the opportunity to cancel the value change
-public typealias CancelableValueChangeEvent<Sender, Value> = EventSourceWithSender<Sender, CancelableValueChangedEventArgs<Value>>
+public typealias CancelablleValueChangeEvent<Sender, Value> = EventSourceWithSender<Sender, CancellableValueChangedEventArgs<Value>>
 
 // MARK: - Event argument typealiases
 
@@ -35,7 +35,7 @@ public struct ValueChangedEventArgs<T> {
 
 /// An event argument set for an event that tracks changes to a property, while
 /// exposing a `cancel` that can be changed by clients to cancel the state change
-public class CancelableValueChangedEventArgs<T> {
+public class CancellableValueChangedEventArgs<T> {
     public var old: T
     public var new: T
     public var cancel: Bool
@@ -62,9 +62,9 @@ public extension Event {
         self.publishEvent((sender, ValueChangedEventArgs(old: old, new: new)))
     }
     
-    func publishCancelableChangeEvent<Sender, Value>(sender: Sender, old: Value, new: Value) -> Bool where T == SenderEventArgs<Sender, CancelableValueChangedEventArgs<Value>> {
+    func publishCancellableChangeEvent<Sender, Value>(sender: Sender, old: Value, new: Value) -> Bool where T == SenderEventArgs<Sender, CancellableValueChangedEventArgs<Value>> {
         
-        let event = CancelableValueChangedEventArgs(old: old, new: new)
+        let event = CancellableValueChangedEventArgs(old: old, new: new)
         
         self.publishEvent((sender, event))
         
