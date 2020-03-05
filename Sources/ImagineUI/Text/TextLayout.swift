@@ -415,6 +415,9 @@ public class TextLayout: TextLayoutType {
         var text: Substring
         var baselineHeight: Float
         
+        /// The largest descent height from the line
+        var descentHeight: Float
+        
         /// Boundaries of line, in screen-space coordinates
         var bounds: BLRect
         
@@ -640,6 +643,7 @@ class LineCollector {
                 endIndex: endIndex,
                 text: substring,
                 baselineHeight: highestAscent,
+                descentHeight: highestDescent,
                 bounds: bounds.withLocation(topLeft.asVector2).asBLRect)
         }
     }

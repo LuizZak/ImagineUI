@@ -54,7 +54,15 @@ class TextLayoutRenderer {
             }
             
             if let underlineStyle = segment.textSegment.attribute(named: .underlineStyle, type: UnderlineStyleAttribute.self) {
-                // TODO: Implement underline coloring
+                if let color = segment.textSegment.attribute(named: .underlineColor, type: _ColorType.self) {
+                    color.setStrokeInContext(context)
+                }
+                
+                renderUnderline(segment: segment,
+                                line: line,
+                                style: underlineStyle,
+                                offset: offset,
+                                to: context)
             }
             
             context.fillGlyphRun(segment.glyphBufferMinusLineBreak.glyphRun,
@@ -74,6 +82,23 @@ class TextLayoutRenderer {
             }
             
             context.restore()
+        }
+    }
+    
+    private func renderUnderline(segment: LineSegment,
+                                 line: Line,
+                                 style: UnderlineStyleAttribute,
+                                 offset: BLPoint,
+                                 to context: BLContext) {
+        
+        let underlineOffset = Double(line.descentHeight) / 2
+        
+        switch style {
+        case .single:
+            let left = BLPoint(x: offset.x, y: offset.y + underlineOffset)
+            let right = BLPoint(x: offset.x + segment.bounds.w, y: offset.y + underlineOffset)
+            
+            context.strokeLine(p0: left, p1: right)
         }
     }
     

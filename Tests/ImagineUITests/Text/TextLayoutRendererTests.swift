@@ -116,6 +116,70 @@ class TextLayoutRendererTests: SnapshotTestCase {
         assertImageMatch(img)
     }
     
+    func testRenderUnderlinedText() {
+        var attributedText = AttributedText()
+        attributedText.append("Test text")
+        attributedText.append(" with underlined", attributes: [
+            .underlineStyle: UnderlineStyleAttribute.single
+        ])
+        attributedText.append(" text", attributes: [
+            .underlineStyle: UnderlineStyleAttribute.single,
+            .underlineColor: BLRgba32.red
+        ])
+        attributedText.addAttributes(attributedText.textRange, [
+            .foregroundColor: BLRgba32.black
+        ])
+        let sut = makeSut(attributedText: attributedText)
+        let img = BLImage(width: Int(sut.textLayout.size.x),
+                          height: Int(sut.textLayout.size.y),
+                          format: .prgb32)
+        
+        let ctx = BLContext(image: img)!
+        ctx.compOp = .sourceCopy
+        ctx.setFillStyle(BLRgba32.transparentBlack)
+        ctx.fillAll()
+        ctx.compOp = .sourceOver
+        
+        sut.render(to: ctx, origin: .zero)
+        
+        ctx.end()
+        assertImageMatch(img)
+    }
+    
+    func testRenderUnderlinedTextWithDifferentFonts() {
+        var attributedText = AttributedText()
+        attributedText.append("Test text with", attributes: [
+            .font: makeFont(size: 20),
+            .underlineStyle: UnderlineStyleAttribute.single
+        ])
+        attributedText.append(" underlined text of", attributes: [
+            .font: makeFont(size: 40),
+            .underlineStyle: UnderlineStyleAttribute.single
+        ])
+        attributedText.append(" different font sizes", attributes: [
+            .font: makeFont(size: 60),
+            .underlineStyle: UnderlineStyleAttribute.single
+        ])
+        attributedText.addAttributes(attributedText.textRange, [
+            .foregroundColor: BLRgba32.black
+        ])
+        let sut = makeSut(attributedText: attributedText)
+        let img = BLImage(width: Int(sut.textLayout.size.x),
+                          height: Int(sut.textLayout.size.y),
+                          format: .prgb32)
+        
+        let ctx = BLContext(image: img)!
+        ctx.compOp = .sourceCopy
+        ctx.setFillStyle(BLRgba32.transparentBlack)
+        ctx.fillAll()
+        ctx.compOp = .sourceOver
+        
+        sut.render(to: ctx, origin: .zero)
+        
+        ctx.end()
+        assertImageMatch(img)
+    }
+    
     func makeSut(text: String) -> TextLayoutRenderer {
         let font = makeFont(size: 20)
         

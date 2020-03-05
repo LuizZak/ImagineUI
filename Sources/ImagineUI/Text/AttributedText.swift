@@ -31,6 +31,12 @@ public struct AttributedText: Equatable {
         return segments
     }
     
+    /// Returns a text range that completely covers the entire string text in
+    /// this attributed text
+    public var textRange: TextRange {
+        return TextRange(start: 0, length: length)
+    }
+    
     public init() {
         self.init("")
     }
@@ -108,6 +114,24 @@ public struct AttributedText: Equatable {
         
         for i in indices {
             segments[i] = segments[i].cloneWithAttributes(attributes)
+        }
+        
+        mergeSegments()
+    }
+    
+    public mutating func addAttributes(_ range: TextRange, _ attributes: Attributes) {
+        assertAttributes(attributes)
+        
+        if range.length == 0 {
+            return
+        }
+        
+        splitSegments(in: range)
+        
+        let indices = segmentIndicesIntersecting(range)
+        
+        for i in indices {
+            segments[i] = segments[i].cloneWithAttributes(segments[i].textAttributes.merging(attributes, uniquingKeysWith: { $1 }))
         }
         
         mergeSegments()
