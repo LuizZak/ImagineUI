@@ -49,7 +49,7 @@ public class SliderView: ControlView {
             limitValue()
             
             if value != oldValue {
-                onValueChanged(ValueChangedEventArgs<Double>(old: oldValue, new: value))
+                onValueChanged(ValueChangedEventArgs<Double>(oldValue: oldValue, newValue: value))
             }
             
             invalidateControlGraphics()

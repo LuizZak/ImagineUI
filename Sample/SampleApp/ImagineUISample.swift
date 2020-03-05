@@ -196,7 +196,7 @@ class ImagineUI: Blend2DSample {
         }
         
         sliderView.valueChanged.addListener(owner: self) { (_, event) in
-            progressBar.progress = event.new
+            progressBar.progress = event.newValue
         }
         
         window.performLayout()
