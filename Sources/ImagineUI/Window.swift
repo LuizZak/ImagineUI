@@ -66,15 +66,10 @@ public class Window: ControlView {
 
         drawTitleBar(context)
     }
-
-    public override func performLayout() {
-        let oldNeedsLayout = needsLayout
-        super.performLayout()
-        
-        if oldNeedsLayout {
-            let solver = LayoutConstraintSolver()
-            solver.solve(viewHierarchy: self, cache: _constraintCache)
-        }
+    
+    internal override func performConstraintsLayout() {
+        let solver = LayoutConstraintSolver()
+        solver.solve(viewHierarchy: self, cache: _constraintCache)
     }
     
     override func invalidate(bounds: Rectangle, spatialReference: SpatialReferenceType) {
