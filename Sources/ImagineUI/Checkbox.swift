@@ -9,6 +9,15 @@ open class Checkbox: ControlView {
         }
     }
     let label = Label(bounds: .empty)
+    
+    open var title: String {
+        get {
+            return label.text
+        }
+        set {
+            label.text = newValue
+        }
+    }
 
     /// Invoked by the checkbox when the user changes its state, before the new
     /// state is applied.

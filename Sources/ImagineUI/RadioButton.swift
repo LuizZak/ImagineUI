@@ -7,6 +7,15 @@ open class RadioButton: ControlView {
     /// If not specified, the default radio button manager will be the first
     /// parent view that implements `RadioButtonManagerType`.
     var radioButtonManager: RadioButtonManagerType?
+    
+    open var title: String {
+        get {
+            return label.text
+        }
+        set {
+            label.text = newValue
+        }
+    }
 
     public init(location: Vector2, title: String) {
         super.init(bounds: .empty)
