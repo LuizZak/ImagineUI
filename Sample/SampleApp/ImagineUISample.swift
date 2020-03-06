@@ -35,8 +35,7 @@ class ImagineUI: Blend2DSample {
     func initWindows() {
         let window =
             Window(area: Rectangle(x: 50, y: 120, width: 240, height: 330),
-                   title: "Window",
-                   titleFont: Fonts.defaultFont(size: 12))
+                   title: "Window")
         window.rootControlSystem = controlSystem
         window.invalidationDelegate = self
 
@@ -76,6 +75,7 @@ class ImagineUI: Blend2DSample {
         sliderView.minimumValue = 0
         sliderView.maximumValue = 1
         sliderView.value = 0.75
+        sliderView.showLabels = true
 
         let scrollView = ScrollView(scrollBarsMode: .vertical)
         scrollView.backColor = .white
@@ -281,8 +281,7 @@ class ImagineUI: Blend2DSample {
     
     func createRenderSettingsWindow() {
         let window = Window(area: Rectangle(x: 0, y: 0, width: 300, height: 100),
-                            title: "Debug render settings",
-                            titleFont: Fonts.defaultFont(size: 12))
+                            title: "Debug render settings")
         
         let boundsCheckbox = Checkbox(title: "View Bounds")
         let constrCheckbox = Checkbox(title: "Constraints")

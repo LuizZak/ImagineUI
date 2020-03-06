@@ -3,6 +3,8 @@ import SwiftBlend2D
 public class SliderView: ControlView {
     private var isMouseDown = false
     private var mouseDownOffset = Vector2.zero
+    private var leftLabel = Label()
+    private var rightLabel = Label()
     
     private var knobSize = Size(x: 11, y: 19)
     private var knobTop = 2.0
@@ -20,6 +22,7 @@ public class SliderView: ControlView {
             }
             
             limitValue()
+            updateLabels()
             
             invalidateControlGraphics()
         }
@@ -35,6 +38,7 @@ public class SliderView: ControlView {
             }
             
             limitValue()
+            updateLabels()
             
             invalidateControlGraphics()
         }
@@ -47,12 +51,33 @@ public class SliderView: ControlView {
             }
             
             limitValue()
+            updateLabels()
             
             if value != oldValue {
                 onValueChanged(ValueChangedEventArgs<Double>(oldValue: oldValue, newValue: value))
             }
             
             invalidateControlGraphics()
+        }
+    }
+    
+    /// Whether to show labels for minimum and maximum values
+    public var showLabels: Bool = false {
+        didSet {
+            if showLabels == oldValue { return }
+            
+            updateLabels()
+            updateLabelConstraints()
+            setNeedsLayout()
+            invalidateControlGraphics()
+        }
+    }
+    
+    /// The format string that is used to format the minimum and maximum values
+    /// for the left and right labels
+    public var labelFormatString: String = "%0.lf" {
+        didSet {
+            updateLabels()
         }
     }
     
@@ -66,9 +91,49 @@ public class SliderView: ControlView {
     public override init() {
         super.init()
         
-        createKnobPath()
+        initialize()
         
         mouseOverHighlight = false
+    }
+    
+    private func initialize() {
+        createKnobPath()
+    }
+    
+    private func createKnobPath() {
+        knobPath.clear()
+        knobPath.moveTo(x: 0, y: knobTop)
+        knobPath.lineTo(x: knobSize.x, y: knobTop)
+        knobPath.lineTo(x: knobSize.x, y: knobSize.y - knobDip)
+        knobPath.lineTo(x: knobSize.x / 2, y: knobSize.y)
+        knobPath.lineTo(x: 0, y: knobSize.y - knobDip)
+        knobPath.close()
+    }
+    
+    public override func setupHierarchy() {
+        super.setupHierarchy()
+        
+        addSubview(leftLabel)
+        addSubview(rightLabel)
+    }
+    
+    public override func setupConstraints() {
+        super.setupConstraints()
+        
+        updateLabelConstraints()
+    }
+    
+    private func setupLabelConstraints() {
+        leftLabel.layout.makeConstraints { make in
+            make.top == self + knobSize.y
+            make.left == self + 4
+            make.bottom == self
+        }
+        rightLabel.layout.makeConstraints { make in
+            make.top == self + knobSize.y
+            make.right == self - 4
+            make.bottom == self
+        }
     }
     
     public func onValueChanged(_ event: ValueChangedEventArgs<Double>) {
@@ -115,18 +180,31 @@ public class SliderView: ControlView {
         isHighlighted = false
     }
     
-    private func limitValue() {
-        value = max(minimumValue, min(maximumValue, value))
+    private func updateLabelConstraints() {
+        if !showLabels {
+            leftLabel.layout.remakeConstraints { _ in }
+            rightLabel.layout.remakeConstraints { _ in }
+            return
+        }
+        
+        setupLabelConstraints()
     }
     
-    private func createKnobPath() {
-        knobPath.clear()
-        knobPath.moveTo(x: 0, y: knobTop)
-        knobPath.lineTo(x: knobSize.x, y: knobTop)
-        knobPath.lineTo(x: knobSize.x, y: knobSize.y - knobDip)
-        knobPath.lineTo(x: knobSize.x / 2, y: knobSize.y)
-        knobPath.lineTo(x: 0, y: knobSize.y - knobDip)
-        knobPath.close()
+    private func updateLabels() {
+        if !showLabels {
+            leftLabel.isVisible = false
+            rightLabel.isVisible = false
+            return
+        }
+        
+        leftLabel.isVisible = true
+        rightLabel.isVisible = true
+        leftLabel.text = String(format: labelFormatString, minimumValue)
+        rightLabel.text = String(format: labelFormatString, maximumValue)
+    }
+    
+    private func limitValue() {
+        value = max(minimumValue, min(maximumValue, value))
     }
     
     public override func renderBackground(in context: BLContext) {
@@ -182,8 +260,8 @@ public class SliderView: ControlView {
     }
     
     private func sliderLine() -> Line {
-        let left = Vector2(x: knobSize.x / 2, y: size.y / 2)
-        let right = Vector2(x: size.x - knobSize.x / 2, y: size.y / 2)
+        let left = Vector2(x: knobSize.x / 2, y: knobSize.y / 2)
+        let right = Vector2(x: size.x - knobSize.x / 2, y: knobSize.y / 2)
         
         return Line(start: left, end: right)
     }

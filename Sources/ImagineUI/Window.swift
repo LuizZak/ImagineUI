@@ -29,7 +29,7 @@ public class Window: ControlView {
 
     public weak var invalidationDelegate: WindowRedrawInvalidationDelegate?
 
-    public init(area: Rectangle, title: String, titleFont: BLFont) {
+    public init(area: Rectangle, title: String, titleFont: BLFont = Fonts.defaultFont(size: 12)) {
         self.title = title
         self.titleFont = titleFont
 

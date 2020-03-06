@@ -219,11 +219,15 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
     /// Paints this control view on a given render context
     public final override func render(in context: BLContext) {
         super.render(in: context)
+        
+        let cookie = context.saveWithCookie()
 
         _bitmapCache.cachingOrRendering(context) { ctx in
             renderBackground(in: ctx)
             renderForeground(in: ctx)
         }
+        
+        context.restore(from: cookie)
         
         _painted.publishEvent(sender: self, context)
     }
