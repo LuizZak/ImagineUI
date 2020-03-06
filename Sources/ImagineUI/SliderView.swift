@@ -140,12 +140,12 @@ public class SliderView: ControlView {
     private func setupLabelConstraints() {
         leftLabel.layout.makeConstraints { make in
             make.top == self + knobSize.y
-            make.left == self + 4
+            make.left == self + 2
             make.bottom == self
         }
         rightLabel.layout.makeConstraints { make in
             make.top == self + knobSize.y
-            make.right == self - 4
+            make.right == self - 2
             make.bottom == self
         }
     }
