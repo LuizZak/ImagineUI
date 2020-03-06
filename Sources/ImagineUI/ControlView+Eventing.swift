@@ -36,8 +36,8 @@ public struct ValueChangedEventArgs<T> {
 /// An event argument set for an event that tracks changes to a property, while
 /// exposing a `cancel` that can be changed by clients to cancel the state change
 public class CancellableValueChangedEventArgs<T> {
-    public var oldValue: T
-    public var newValue: T
+    public let oldValue: T
+    public let newValue: T
     public var cancel: Bool
     
     public init(oldValue: T, newValue: T) {
