@@ -6,6 +6,18 @@ public extension Vector2 {
     }
 }
 
+public extension Line {
+    var asBLLine: BLLine {
+        return BLLine(x0: start.x, y0: start.y, x1: end.x, y1: end.y)
+    }
+}
+
+public extension BLLine {
+    var asLine: Line {
+        return Line(x1: x0, y1: y0, x2: x1, y2: y1)
+    }
+}
+
 public extension BLPoint {
     var asVector2: Vector2 {
         return Vector2(x: x, y: y)

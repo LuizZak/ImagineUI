@@ -132,15 +132,16 @@ public class SliderView: ControlView {
     public override func renderBackground(in context: BLContext) {
         super.renderBackground(in: context)
         
-        let left = BLPoint(x: knobSize.x / 2, y: size.y / 2)
-        let right = BLPoint(x: size.x - knobSize.x / 2, y: size.y / 2)
+        let line = sliderLine().asBLLine
         let endsHeight = 3.0
         
         context.setStrokeStyle(BLRgba32.lightGray)
         context.setStrokeWidth(2)
-        context.strokeLine(p0: left, p1: right)
-        context.strokeLine(p0: left - BLPoint(x: 0, y: endsHeight), p1: left + BLPoint(x: 0, y: endsHeight))
-        context.strokeLine(p0: right - BLPoint(x: 0, y: endsHeight), p1: right + BLPoint(x: 0, y: endsHeight))
+        context.strokeLine(line)
+        context.strokeLine(p0: line.start - BLPoint(x: 0, y: endsHeight),
+                           p1: line.start + BLPoint(x: 0, y: endsHeight))
+        context.strokeLine(p0: line.end - BLPoint(x: 0, y: endsHeight),
+                           p1: line.end + BLPoint(x: 0, y: endsHeight))
     }
     
     public override func renderForeground(in context: BLContext) {
@@ -180,13 +181,22 @@ public class SliderView: ControlView {
         return Rectangle(x: x, y: 0, width: knobSize.x, height: knobSize.y)
     }
     
+    private func sliderLine() -> Line {
+        let left = Vector2(x: knobSize.x / 2, y: size.y / 2)
+        let right = Vector2(x: size.x - knobSize.x / 2, y: size.y / 2)
+        
+        return Line(start: left, end: right)
+    }
+    
     private func knobOffset() -> Double {
         let rate = (value - minimumValue) / (maximumValue - minimumValue)
         return rate * (size.x - knobSize.x)
     }
     
     private func valueAtOffset(x: Double) -> Double {
-        let xOffset = (x - knobSize.x / 2) / (size.x - knobSize.x)
+        let line = sliderLine()
+        
+        let xOffset = (x - line.start.x) / (line.magnitude)
         return minimumValue + xOffset * (maximumValue - minimumValue)
     }
 }
