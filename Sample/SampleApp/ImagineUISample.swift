@@ -34,7 +34,7 @@ class ImagineUI: Blend2DSample {
 
     func initWindows() {
         let window =
-            Window(area: Rectangle(x: 50, y: 120, width: 240, height: 330),
+            Window(area: Rectangle(x: 50, y: 120, width: 320, height: 330),
                    title: "Window")
         window.rootControlSystem = controlSystem
         window.invalidationDelegate = self
@@ -87,6 +87,8 @@ class ImagineUI: Blend2DSample {
         scrollViewLabel.horizontalTextAlignment = .center
         scrollViewLabel.verticalTextAlignment = .center
         scrollViewLabel.textColor = .black
+        
+        let imageView = ImageView(image: createSampleImage())
 
         window.addSubview(panel)
         window.addSubview(radioButton)
@@ -100,6 +102,7 @@ class ImagineUI: Blend2DSample {
         window.addSubview(progressBar)
         window.addSubview(sliderView)
         window.addSubview(scrollView)
+        window.addSubview(imageView)
         panel.addSubview(radioButton)
         panel.addSubview(radioButton2)
         scrollView.addSubview(scrollViewLabel)
@@ -152,7 +155,7 @@ class ImagineUI: Blend2DSample {
         
         label.layout.makeConstraints { make in
             make.left == sliderView
-            make.under(sliderView, offset: 15)
+            make.under(sliderView, offset: 5)
             make.width == 100
             make.height == 50
         }
@@ -175,6 +178,11 @@ class ImagineUI: Blend2DSample {
         scrollViewLabel.setContentHuggingPriority(.vertical, 50)
         scrollViewLabel.layout.makeConstraints { make in
             make.edges == scrollView.contentView
+        }
+        
+        imageView.layout.makeConstraints { make in
+            make.right(of: progressBar, offset: 15)
+            make.top == progressBar
         }
 
         button.mouseClicked.addListener(owner: self) { _ in
@@ -326,6 +334,34 @@ class ImagineUI: Blend2DSample {
         window.invalidationDelegate = self
         
         windows.append(window)
+    }
+    
+    func createSampleImage() -> BLImage {
+        let img = BLImage(width: 64, height: 64, format: .prgb32)
+        let ctx = BLContext(image: img)!
+        
+        ctx.clearAll()
+        ctx.setFillStyle(BLRgba32.skyBlue)
+        ctx.fillRect(BLRect(x: 0, y: 0, w: 64, h: 64))
+        
+        // Render two mountains
+        ctx.setFillStyle(BLRgba32.forestGreen)
+        ctx.translate(x: 15, y: 40)
+        ctx.fillTriangle(BLTriangle.unitEquilateral.scaledBy(x: 35, y: 35))
+        ctx.translate(x: 15, y: 4)
+        ctx.fillTriangle(BLTriangle.unitEquilateral.scaledBy(x: 30, y: 30))
+        
+        // Render ground
+        ctx.resetMatrix()
+        ctx.fillRect(BLRect(x: 0, y: 45, w: 64, h: 64))
+        
+        // Render sun
+        ctx.setFillStyle(BLRgba32.yellow)
+        ctx.fillCircle(x: 50, y: 20, radius: 10)
+        
+        ctx.end()
+        
+        return img
     }
 }
 
