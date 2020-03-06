@@ -17,6 +17,8 @@ class ImagineUI: Blend2DSample {
     var windows: [Window]
 
     var redrawRegion: BLRegion
+    
+    var debugDrawFlags: Set<DebugDraw.DebugDrawFlags> = []
 
     init(size: BLSizeI) {
         width = Int(size.w)
@@ -32,7 +34,7 @@ class ImagineUI: Blend2DSample {
 
     func initWindows() {
         let window =
-            Window(area: Rectangle(x: 20, y: 50, width: 240, height: 330),
+            Window(area: Rectangle(x: 50, y: 120, width: 240, height: 330),
                    title: "Window",
                    titleFont: Fonts.defaultFont(size: 12))
         window.rootControlSystem = controlSystem
@@ -183,8 +185,10 @@ class ImagineUI: Blend2DSample {
         }
         
         window.performLayout()
+        
+        createRenderSettingsWindow()
 
-        windows = [window]
+        windows.append(window)
 
         lastFrame = CACurrentMediaTime()
     }
@@ -195,6 +199,12 @@ class ImagineUI: Blend2DSample {
 
         bounds = BLRect(location: .zero, size: BLSize(w: Double(width), h: Double(height)))
         redrawRegion = BLRegion(rectangle: BLRectI(x: 0, y: 0, w: Int32(width), h: Int32(height)))
+    }
+    
+    func invalidateScreen() {
+        redrawRegion.combine(box: BLBoxI(rounding: bounds.asBLBox),
+                             operation: .or)
+        delegate?.invalidate(bounds: bounds.asRectangle)
     }
 
     func update(_ time: TimeInterval) {
@@ -236,6 +246,11 @@ class ImagineUI: Blend2DSample {
         for window in windows {
             window.renderRecursive(in: ctx, region: redrawRegion)
         }
+        
+        // Debug render
+        for window in windows {
+            DebugDraw.debugDrawRecursive(window, flags: debugDrawFlags, to: ctx)
+        }
 
         redrawRegion.clear()
     }
@@ -262,6 +277,55 @@ class ImagineUI: Blend2DSample {
 
     func keyUp(event: KeyEventArgs) {
         controlSystem.onKeyUp(event)
+    }
+    
+    func createRenderSettingsWindow() {
+        let window = Window(area: Rectangle(x: 0, y: 0, width: 300, height: 100),
+                            title: "Debug render settings",
+                            titleFont: Fonts.defaultFont(size: 12))
+        
+        let boundsCheckbox = Checkbox(title: "View Bounds")
+        let constrCheckbox = Checkbox(title: "Constraints")
+        
+        window.addSubview(boundsCheckbox)
+        window.addSubview(constrCheckbox)
+        
+        boundsCheckbox.layout.makeConstraints { make in
+            make.left == window + 15
+            make.top == window + 35
+        }
+        constrCheckbox.layout.makeConstraints { make in
+            make.left == boundsCheckbox
+            make.under(boundsCheckbox, offset: 5)
+        }
+        
+        boundsCheckbox.checkboxStateWillChange.addListener(owner: self) { [weak self] (_, event) in
+            guard let self = self else { return }
+            
+            if event.newValue == .checked {
+                self.debugDrawFlags.insert(.viewBounds)
+            } else {
+                self.debugDrawFlags.remove(.viewBounds)
+            }
+            
+            self.invalidateScreen()
+        }
+        constrCheckbox.checkboxStateWillChange.addListener(owner: self) { [weak self] (_, event) in
+            guard let self = self else { return }
+            
+            if event.newValue == .checked {
+                self.debugDrawFlags.insert(.constraints)
+            } else {
+                self.debugDrawFlags.remove(.constraints)
+            }
+            
+            self.invalidateScreen()
+        }
+        
+        window.rootControlSystem = controlSystem
+        window.invalidationDelegate = self
+        
+        windows.append(window)
     }
 }
 

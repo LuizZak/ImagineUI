@@ -24,7 +24,7 @@ open class Checkbox: ControlView {
     ///
     /// Event listeners have a chance to cancel the event by switching `cancel`
     /// to `true` during the event dispatch round.
-    @Event public var stateWillChange: CancelablleValueChangeEvent<Checkbox, Checkbox.State>
+    @Event public var checkboxStateWillChange: CancelablleValueChangeEvent<Checkbox, Checkbox.State>
 
     public init(title: String) {
         super.init()
@@ -84,7 +84,7 @@ open class Checkbox: ControlView {
     }
 
     func invokeStateWillChangeEvent(newState: State) {
-        if !_stateWillChange.publishCancellableChangeEvent(sender: self, old: checkboxState, new: newState) {
+        if !_checkboxStateWillChange.publishCancellableChangeEvent(sender: self, old: checkboxState, new: newState) {
             checkboxState = newState
         }
     }
