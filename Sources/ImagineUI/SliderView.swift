@@ -44,6 +44,20 @@ public class SliderView: ControlView {
         }
     }
     
+    /// An interval that values from this slider snap to when the user tracks the
+    /// control.
+    /// `value` is limited to be multiples of this value, except if `value` is
+    /// equal to `minimumValue` or `maximumValue`
+    /// Specify a value of 0 for no stepping behavior (aka allow any value).
+    ///
+    /// Defaults to 0
+    public var stepValue: Double = 0 {
+        didSet {
+            limitValue()
+            invalidateControlGraphics()
+        }
+    }
+    
     public var value: Double = 0 {
         didSet {
             if value == oldValue {
@@ -204,7 +218,15 @@ public class SliderView: ControlView {
     }
     
     private func limitValue() {
-        value = max(minimumValue, min(maximumValue, value))
+        let stepped: Double
+        
+        if stepValue > 0 {
+            stepped = (value / stepValue).rounded() * stepValue
+        } else {
+            stepped = value
+        }
+        
+        value = max(minimumValue, min(maximumValue, stepped))
     }
     
     public override func renderBackground(in context: BLContext) {

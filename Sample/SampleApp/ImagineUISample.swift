@@ -75,6 +75,7 @@ class ImagineUI: Blend2DSample {
         sliderView.minimumValue = 0
         sliderView.maximumValue = 1
         sliderView.value = 0.75
+        sliderView.stepValue = 0.05
         sliderView.showLabels = true
 
         let scrollView = ScrollView(scrollBarsMode: .vertical)
