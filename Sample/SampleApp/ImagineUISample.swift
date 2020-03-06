@@ -100,19 +100,6 @@ class ImagineUI: Blend2DSample {
         panel.addSubview(radioButton)
         panel.addSubview(radioButton2)
         scrollView.addSubview(scrollViewLabel)
-        radioButton.translatesAutoresizingMaskIntoConstraints = false
-        radioButton2.translatesAutoresizingMaskIntoConstraints = false
-        checkBox1.translatesAutoresizingMaskIntoConstraints = false
-        checkBox2.translatesAutoresizingMaskIntoConstraints = false
-        checkBox3.translatesAutoresizingMaskIntoConstraints = false
-        button.translatesAutoresizingMaskIntoConstraints = false
-        label.translatesAutoresizingMaskIntoConstraints = false
-        textField.translatesAutoresizingMaskIntoConstraints = false
-        progressBar.translatesAutoresizingMaskIntoConstraints = false
-        sliderView.translatesAutoresizingMaskIntoConstraints = false
-        panel.translatesAutoresizingMaskIntoConstraints = false
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        scrollViewLabel.translatesAutoresizingMaskIntoConstraints = false
 
         panel.layout.makeConstraints { make in
             make.top.equalTo(window, offset: 35)

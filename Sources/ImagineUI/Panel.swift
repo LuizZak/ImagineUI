@@ -22,9 +22,7 @@ public class Panel: ControlView {
 
     public init(title: String) {
         containerView = View()
-        containerView.translatesAutoresizingMaskIntoConstraints = false
         label = Label()
-        label.translatesAutoresizingMaskIntoConstraints = false
         label.text = title
         super.init()
         clipToBounds = false

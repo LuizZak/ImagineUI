@@ -4,7 +4,6 @@ import ImagineUI
 class ViewTests: XCTestCase {
     func testLayoutWithNoSuperview() {
         let view = View(bounds: .empty)
-        view.translatesAutoresizingMaskIntoConstraints = false
         view.layout.makeConstraints { make in
             make.top.equalTo(0)
             make.left.equalTo(0)

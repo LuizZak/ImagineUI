@@ -49,8 +49,6 @@ open class Checkbox: ControlView {
     open override func setupConstraints() {
         super.setupConstraints()
 
-        label.translatesAutoresizingMaskIntoConstraints = false
-
         // Intrinsic size
         layout.makeConstraints { make in
             make.width.greaterThanOrEqualTo(15)

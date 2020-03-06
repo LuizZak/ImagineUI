@@ -69,9 +69,6 @@ open class ScrollView: ControlView {
     }
 
     func initialize() {
-        horizontalBar.translatesAutoresizingMaskIntoConstraints = false
-        verticalBar.translatesAutoresizingMaskIntoConstraints = false
-        
         super.addSubview(contentView)
         super.addSubview(horizontalBar)
         super.addSubview(verticalBar)
