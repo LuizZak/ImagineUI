@@ -609,7 +609,7 @@ class LineCollector {
             
             let substring = text[startIndex..<endIndex]
             
-            var bounds: Rectangle = .empty
+            var bounds: Rectangle = .zero
             
             var segments = self.segments
             var highestDescent: Float = 0

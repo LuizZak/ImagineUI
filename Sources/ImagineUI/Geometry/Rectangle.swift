@@ -1,7 +1,7 @@
 /// Represents an axis-aligned bounding box
 public struct Rectangle: Equatable, Codable {
     /// Returns an empty rectangle
-    public static let empty = Rectangle(x: 0, y: 0, width: 0, height: 0)
+    public static let zero = Rectangle(x: 0, y: 0, width: 0, height: 0)
     
     /// Minimum point for this rectangle.
     public var minimum: Vector2 {
@@ -393,7 +393,7 @@ public struct Rectangle: Equatable, Codable {
     /// Returns an `Rectangle` that is the intersection between two rectangle
     /// instances.
     ///
-    /// Return is `empty`, if they do not intersect.
+    /// Return is `zero`, if they do not intersect.
     @inlinable
     public static func intersect(_ a: Rectangle, _ b: Rectangle) -> Rectangle {
         let x1 = max(a.left, b.left)
@@ -405,7 +405,7 @@ public struct Rectangle: Equatable, Codable {
             return Rectangle(left: x1, top: y1, right: x2, bottom: y2)
         }
 
-        return .empty
+        return .zero
     }
 }
 

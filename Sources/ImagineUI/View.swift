@@ -131,7 +131,7 @@ open class View {
     }
 
     public init() {
-        self.bounds = .empty
+        self.bounds = .zero
         self.location = .zero
         layoutVariables = ViewLayoutVariables(view: self)
         setupHierarchy()
