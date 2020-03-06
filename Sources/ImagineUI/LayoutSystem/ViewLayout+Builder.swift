@@ -31,6 +31,21 @@ public struct LayoutAnchorUpdateCreator {
     public var centerY: LayoutAnchorCreator<XLayoutAnchor> { .init(anchor: layout.centerY) }
     public var firstBaseline: LayoutAnchorCreator<YLayoutAnchor> { .init(anchor: layout.firstBaseline) }
     public var edges: LayoutAnchorEdgesCreator { .init(layout: layout) }
+    
+    @discardableResult
+    public func left(of other: View, offset: Double = 0) -> LayoutConstraint {
+        return right == other.layout.left + offset
+    }
+    
+    @discardableResult
+    public func right(of other: View, offset: Double = 0) -> LayoutConstraint {
+        return left == other.layout.right + offset
+    }
+    
+    @discardableResult
+    public func under(_ other: View, offset: Double = 0) -> LayoutConstraint {
+        return top == other.layout.bottom + offset
+    }
 }
 
 public struct LayoutAnchorUpdateBuilder {
@@ -46,6 +61,21 @@ public struct LayoutAnchorUpdateBuilder {
     public var centerY: LayoutAnchorUpdater<XLayoutAnchor> { .init(anchor: layout.centerY) }
     public var firstBaseline: LayoutAnchorUpdater<YLayoutAnchor> { .init(anchor: layout.firstBaseline) }
     public var edges: LayoutAnchorEdgesUpdater { .init(layout: layout) }
+    
+    @discardableResult
+    public func left(of other: View, offset: Double = 0) -> LayoutConstraint {
+        return right == other.layout.left + offset
+    }
+    
+    @discardableResult
+    public func right(of other: View, offset: Double = 0) -> LayoutConstraint {
+        return left == other.layout.right + offset
+    }
+    
+    @discardableResult
+    public func under(_ other: View, offset: Double = 0) -> LayoutConstraint {
+        return top == other.layout.bottom + offset
+    }
 }
 
 public struct LayoutAnchorEdgesCreator {

@@ -113,57 +113,57 @@ class ImagineUI: Blend2DSample {
         }
         radioButton2.layout.makeConstraints { make in
             make.left == radioButton
-            make.top == radioButton.layout.bottom + 5
+            make.under(radioButton, offset: 5)
             make.bottom == panel.containerView - 4
         }
 
         checkBox1.layout.makeConstraints { make in
             make.left == panel
-            make.top == panel.layout.bottom + 10
+            make.under(panel, offset: 10)
         }
         checkBox2.layout.makeConstraints { make in
             make.left == checkBox1
-            make.top == checkBox1.layout.bottom + 5
+            make.under(checkBox1, offset: 5)
         }
         checkBox3.layout.makeConstraints { make in
             make.left == checkBox2
-            make.top == checkBox2.layout.bottom + 5
+            make.under(checkBox2, offset: 5)
         }
 
         button.layout.makeConstraints { make in
             make.left == checkBox3
-            make.top == checkBox3.layout.bottom + 15
+            make.under(checkBox3, offset: 15)
         }
         
         progressBar.layout.makeConstraints { make in
-            make.left == panel.layout.right + 15
+            make.right(of: panel, offset: 15)
             make.top == panel + 15
             make.width == 100
         }
 
         sliderView.layout.makeConstraints { make in
             make.left == progressBar
-            make.top == progressBar.layout.bottom + 5
+            make.under(progressBar, offset: 5)
             make.width == 100
         }
         
         label.layout.makeConstraints { make in
             make.left == sliderView
-            make.top == sliderView.layout.bottom + 15
+            make.under(sliderView, offset: 15)
             make.width == 100
             make.height == 50
         }
 
         textField.layout.makeConstraints { make in
             make.left == label
-            make.top == label.layout.bottom + 15
+            make.under(label, offset: 15)
             make.width == 100
             make.height == 33
         }
         
         scrollView.layout.makeConstraints { make in
             make.left == window + 10
-            make.top == button.layout.bottom + 10
+            make.under(button, offset: 10)
             make.right == window - 10
             make.bottom == window - 10
         }
