@@ -43,8 +43,8 @@ open class Button: ControlView {
 
         // Intrinsic size
         layout.makeConstraints { make in
-            make.width.greaterThanOrEqualTo(15)
-            make.height.greaterThanOrEqualTo(15)
+            make.width >= 15
+            make.height >= 15
         }
 
         // Label constraints

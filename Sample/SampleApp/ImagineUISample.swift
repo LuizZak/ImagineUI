@@ -102,76 +102,76 @@ class ImagineUI: Blend2DSample {
         scrollView.addSubview(scrollViewLabel)
 
         panel.layout.makeConstraints { make in
-            make.top.equalTo(window, offset: 35)
-            make.left.equalTo(window, offset: 10)
-            make.width.equalTo(100)
+            make.top == window + 35
+            make.left == window + 10
+            make.width == 100
         }
 
         radioButton.layout.makeConstraints { make in
-            make.left.equalTo(panel.containerView, offset: 4)
-            make.top.equalTo(panel.containerView, offset: 4)
+            make.left == panel.containerView + 4
+            make.top == panel.containerView + 4
         }
         radioButton2.layout.makeConstraints { make in
-            make.left.equalTo(radioButton)
-            make.top.equalTo(radioButton.layout.bottom, offset: 5)
-            make.bottom.equalTo(panel.containerView, offset: -4)
+            make.left == radioButton
+            make.top == radioButton.layout.bottom + 5
+            make.bottom == panel.containerView - 4
         }
 
         checkBox1.layout.makeConstraints { make in
-            make.left.equalTo(panel)
-            make.top.equalTo(panel.layout.bottom, offset: 10)
+            make.left == panel
+            make.top == panel.layout.bottom + 10
         }
         checkBox2.layout.makeConstraints { make in
-            make.left.equalTo(checkBox1)
-            make.top.equalTo(checkBox1.layout.bottom, offset: 5)
+            make.left == checkBox1
+            make.top == checkBox1.layout.bottom + 5
         }
         checkBox3.layout.makeConstraints { make in
-            make.left.equalTo(checkBox2)
-            make.top.equalTo(checkBox2.layout.bottom, offset: 5)
+            make.left == checkBox2
+            make.top == checkBox2.layout.bottom + 5
         }
 
         button.layout.makeConstraints { make in
-            make.left.equalTo(checkBox3)
-            make.top.equalTo(checkBox3.layout.bottom, offset: 15)
+            make.left == checkBox3
+            make.top == checkBox3.layout.bottom + 15
         }
         
         progressBar.layout.makeConstraints { make in
-            make.left.equalTo(panel.layout.right, offset: 15)
-            make.top.equalTo(panel, offset: 15)
-            make.width.equalTo(100)
+            make.left == panel.layout.right + 15
+            make.top == panel + 15
+            make.width == 100
         }
 
         sliderView.layout.makeConstraints { make in
-            make.left.equalTo(progressBar)
-            make.top.equalTo(progressBar.layout.bottom, offset: 5)
-            make.width.equalTo(100)
+            make.left == progressBar
+            make.top == progressBar.layout.bottom + 5
+            make.width == 100
         }
         
         label.layout.makeConstraints { make in
-            make.left.equalTo(sliderView)
-            make.top.equalTo(sliderView.layout.bottom, offset: 15)
-            make.width.equalTo(100)
-            make.height.equalTo(50)
+            make.left == sliderView
+            make.top == sliderView.layout.bottom + 15
+            make.width == 100
+            make.height == 50
         }
 
         textField.layout.makeConstraints { make in
-            make.left.equalTo(label)
-            make.top.equalTo(label.layout.bottom, offset: 15)
-            make.width.equalTo(100)
-            make.height.equalTo(33)
+            make.left == label
+            make.top == label.layout.bottom + 15
+            make.width == 100
+            make.height == 33
         }
         
         scrollView.layout.makeConstraints { make in
-            make.left.equalTo(window, offset: 10)
-            make.top.equalTo(button.layout.bottom, offset: 10)
-            make.right.equalTo(window, offset: -10)
-            make.bottom.equalTo(window, offset: -10)
+            make.left == window + 10
+            make.top == button.layout.bottom + 10
+            make.right == window - 10
+            make.bottom == window - 10
         }
         
         scrollViewLabel.setContentHuggingPriority(.horizontal, 50)
         scrollViewLabel.setContentHuggingPriority(.vertical, 50)
         scrollViewLabel.layout.makeConstraints { make in
-            make.edges.equalTo(scrollView.contentView)
+            make.edges == scrollView.contentView
         }
 
         button.mouseClicked.addListener(owner: self) { _ in

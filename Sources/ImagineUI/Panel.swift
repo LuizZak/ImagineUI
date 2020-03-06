@@ -40,15 +40,15 @@ public class Panel: ControlView {
         super.setupConstraints()
 
         label.layout.makeConstraints { make in
-            make.top.equalTo(self)
-            make.left.equalTo(self, offset: 8)
+            make.top == self
+            make.left == self + 8
         }
 
         containerView.layout.makeConstraints { make in
-            make.top.equalTo(label.layout.bottom, offset: containerInset.top)
-            make.left.equalTo(self, offset: containerInset.left)
-            make.right.equalTo(self, offset: -containerInset.right)
-            make.bottom.equalTo(self, offset: -containerInset.bottom)
+            make.top == label.layout.bottom + containerInset.top
+            make.left == self + containerInset.left
+            make.right == self - containerInset.right
+            make.bottom == self - containerInset.bottom
         }
 
         updateConstraints()
@@ -56,10 +56,10 @@ public class Panel: ControlView {
 
     private func updateConstraints() {
         containerView.layout.updateConstraints { make in
-            make.top.equalTo(label.layout.bottom, offset: containerInset.top)
-            make.left.equalTo(self, offset: containerInset.left)
-            make.right.equalTo(self, offset: -containerInset.right)
-            make.bottom.equalTo(self, offset: -containerInset.bottom)
+            make.top == label.layout.bottom + containerInset.top
+            make.left == self + containerInset.left
+            make.right == self - containerInset.right
+            make.bottom == self - containerInset.bottom
         }
     }
 

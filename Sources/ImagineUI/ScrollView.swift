@@ -208,33 +208,33 @@ open class ScrollView: ControlView {
     func updateScrollBarConstraints() {
         if scrollBarsMode.contains(.horizontal) {
             verticalBar.layout.remakeConstraints { make in
-                make.top.equalTo(self)
-                make.right.equalTo(self)
-                make.bottom.equalTo(horizontalBar.layout.top)
-                make.width.equalTo(scrollBarSize)
+                make.top == self
+                make.right == self
+                make.bottom == horizontalBar.layout.top
+                make.width == scrollBarSize
             }
         } else {
             verticalBar.layout.remakeConstraints { make in
-                make.top.equalTo(self)
-                make.right.equalTo(self)
-                make.bottom.equalTo(self)
-                make.width.equalTo(scrollBarSize)
+                make.top == self
+                make.right == self
+                make.bottom == self
+                make.width == scrollBarSize
             }
         }
         
         if scrollBarsMode.contains(.vertical) {
             horizontalBar.layout.makeConstraints { make in
-                make.left.equalTo(self)
-                make.bottom.equalTo(self)
-                make.right.equalTo(verticalBar.layout.left)
-                make.height.equalTo(scrollBarSize)
+                make.left == self
+                make.bottom == self
+                make.right == verticalBar.layout.left
+                make.height == scrollBarSize
             }
         } else {
             horizontalBar.layout.makeConstraints { make in
-                make.left.equalTo(self)
-                make.bottom.equalTo(self)
-                make.right.equalTo(self)
-                make.height.equalTo(scrollBarSize)
+                make.left == self
+                make.bottom == self
+                make.right == self
+                make.height == scrollBarSize
             }
         }
     }

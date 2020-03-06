@@ -48,51 +48,57 @@ public struct LayoutAnchorUpdateBuilder {
     public var edges: LayoutAnchorEdgesUpdater { .init(layout: layout) }
 }
 
-public class LayoutAnchorEdgesCreator {
+public struct LayoutAnchorEdgesCreator {
     let layout: View.Layout
 
     init(layout: View.Layout) {
         self.layout = layout
     }
 
-    public func equalTo(_ other: View, inset: EdgeInsets = .zero, multiplier: Double = 1) {
-        LayoutConstraint.create(first: layout.top, second: other.layout.top,
-                                offset: inset.top, multiplier: multiplier)
-
-        LayoutConstraint.create(first: layout.left, second: other.layout.left,
-                                offset: inset.left, multiplier: multiplier)
-
-        LayoutConstraint.create(first: layout.right, second: other.layout.right,
-                                offset: -inset.right, multiplier: multiplier)
-
-        LayoutConstraint.create(first: layout.bottom, second: other.layout.bottom,
-                                offset: -inset.bottom, multiplier: multiplier)
+    @discardableResult
+    public func equalTo(_ other: View, inset: EdgeInsets = .zero, multiplier: Double = 1) -> [LayoutConstraint] {
+        return [
+            LayoutConstraint.create(first: layout.top, second: other.layout.top,
+                                    offset: inset.top, multiplier: multiplier),
+            
+            LayoutConstraint.create(first: layout.left, second: other.layout.left,
+                                    offset: inset.left, multiplier: multiplier),
+            
+            LayoutConstraint.create(first: layout.right, second: other.layout.right,
+                                    offset: -inset.right, multiplier: multiplier),
+            
+            LayoutConstraint.create(first: layout.bottom, second: other.layout.bottom,
+                                    offset: -inset.bottom, multiplier: multiplier),
+        ]
     }
 }
 
-public class LayoutAnchorEdgesUpdater {
+public struct LayoutAnchorEdgesUpdater {
     let layout: View.Layout
 
     init(layout: View.Layout) {
         self.layout = layout
     }
 
-    public func equalTo(_ other: View, inset: EdgeInsets = .zero, multiplier: Double = 1) {
-        LayoutConstraint.update(first: layout.top, second: other.layout.top,
-                                offset: inset.top, multiplier: multiplier)
-
-        LayoutConstraint.update(first: layout.left, second: other.layout.left,
-                                offset: inset.left, multiplier: multiplier)
-
-        LayoutConstraint.update(first: layout.right, second: other.layout.right,
-                                offset: -inset.right, multiplier: multiplier)
-
-        LayoutConstraint.update(first: layout.bottom, second: other.layout.bottom,
-                                offset: -inset.bottom, multiplier: multiplier)
+    @discardableResult
+    public func equalTo(_ other: View, inset: EdgeInsets = .zero, multiplier: Double = 1) -> [LayoutConstraint] {
+        return [
+            LayoutConstraint.update(first: layout.top, second: other.layout.top,
+                                    offset: inset.top, multiplier: multiplier),
+            
+            LayoutConstraint.update(first: layout.left, second: other.layout.left,
+                                    offset: inset.left, multiplier: multiplier),
+            
+            LayoutConstraint.update(first: layout.right, second: other.layout.right,
+                                    offset: -inset.right, multiplier: multiplier),
+            
+            LayoutConstraint.update(first: layout.bottom, second: other.layout.bottom,
+                                    offset: -inset.bottom, multiplier: multiplier),
+        ]
     }
 }
 
-public class LayoutAnchorCreator<T> {
+public struct LayoutAnchorCreator<T> {
     let anchor: LayoutAnchor<T>
 
     init(anchor: LayoutAnchor<T>) {
@@ -167,7 +173,7 @@ public class LayoutAnchorCreator<T> {
     }
 }
 
-public class LayoutAnchorUpdater<T> {
+public struct LayoutAnchorUpdater<T> {
     let anchor: LayoutAnchor<T>
 
     init(anchor: LayoutAnchor<T>) {
