@@ -68,7 +68,7 @@ public class SliderView: ControlView {
             updateLabels()
             
             if value != oldValue {
-                onValueChanged(ValueChangedEventArgs<Double>(oldValue: oldValue, newValue: value))
+                onValueChanged(.init(oldValue: oldValue, newValue: value))
             }
             
             invalidateControlGraphics()
