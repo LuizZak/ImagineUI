@@ -43,7 +43,7 @@ public class LayoutConstraintSolver {
                           cache: LayoutConstraintSolverCache) {
 
         for affectedView in affectedViews {
-            affectedView.deriveConstraints(cache.constraintList(forView: affectedView.view))
+            affectedView.deriveConstraints(cache.constraintList(for: affectedView.view))
         }
         
         cache.addConstraints(constraints)
@@ -109,16 +109,16 @@ class ViewConstraintList {
             let suggestedDiff = suggestedValue.makeDifference(withPrevious: previous.suggestedValue,
                                                               didUpdate: { $1 != $2 })
             
-            return StateDiff(constraints: constDiff, suggestedValue: suggestedDiff)
+            return StateDiff(constraints: constDiff, suggestedValues: suggestedDiff)
         }
     }
     
     fileprivate struct StateDiff {
         var constraints: [Difference<String, (Constraint, strength: Double, tag: Int)>]
-        var suggestedValue: [Difference<Variable, (value: Double, strength: Double)>]
+        var suggestedValues: [Difference<Variable, (value: Double, strength: Double)>]
         
         var isEmpty: Bool {
-            return constraints.isEmpty && suggestedValue.isEmpty
+            return constraints.isEmpty && suggestedValues.isEmpty
         }
     }
 }
@@ -173,7 +173,7 @@ public class LayoutConstraintSolverCache {
         return StateDiff(constraintDiffs: constDiff, viewStateDiffs: viewDiff)
     }
     
-    internal func constraintList(forView view: View) -> ViewConstraintList {
+    internal func constraintList(for view: View) -> ViewConstraintList {
         let identifier = ObjectIdentifier(view)
         
         // Check previous list to copy over old state first
@@ -224,7 +224,7 @@ public class LayoutConstraintSolverCache {
                 }
             }
             
-            for varDiff in viewDiff.suggestedValue {
+            for varDiff in viewDiff.suggestedValues {
                 switch varDiff {
                 case let .added(variable, (value, strength)):
                     try solver.addEditVariable(variable: variable, strength: strength)
