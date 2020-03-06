@@ -297,7 +297,9 @@ private enum Difference<Key, Value> {
 }
 
 private extension Dictionary {
-    func makeDifference(withPrevious previous: Dictionary, didUpdate: (Key, _ old: Value, _ new: Value) -> Bool) -> [Difference<Key, Value>] {
+    func makeDifference(withPrevious previous: Dictionary,
+                        didUpdate: (Key, _ old: Value, _ new: Value) -> Bool) -> [Difference<Key, Value>] {
+        
         var result: [Difference<Key, Value>] = []
         for (key, value) in self {
             if let older = previous[key] {
