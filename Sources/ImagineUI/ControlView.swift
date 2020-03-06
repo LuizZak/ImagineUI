@@ -196,10 +196,9 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
     
     // MARK: -
 
-    public override init(bounds: Rectangle) {
-        super.init(bounds: bounds)
-
-        _bitmapCache.updateBitmapBounds(bounds)
+    public override init() {
+        super.init()
+        
         _stateManager.onStateChanged = { [weak self] old, new in
             self?.onStateChanged(ValueChangedEventArgs(oldValue: old, newValue: new))
         }

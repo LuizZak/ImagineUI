@@ -20,13 +20,13 @@ public class Panel: ControlView {
         }
     }
 
-    public init(bounds: Rectangle, title: String) {
-        containerView = View(bounds: bounds)
+    public init(title: String) {
+        containerView = View()
         containerView.translatesAutoresizingMaskIntoConstraints = false
-        label = Label(bounds: .empty)
+        label = Label()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = title
-        super.init(bounds: bounds)
+        super.init()
         clipToBounds = false
         strokeWidth = 1
     }

@@ -6,8 +6,8 @@ import Cocoa
 open class TextField: ControlView {
     private let _blinker = CursorBlinker()
     private var _label: Label
-    private var _labelContainer = ControlView(bounds: .empty)
-    private var _placeholderLabel = Label(bounds: .empty)
+    private var _labelContainer = ControlView()
+    private var _placeholderLabel = Label()
     private var _textEngine: TextEngine
     private let _statesStyles = StatedValueStore<TextFieldVisualStyleParameters>()
 
@@ -108,13 +108,13 @@ open class TextField: ControlView {
 
     open override var canBecomeFirstResponder: Bool { isEnabled }
 
-    public override init(bounds: Rectangle) {
-        let label = Label(bounds: bounds)
+    public override init() {
+        let label = Label()
         let buffer = LabelViewTextBuffer(label: label)
         _textEngine = TextEngine(textBuffer: buffer)
         self._label = label
         
-        super.init(bounds: bounds)
+        super.init()
         
         isEnabled = true
         

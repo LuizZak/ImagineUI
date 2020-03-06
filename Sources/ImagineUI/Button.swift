@@ -1,7 +1,7 @@
 import SwiftBlend2D
 
 open class Button: ControlView {
-    public let label = Label(bounds: .empty)
+    public let label = Label()
 
     open var title: String {
         get {
@@ -18,9 +18,8 @@ open class Button: ControlView {
         }
     }
 
-    public init(location: Vector2, title: String) {
-        super.init(bounds: .empty)
-        self.location = location
+    public init(title: String) {
+        super.init()
         label.text = title
         isEnabled = true
         mouseDownSelected = true

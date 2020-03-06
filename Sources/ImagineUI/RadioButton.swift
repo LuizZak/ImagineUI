@@ -1,7 +1,7 @@
 import SwiftBlend2D
 
 open class RadioButton: ControlView {
-    let label = Label(bounds: .empty)
+    let label = Label()
     
     /// Gets or sets the radio button manager for this radio button.
     /// If not specified, the default radio button manager will be the first
@@ -17,9 +17,8 @@ open class RadioButton: ControlView {
         }
     }
 
-    public init(location: Vector2, title: String) {
-        super.init(bounds: .empty)
-        self.location = location
+    public init(title: String) {
+        super.init()
         isEnabled = true
         label.text = title
         strokeWidth = 1.5

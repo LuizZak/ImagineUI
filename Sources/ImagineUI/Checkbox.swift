@@ -8,7 +8,7 @@ open class Checkbox: ControlView {
             invalidate()
         }
     }
-    let label = Label(bounds: .empty)
+    let label = Label()
     
     open var title: String {
         get {
@@ -26,9 +26,8 @@ open class Checkbox: ControlView {
     /// to `true` during the event dispatch round.
     @Event public var stateWillChange: CancelablleValueChangeEvent<Checkbox, Checkbox.State>
 
-    public init(location: Vector2, title: String) {
-        super.init(bounds: .empty)
-        self.location = location
+    public init(title: String) {
+        super.init()
         self.isEnabled = true
         label.text = title
         strokeWidth = 1.5

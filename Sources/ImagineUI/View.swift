@@ -130,8 +130,8 @@ open class View {
         return true
     }
 
-    public init(bounds: Rectangle) {
-        self.bounds = bounds
+    public init() {
+        self.bounds = .empty
         self.location = .zero
         layoutVariables = ViewLayoutVariables(view: self)
         setupHierarchy()
