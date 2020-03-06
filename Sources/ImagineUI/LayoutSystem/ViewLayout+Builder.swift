@@ -53,7 +53,7 @@ public class LayoutAnchorEdgesCreator {
         self.layout = layout
     }
 
-    public func equalTo(_ other: View, inset: EdgeInsets = .empty, multiplier: Double = 1) {
+    public func equalTo(_ other: View, inset: EdgeInsets = .zero, multiplier: Double = 1) {
         LayoutConstraint.create(first: layout.top, second: other.layout.top,
                                 offset: inset.top, multiplier: multiplier)
 
@@ -75,7 +75,7 @@ public class LayoutAnchorEdgesUpdater {
         self.layout = layout
     }
 
-    public func equalTo(_ other: View, inset: EdgeInsets = .empty, multiplier: Double = 1) {
+    public func equalTo(_ other: View, inset: EdgeInsets = .zero, multiplier: Double = 1) {
         LayoutConstraint.update(first: layout.top, second: other.layout.top,
                                 offset: inset.top, multiplier: multiplier)
 

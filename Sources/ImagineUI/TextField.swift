@@ -546,7 +546,7 @@ open class TextField: ControlView {
 
         let characterBounds = _label.textLayout.boundsForCharacters(in: caret.textRange)
         if characterBounds.count == 0 {
-            return .empty
+            return .zero
         }
 
         let charBounds = characterBounds.reduce(characterBounds[0], Rectangle.union)

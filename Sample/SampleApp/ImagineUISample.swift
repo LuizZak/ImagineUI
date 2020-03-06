@@ -234,7 +234,7 @@ class ImagineUI: Blend2DSample {
         ctx.setFillStyle(BLRgba32.cornflowerBlue)
 
         // Reduce redraw region to a single enclosing rectangle
-        var rect: Rectangle = redrawRegion.regionScans.isEmpty ? .empty : BLRect(boxI: redrawRegion.regionScans[0]).asRectangle
+        var rect: Rectangle = redrawRegion.regionScans.isEmpty ? .zero : BLRect(boxI: redrawRegion.regionScans[0]).asRectangle
 
         for box in redrawRegion.regionScans {
             rect = rect.formUnion(BLRect(boxI: box).asRectangle)

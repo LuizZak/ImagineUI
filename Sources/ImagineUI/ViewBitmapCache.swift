@@ -4,7 +4,7 @@ import SwiftBlend2D
 /// Used primarily by `ControlView`
 public class ViewBitmapCache {
     var bitmap: BLImage?
-    var rectangle: Rectangle = .empty
+    var rectangle: Rectangle = .zero
 
     var bitmapWidth: Int {
         return Int(ceil(rectangle.width * scale.x))
