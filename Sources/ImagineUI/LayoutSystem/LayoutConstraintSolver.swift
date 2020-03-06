@@ -76,8 +76,10 @@ class ViewConstraintList {
     /// Tags should be the same across constraints with the same terms to mantain
     /// consistency and allow different terms to be correctly detected and updated
     /// accordingly.
-    func addConstraint(name: String, _ constraint: @autoclosure () -> Constraint,
-                       strength: Double, tag: Int = 0) {
+    func addConstraint(name: String,
+                       _ constraint: @autoclosure () -> Constraint,
+                       strength: Double,
+                       tag: Int = 0) {
         
         if state.constraints[name]?.strength != strength || state.constraints[name]?.tag != tag {
             state.constraints[name] = (constraint(), strength, tag)

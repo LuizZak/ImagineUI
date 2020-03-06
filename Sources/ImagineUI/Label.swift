@@ -91,22 +91,18 @@ open class Label: View {
         }
     }
 
-    public override init(bounds: Rectangle) {
+    public override init() {
         self.font = Fonts.defaultFont(size: 11)
         minimalTextLayout = TextLayout(font: font, attributedText: AttributedText())
 
-        super.init(bounds: bounds)
-
-        _bitmapCache.updateBitmapBounds(bounds)
+        super.init()
     }
 
-    public init(bounds: Rectangle, font: BLFont) {
+    public init(font: BLFont) {
         self.font = font
         minimalTextLayout = TextLayout(font: font, attributedText: AttributedText())
 
-        super.init(bounds: bounds)
-
-        _bitmapCache.updateBitmapBounds(bounds)
+        super.init()
     }
 
     open override func render(in context: BLContext) {

@@ -18,8 +18,8 @@ public class ProgressBar: ControlView {
         return Size(x: bounds.width, y: 5)
     }
     
-    public override init(bounds: Rectangle) {
-        super.init(bounds: bounds)
+    public override init() {
+        super.init()
         backColor = .lightGray
         strokeColor = .lightGray
         strokeWidth = 1

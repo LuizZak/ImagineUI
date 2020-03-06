@@ -8,7 +8,7 @@ public class Window: ControlView {
     private var _constraintCache = LayoutConstraintSolverCache()
     private var _mouseDown = false
     private var _mouseDownPoint: Vector2 = .zero
-    private let _titleLabel = Label(bounds: .empty)
+    private let _titleLabel = Label()
 
     public var rootControlSystem: ControlSystem?
 
@@ -33,7 +33,8 @@ public class Window: ControlView {
         self.title = title
         self.titleFont = titleFont
 
-        super.init(bounds: Rectangle(x: 0, y: 0, width: area.width, height: area.height))
+        super.init()
+        
         initialize()
 
         self.area = area

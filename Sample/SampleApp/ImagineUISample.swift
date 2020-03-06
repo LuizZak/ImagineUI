@@ -38,52 +38,48 @@ class ImagineUI: Blend2DSample {
         window.rootControlSystem = controlSystem
         window.invalidationDelegate = self
 
-        let panel = Panel(bounds: .empty, title: "A Panel")
+        let panel = Panel(title: "A Panel")
 
-        let radioButton
-            = RadioButton(location: Vector2(x: 16, y: 50), title: "Unselected")
-        let radioButton2
-            = RadioButton(location: Vector2(x: 16, y: 70), title: "Selected")
+        let radioButton = RadioButton(title: "Unselected")
+        let radioButton2 = RadioButton(title: "Selected")
         radioButton2.isSelected = true
 
-        let checkBox1 = Checkbox(location: .zero,
-                                 title: "Unselected")
-        let checkBox2 = Checkbox(location: .zero,
-                                 title: "Partial")
+        let checkBox1 = Checkbox(title: "Unselected")
+        let checkBox2 = Checkbox(title: "Partial")
         checkBox2.checkboxState = .partial
-        let checkBox3 = Checkbox(location: .zero,
-                                 title: "Checked")
+        
+        let checkBox3 = Checkbox(title: "Checked")
         checkBox3.checkboxState = .checked
         checkBox3.isEnabled = false
 
-        let button = Button(location: .zero, title: "Button")
+        let button = Button(title: "Button")
         
         var attributedText = AttributedText()
         attributedText.append("A multi\n")
         attributedText.append("line\n", attributes: [.font: Fonts.defaultFont(size: 20)])
         attributedText.append("label!")
-        let label = Label(bounds: .empty)
+        let label = Label()
         label.attributedText = attributedText
         label.horizontalTextAlignment = .center
         label.verticalTextAlignment = .center
 
-        let textField = TextField(bounds: .empty)
+        let textField = TextField()
         textField.text = "Abc"
         textField.placeholderText = "Placeholder"
 
-        let progressBar = ProgressBar(bounds: .empty)
+        let progressBar = ProgressBar()
         progressBar.progress = 0.75
         
-        let sliderView = SliderView(bounds: .empty)
+        let sliderView = SliderView()
         sliderView.minimumValue = 0
         sliderView.maximumValue = 1
         sliderView.value = 0.75
 
-        let scrollView = ScrollView(bounds: .empty, scrollBarsMode: .vertical)
+        let scrollView = ScrollView(scrollBarsMode: .vertical)
         scrollView.backColor = .white
         scrollView.contentSize = Size(x: 0, y: 300)
         
-        let scrollViewLabel = Label(bounds: .empty)
+        let scrollViewLabel = Label()
         scrollViewLabel.text = "A\nScroll\nView"
         scrollViewLabel.horizontalTextAlignment = .center
         scrollViewLabel.verticalTextAlignment = .center

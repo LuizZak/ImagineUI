@@ -112,12 +112,6 @@ class ViewLayoutVariables {
                                         strength: Strength.STRONG)
         }
         if let intrinsicSize = view.intrinsicSize {
-            constraintList.suggestValue(variable: width, value: intrinsicSize.x,
-                                        strength: Strength.MEDIUM)
-            
-            constraintList.suggestValue(variable: height, value: intrinsicSize.y,
-                                        strength: Strength.MEDIUM)
-            
             // Content compression/hugging priority
             constraintList.addConstraint(
                 name: "width >= intrinsicSize.x",

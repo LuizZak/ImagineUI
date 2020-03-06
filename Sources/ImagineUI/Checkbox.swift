@@ -8,7 +8,16 @@ open class Checkbox: ControlView {
             invalidate()
         }
     }
-    let label = Label(bounds: .empty)
+    let label = Label()
+    
+    open var title: String {
+        get {
+            return label.text
+        }
+        set {
+            label.text = newValue
+        }
+    }
 
     /// Invoked by the checkbox when the user changes its state, before the new
     /// state is applied.
@@ -17,9 +26,8 @@ open class Checkbox: ControlView {
     /// to `true` during the event dispatch round.
     @Event public var stateWillChange: CancelablleValueChangeEvent<Checkbox, Checkbox.State>
 
-    public init(location: Vector2, title: String) {
-        super.init(bounds: .empty)
-        self.location = location
+    public init(title: String) {
+        super.init()
         self.isEnabled = true
         label.text = title
         strokeWidth = 1.5

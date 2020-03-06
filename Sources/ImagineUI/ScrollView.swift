@@ -6,7 +6,7 @@ open class ScrollView: ControlView {
     internal var contentOffset: Vector2 = .zero
     internal var targetContentOffset: Vector2 = .zero
     
-    public let contentView = View(bounds: .empty)
+    public let contentView = View()
     
     /// If enabled, overscrolling results in an elastic effect which bounces the
     /// scroll back to the scroll limits when the user lets go of the view
@@ -62,9 +62,9 @@ open class ScrollView: ControlView {
     public let horizontalBar = ScrollBarControl(orientation: .horizontal)
     public let verticalBar = ScrollBarControl(orientation: .vertical)
 
-    public init(bounds: Rectangle, scrollBarsMode: ScrollBarsVisibility) {
+    public init(scrollBarsMode: ScrollBarsVisibility) {
         self.scrollBarsMode = scrollBarsMode
-        super.init(bounds: bounds)
+        super.init()
         initialize()
     }
 
@@ -285,7 +285,7 @@ open class ScrollView: ControlView {
 }
 
 public class ScrollBarControl: ControlView {
-    private let scrollBarKnob = ControlView(bounds: .empty)
+    private let scrollBarKnob = ControlView()
     
     public let orientation: Orientation
     
@@ -319,7 +319,7 @@ public class ScrollBarControl: ControlView {
 
     public init(orientation: Orientation) {
         self.orientation = orientation
-        super.init(bounds: .empty)
+        super.init()
         backColor = .lightGray
         addSubview(scrollBarKnob)
         scrollBarKnob.suspendLayout()

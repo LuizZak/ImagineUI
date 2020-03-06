@@ -63,8 +63,8 @@ public class SliderView: ControlView {
         return Size(x: bounds.width, y: knobSize.y)
     }
     
-    public override init(bounds: Rectangle) {
-        super.init(bounds: bounds)
+    public override init() {
+        super.init()
         
         createKnobPath()
         
