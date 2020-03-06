@@ -135,9 +135,23 @@ public extension LayoutAnchorEdgesCreator {
     }
 }
 
+public extension LayoutAnchorSizeCreator {
+    @discardableResult
+    static func == (lhs: LayoutAnchorSizeCreator, rhs: View) -> [LayoutConstraint] {
+        return lhs.equalTo(rhs)
+    }
+}
+
 public extension LayoutAnchorEdgesUpdater {
     @discardableResult
     static func == (lhs: LayoutAnchorEdgesUpdater, rhs: View) -> [LayoutConstraint] {
+        return lhs.equalTo(rhs)
+    }
+}
+
+public extension LayoutAnchorSizeUpdater {
+    @discardableResult
+    static func == (lhs: LayoutAnchorSizeUpdater, rhs: View) -> [LayoutConstraint] {
         return lhs.equalTo(rhs)
     }
 }

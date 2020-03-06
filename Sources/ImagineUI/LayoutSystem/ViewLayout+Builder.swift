@@ -31,6 +31,7 @@ public struct LayoutAnchorUpdateCreator {
     public var centerY: LayoutAnchorCreator<XLayoutAnchor> { .init(anchor: layout.centerY) }
     public var firstBaseline: LayoutAnchorCreator<YLayoutAnchor> { .init(anchor: layout.firstBaseline) }
     public var edges: LayoutAnchorEdgesCreator { .init(layout: layout) }
+    public var size: LayoutAnchorSizeCreator { .init(layout: layout) }
     
     @discardableResult
     public func left(of other: View, offset: Double = 0) -> LayoutConstraint {
@@ -61,6 +62,7 @@ public struct LayoutAnchorUpdateBuilder {
     public var centerY: LayoutAnchorUpdater<XLayoutAnchor> { .init(anchor: layout.centerY) }
     public var firstBaseline: LayoutAnchorUpdater<YLayoutAnchor> { .init(anchor: layout.firstBaseline) }
     public var edges: LayoutAnchorEdgesUpdater { .init(layout: layout) }
+    public var size: LayoutAnchorSizeUpdater { .init(layout: layout) }
     
     @discardableResult
     public func left(of other: View, offset: Double = 0) -> LayoutConstraint {
@@ -103,6 +105,26 @@ public struct LayoutAnchorEdgesCreator {
     }
 }
 
+public struct LayoutAnchorSizeCreator {
+    let layout: View.Layout
+
+    init(layout: View.Layout) {
+        self.layout = layout
+    }
+    
+    @discardableResult
+    public func equalTo(_ other: View, multiplier: Double = 1) -> [LayoutConstraint] {
+        return  [
+            LayoutConstraint.create(first: layout.width,
+                                    second: other.layout.width,
+                                    multiplier: multiplier),
+            LayoutConstraint.create(first: layout.height,
+                                    second: other.layout.height,
+                                    multiplier: multiplier)
+        ]
+    }
+}
+
 public struct LayoutAnchorEdgesUpdater {
     let layout: View.Layout
 
@@ -124,6 +146,26 @@ public struct LayoutAnchorEdgesUpdater {
             
             LayoutConstraint.update(first: layout.bottom, second: other.layout.bottom,
                                     offset: -inset.bottom, multiplier: multiplier),
+        ]
+    }
+}
+
+public struct LayoutAnchorSizeUpdater {
+    let layout: View.Layout
+
+    init(layout: View.Layout) {
+        self.layout = layout
+    }
+    
+    @discardableResult
+    public func equalTo(_ other: View, multiplier: Double = 1) -> [LayoutConstraint] {
+        return  [
+            LayoutConstraint.update(first: layout.width,
+                                    second: other.layout.width,
+                                    multiplier: multiplier),
+            LayoutConstraint.update(first: layout.height,
+                                    second: other.layout.height,
+                                    multiplier: multiplier)
         ]
     }
 }
