@@ -18,6 +18,12 @@ public class DefaultControlSystem: ControlSystem {
     public init() {
         
     }
+    
+    // MARK: - Window management
+    
+    public func bringWindowToFront(_ window: Window) {
+        delegate?.bringWindowToFront(window)
+    }
 
     // MARK: - Mouse Events
 
@@ -44,6 +50,10 @@ public class DefaultControlSystem: ControlSystem {
             if handler !== self._firstResponder && handler.canBecomeFirstResponder {
                 self._firstResponder?.resignFirstResponder()
             }
+        }
+        
+        if let window = control.window {
+            bringWindowToFront(window)
         }
 
         control.handleOrPass(request)
@@ -220,6 +230,7 @@ private extension MouseEventArgs {
 }
 
 public protocol DefaultControlSystemDelegate: class {
+    func bringWindowToFront(_ window: Window)
     func controlViewUnder(point: Vector2, enabledOnly: Bool) -> ControlView?
 }
 

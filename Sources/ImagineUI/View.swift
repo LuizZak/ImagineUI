@@ -9,6 +9,14 @@ open class View {
     var layoutVariables: ViewLayoutVariables!
     
     var isLayoutSuspended = false
+    
+    var window: Window? {
+        if let window = self as? Window {
+            return window
+        }
+        
+        return superview?.window
+    }
 
     public internal(set) var needsLayout: Bool = true
 

@@ -1,6 +1,8 @@
 /// Base for a control system which handles views and controls from a full
 /// hierarchy
 public protocol ControlSystem {
+    func bringWindowToFront(_ window: Window)
+    
     /// Sets an event handler as first responder
     ///
     /// - Parameter eventHandler: An event handler, or nil, in case of an attempt

@@ -366,6 +366,13 @@ class ImagineUI: Blend2DSample {
 }
 
 extension ImagineUI: DefaultControlSystemDelegate {
+    func bringWindowToFront(_ window: Window) {
+        windows.removeAll(where: { $0 == window })
+        windows.append(window)
+        
+        window.invalidate()
+    }
+    
     func controlViewUnder(point: Vector2, enabledOnly: Bool) -> ControlView? {
         for window in windows.reversed() {
             let converted = window.convertFromScreen(point)
