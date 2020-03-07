@@ -19,14 +19,25 @@ open class Button: ControlView {
             updateLabelConstraints()
         }
     }
+    
+    open override var backColor: BLRgba32 {
+        get {
+            return _backColor.getValue(currentState, defaultValue: .royalBlue)
+        }
+        set {
+            super.backColor = newValue
+        }
+    }
 
     public init(title: String) {
         super.init()
         label.text = title
         isEnabled = true
         mouseDownSelected = true
+        strokeColor = .white
         strokeWidth = 1
         initStyle()
+        cornerRadius = 4
     }
     
     private func initStyle() {
@@ -69,20 +80,14 @@ open class Button: ControlView {
         }
     }
     
+    /// Sets the appropriate background color while this button is in a given
+    /// state
     func setBackgroundColor(_ color: BLRgba32, forState state: ControlViewState) {
         _backColor.setValue(color, forState: state)
-    }
-    
-    open override func renderBackground(in ctx: BLContext) {
-        let roundRect = BLRoundRect(rect: bounds.asBLRect, radius: BLPoint(x: 4, y: 4))
-
-        let color = _backColor.getValue(currentState, defaultValue: BLRgba32.royalBlue)
-
-        ctx.setFillStyle(color)
-        ctx.setStrokeStyle(strokeColor)
-        ctx.setStrokeWidth(strokeWidth)
-        ctx.strokeRoundRect(roundRect)
-        ctx.fillRoundRect(roundRect)
+        
+        if state == currentState {
+            invalidateControlGraphics()
+        }
     }
     
     open override func viewForFirstBaseline() -> View? {
