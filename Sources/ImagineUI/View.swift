@@ -258,10 +258,10 @@ open class View {
         // constraints involving this view tree, but not the children hierarchy.
         superview?.visitingSuperviews { view in
             for constraint in view.containedConstraints {
-                if constraint.firstCast.owner.isDescendant(of: self) {
+                if constraint.first.owner.isDescendant(of: self) {
                     constraint.removeConstraint()
                 }
-                if constraint.secondCast?.owner.isDescendant(of: self) == true {
+                if constraint.second?.owner.isDescendant(of: self) == true {
                     constraint.removeConstraint()
                 }
             }

@@ -199,6 +199,7 @@ class ViewLayoutVariables {
 
 public protocol LayoutAnchorType {
     var kind: AnchorKind { get }
+    var owner: View { get }
 }
 
 internal struct InternalLayoutAnchor: LayoutAnchorType, Equatable {
@@ -258,7 +259,7 @@ internal struct InternalLayoutAnchor: LayoutAnchorType, Equatable {
 }
 
 public struct LayoutAnchor<T>: LayoutAnchorType, Equatable, CustomStringConvertible {
-    var owner: View
+    public var owner: View
     public var kind: AnchorKind
 
     public var orientation: LayoutConstraintOrientation {
@@ -299,30 +300,40 @@ public class LayoutConstraint: Hashable {
     public let second: LayoutAnchorType?
     public var relationship: Relationship {
         didSet {
+            if relationship == oldValue { return }
+            
             cachedConstraint = nil
             containerView.setNeedsLayout()
         }
     }
     public var offset: Double {
         didSet {
+            if offset == oldValue { return }
+            
             cachedConstraint = nil
             containerView.setNeedsLayout()
         }
     }
     public var multiplier: Double {
         didSet {
+            if multiplier == oldValue { return }
+            
             cachedConstraint = nil
             containerView.setNeedsLayout()
         }
     }
     public var priority: Double {
         didSet {
+            if priority == oldValue { return }
+            
             cachedConstraint = nil
             containerView.setNeedsLayout()
         }
     }
     public var isEnabled: Bool = true {
         didSet {
+            if isEnabled == oldValue { return }
+            
             cachedConstraint = nil
             containerView.setNeedsLayout()
         }
