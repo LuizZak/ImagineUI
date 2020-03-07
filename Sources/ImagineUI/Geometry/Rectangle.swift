@@ -292,6 +292,10 @@ public struct Rectangle: Equatable, Codable {
     /// (i.e. bounds are larger by `size`, but center remains the same)
     @inlinable
     public func inflatedBy(_ size: Vector2) -> Rectangle {
+        if size == .zero {
+            return self
+        }
+        
         return Rectangle(min: minimum - size / 2, max: maximum + size / 2)
     }
 
@@ -306,6 +310,10 @@ public struct Rectangle: Equatable, Codable {
     /// (i.e. bounds are smaller by `size`, but center remains the same)
     @inlinable
     public func insetBy(_ size: Vector2) -> Rectangle {
+        if size == .zero {
+            return self
+        }
+        
         return Rectangle(min: minimum + size / 2, max: maximum - size / 2)
     }
 

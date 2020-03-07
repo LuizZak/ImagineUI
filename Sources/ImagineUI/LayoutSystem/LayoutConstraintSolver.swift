@@ -6,7 +6,7 @@ public class LayoutConstraintSolver {
             collection.affectedLayoutVariables.append(view.layoutVariables)
 
             collection.constraints.append(contentsOf:
-                view.containedConstraints.filter { $0.isEnabled }
+                view.containedConstraints.lazy.filter { $0.isEnabled }
             )
         }
 
@@ -81,7 +81,9 @@ class ViewConstraintList {
                        strength: Double,
                        tag: Int = 0) {
         
-        if state.constraints[name]?.strength != strength || state.constraints[name]?.tag != tag {
+        let current = state.constraints[name]
+        
+        if current?.strength != strength || current?.tag != tag {
             state.constraints[name] = (constraint(), strength, tag)
         }
     }
@@ -140,8 +142,8 @@ public class LayoutConstraintSolverCache {
         previousConstraintDefinitionsMap = constraintDefinitionsMap
         previousViewConstraintList = viewConstraintList.mapValues { $0.clone() }
         
-        constraintDefinitionsMap = [:]
-        viewConstraintList = [:]
+        constraintDefinitionsMap = Dictionary(minimumCapacity: previousConstraintDefinitionsMap.count)
+        viewConstraintList = Dictionary(minimumCapacity: previousViewConstraintList.count)
     }
     
     fileprivate func compareState() -> StateDiff {

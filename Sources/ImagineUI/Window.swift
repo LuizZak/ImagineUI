@@ -1,4 +1,5 @@
 import SwiftBlend2D
+import Cassowary
 
 public protocol WindowRedrawInvalidationDelegate: class {
     func window(_ window: Window, invalidateRect rect: Rectangle)
@@ -9,6 +10,8 @@ public class Window: ControlView {
     private var _mouseDown = false
     private var _mouseDownPoint: Vector2 = .zero
     private let _titleLabel = Label()
+    private let _buttons = WindowButtons()
+    private let _titleBarHeight = 25.0
 
     public var rootControlSystem: ControlSystem?
 
@@ -38,7 +41,7 @@ public class Window: ControlView {
         initialize()
 
         self.area = area
-        strokeWidth = 1.5
+        strokeWidth = 5
     }
 
     private func initialize() {
@@ -55,6 +58,21 @@ public class Window: ControlView {
                                 second: layout.top,
                                 offset: 3)
     }
+    
+    public override func setupHierarchy() {
+        super.setupHierarchy()
+        
+        addSubview(_buttons)
+    }
+    
+    public override func setupConstraints() {
+        super.setupConstraints()
+        
+        _buttons.layout.makeConstraints { make in
+            make.left == self + 10
+            make.centerY == self.layout.top + _titleBarHeight / 2
+        }
+    }
 
     public override func renderBackground(in context: BLContext) {
         super.renderBackground(in: context)
@@ -66,6 +84,7 @@ public class Window: ControlView {
         super.renderForeground(in: context)
 
         drawTitleBar(context)
+        drawWindowBorders(context)
     }
     
     internal override func performConstraintsLayout() {
@@ -147,7 +166,7 @@ public class Window: ControlView {
     }
 
     private func drawTitleBar(_ ctx: BLContext) {
-        let titleBarArea = BLRect(x: bounds.x, y: bounds.y, w: bounds.width, h: 25)
+        let titleBarArea = BLRect(x: bounds.x, y: bounds.y, w: bounds.width, h: _titleBarHeight)
         let windowRounded = BLRoundRect(rect: bounds.asBLRect, radius: BLPoint(x: 4, y: 4))
 
         let linearGradient
@@ -164,24 +183,72 @@ public class Window: ControlView {
         ctx.fillRoundRect(windowRounded)
 
         ctx.restoreClipping()
-
-        drawTitleBarButtons(ctx)
-    }
-
-    private func drawTitleBarButtons(_ ctx: BLContext) {
-        let titleBarArea = BLRect(x: bounds.x, y: bounds.y, w: bounds.width, h: 25)
-
-        let close = BLCircle(cx: titleBarArea.x + 15, cy: titleBarArea.center.y, r: 5)
-        let minimize = BLCircle(cx: titleBarArea.x + 32, cy: titleBarArea.center.y, r: 5)
-        let expand = BLCircle(cx: titleBarArea.x + 49, cy: titleBarArea.center.y, r: 5)
-
-        ctx.setFillStyle(BLRgba32.indianRed)
-        ctx.fillCircle(close)
-        ctx.setFillStyle(BLRgba32.gold)
-        ctx.fillCircle(minimize)
-        ctx.setFillStyle(BLRgba32.limeGreen)
-        ctx.fillCircle(expand)
     }
 }
 
 extension Window: RadioButtonManagerType { }
+
+class WindowButtons: ControlView {
+    let close = Button(title: "")
+    let minimize = Button(title: "")
+    let maximize = Button(title: "")
+    
+    override init() {
+        super.init()
+        
+        initializeView()
+    }
+    
+    private func initializeView() {
+        configureButton(close)
+        configureButton(minimize)
+        configureButton(maximize)
+        
+        setButtonColor(close, .indianRed)
+        setButtonColor(minimize, .gold)
+        setButtonColor(maximize, .limeGreen)
+    }
+    
+    private func setButtonColor(_ button: Button, _ color: BLRgba32) {
+        button.setBackgroundColor(color, forState: .normal)
+        button.setBackgroundColor(color.faded(towards: .white, factor: 0.1), forState: .highlighted)
+        button.setBackgroundColor(color.faded(towards: .black, factor: 0.1), forState: .selected)
+    }
+    
+    private func configureButton(_ button: Button) {
+        button.cornerRadius = 5
+        button.strokeWidth = 0
+        button.layout.makeConstraints { make in
+            (make.size == Size(x: 10, y: 10)).setPriority(Strength.REQUIRED)
+        }
+    }
+    
+    override func setupHierarchy() {
+        super.setupHierarchy()
+        
+        addSubview(close)
+        addSubview(minimize)
+        addSubview(maximize)
+    }
+    
+    override func setupConstraints() {
+        super.setupConstraints()
+        
+        close.layout.makeConstraints { make in
+            make.left == self
+            make.bottom == self
+            make.top == self
+        }
+        minimize.layout.makeConstraints { make in
+            make.top == close
+            make.bottom == self
+            make.right(of: close, offset: 7)
+        }
+        maximize.layout.makeConstraints { make in
+            make.top == close
+            make.bottom == self
+            make.right(of: minimize, offset: 7)
+            make.right == self
+        }
+    }
+}

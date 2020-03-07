@@ -631,7 +631,7 @@ public extension View {
         public var top: LayoutAnchor<YLayoutAnchor> { make(.top) }
         public var bottom: LayoutAnchor<YLayoutAnchor> { make(.bottom) }
         public var centerX: LayoutAnchor<XLayoutAnchor> { make(.centerX) }
-        public var centerY: LayoutAnchor<XLayoutAnchor> { make(.centerY) }
+        public var centerY: LayoutAnchor<YLayoutAnchor> { make(.centerY) }
         public var firstBaseline: LayoutAnchor<YLayoutAnchor> { make(.firstBaseline) }
 
         init(view: View) {
@@ -647,3 +647,11 @@ public extension View {
 public struct XLayoutAnchor { }
 public struct YLayoutAnchor { }
 public struct DimensionLayoutAnchor { }
+
+public extension Sequence where Element == LayoutConstraint {
+    func setPriority(_ priority: Double) {
+        for constraint in self {
+            constraint.priority = priority
+        }
+    }
+}

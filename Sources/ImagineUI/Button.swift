@@ -1,6 +1,8 @@
 import SwiftBlend2D
 
 open class Button: ControlView {
+    private var _backColor = StatedValueStore<BLRgba32>()
+    
     public let label = Label()
 
     open var title: String {
@@ -24,6 +26,13 @@ open class Button: ControlView {
         isEnabled = true
         mouseDownSelected = true
         strokeWidth = 1
+        initStyle()
+    }
+    
+    private func initStyle() {
+        _backColor.setValue(.royalBlue, forState: .normal)
+        _backColor.setValue(BLRgba32.royalBlue.faded(towards: .white, factor: 0.1), forState: .highlighted)
+        _backColor.setValue(BLRgba32.royalBlue.faded(towards: .black, factor: 0.1), forState: .selected)
     }
 
     open override func onStateChanged(_ event: ValueChangedEventArgs<ControlViewState>) {
@@ -49,33 +58,29 @@ open class Button: ControlView {
 
         // Label constraints
         label.layout.makeConstraints { make in
-            make.edges.equalTo(self, inset: contentInset)
+            make.edges.equalTo(self, inset: contentInset).setPriority(500)
         }
     }
 
     func updateLabelConstraints() {
         // Label constraints
         label.layout.updateConstraints { make in
-            make.edges.equalTo(self, inset: contentInset)
+            make.edges.equalTo(self, inset: contentInset).setPriority(500)
         }
     }
-
-    open override func renderForeground(in ctx: BLContext) {
-        super.renderForeground(in: ctx)
-
+    
+    func setBackgroundColor(_ color: BLRgba32, forState state: ControlViewState) {
+        _backColor.setValue(color, forState: state)
+    }
+    
+    open override func renderBackground(in ctx: BLContext) {
         let roundRect = BLRoundRect(rect: bounds.asBLRect, radius: BLPoint(x: 4, y: 4))
 
-        var color = BLRgba32.royalBlue
-
-        if currentState == .highlighted {
-            color = color.faded(towards: .white, factor: 0.1)
-        } else if currentState == .selected {
-            color = color.faded(towards: .black, factor: 0.1)
-        }
+        let color = _backColor.getValue(currentState, defaultValue: BLRgba32.royalBlue)
 
         ctx.setFillStyle(color)
-        ctx.setStrokeStyle(BLRgba32.white)
-        ctx.setStrokeWidth(1)
+        ctx.setStrokeStyle(strokeColor)
+        ctx.setStrokeWidth(strokeWidth)
         ctx.strokeRoundRect(roundRect)
         ctx.fillRoundRect(roundRect)
     }

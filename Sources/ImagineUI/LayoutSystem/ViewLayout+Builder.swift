@@ -28,7 +28,7 @@ public struct LayoutAnchorUpdateCreator {
     public var top: LayoutAnchorCreator<YLayoutAnchor> { .init(anchor: layout.top) }
     public var bottom: LayoutAnchorCreator<YLayoutAnchor> { .init(anchor: layout.bottom) }
     public var centerX: LayoutAnchorCreator<XLayoutAnchor> { .init(anchor: layout.centerX) }
-    public var centerY: LayoutAnchorCreator<XLayoutAnchor> { .init(anchor: layout.centerY) }
+    public var centerY: LayoutAnchorCreator<YLayoutAnchor> { .init(anchor: layout.centerY) }
     public var firstBaseline: LayoutAnchorCreator<YLayoutAnchor> { .init(anchor: layout.firstBaseline) }
     public var edges: LayoutAnchorEdgesCreator { .init(layout: layout) }
     public var size: LayoutAnchorSizeCreator { .init(layout: layout) }
@@ -59,7 +59,7 @@ public struct LayoutAnchorUpdateBuilder {
     public var top: LayoutAnchorUpdater<YLayoutAnchor> { .init(anchor: layout.top) }
     public var bottom: LayoutAnchorUpdater<YLayoutAnchor> { .init(anchor: layout.bottom) }
     public var centerX: LayoutAnchorUpdater<XLayoutAnchor> { .init(anchor: layout.centerX) }
-    public var centerY: LayoutAnchorUpdater<XLayoutAnchor> { .init(anchor: layout.centerY) }
+    public var centerY: LayoutAnchorUpdater<YLayoutAnchor> { .init(anchor: layout.centerY) }
     public var firstBaseline: LayoutAnchorUpdater<YLayoutAnchor> { .init(anchor: layout.firstBaseline) }
     public var edges: LayoutAnchorEdgesUpdater { .init(layout: layout) }
     public var size: LayoutAnchorSizeUpdater { .init(layout: layout) }
@@ -123,6 +123,16 @@ public struct LayoutAnchorSizeCreator {
                                     multiplier: multiplier)
         ]
     }
+    
+    @discardableResult
+    public func equalTo(_ size: Size) -> [LayoutConstraint] {
+        return  [
+            LayoutConstraint.create(first: layout.width,
+                                    offset: size.x),
+            LayoutConstraint.create(first: layout.height,
+                                    offset: size.y)
+        ]
+    }
 }
 
 public struct LayoutAnchorEdgesUpdater {
@@ -166,6 +176,16 @@ public struct LayoutAnchorSizeUpdater {
             LayoutConstraint.update(first: layout.height,
                                     second: other.layout.height,
                                     multiplier: multiplier)
+        ]
+    }
+    
+    @discardableResult
+    public func equalTo(_ size: Size) -> [LayoutConstraint] {
+        return  [
+            LayoutConstraint.update(first: layout.width,
+                                    offset: size.x),
+            LayoutConstraint.update(first: layout.height,
+                                    offset: size.y)
         ]
     }
 }
