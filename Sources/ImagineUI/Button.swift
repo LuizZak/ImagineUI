@@ -1,4 +1,5 @@
 import SwiftBlend2D
+import Cassowary
 
 open class Button: ControlView {
     private var _backColor = StatedValueStore<BLRgba32>()
@@ -69,14 +70,14 @@ open class Button: ControlView {
 
         // Label constraints
         label.layout.makeConstraints { make in
-            make.edges.equalTo(self, inset: contentInset).setPriority(500)
+            make.edges.equalTo(self, inset: contentInset).setPriority(Strength.MEDIUM)
         }
     }
 
     func updateLabelConstraints() {
         // Label constraints
         label.layout.updateConstraints { make in
-            make.edges.equalTo(self, inset: contentInset).setPriority(500)
+            make.edges.equalTo(self, inset: contentInset).setPriority(Strength.MEDIUM)
         }
     }
     
