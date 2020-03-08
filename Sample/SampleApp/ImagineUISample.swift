@@ -388,7 +388,7 @@ extension ImagineUI: DefaultControlSystemDelegate {
     func controlViewUnder(point: Vector2, enabledOnly: Bool) -> ControlView? {
         for window in windows.reversed() {
             let converted = window.convertFromScreen(point)
-            if let view = window.hitTestControl(point: converted, enabledOnly: enabledOnly) {
+            if let view = window.hitTestControl(converted, enabledOnly: enabledOnly) {
                 return view
             }
         }
