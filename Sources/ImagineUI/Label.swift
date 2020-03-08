@@ -112,6 +112,7 @@ open class Label: View {
         _bitmapCache.updateBitmapBounds(bounds)
         _bitmapCache.cachingOrRendering(context) { context in
             context.setFillStyle(textColor)
+            context.setStrokeStyle(textColor)
             textLayout.renderText(in: context, location: .zero)
         }
     }
