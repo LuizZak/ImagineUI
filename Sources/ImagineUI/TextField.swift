@@ -6,7 +6,7 @@ import Cocoa
 open class TextField: ControlView {
     private let _blinker = CursorBlinker()
     private var _label: Label
-    private var _labelContainer = ControlView()
+    private var _labelContainer = View()
     private var _placeholderLabel = Label()
     private var _textEngine: TextEngine
     private let _statesStyles = StatedValueStore<TextFieldVisualStyleParameters>()
@@ -148,9 +148,6 @@ open class TextField: ControlView {
         _labelContainer.isInteractiveEnabled = false
         _labelContainer.addSubview(_label)
         _labelContainer.addSubview(_placeholderLabel)
-
-        _labelContainer.backColor = .transparentBlack
-        _labelContainer.strokeColor = .transparentBlack
 
         _label.font = Fonts.defaultFont(size: 11)
         _label.suspendLayout()
@@ -499,7 +496,10 @@ open class TextField: ControlView {
         let charBounds = characterBounds.reduce(characterBounds[0], Rectangle.union)
         let transformed = _label.convert(bounds: charBounds, to: self)
 
+        context.save()
+        context.clipToRect(_labelContainer.area.asBLRect)
         context.fillRect(transformed.asBLRect)
+        context.restore()
     }
     
     private func renderCaret(in context: BLContext) {
