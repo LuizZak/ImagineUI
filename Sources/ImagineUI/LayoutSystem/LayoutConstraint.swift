@@ -65,35 +65,35 @@ public enum AnchorKind {
 
 public protocol LayoutAnchorType {
     var kind: AnchorKind { get }
-    var owner: AnyObject { get }
+    var owner: AnyObject? { get }
 }
 
 internal struct InternalLayoutAnchor: LayoutAnchorType, Equatable {
+    weak var _owner: LayoutVariablesContainer?
     var kind: AnchorKind
-    var _owner: LayoutVariablesContainer
     
-    var owner: AnyObject { return _owner }
+    var owner: AnyObject? { return _owner }
     
-    func getVariable() -> Variable {
+    func getVariable() -> Variable? {
         switch kind {
         case .width:
-            return _owner.layoutVariables.width
+            return _owner?.layoutVariables.width
         case .height:
-            return _owner.layoutVariables.height
+            return _owner?.layoutVariables.height
         case .left:
-            return _owner.layoutVariables.left
+            return _owner?.layoutVariables.left
         case .top:
-            return _owner.layoutVariables.top
+            return _owner?.layoutVariables.top
         case .right:
-            return _owner.layoutVariables.right
+            return _owner?.layoutVariables.right
         case .bottom:
-            return _owner.layoutVariables.bottom
+            return _owner?.layoutVariables.bottom
         case .centerX:
-            return _owner.layoutVariables.centerX
+            return _owner?.layoutVariables.centerX
         case .centerY:
-            return _owner.layoutVariables.centerY
+            return _owner?.layoutVariables.centerY
         case .firstBaseline:
-            return _owner.layoutVariables.firstBaseline
+            return _owner?.layoutVariables.firstBaseline
         }
     }
 
@@ -113,8 +113,11 @@ internal struct InternalLayoutAnchor: LayoutAnchorType, Equatable {
         }
     }
 
-    func makeExpression(relative: View) -> Expression {
-        return getVariable() - makeRelativeExpression(relative: relative)
+    func makeExpression(relative: View) -> Expression? {
+        guard let variable = getVariable() else {
+            return nil
+        }
+        return variable - makeRelativeExpression(relative: relative)
     }
     
     func isEqual(to other: InternalLayoutAnchor) -> Bool {
@@ -132,11 +135,12 @@ public class LayoutConstraint: Hashable {
     /// The view that effectively contains this constraint
     var containerView: View
 
-    internal let firstCast: InternalLayoutAnchor
-    internal let secondCast: InternalLayoutAnchor?
+    internal var firstCast: InternalLayoutAnchor
+    internal var secondCast: InternalLayoutAnchor?
     
-    public let first: LayoutAnchorType
-    public let second: LayoutAnchorType?
+    private(set) public var first: LayoutAnchorType
+    private(set) public var second: LayoutAnchorType?
+    
     public var relationship: Relationship {
         didSet {
             if relationship == oldValue { return }
@@ -145,6 +149,7 @@ public class LayoutConstraint: Hashable {
             containerView.setNeedsLayout()
         }
     }
+    
     public var offset: Double {
         didSet {
             if offset == oldValue { return }
@@ -153,6 +158,7 @@ public class LayoutConstraint: Hashable {
             containerView.setNeedsLayout()
         }
     }
+    
     public var multiplier: Double {
         didSet {
             if multiplier == oldValue { return }
@@ -161,6 +167,7 @@ public class LayoutConstraint: Hashable {
             containerView.setNeedsLayout()
         }
     }
+    
     public var priority: Double {
         didSet {
             if priority == oldValue { return }
@@ -169,6 +176,7 @@ public class LayoutConstraint: Hashable {
             containerView.setNeedsLayout()
         }
     }
+    
     public var isEnabled: Bool = true {
         didSet {
             if isEnabled == oldValue { return }
@@ -214,13 +222,16 @@ public class LayoutConstraint: Hashable {
         self.priority = priority
     }
     
-    func getOrCreateCachedConstraint() -> Constraint {
+    func getOrCreateCachedConstraint() -> Constraint? {
         if let cached = cachedConstraint {
             return cached
         }
+        guard let firstVariable = firstCast.getVariable() else {
+            return nil
+        }
         
-        let constraint: Constraint
-        if let secondCast = secondCast {
+        var constraint: Constraint?
+        if let secondCast = secondCast, let secondVariable = secondCast.getVariable() {
             // Create an expression of the form:
             //
             // first [ == | <= | >= ] (second - containerLocation) * multiplier + containerLocation + offset
@@ -247,15 +258,15 @@ public class LayoutConstraint: Hashable {
             if multiplier == 1 {
                 constraint =
                     relationship
-                        .makeConstraint(left: firstCast.getVariable(),
-                                        right: secondCast.getVariable(),
+                        .makeConstraint(left: firstVariable,
+                                        right: secondVariable,
                                         offset: offset)
                         .setStrength(priority)
-            } else {
+            } else if let secondExpr = secondCast.makeExpression(relative: containerView) {
                 constraint =
                     relationship
-                        .makeConstraint(left: firstCast.getVariable(),
-                                        right: secondCast.makeExpression(relative: containerView),
+                        .makeConstraint(left: firstVariable,
+                                        right: secondExpr,
                                         offset: secondCast.makeRelativeExpression(relative: containerView) + offset,
                                         multiplier: multiplier)
                         .setStrength(priority)
@@ -263,7 +274,7 @@ public class LayoutConstraint: Hashable {
         } else {
             constraint =
                 relationship
-                    .makeConstraint(left: firstCast.getVariable(), offset: offset)
+                    .makeConstraint(left: firstVariable, offset: offset)
                     .setStrength(priority)
         }
         
@@ -274,12 +285,12 @@ public class LayoutConstraint: Hashable {
 
     func removeConstraint() {
         containerView.setNeedsLayout()
-        firstCast._owner.setNeedsLayout()
-        secondCast?._owner.setNeedsLayout()
+        firstCast._owner?.setNeedsLayout()
+        secondCast?._owner?.setNeedsLayout()
 
         containerView.containedConstraints.removeAll { $0 === self }
-        firstCast._owner.constraints.removeAll { $0 === self }
-        secondCast?._owner.constraints.removeAll { $0 === self }
+        firstCast._owner?.constraints.removeAll { $0 === self }
+        secondCast?._owner?.constraints.removeAll { $0 === self }
     }
 
     @discardableResult
@@ -318,10 +329,10 @@ public class LayoutConstraint: Hashable {
                                  multiplier: Double = 1,
                                  priority: Double = Strength.STRONG) -> LayoutConstraint {
 
-        guard let view1 = first._owner.viewInHierarchy else {
+        guard let view1 = first._owner?.viewInHierarchy else {
             fatalError("Cannot add constraint between two views in two different hierarchies")
         }
-        guard let view2 = second._owner.viewInHierarchy else {
+        guard let view2 = second._owner?.viewInHierarchy else {
             fatalError("Cannot add constraint between two views in two different hierarchies")
         }
         
@@ -340,12 +351,12 @@ public class LayoutConstraint: Hashable {
 
         ancestor.containedConstraints.append(constraint)
 
-        first._owner.constraints.append(constraint)
-        second._owner.constraints.append(constraint)
+        first._owner?.constraints.append(constraint)
+        second._owner?.constraints.append(constraint)
 
         ancestor.setNeedsLayout()
-        first._owner.setNeedsLayout()
-        second._owner.setNeedsLayout()
+        first._owner?.setNeedsLayout()
+        second._owner?.setNeedsLayout()
 
         return constraint
     }
@@ -356,7 +367,7 @@ public class LayoutConstraint: Hashable {
                                  offset: Double = 0,
                                  priority: Double = Strength.STRONG) -> LayoutConstraint {
 
-        guard let view = first._owner.viewInHierarchy else {
+        guard let view = first._owner?.viewInHierarchy else {
             fatalError("No view in hierarchy found for input type \(type(of: first))")
         }
         
@@ -367,10 +378,10 @@ public class LayoutConstraint: Hashable {
                              offset: offset,
                              priority: priority)
 
-        first._owner.viewInHierarchy?.containedConstraints.append(constraint)
-        first._owner.constraints.append(constraint)
+        first._owner?.viewInHierarchy?.containedConstraints.append(constraint)
+        first._owner?.constraints.append(constraint)
 
-        first._owner.setNeedsLayout()
+        first._owner?.setNeedsLayout()
 
         return constraint
     }
@@ -413,7 +424,7 @@ public class LayoutConstraint: Hashable {
                                  multiplier: Double = 1,
                                  priority: Double = Strength.STRONG) -> LayoutConstraint {
 
-        let constraint = first._owner.constraints.first {
+        let constraint = first._owner?.constraints.first {
             $0.firstCast.isEqual(to: first) == true && $0.secondCast?.isEqual(to: second) == true
         }
 
@@ -436,7 +447,7 @@ public class LayoutConstraint: Hashable {
                                  multiplier: Double = 1,
                                  priority: Double = Strength.STRONG) -> LayoutConstraint {
 
-        let constraint = first._owner.constraints.first {
+        let constraint = first._owner?.constraints.first {
             $0.firstCast.isEqual(to: first) == true && $0.second == nil
         }
 
@@ -459,11 +470,6 @@ public class LayoutConstraint: Hashable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(ObjectIdentifier(self))
     }
-}
-
-public enum LayoutConstraintOrientation {
-    case horizontal
-    case vertical
 }
 
 public struct XLayoutAnchor { }

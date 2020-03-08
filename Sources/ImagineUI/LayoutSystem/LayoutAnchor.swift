@@ -1,9 +1,9 @@
 public struct LayoutAnchor<T>: LayoutAnchorType, Equatable, CustomStringConvertible {
-    internal var _owner: LayoutVariablesContainer
-    public var owner: AnyObject { return _owner }
+    internal weak var _owner: LayoutVariablesContainer?
+    public var owner: AnyObject? { return _owner }
     public var kind: AnchorKind
 
-    public var orientation: LayoutConstraintOrientation {
+    public var orientation: LayoutAnchorOrientation {
         switch kind {
         case .left, .width, .right, .centerX:
             return .horizontal
@@ -14,9 +14,9 @@ public struct LayoutAnchor<T>: LayoutAnchorType, Equatable, CustomStringConverti
     }
 
     public var description: String {
-        return toInternalLayoutAnchor().getVariable().name
+        return toInternalLayoutAnchor().getVariable()?.name ?? "<unowned anchor>"
     }
-
+    
     public static func == (lhs: LayoutAnchor, rhs: LayoutAnchor) -> Bool {
         return lhs._owner === rhs._owner && lhs.kind == rhs.kind
     }
@@ -24,6 +24,11 @@ public struct LayoutAnchor<T>: LayoutAnchorType, Equatable, CustomStringConverti
 
 extension LayoutAnchor {
     func toInternalLayoutAnchor() -> InternalLayoutAnchor {
-        return InternalLayoutAnchor(kind: kind, _owner: _owner)
+        return InternalLayoutAnchor(_owner: _owner, kind: kind)
     }
+}
+
+public enum LayoutAnchorOrientation {
+    case horizontal
+    case vertical
 }

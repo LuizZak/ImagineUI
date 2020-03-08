@@ -267,10 +267,10 @@ open class View {
         // constraints involving this view tree, but not the children hierarchy.
         superview?.visitingSuperviews { view in
             for constraint in view.containedConstraints {
-                if constraint.firstCast._owner.viewInHierarchy?.isDescendant(of: self) == true {
+                if constraint.firstCast._owner?.viewInHierarchy?.isDescendant(of: self) == true {
                     constraint.removeConstraint()
                 }
-                if constraint.secondCast?._owner.viewInHierarchy?.isDescendant(of: self) == true {
+                if constraint.secondCast?._owner?.viewInHierarchy?.isDescendant(of: self) == true {
                     constraint.removeConstraint()
                 }
             }
@@ -547,7 +547,7 @@ open class View {
     
     // MARK: - Content Compression/Hugging configuration
     
-    public func setContentCompressionResistance(_ orientation: LayoutConstraintOrientation,
+    public func setContentCompressionResistance(_ orientation: LayoutAnchorOrientation,
                                                 _ priority: Int) {
         setNeedsLayout()
         
@@ -557,14 +557,14 @@ open class View {
         }
     }
     
-    public func contentCompressionResistance(_ orientation: LayoutConstraintOrientation) -> Int {
+    public func contentCompressionResistance(_ orientation: LayoutAnchorOrientation) -> Int {
         switch orientation {
         case .horizontal: return horizontalCompressResistance
         case .vertical: return verticalCompressResistance
         }
     }
     
-    public func setContentHuggingPriority(_ orientation: LayoutConstraintOrientation,
+    public func setContentHuggingPriority(_ orientation: LayoutAnchorOrientation,
                                           _ priority: Int) {
         setNeedsLayout()
         
@@ -574,7 +574,7 @@ open class View {
         }
     }
     
-    public func contentHuggingPriority(_ orientation: LayoutConstraintOrientation) -> Int {
+    public func contentHuggingPriority(_ orientation: LayoutAnchorOrientation) -> Int {
         switch orientation {
         case .horizontal: return horizontalHuggingPriority
         case .vertical: return verticalHuggingPriority

@@ -265,16 +265,21 @@ public class LayoutConstraintSolverCache {
         constraintDefinitionsMap[constraint] = definition
     }
     
-    private func toDefinition(_ layoutConstraint: LayoutConstraint) -> ConstraintDefinition {
-        ConstraintDefinition(constraint: layoutConstraint.getOrCreateCachedConstraint(),
-                             containerView: layoutConstraint.containerView,
-                             first: layoutConstraint.firstCast,
-                             second: layoutConstraint.secondCast,
-                             relationship: layoutConstraint.relationship,
-                             offset: layoutConstraint.offset,
-                             multiplier: layoutConstraint.multiplier,
-                             priority: layoutConstraint.priority,
-                             isEnabled: layoutConstraint.isEnabled)
+    private func toDefinition(_ layoutConstraint: LayoutConstraint) -> ConstraintDefinition? {
+        guard let constraint = layoutConstraint.getOrCreateCachedConstraint() else {
+            return nil
+        }
+        
+        return
+            ConstraintDefinition(constraint: constraint,
+                                 containerView: layoutConstraint.containerView,
+                                 first: layoutConstraint.firstCast,
+                                 second: layoutConstraint.secondCast,
+                                 relationship: layoutConstraint.relationship,
+                                 offset: layoutConstraint.offset,
+                                 multiplier: layoutConstraint.multiplier,
+                                 priority: layoutConstraint.priority,
+                                 isEnabled: layoutConstraint.isEnabled)
     }
     
     fileprivate struct ConstraintDefinition: Equatable {
