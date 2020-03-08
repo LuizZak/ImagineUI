@@ -466,34 +466,6 @@ public enum LayoutConstraintOrientation {
     case vertical
 }
 
-public extension View {
-    var layout: Layout {
-        return Layout(view: self)
-    }
-
-    struct Layout {
-        var view: View
-
-        public var width: LayoutAnchor<DimensionLayoutAnchor> { make(.width) }
-        public var height: LayoutAnchor<DimensionLayoutAnchor> { make(.height) }
-        public var left: LayoutAnchor<XLayoutAnchor> { make(.left) }
-        public var right: LayoutAnchor<XLayoutAnchor> { make(.right) }
-        public var top: LayoutAnchor<YLayoutAnchor> { make(.top) }
-        public var bottom: LayoutAnchor<YLayoutAnchor> { make(.bottom) }
-        public var centerX: LayoutAnchor<XLayoutAnchor> { make(.centerX) }
-        public var centerY: LayoutAnchor<YLayoutAnchor> { make(.centerY) }
-        public var firstBaseline: LayoutAnchor<YLayoutAnchor> { make(.firstBaseline) }
-
-        init(view: View) {
-            self.view = view
-        }
-
-        private func make<T>(_ anchorKind: AnchorKind) -> LayoutAnchor<T> {
-            return LayoutAnchor(_owner: view, kind: anchorKind)
-        }
-    }
-}
-
 public struct XLayoutAnchor { }
 public struct YLayoutAnchor { }
 public struct DimensionLayoutAnchor { }

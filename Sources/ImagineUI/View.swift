@@ -291,11 +291,13 @@ open class View {
     // MARK: - Layout Guides
     
     open func addLayoutGuide(_ guide: LayoutGuide) {
+        guide.owningView = self
         layoutGuides.append(guide)
     }
     
     open func removeLayoutGuide(_ guide: LayoutGuide) {
         if let index = layoutGuides.firstIndex(where: { $0 === guide }) {
+            guide.owningView = nil
             layoutGuides.remove(at: index)
             
             for constraint in guide.constraints {

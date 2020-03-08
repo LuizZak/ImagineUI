@@ -114,13 +114,13 @@ class ImagineUI: Blend2DSample {
         }
 
         radioButton.layout.makeConstraints { make in
-            make.left == panel.containerView + 4
-            make.top == panel.containerView + 4
+            make.left == panel.containerLayoutGuide + 4
+            make.top == panel.containerLayoutGuide + 4
         }
         radioButton2.layout.makeConstraints { make in
             make.left == radioButton
             make.under(radioButton, offset: 5)
-            make.bottom == panel.containerView - 4
+            make.bottom == panel.containerLayoutGuide - 4
         }
 
         checkBox1.layout.makeConstraints { make in

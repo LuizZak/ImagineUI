@@ -3,7 +3,7 @@ import SwiftBlend2D
 /// A container control that places components within an outlined panel area
 public class Panel: ControlView {
     public let label: Label
-    public let containerView: View
+    public let containerLayoutGuide = LayoutGuide()
 
     public var title: String {
         get {
@@ -21,7 +21,6 @@ public class Panel: ControlView {
     }
 
     public init(title: String) {
-        containerView = View()
         label = Label()
         label.text = title
         super.init()
@@ -32,8 +31,8 @@ public class Panel: ControlView {
     public override func setupHierarchy() {
         super.setupHierarchy()
 
-        super.addSubview(containerView)
-        super.addSubview(label)
+        addSubview(label)
+        addLayoutGuide(containerLayoutGuide)
     }
 
     public override func setupConstraints() {
@@ -44,7 +43,7 @@ public class Panel: ControlView {
             make.left == self + 8
         }
 
-        containerView.layout.makeConstraints { make in
+        containerLayoutGuide.layout.makeConstraints { make in
             make.top == label.layout.bottom + containerInset.top
             make.left == self + containerInset.left
             make.right == self - containerInset.right
@@ -55,16 +54,12 @@ public class Panel: ControlView {
     }
 
     private func updateConstraints() {
-        containerView.layout.updateConstraints { make in
+        containerLayoutGuide.layout.updateConstraints { make in
             make.top == label.layout.bottom + containerInset.top
             make.left == self + containerInset.left
             make.right == self - containerInset.right
             make.bottom == self - containerInset.bottom
         }
-    }
-
-    public override func addSubview(_ view: View) {
-        containerView.addSubview(view)
     }
 
     public override func renderBackground(in context: BLContext) {
