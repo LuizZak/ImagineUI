@@ -18,6 +18,13 @@ public struct EdgeInsets: Equatable {
         self.bottom = bottom
         self.right = right
     }
+    
+    public init(_ value: Double) {
+        top = value
+        left = value
+        bottom = value
+        right = value
+    }
 
     public func inset(rectangle: Rectangle) -> Rectangle {
         return rectangle.inset(self)

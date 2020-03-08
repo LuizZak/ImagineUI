@@ -96,7 +96,7 @@ open class TextField: ControlView {
         set { _textEngine.setCaret(newValue) }
     }
 
-    open var contentInset: EdgeInsets = EdgeInsets(top: 8, left: 8, bottom: 8, right: 8) {
+    open var contentInset: EdgeInsets = EdgeInsets(4) {
         didSet {
             setNeedsLayout()
             invalidate()

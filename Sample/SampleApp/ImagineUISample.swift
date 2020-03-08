@@ -164,7 +164,7 @@ class ImagineUI: Blend2DSample {
             make.left == label
             make.under(label, offset: 15)
             make.width == 100
-            make.height == 33
+            make.height == 24
         }
         
         scrollView.layout.makeConstraints { make in
