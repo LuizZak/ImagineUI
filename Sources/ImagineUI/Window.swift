@@ -120,30 +120,6 @@ public class Window: ControlView {
         _mouseDown = false
     }
 
-    /// Returns the first control view under a given point on this window.
-    ///
-    /// Returns nil, if no control was found.
-    ///
-    /// - Parameter point: Point to hit-test against, in local coordinates of
-    /// this `Window`
-    /// - Parameter enabledOnly: Whether to only consider views that have
-    /// interactivity enabled. See `ControlView.interactionEnabled`
-    public func hitTestControl(point: Vector2, enabledOnly: Bool = true) -> ControlView? {
-        for case let controlView as ControlView in subviews {
-            let local = controlView.convert(point: point, from: self)
-
-            if let control = controlView.hitTestControl(local, enabledOnly: enabledOnly) {
-                return control
-            }
-        }
-
-        if bounds.contains(point) {
-            return self
-        }
-
-        return nil
-    }
-
     private func drawWindowBackground(_ ctx: BLContext) {
         let windowRounded = BLRoundRect(rect: bounds.asBLRect, radius: BLPoint(x: 4, y: 4))
 
@@ -188,7 +164,7 @@ public class Window: ControlView {
 
 extension Window: RadioButtonManagerType { }
 
-class WindowButtons: ControlView {
+class WindowButtons: View {
     let close = Button(title: "")
     let minimize = Button(title: "")
     let maximize = Button(title: "")
