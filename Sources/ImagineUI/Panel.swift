@@ -5,7 +5,7 @@ public class Panel: ControlView {
     let label: Label
     
     /// Layout guide representing the area of the panel that subviews can be laid
-    /// out safely without coliding with the panel's label
+    /// out safely without colliding with the panel's label
     public let containerLayoutGuide = LayoutGuide()
 
     public var title: String {
