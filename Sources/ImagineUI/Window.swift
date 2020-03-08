@@ -14,6 +14,7 @@ public class Window: ControlView {
     private let _titleBarHeight = 25.0
     
     public let contentsLayoutArea = LayoutGuide()
+    public let titleBarLayoutArea = LayoutGuide()
 
     public var rootControlSystem: ControlSystem?
 
@@ -49,35 +50,46 @@ public class Window: ControlView {
     private func initialize() {
         _titleLabel.text = title
         _titleLabel.font = titleFont
-        _titleLabel.translatesAutoresizingMaskIntoConstraints = false
-
-        addSubview(_titleLabel)
-
-        LayoutConstraint.create(first: _titleLabel.layout.centerX,
-                                second: layout.centerX)
-
-        LayoutConstraint.create(first: _titleLabel.layout.top,
-                                second: layout.top,
-                                offset: 3)
     }
     
     public override func setupHierarchy() {
         super.setupHierarchy()
         
         addSubview(_buttons)
+        addSubview(_titleLabel)
+        addLayoutGuide(titleBarLayoutArea)
         addLayoutGuide(contentsLayoutArea)
     }
     
     public override func setupConstraints() {
         super.setupConstraints()
         
+        titleBarLayoutArea.layout.makeConstraints { make in
+            make.left == self + 2
+            make.top == self + 2
+            make.right == self - 2
+            make.height == _titleBarHeight - 2
+        }
+        
         contentsLayoutArea.layout.makeConstraints { make in
-            make.edges.equalTo(self, inset: EdgeInsets(top: _titleBarHeight, left: 2, bottom: 2, right: 2))
+            make.top == titleBarLayoutArea.layout.bottom
+            make.left == self + 2
+            make.bottom == self - 2
+            make.right == self - 2
+        }
+        
+        _titleLabel.setContentHuggingPriority(.horizontal, 999)
+        _titleLabel.setContentCompressionResistance(.horizontal, 900)
+        _titleLabel.layout.makeConstraints { make in
+            make.centerY == titleBarLayoutArea
+            (make.centerX == titleBarLayoutArea).priority = Strength.MEDIUM
+            make.right <= titleBarLayoutArea - 10
         }
         
         _buttons.layout.makeConstraints { make in
-            make.left == self + 10
-            make.centerY == self.layout.top + _titleBarHeight / 2
+            make.left == titleBarLayoutArea + 10
+            make.centerY == titleBarLayoutArea
+            make.right <= _titleLabel.layout.left - 10
         }
     }
 

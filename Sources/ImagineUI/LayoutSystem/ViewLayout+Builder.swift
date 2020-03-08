@@ -251,10 +251,10 @@ public struct LayoutAnchorCreator<T> {
     @discardableResult
     public func greaterThanOrEqualTo(_ other: LayoutAnchor<T>, offset: Double = 0, multiplier: Double = 1) -> LayoutConstraint {
         LayoutConstraint.create(first: anchor,
-                                 second: other,
-                                 relationship: .greaterThanOrEqual,
-                                 offset: offset,
-                                 multiplier: multiplier)
+                                second: other,
+                                relationship: .greaterThanOrEqual,
+                                offset: offset,
+                                multiplier: multiplier)
     }
 
     @discardableResult

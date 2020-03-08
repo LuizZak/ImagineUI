@@ -2,6 +2,7 @@ import Foundation
 import QuartzCore
 import SwiftBlend2D
 import ImagineUI
+import Cassowary
 
 class ImagineUI: Blend2DSample {
     private var lastFrame: TimeInterval = 0
@@ -168,10 +169,10 @@ class ImagineUI: Blend2DSample {
         }
         
         scrollView.layout.makeConstraints { make in
-            make.left == window + 10
+            make.left == window.contentsLayoutArea + 8
             make.under(button, offset: 10)
-            make.right == window - 10
-            make.bottom == window - 10
+            make.right == window.contentsLayoutArea - 8
+            make.bottom == window.contentsLayoutArea - 8
         }
         
         scrollViewLabel.setContentHuggingPriority(.horizontal, 50)

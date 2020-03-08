@@ -1,3 +1,5 @@
+import Cassowary
+
 /// A view that lays out a set of its arranged subviews horizontally or
 /// vertically automatically
 open class StackView: View {
@@ -10,6 +12,12 @@ open class StackView: View {
     }
     
     open var orientation: Orientation {
+        didSet {
+            recreateConstraints()
+        }
+    }
+    
+    open var alignment: Alignment = .leading {
         didSet {
             recreateConstraints()
         }
@@ -35,7 +43,53 @@ open class StackView: View {
             addLayoutGuide(guide)
             
             view.layout.makeConstraints { make in
-                make.edges == guide
+                switch alignment {
+                case .leading:
+                    switch orientation {
+                    case .horizontal:
+                        make.left == guide
+                        make.right == guide
+                        make.top == guide
+                        make.bottom <= guide
+                    case .vertical:
+                        make.top == guide
+                        make.bottom == guide
+                        make.left == guide
+                        make.right <= guide
+                    }
+                    
+                case .trailing:
+                    switch orientation {
+                    case .horizontal:
+                        make.left == guide
+                        make.right == guide
+                        make.top >= guide
+                        make.bottom == guide
+                    case .vertical:
+                        make.top == guide
+                        make.bottom == guide
+                        make.width <= guide
+                        make.right == guide
+                    }
+                    
+                case .fill:
+                    make.edges == guide
+                
+                case .centered:
+                    switch orientation {
+                    case .horizontal:
+                        make.left == guide
+                        make.height <= guide
+                        make.centerY == guide
+                        make.right == guide
+                        
+                    case .vertical:
+                        make.top == guide
+                        make.width <= guide
+                        make.centerX == guide
+                        make.bottom == guide
+                    }
+                }
             }
             
             guide.layout.makeConstraints { make in
@@ -91,5 +145,12 @@ open class StackView: View {
     public enum Orientation {
         case vertical
         case horizontal
+    }
+    
+    public enum Alignment {
+        case leading
+        case trailing
+        case fill
+        case centered
     }
 }
