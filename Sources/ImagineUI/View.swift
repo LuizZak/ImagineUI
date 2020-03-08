@@ -255,10 +255,26 @@ open class View {
 
         superview?.setNeedsLayout()
         view.invalidate()
+        
+        didAddSubview(view)
+    }
+    
+    /// Function called after a view has been added as a subview of this view
+    open func didAddSubview(_ view: View) {
+        
+    }
+    
+    /// Function called before a view is removed as a subview of this view instance
+    open func willRemoveSubview(_ view: View) {
+        
     }
 
     open func removeFromSuperview() {
         invalidate()
+        
+        if let superview = superview {
+            superview.willRemoveSubview(self)
+        }
 
         // Remove all constraints that involve this view, or one of its subviews.
         // We check parent views only because the way containedConstraints are
@@ -275,7 +291,7 @@ open class View {
                 }
             }
         }
-
+        
         superview?.subviews.removeAll(where: { $0 === self })
         superview = nil
     }

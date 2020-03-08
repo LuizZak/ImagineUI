@@ -6,6 +6,10 @@ public class LayoutConstraintSolver {
             collection.affectedLayoutVariables.append(view.layoutVariables)
             for guide in view.layoutGuides {
                 collection.affectedLayoutVariables.append(guide.layoutVariables)
+                
+                for constraint in guide.constraints where constraint.isEnabled {
+                    collection.constraints.append(constraint)
+                }
             }
 
             for constraint in view.constraints where constraint.isEnabled {

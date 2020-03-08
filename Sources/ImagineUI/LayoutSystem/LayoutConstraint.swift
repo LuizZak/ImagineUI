@@ -1,10 +1,21 @@
 import blend2d
 import Cassowary
 
-public enum Relationship {
+public enum Relationship: CustomStringConvertible {
     case equal
     case greaterThanOrEqual
     case lessThanOrEqual
+    
+    public var description: String {
+        switch self {
+        case .equal:
+            return "=="
+        case .greaterThanOrEqual:
+            return ">="
+        case .lessThanOrEqual:
+            return "<="
+        }
+    }
 
     func makeConstraint(left: Variable, right: Variable, offset: Double, multiplier: Double) -> Constraint {
         switch self {
@@ -63,7 +74,7 @@ public enum AnchorKind {
     case firstBaseline
 }
 
-public protocol LayoutAnchorType {
+public protocol LayoutAnchorType: CustomStringConvertible {
     var kind: AnchorKind { get }
     var owner: AnyObject? { get }
 }
@@ -73,6 +84,10 @@ internal struct AnyLayoutAnchor: LayoutAnchorType, Equatable {
     var kind: AnchorKind
     
     var owner: AnyObject? { return _owner }
+    
+    public var description: String {
+        return getVariable()?.name ?? "<unowned anchor>"
+    }
     
     func getVariable() -> Variable? {
         switch kind {
@@ -469,6 +484,24 @@ public class LayoutConstraint: Hashable {
     
     public func hash(into hasher: inout Hasher) {
         hasher.combine(ObjectIdentifier(self))
+    }
+}
+
+extension LayoutConstraint: CustomStringConvertible {
+    public var description: String {
+        var trailing = ""
+        if multiplier != 1 {
+            trailing += " * \(multiplier)"
+        }
+        if offset != 0 || second == nil {
+            trailing += " + \(offset)"
+        }
+        
+        if let second = second {
+            return "<\(first) \(relationship) \(second)\(trailing)>"
+        }
+        
+        return "<\(first) \(relationship)\(trailing)>"
     }
 }
 

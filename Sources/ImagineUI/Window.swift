@@ -12,6 +12,8 @@ public class Window: ControlView {
     private let _titleLabel = Label()
     private let _buttons = WindowButtons()
     private let _titleBarHeight = 25.0
+    
+    public let contentsLayoutArea = LayoutGuide()
 
     public var rootControlSystem: ControlSystem?
 
@@ -63,10 +65,15 @@ public class Window: ControlView {
         super.setupHierarchy()
         
         addSubview(_buttons)
+        addLayoutGuide(contentsLayoutArea)
     }
     
     public override func setupConstraints() {
         super.setupConstraints()
+        
+        contentsLayoutArea.layout.makeConstraints { make in
+            make.edges.equalTo(self, inset: EdgeInsets(top: _titleBarHeight, left: 2, bottom: 2, right: 2))
+        }
         
         _buttons.layout.makeConstraints { make in
             make.left == self + 10

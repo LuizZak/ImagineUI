@@ -108,8 +108,8 @@ class ImagineUI: Blend2DSample {
         scrollView.addSubview(scrollViewLabel)
 
         panel.layout.makeConstraints { make in
-            make.top == window + 35
-            make.left == window + 10
+            make.top == window.contentsLayoutArea + 4
+            make.left == window.contentsLayoutArea + 10
             make.width == 100
         }
 
@@ -308,22 +308,18 @@ class ImagineUI: Blend2DSample {
         let boundsCheckbox = Checkbox(title: "View Bounds")
         let layoutCheckbox = Checkbox(title: "Layout Guides")
         let constrCheckbox = Checkbox(title: "Constraints")
+        let stackView = StackView(orientation: .vertical)
+        stackView.spacing = 4
         
-        window.addSubview(boundsCheckbox)
-        window.addSubview(layoutCheckbox)
-        window.addSubview(constrCheckbox)
+        stackView.addArrangedSubview(boundsCheckbox)
+        stackView.addArrangedSubview(layoutCheckbox)
+        stackView.addArrangedSubview(constrCheckbox)
         
-        boundsCheckbox.layout.makeConstraints { make in
-            make.left == window + 15
-            make.top == window + 35
-        }
-        layoutCheckbox.layout.makeConstraints { make in
-            make.left == boundsCheckbox
-            make.under(boundsCheckbox, offset: 5)
-        }
-        constrCheckbox.layout.makeConstraints { make in
-            make.left == layoutCheckbox
-            make.under(layoutCheckbox, offset: 5)
+        window.addSubview(stackView)
+        
+        stackView.layout.makeConstraints { make in
+            make.left == window.contentsLayoutArea + 12
+            make.top == window.contentsLayoutArea + 12
         }
         
         boundsCheckbox.checkboxStateWillChange.addListener(owner: self) { [weak self] (_, event) in
