@@ -63,169 +63,37 @@ public enum AnchorKind {
     case firstBaseline
 }
 
-class ViewLayoutVariables {
-    unowned let view: View
-    let left: Variable
-    let right: Variable
-    let top: Variable
-    let bottom: Variable
-    let width: Variable
-    let height: Variable
-    let centerX: Variable
-    let centerY: Variable
-    let firstBaseline: Variable
-
-    init(view: View) {
-        let name = ViewLayoutVariables.deriveName(view)
-
-        self.view = view
-
-        left = Variable("\(name)_left")
-        right = Variable("\(name)_right")
-        top = Variable("\(name)_top")
-        bottom = Variable("\(name)_bottom")
-        width = Variable("\(name)_width")
-        height = Variable("\(name)_height")
-        centerX = Variable("\(name)_centerX")
-        centerY = Variable("\(name)_centerY")
-        firstBaseline = Variable("\(name)_firstBaseline")
-    }
-
-    func deriveConstraints(_ constraintList: ViewConstraintList) {
-        if view.translatesAutoresizingMaskIntoConstraints {
-            let location = view.convert(point: .zero, to: nil)
-            
-            constraintList.suggestValue(variable: left,
-                                        value: location.x,
-                                        strength: Strength.STRONG)
-            
-            constraintList.suggestValue(variable: width,
-                                        value: view.bounds.width,
-                                        strength: Strength.STRONG)
-            
-            constraintList.suggestValue(variable: top,
-                                        value: location.y,
-                                        strength: Strength.STRONG)
-            
-            constraintList.suggestValue(variable: height,
-                                        value: view.bounds.height,
-                                        strength: Strength.STRONG)
-        }
-        if let intrinsicSize = view.intrinsicSize {
-            // Content compression/hugging priority
-            constraintList.addConstraint(
-                name: "width >= intrinsicSize.x",
-                width >= intrinsicSize.x,
-                strength: LayoutConstraintHelpers.strengthFromPriority(view.horizontalCompressResistance))
-            
-            constraintList.addConstraint(
-                name: "width <= intrinsicSize.x",
-                width <= intrinsicSize.x,
-                strength: LayoutConstraintHelpers.strengthFromPriority(view.horizontalHuggingPriority))
-            
-            constraintList.addConstraint(
-                name: "height >= intrinsicSize.y",
-                height >= intrinsicSize.y,
-                strength: LayoutConstraintHelpers.strengthFromPriority(view.verticalCompressResistance))
-            
-            constraintList.addConstraint(
-                name: "height <= intrinsicSize.y",
-                height <= intrinsicSize.y,
-                strength: LayoutConstraintHelpers.strengthFromPriority(view.verticalHuggingPriority))
-        }
-        
-        constraintList.addConstraint(name: "width >= 0",
-                                     width >= 0,
-                                     strength: Strength.REQUIRED)
-        
-        constraintList.addConstraint(name: "right == width + left",
-                                     right == width + left,
-                                     strength: Strength.REQUIRED)
-        
-        constraintList.addConstraint(name: "height >= 0",
-                                     height >= 0,
-                                     strength: Strength.REQUIRED)
-        
-        constraintList.addConstraint(name: "bottom == top + height",
-                                     bottom == top + height,
-                                     strength: Strength.REQUIRED)
-        
-        constraintList.addConstraint(name: "centerX",
-                                     centerX == left + width / 2,
-                                     strength: Strength.REQUIRED)
-        
-        constraintList.addConstraint(name: "centerY",
-                                     centerY == top + height / 2,
-                                     strength: Strength.REQUIRED)
-        
-        if let label = viewForFirstBaseline() as? Label {
-            constraintList.addConstraint(name: "firstBaseline",
-                                         firstBaseline == label.layoutVariables.top + label.baselineHeight,
-                                         strength: Strength.REQUIRED,
-                                         tag: label.baselineHeight.hashValue)
-        } else {
-            constraintList.addConstraint(name: "firstBaseline",
-                                         firstBaseline == height,
-                                         strength: Strength.REQUIRED)
-        }
-    }
-
-    func applyVariables() {
-        let location: Vector2
-        if let parent = view.superview {
-            location = parent.convert(point: Vector2(x: left.value, y: top.value), from: nil)
-        } else {
-            location = Vector2(x: left.value, y: top.value)
-        }
-        
-        view.location = location
-        view.bounds = view.bounds.withSize(width: width.value, height: height.value)
-    }
-    
-    func viewForFirstBaseline() -> View {
-        if let view = view.viewForFirstBaseline() {
-            return view
-        }
-        
-        return view
-    }
-
-    private static func deriveName(_ view: View) -> String {
-        let pointer = Unmanaged.passUnretained(view).toOpaque()
-
-        return "\(type(of: view))_\(pointer)"
-    }
-}
-
 public protocol LayoutAnchorType {
     var kind: AnchorKind { get }
-    var owner: View { get }
+    var owner: AnyObject { get }
 }
 
 internal struct InternalLayoutAnchor: LayoutAnchorType, Equatable {
     var kind: AnchorKind
-    var owner: View
+    var _owner: LayoutVariablesContainer
+    
+    var owner: AnyObject { return _owner }
     
     func getVariable() -> Variable {
         switch kind {
         case .width:
-            return owner.layoutVariables.width
+            return _owner.layoutVariables.width
         case .height:
-            return owner.layoutVariables.height
+            return _owner.layoutVariables.height
         case .left:
-            return owner.layoutVariables.left
+            return _owner.layoutVariables.left
         case .top:
-            return owner.layoutVariables.top
+            return _owner.layoutVariables.top
         case .right:
-            return owner.layoutVariables.right
+            return _owner.layoutVariables.right
         case .bottom:
-            return owner.layoutVariables.bottom
+            return _owner.layoutVariables.bottom
         case .centerX:
-            return owner.layoutVariables.centerX
+            return _owner.layoutVariables.centerX
         case .centerY:
-            return owner.layoutVariables.centerY
+            return _owner.layoutVariables.centerY
         case .firstBaseline:
-            return owner.layoutVariables.firstBaseline
+            return _owner.layoutVariables.firstBaseline
         }
     }
 
@@ -250,40 +118,11 @@ internal struct InternalLayoutAnchor: LayoutAnchorType, Equatable {
     }
     
     func isEqual(to other: InternalLayoutAnchor) -> Bool {
-        return other.owner === owner && other.kind == kind
+        return other._owner === _owner && other.kind == kind
     }
     
     public static func == (lhs: InternalLayoutAnchor, rhs: InternalLayoutAnchor) -> Bool {
-        return lhs.owner === rhs.owner && lhs.kind == rhs.kind
-    }
-}
-
-public struct LayoutAnchor<T>: LayoutAnchorType, Equatable, CustomStringConvertible {
-    public var owner: View
-    public var kind: AnchorKind
-
-    public var orientation: LayoutConstraintOrientation {
-        switch kind {
-        case .left, .width, .right, .centerX:
-            return .horizontal
-            
-        case .top, .height, .bottom, .centerY, .firstBaseline:
-            return .vertical
-        }
-    }
-
-    public var description: String {
-        return toInternalLayoutAnchor().getVariable().name
-    }
-
-    public static func == (lhs: LayoutAnchor, rhs: LayoutAnchor) -> Bool {
-        return lhs.owner === rhs.owner && lhs.kind == rhs.kind
-    }
-}
-
-extension LayoutAnchor {
-    func toInternalLayoutAnchor() -> InternalLayoutAnchor {
-        return InternalLayoutAnchor(kind: kind, owner: owner)
+        return lhs._owner === rhs._owner && lhs.kind == rhs.kind
     }
 }
 
@@ -435,12 +274,12 @@ public class LayoutConstraint: Hashable {
 
     func removeConstraint() {
         containerView.setNeedsLayout()
-        firstCast.owner.setNeedsLayout()
-        secondCast?.owner.setNeedsLayout()
+        firstCast._owner.setNeedsLayout()
+        secondCast?._owner.setNeedsLayout()
 
         containerView.containedConstraints.removeAll { $0 === self }
-        firstCast.owner.constraints.removeAll { $0 === self }
-        secondCast?.owner.constraints.removeAll { $0 === self }
+        firstCast._owner.constraints.removeAll { $0 === self }
+        secondCast?._owner.constraints.removeAll { $0 === self }
     }
 
     @discardableResult
@@ -479,7 +318,14 @@ public class LayoutConstraint: Hashable {
                                  multiplier: Double = 1,
                                  priority: Double = Strength.STRONG) -> LayoutConstraint {
 
-        guard let ancestor = View.firstCommonAncestor(between: first.owner, second.owner) else {
+        guard let view1 = first._owner.viewInHierarchy else {
+            fatalError("Cannot add constraint between two views in two different hierarchies")
+        }
+        guard let view2 = second._owner.viewInHierarchy else {
+            fatalError("Cannot add constraint between two views in two different hierarchies")
+        }
+        
+        guard let ancestor = View.firstCommonAncestor(between: view1, view2) else {
             fatalError("Cannot add constraint between two views in two different hierarchies")
         }
 
@@ -494,12 +340,12 @@ public class LayoutConstraint: Hashable {
 
         ancestor.containedConstraints.append(constraint)
 
-        first.owner.constraints.append(constraint)
-        second.owner.constraints.append(constraint)
+        first._owner.constraints.append(constraint)
+        second._owner.constraints.append(constraint)
 
         ancestor.setNeedsLayout()
-        first.owner.setNeedsLayout()
-        second.owner.setNeedsLayout()
+        first._owner.setNeedsLayout()
+        second._owner.setNeedsLayout()
 
         return constraint
     }
@@ -510,17 +356,21 @@ public class LayoutConstraint: Hashable {
                                  offset: Double = 0,
                                  priority: Double = Strength.STRONG) -> LayoutConstraint {
 
+        guard let view = first._owner.viewInHierarchy else {
+            fatalError("No view in hierarchy found for input type \(type(of: first))")
+        }
+        
         let constraint =
-            LayoutConstraint(containerView: first.owner,
+            LayoutConstraint(containerView: view,
                              first: first,
                              relationship: relationship,
                              offset: offset,
                              priority: priority)
 
-        first.owner.containedConstraints.append(constraint)
-        first.owner.constraints.append(constraint)
+        first._owner.viewInHierarchy?.containedConstraints.append(constraint)
+        first._owner.constraints.append(constraint)
 
-        first.owner.setNeedsLayout()
+        first._owner.setNeedsLayout()
 
         return constraint
     }
@@ -563,7 +413,7 @@ public class LayoutConstraint: Hashable {
                                  multiplier: Double = 1,
                                  priority: Double = Strength.STRONG) -> LayoutConstraint {
 
-        let constraint = first.owner.constraints.first {
+        let constraint = first._owner.constraints.first {
             $0.firstCast.isEqual(to: first) == true && $0.secondCast?.isEqual(to: second) == true
         }
 
@@ -586,7 +436,7 @@ public class LayoutConstraint: Hashable {
                                  multiplier: Double = 1,
                                  priority: Double = Strength.STRONG) -> LayoutConstraint {
 
-        let constraint = first.owner.constraints.first {
+        let constraint = first._owner.constraints.first {
             $0.firstCast.isEqual(to: first) == true && $0.second == nil
         }
 
@@ -639,7 +489,7 @@ public extension View {
         }
 
         private func make<T>(_ anchorKind: AnchorKind) -> LayoutAnchor<T> {
-            return LayoutAnchor(owner: view, kind: anchorKind)
+            return LayoutAnchor(_owner: view, kind: anchorKind)
         }
     }
 }

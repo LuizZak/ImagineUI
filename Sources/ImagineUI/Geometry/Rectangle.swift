@@ -5,7 +5,7 @@ public struct Rectangle: Equatable, Codable {
     
     /// Minimum point for this rectangle.
     public var minimum: Vector2 {
-        get { return Vector2(x: x, y: y) }
+        get { return topLeft }
         set {
             let diff = newValue - minimum
             
@@ -16,7 +16,7 @@ public struct Rectangle: Equatable, Codable {
     
     /// Maximum point for this rectangle.
     public var maximum: Vector2 {
-        get { return Vector2(x: right, y: bottom) }
+        get { return bottomRight }
         set {
             width = newValue.x - x
             height = newValue.y - y
@@ -37,10 +37,21 @@ public struct Rectangle: Equatable, Codable {
     ///
     /// When setting this value, `height` must always be `>= 0`
     public var height: Double
-
-    public var size: Vector2 {
+    
+    /// The top-left location of this rectangle
+    public var location: Vector2 {
         get {
-            return Vector2(x: width, y: height)
+            return Vector2(x: x, y: y)
+        }
+        set {
+            (x, y) = (newValue.x, newValue.y)
+        }
+    }
+
+    /// The size of this rectangle
+    public var size: Size {
+        get {
+            return Size(x: width, y: height)
         }
         set {
             maximum = minimum + newValue
@@ -160,7 +171,7 @@ public struct Rectangle: Equatable, Codable {
 
     /// Initializes a Rectangle with the location + size of a rectangle
     @inlinable
-    public init(location: Vector2, size: Vector2) {
+    public init(location: Vector2, size: Size) {
         self.init(min: location, max: location + size)
     }
 

@@ -57,7 +57,7 @@ public enum DebugDraw {
     }
     
     private static func drawSingleAnchorConstraint(_ constraint: LayoutConstraint, to context: BLContext) {
-        let view = constraint.first.owner
+        let view = constraint.firstCast._owner
         let bounds = view.boundsForRedrawOnScreen()
         
         switch constraint.first.kind {
@@ -83,8 +83,8 @@ public enum DebugDraw {
                                                  second: InternalLayoutAnchor,
                                                  to context: BLContext) {
         
-        let firstBounds = first.owner.boundsForRedrawOnScreen()
-        let secondBounds = second.owner.boundsForRedrawOnScreen()
+        let firstBounds = first._owner.boundsForRedrawOnScreen()
+        let secondBounds = second._owner.boundsForRedrawOnScreen()
         
         switch (first.kind, second.kind) {
         // Horizontal constraints

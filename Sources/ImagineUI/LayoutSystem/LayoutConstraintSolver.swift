@@ -4,10 +4,13 @@ public class LayoutConstraintSolver {
     public func solve(viewHierarchy: View, cache: LayoutConstraintSolverCache? = nil) {
         let visitor = ClosureViewVisitor<ConstraintCollection> { collection, view in
             collection.affectedLayoutVariables.append(view.layoutVariables)
+            for guide in view.layoutGuides {
+                collection.affectedLayoutVariables.append(guide.layoutVariables)
+            }
 
-            collection.constraints.append(contentsOf:
-                view.containedConstraints.lazy.filter { $0.isEnabled }
-            )
+            for constraint in view.constraints where constraint.isEnabled {
+                collection.constraints.append(constraint)
+            }
         }
 
         let result = ConstraintCollection()
@@ -39,11 +42,11 @@ public class LayoutConstraintSolver {
     }
 
     private func register(constraints: [LayoutConstraint],
-                          affectedViews: [ViewLayoutVariables],
+                          affectedViews: [LayoutVariables],
                           cache: LayoutConstraintSolverCache) {
 
         for affectedView in affectedViews {
-            affectedView.deriveConstraints(cache.constraintList(for: affectedView.view))
+            affectedView.deriveConstraints(cache.constraintList(for: affectedView.container))
         }
         
         cache.addConstraints(constraints)
@@ -51,20 +54,20 @@ public class LayoutConstraintSolver {
 }
 
 private class ConstraintCollection {
-    var affectedLayoutVariables: [ViewLayoutVariables] = []
+    var affectedLayoutVariables: [LayoutVariables] = []
     var constraints: [LayoutConstraint] = []
 }
 
 class ViewConstraintList {
-    let view: View
+    let container: LayoutVariablesContainer
     fileprivate var state: State = State()
     
-    init(view: View) {
-        self.view = view
+    init(container: LayoutVariablesContainer) {
+        self.container = container
     }
     
     func clone() -> ViewConstraintList {
-        let new = ViewConstraintList(view: view)
+        let new = ViewConstraintList(container: container)
         new.state = state
         return new
     }
@@ -175,8 +178,8 @@ public class LayoutConstraintSolverCache {
         return StateDiff(constraintDiffs: constDiff, viewStateDiffs: viewDiff)
     }
     
-    internal func constraintList(for view: View) -> ViewConstraintList {
-        let identifier = ObjectIdentifier(view)
+    internal func constraintList(for container: LayoutVariablesContainer) -> ViewConstraintList {
+        let identifier = ObjectIdentifier(container)
         
         // Check previous list to copy over old state first
         if let previous = previousViewConstraintList[identifier] {
@@ -191,7 +194,7 @@ public class LayoutConstraintSolverCache {
             return list
         }
         
-        let list = ViewConstraintList(view: view)
+        let list = ViewConstraintList(container: container)
         viewConstraintList[identifier] = list
         return list
     }

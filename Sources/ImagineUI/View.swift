@@ -6,7 +6,8 @@ open class View {
     var verticalCompressResistance: Int = 750
     var horizontalHuggingPriority: Int = 150
     var verticalHuggingPriority: Int = 150
-    var layoutVariables: ViewLayoutVariables!
+    var layoutVariables: LayoutVariables!
+    var layoutGuides: [LayoutGuide] = []
     
     var isLayoutSuspended = false
     
@@ -84,7 +85,7 @@ open class View {
             return Rectangle(x: location.x, y: location.y, width: bounds.width, height: bounds.height)
         }
         set {
-            location = newValue.minimum
+            location = newValue.location
             bounds.size = newValue.size
         }
     }
@@ -141,7 +142,7 @@ open class View {
     public init() {
         self.bounds = .zero
         self.location = .zero
-        layoutVariables = ViewLayoutVariables(view: self)
+        layoutVariables = LayoutVariables(container: self)
         setupHierarchy()
         setupConstraints()
     }
@@ -266,10 +267,10 @@ open class View {
         // constraints involving this view tree, but not the children hierarchy.
         superview?.visitingSuperviews { view in
             for constraint in view.containedConstraints {
-                if constraint.first.owner.isDescendant(of: self) {
+                if constraint.firstCast._owner.viewInHierarchy?.isDescendant(of: self) == true {
                     constraint.removeConstraint()
                 }
-                if constraint.second?.owner.isDescendant(of: self) == true {
+                if constraint.secondCast?._owner.viewInHierarchy?.isDescendant(of: self) == true {
                     constraint.removeConstraint()
                 }
             }
@@ -285,6 +286,22 @@ open class View {
     /// If `nil`, the baseline is derived from this view's baseline.
     open func viewForFirstBaseline() -> View? {
         return nil
+    }
+    
+    // MARK: - Layout Guides
+    
+    open func addLayoutGuide(_ guide: LayoutGuide) {
+        layoutGuides.append(guide)
+    }
+    
+    open func removeLayoutGuide(_ guide: LayoutGuide) {
+        if let index = layoutGuides.firstIndex(where: { $0 === guide }) {
+            layoutGuides.remove(at: index)
+            
+            for constraint in guide.constraints {
+                constraint.removeConstraint()
+            }
+        }
     }
 
     // MARK: - Redraw Invalidation
@@ -609,6 +626,15 @@ open class View {
 
 extension View: SpatialReferenceType {
     
+}
+
+extension View: LayoutVariablesContainer {
+    var parent: SpatialReferenceType? {
+        return superview
+    }
+    var viewInHierarchy: View? {
+        return self
+    }
 }
 
 extension View: Equatable {
