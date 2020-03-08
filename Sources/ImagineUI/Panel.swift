@@ -2,7 +2,10 @@ import SwiftBlend2D
 
 /// A container control that places components within an outlined panel area
 public class Panel: ControlView {
-    public let label: Label
+    let label: Label
+    
+    /// Layout guide representing the area of the panel that subviews can be laid
+    /// out safely without coliding with the panel's label
     public let containerLayoutGuide = LayoutGuide()
 
     public var title: String {
@@ -11,9 +14,14 @@ public class Panel: ControlView {
         }
         set {
             label.text = newValue
+            updateConstraints()
         }
     }
 
+    /// The inset from the edges `containerLayoutGuide` inhabits.
+    /// The upper bounds of the container is always connected to the bottom of
+    /// the panel's label, if `!title.isEmpty`, otherwise, the top edge relates
+    /// to the panel's own top edge.
     public var containerInset: EdgeInsets = EdgeInsets(top: 0, left: 4, bottom: 4, right: 4) {
         didSet {
             updateConstraints()
@@ -54,8 +62,13 @@ public class Panel: ControlView {
     }
 
     private func updateConstraints() {
-        containerLayoutGuide.layout.updateConstraints { make in
-            make.top == label.layout.bottom + containerInset.top
+        containerLayoutGuide.layout.remakeConstraints { make in
+            if title.isEmpty {
+                make.top == self + containerInset.top
+            } else {
+                make.top == label.layout.bottom + containerInset.top
+            }
+            
             make.left == self + containerInset.left
             make.right == self - containerInset.right
             make.bottom == self - containerInset.bottom
@@ -69,17 +82,13 @@ public class Panel: ControlView {
     }
 
     private func renderBorder(in context: BLContext) {
-        // Create a clipping region for the borders
-        var region = BLRegion(rectangle: BLRectI(rounding: boundsForRedraw().inflatedBy(x: 1, y: 1).asBLRect))
-
         let labelBounds = label.boundsForRedrawOnSuperview().insetBy(x: -4, y: -4)
 
-        // Subtract from the borders region the bounds for the label
-        region.combine(box: BLRectI(rounding: labelBounds.asBLRect).asBLBoxI,
-                       operation: .sub)
-
         var borderBounds = bounds
-        borderBounds.minimum.y = labelBounds.center.y
+        
+        if !title.isEmpty {
+            borderBounds.minimum.y = labelBounds.center.y
+        }
 
         let roundRect = BLRoundRect(rect: borderBounds.asBLRect,
                                     radius: BLPoint(x: 4, y: 4))
@@ -87,6 +96,18 @@ public class Panel: ControlView {
         context.setStrokeStyle(BLRgba32.white)
         context.setStrokeWidth(strokeWidth)
         context.save()
+        
+        if title.isEmpty {
+            context.strokeRoundRect(roundRect)
+            return
+        }
+
+        // Create a clipping region for the borders
+        var region = BLRegion(rectangle: BLRectI(rounding: boundsForRedraw().inflatedBy(x: 1, y: 1).asBLRect))
+
+        // Subtract from the borders region the bounds for the label
+        region.combine(box: BLRectI(rounding: labelBounds.asBLRect).asBLBoxI,
+                       operation: .sub)
 
         // Use the region scans from the clipping region to clip the borders as
         // we draw them. This should result in a complete border around the view
