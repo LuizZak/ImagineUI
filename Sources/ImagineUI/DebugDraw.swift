@@ -17,6 +17,9 @@ public enum DebugDraw {
         if flags.contains(.viewBounds) {
             drawBounds(view, to: context)
         }
+        if flags.contains(.layoutGuideBounds) {
+            drawLayoutGuideBounds(view, to: context)
+        }
         if flags.contains(.constraints) {
             drawConstraints(view, to: context)
         }
@@ -30,6 +33,17 @@ public enum DebugDraw {
         context.strokeRect(screenBounds.asBLRect)
         context.setFillStyle(BLRgba32.red)
         context.fillCircle(x: 0, y: 0, radius: 2)
+    }
+    
+    private static func drawLayoutGuideBounds(_ view: View, to context: BLContext) {
+        for layoutGuide in view.layoutGuides {
+            let screenBounds = view.convert(bounds: layoutGuide.area, to: nil)
+            
+            context.setStrokeStyle(BLRgba32.orange)
+            context.setStrokeWidth(1)
+            context.strokeRect(screenBounds.asBLRect)
+            context.setFillStyle(BLRgba32.red)
+        }
     }
     
     private static func drawConstraints(_ view: View, to context: BLContext) {
@@ -301,6 +315,9 @@ public enum DebugDraw {
     public enum DebugDrawFlags {
         /// Render view bounds as a red rectangle
         case viewBounds
+        
+        /// Render layout guide bounds as an orange rectangle
+        case layoutGuideBounds
         
         /// Render constraints
         case constraints

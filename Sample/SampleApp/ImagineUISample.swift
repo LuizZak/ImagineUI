@@ -289,45 +289,57 @@ class ImagineUI: Blend2DSample {
     }
     
     func createRenderSettingsWindow() {
-        let window = Window(area: Rectangle(x: 0, y: 0, width: 300, height: 100),
+        func toggleFlag(_ sample: ImagineUI,
+                        _ flag: DebugDraw.DebugDrawFlags,
+                        _ event: CancellableValueChangedEventArgs<Checkbox.State>) {
+            
+            if event.newValue == .checked {
+                sample.debugDrawFlags.insert(flag)
+            } else {
+                sample.debugDrawFlags.remove(flag)
+            }
+            
+            sample.invalidateScreen()
+        }
+        
+        let window = Window(area: Rectangle(x: 0, y: 0, width: 300, height: 105),
                             title: "Debug render settings")
         
         let boundsCheckbox = Checkbox(title: "View Bounds")
+        let layoutCheckbox = Checkbox(title: "Layout Guides")
         let constrCheckbox = Checkbox(title: "Constraints")
         
         window.addSubview(boundsCheckbox)
+        window.addSubview(layoutCheckbox)
         window.addSubview(constrCheckbox)
         
         boundsCheckbox.layout.makeConstraints { make in
             make.left == window + 15
             make.top == window + 35
         }
-        constrCheckbox.layout.makeConstraints { make in
+        layoutCheckbox.layout.makeConstraints { make in
             make.left == boundsCheckbox
             make.under(boundsCheckbox, offset: 5)
+        }
+        constrCheckbox.layout.makeConstraints { make in
+            make.left == layoutCheckbox
+            make.under(layoutCheckbox, offset: 5)
         }
         
         boundsCheckbox.checkboxStateWillChange.addListener(owner: self) { [weak self] (_, event) in
             guard let self = self else { return }
             
-            if event.newValue == .checked {
-                self.debugDrawFlags.insert(.viewBounds)
-            } else {
-                self.debugDrawFlags.remove(.viewBounds)
-            }
+            toggleFlag(self, .viewBounds, event)
+        }
+        layoutCheckbox.checkboxStateWillChange.addListener(owner: self) { [weak self] (_, event) in
+            guard let self = self else { return }
             
-            self.invalidateScreen()
+            toggleFlag(self, .layoutGuideBounds, event)
         }
         constrCheckbox.checkboxStateWillChange.addListener(owner: self) { [weak self] (_, event) in
             guard let self = self else { return }
             
-            if event.newValue == .checked {
-                self.debugDrawFlags.insert(.constraints)
-            } else {
-                self.debugDrawFlags.remove(.constraints)
-            }
-            
-            self.invalidateScreen()
+            toggleFlag(self, .constraints, event)
         }
         
         window.rootControlSystem = controlSystem
