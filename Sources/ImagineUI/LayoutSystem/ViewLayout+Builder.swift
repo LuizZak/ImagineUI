@@ -342,7 +342,7 @@ public struct LayoutAnchorUpdater<T> {
     }
 }
 
-private func anchorOnOtherContainer(_ kind: AnchorKind, _ container: LayoutAnchorsContainer) -> InternalLayoutAnchor {
+private func anchorOnOtherContainer(_ kind: AnchorKind, _ container: LayoutAnchorsContainer) -> AnyLayoutAnchor {
     switch kind {
     case .width:
         return container.layout.width.toInternalLayoutAnchor()

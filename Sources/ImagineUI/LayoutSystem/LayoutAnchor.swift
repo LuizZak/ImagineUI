@@ -23,8 +23,8 @@ public struct LayoutAnchor<T>: LayoutAnchorType, Equatable, CustomStringConverti
 }
 
 extension LayoutAnchor {
-    func toInternalLayoutAnchor() -> InternalLayoutAnchor {
-        return InternalLayoutAnchor(_owner: _owner, kind: kind)
+    func toInternalLayoutAnchor() -> AnyLayoutAnchor {
+        return AnyLayoutAnchor(_owner: _owner, kind: kind)
     }
 }
 

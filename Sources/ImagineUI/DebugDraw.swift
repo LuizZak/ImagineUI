@@ -93,8 +93,8 @@ public enum DebugDraw {
     }
     
     private static func drawDualAnchorConstraint(_ constraint: LayoutConstraint,
-                                                 first: InternalLayoutAnchor,
-                                                 second: InternalLayoutAnchor,
+                                                 first: AnyLayoutAnchor,
+                                                 second: AnyLayoutAnchor,
                                                  to context: BLContext) {
         
         guard let firstBounds = first._owner?.boundsForRedrawOnScreen() else { return }

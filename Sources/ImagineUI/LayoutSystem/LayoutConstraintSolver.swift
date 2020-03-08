@@ -285,8 +285,8 @@ public class LayoutConstraintSolverCache {
     fileprivate struct ConstraintDefinition: Equatable {
         var constraint: Constraint
         var containerView: View
-        var first: InternalLayoutAnchor
-        var second: InternalLayoutAnchor?
+        var first: AnyLayoutAnchor
+        var second: AnyLayoutAnchor?
         var relationship: Relationship
         var offset: Double
         var multiplier: Double 
