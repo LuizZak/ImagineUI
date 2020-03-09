@@ -9,11 +9,15 @@ public class EventPublisher<T>: EventPublisherType {
     public func publish(value: T) {
         guard !listeners.isEmpty else { return }
         
-        for listener in listeners where listener.key.owner != nil {
-            listener.listener(value)
+        var removed = 0
+        for (i, listener) in listeners.enumerated() {
+            if listener.key.owner != nil {
+                listener.listener(value)
+            } else {
+                listeners.remove(at: i - removed)
+                removed += 1
+            }
         }
-
-        listeners.removeAll(where: { $0.key.owner == nil })
     }
 
     public func addListener(owner: AnyObject, _ listener: @escaping (T) -> Void) -> EventListenerKey {

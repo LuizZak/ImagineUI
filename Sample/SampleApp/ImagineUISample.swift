@@ -202,14 +202,7 @@ class ImagineUI: Blend2DSample {
         // Fixed-frame update
         let delta = time - lastFrame
         lastFrame = time
-        let visitor = ClosureViewVisitor<Void> { (_, view) in
-            view.onFixedFrame(interval: delta)
-        }
-        let traveler = ViewTraveler(visitor: visitor)
-
-        for window in windows {
-            traveler.visit(view: window)
-        }
+        Scheduler.instance.onFixedFrame(delta)
 
         // Layout loop
         for window in windows {

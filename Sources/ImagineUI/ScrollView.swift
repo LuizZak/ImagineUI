@@ -84,6 +84,10 @@ open class ScrollView: ControlView {
         }
 
         updateScrollBarConstraints()
+        
+        Scheduler.instance.fixedFrameEvent.addListener(owner: self) { [weak self] interval in
+            self?.onFixedFrame(interval: interval)
+        }
     }
     
     private func horizontalScrollChanged(_ scroll: Double) {
@@ -100,9 +104,7 @@ open class ScrollView: ControlView {
         contentView.addSubview(view)
     }
     
-    open override func onFixedFrame(interval: TimeInterval) {
-        super.onFixedFrame(interval: interval)
-        
+    internal func onFixedFrame(interval: TimeInterval) {
         if contentOffset.distance(to: targetContentOffset) > 0.1 {
             contentOffset += (targetContentOffset - contentOffset) * 0.7
         } else {

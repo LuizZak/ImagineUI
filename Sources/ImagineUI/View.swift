@@ -184,10 +184,6 @@ open class View {
 
     }
 
-    open func onFixedFrame(interval: TimeInterval) {
-
-    }
-
     // MARK: - Layout
     open func setupHierarchy() {
 
@@ -442,6 +438,10 @@ open class View {
     /// The `inflatingArea` argument can be used to inflate the area of the views
     /// to perform less precise hit tests.
     public func viewUnder(point: Vector2, inflatingArea: Vector2 = .zero, predicate: (View) -> Bool) -> View? {
+        if !contains(point: point, inflatingArea: inflatingArea) {
+            return nil
+        }
+        
         // Search children first
         for baseView in subviews.reversed() {
             if let ht = baseView.viewUnder(point: baseView.transform.inverted().transform(point),
@@ -450,9 +450,9 @@ open class View {
                 return ht
             }
         }
-
+        
         // Test this instance now
-        if contains(point: point, inflatingArea: inflatingArea) && predicate(self) {
+        if predicate(self) {
             return self
         }
 
