@@ -45,7 +45,7 @@ open class View {
 
             invalidate()
 
-            if !areaIntoConstraintsMask.isEmpty {
+            if areaIntoConstraintsMask.contains(.location) {
                 setNeedsLayout()
             }
         }
@@ -65,7 +65,7 @@ open class View {
             
             invalidate()
 
-            if !areaIntoConstraintsMask.isEmpty {
+            if areaIntoConstraintsMask.contains(.size) {
                 setNeedsLayout()
             }
         }
@@ -413,6 +413,10 @@ open class View {
     /// The `inflatingArea` argument can be used to inflate the area of the
     /// views to perform less precise hit tests.
     public func viewUnder(point: Vector2, inflatingArea: Vector2 = .zero) -> View? {
+        guard contains(point: point, inflatingArea: inflatingArea) else {
+            return nil
+        }
+        
         // Search children first
         for baseView in subviews.reversed() {
             if let ht = baseView.viewUnder(point: baseView.transform.inverted().transform(point),
@@ -421,12 +425,7 @@ open class View {
             }
         }
 
-        // Test this instance now
-        if contains(point: point, inflatingArea: inflatingArea) {
-            return self
-        }
-
-        return nil
+        return self
     }
 
     /// Performs a hit test operation on the area of this, and all child base
@@ -438,7 +437,7 @@ open class View {
     /// The `inflatingArea` argument can be used to inflate the area of the views
     /// to perform less precise hit tests.
     public func viewUnder(point: Vector2, inflatingArea: Vector2 = .zero, predicate: (View) -> Bool) -> View? {
-        if !contains(point: point, inflatingArea: inflatingArea) {
+        guard contains(point: point, inflatingArea: inflatingArea) else {
             return nil
         }
         
@@ -477,6 +476,10 @@ open class View {
     }
 
     private func internalViewsUnder(point: Vector2, _ inflatingArea: Vector2, _ target: inout [View]) {
+        guard contains(point: point, inflatingArea: inflatingArea) else {
+            return
+        }
+        
         for view in subviews.reversed() {
             let transformedPoint = view.transform.inverted().transform(point)
             // Early out this view
@@ -487,10 +490,7 @@ open class View {
             view.internalViewsUnder(point: transformedPoint, inflatingArea, &target)
         }
 
-        // Test this instance now
-        if contains(point: point, inflatingArea: inflatingArea) {
-            target.append(self)
-        }
+        target.append(self)
     }
 
     /// Returns an enumerable of all views that cross the given `BLRect` bounds.

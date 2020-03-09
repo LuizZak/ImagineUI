@@ -408,7 +408,31 @@ public struct Rectangle: Equatable, Codable {
     public func movingCenter(toX x: Double, y: Double) -> Rectangle {
         return movingCenter(to: Vector2(x: x, y: y))
     }
+    
+    /// Returns a new Rectangle with the same left, right, and bottom as the current
+    /// instance, where the `top` lays on `value`.
+    public func stretchingTop(to value: Double) -> Rectangle {
+        return Rectangle(left: left, top: value, right: right, bottom: bottom)
+    }
 
+    /// Returns a new Rectangle with the same left, right, and top as the current
+    /// instance, where the `bottom` lays on `value`.
+    public func stretchingBottom(to value: Double) -> Rectangle {
+        return Rectangle(left: left, top: top, right: right, bottom: value)
+    }
+
+    /// Returns a new Rectangle with the same top, bottom, and right as the current
+    /// instance, where the `left` lays on `value`.
+    public func stretchingLeft(to value: Double) -> Rectangle {
+        return Rectangle(left: value, top: top, right: right, bottom: bottom)
+    }
+
+    /// Returns a new Rectangle with the same top, bottom, and left as the current
+    /// instance, where the `right` lays on `value`.
+    public func stretchingRight(to value: Double) -> Rectangle {
+        return Rectangle(left: left, top: top, right: value, bottom: bottom)
+    }
+    
     /// Returns a Rectangle which is the minimum Rectangle that can fit two
     /// given Rectangles.
     @inlinable

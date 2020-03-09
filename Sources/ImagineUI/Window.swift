@@ -1,12 +1,15 @@
 import SwiftBlend2D
 import Cassowary
+import Cocoa
 
 public protocol WindowRedrawInvalidationDelegate: class {
     func window(_ window: Window, invalidateRect rect: Rectangle)
 }
 
 public class Window: ControlView {
-    private var _shouldCompress = false
+    private var _targetSize: Size? = nil
+    private var _resizeStartArea: Rectangle = .zero
+    private var _resizeCorner: BorderResize?
     private var _constraintCache = LayoutConstraintSolverCache()
     private var _mouseDown = false
     private var _mouseDownPoint: Vector2 = .zero
@@ -39,10 +42,7 @@ public class Window: ControlView {
     }
     
     public override var intrinsicSize: Size? {
-        if _shouldCompress {
-            return .zero
-        }
-        return nil
+        return _targetSize
     }
 
     public weak var invalidationDelegate: WindowRedrawInvalidationDelegate?
@@ -56,6 +56,7 @@ public class Window: ControlView {
         initialize()
 
         self.area = area
+        self._targetSize = area.size
         strokeWidth = 5
     }
 
@@ -65,7 +66,11 @@ public class Window: ControlView {
     }
     
     public func setShouldCompress(_ isOn: Bool) {
-        _shouldCompress = isOn
+        if isOn {
+            _targetSize = .zero
+        } else {
+            _targetSize = nil
+        }
         setNeedsLayout()
     }
     
@@ -141,22 +146,85 @@ public class Window: ControlView {
 
         _mouseDownPoint = event.location
         _mouseDown = true
+        _resizeCorner = resizeAtPoint(event.location)
+        _resizeStartArea = area
     }
 
     public override func onMouseMove(_ event: MouseEventArgs) {
         super.onMouseMove(event)
-
+        
         if _mouseDown {
             let mouseLocation = convert(point: event.location, to: nil)
+            
+            switch _resizeCorner {
+            case .top:
+                let newArea = _resizeStartArea.stretchingTop(to: mouseLocation.y - _mouseDownPoint.y)
+                
+                _targetSize?.y = newArea.height
+                size.y = newArea.height
+                location = Vector2(x: location.x, y: newArea.y)
 
-            location = mouseLocation - _mouseDownPoint
+            case .topLeft:
+                let newArea = _resizeStartArea
+                    .stretchingTop(to: mouseLocation.y - _mouseDownPoint.y)
+                    .stretchingLeft(to: mouseLocation.x - _mouseDownPoint.x)
+                
+                _targetSize = newArea.size
+                size = newArea.size
+                location = newArea.location
+                
+            case .left:
+                let newArea = _resizeStartArea.stretchingLeft(to: mouseLocation.x - _mouseDownPoint.x)
+                
+                _targetSize?.x = newArea.width
+                size = Vector2(x: newArea.width, y: size.y)
+                location = Vector2(x: newArea.x, y: location.y)
+                
+            case .right:
+                _targetSize?.x = event.location.x
+                setNeedsLayout()
+                
+            case .topRight:
+                let newArea = _resizeStartArea.stretchingTop(to: mouseLocation.y - _mouseDownPoint.y)
+                
+                _targetSize = Vector2(x: event.location.x, y: newArea.height)
+                size = Vector2(x: size.x, y: newArea.height)
+                location = Vector2(x: location.x, y: newArea.y)
+                
+            case .bottomLeft:
+                let newArea = _resizeStartArea.stretchingLeft(to: mouseLocation.x - _mouseDownPoint.x)
+                
+                _targetSize = Vector2(x: newArea.width, y: event.location.y)
+                size = Vector2(x: newArea.width, y: size.y)
+                location = Vector2(x: newArea.x, y: location.y)
+    
+            case .bottom:
+                _targetSize?.y = event.location.y
+                setNeedsLayout()
+                
+            case .bottomRight:
+                _targetSize = event.location
+                setNeedsLayout()
+                
+            case .none:
+                location = mouseLocation - _mouseDownPoint
+            }
+        } else if viewUnder(point: event.location) == self {
+            updateMouseResizeCursor(event.location)
         }
+    }
+    
+    public override func onMouseLeave() {
+        super.onMouseLeave()
+        
+        NSCursor.arrow.set()
     }
 
     public override func onMouseUp(_ event: MouseEventArgs) {
         super.onMouseUp(event)
 
         _mouseDown = false
+        _resizeCorner = nil
     }
 
     private func drawWindowBackground(_ ctx: BLContext) {
@@ -198,6 +266,87 @@ public class Window: ControlView {
         ctx.fillRoundRect(windowRounded)
 
         ctx.restoreClipping()
+    }
+    
+    private func updateMouseResizeCursor(_ point: Vector2) {
+        let resize = resizeAtPoint(point)
+        updateMouseResizeCursor(resize)
+    }
+    
+    private func updateMouseResizeCursor(_ resize: BorderResize?) {
+        var cursor: NSCursor?
+        
+        // TODO: Remove the hardcoded image paths
+        switch resize {
+        case .top, .bottom:
+            cursor = NSCursor.resizeUpDown
+        
+        case .left, .right:
+            cursor = NSCursor.resizeLeftRight
+        
+        case .topLeft, .bottomRight:
+            cursor = NSCursor(image: NSImage(byReferencingFile: "/System/Library/Frameworks/WebKit.framework/Versions/Current/Frameworks/WebCore.framework/Resources/northWestSouthEastResizeCursor.png")!,
+                                  hotSpot: NSPoint(x: 8, y: 8))
+        
+        case .topRight, .bottomLeft:
+            cursor = NSCursor(image: NSImage(byReferencingFile: "/System/Library/Frameworks/WebKit.framework/Versions/Current/Frameworks/WebCore.framework/Resources/northEastSouthWestResizeCursor.png")!,
+            hotSpot: NSPoint(x: 8, y: 8))
+            
+        case .none:
+            break
+        }
+        
+        if let cursor = cursor {
+            cursor.set()
+        } else {
+            NSCursor.arrow.set()
+        }
+    }
+    
+    private func resizeAtPoint(_ point: Vector2) -> BorderResize? {
+        let topLength = 3.0
+        let length = 7.0
+        
+        // Corners
+        if point.x < length && point.y < length {
+            return .topLeft
+        }
+        if point.x > size.x - length && point.y < length {
+            return .topRight
+        }
+        if point.x > size.x - length && point.y > size.y - length {
+            return .bottomRight
+        }
+        if point.x < length && point.y > size.y - length {
+            return .bottomLeft
+        }
+        
+        // Borders
+        if point.x < length {
+            return .left
+        }
+        if point.y < topLength {
+            return .top
+        }
+        if point.x > size.x - length {
+            return .right
+        }
+        if point.y > size.y - length {
+            return .bottom
+        }
+        
+        return nil
+    }
+    
+    enum BorderResize {
+        case top
+        case topLeft
+        case left
+        case bottomLeft
+        case bottom
+        case bottomRight
+        case right
+        case topRight
     }
 }
 
