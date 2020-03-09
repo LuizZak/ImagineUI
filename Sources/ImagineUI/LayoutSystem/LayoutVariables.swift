@@ -11,6 +11,7 @@ class LayoutVariables {
     let centerX: Variable
     let centerY: Variable
     let firstBaseline: Variable
+    let baselineHeight: Variable
 
     init(container: LayoutVariablesContainer) {
         let name = LayoutVariables.deriveName(container)
@@ -26,6 +27,7 @@ class LayoutVariables {
         centerX = Variable("\(name)_centerX")
         centerY = Variable("\(name)_centerY")
         firstBaseline = Variable("\(name)_firstBaseline")
+        baselineHeight = Variable("\(name)_baselineHeight")
     }
 
     func deriveConstraints(_ constraintList: ViewConstraintList) {
@@ -58,13 +60,16 @@ class LayoutVariables {
                                      strength: Strength.REQUIRED)
         
         if let label = viewForFirstBaseline() as? Label {
+            constraintList.suggestValue(variable: baselineHeight,
+                                        value: label.baselineHeight,
+                                        strength: Strength.STRONG)
+            
             constraintList.addConstraint(name: "firstBaseline",
-                                         firstBaseline == label.layoutVariables.top + label.baselineHeight,
-                                         strength: Strength.REQUIRED,
-                                         tag: label.baselineHeight.hashValue)
+                                         firstBaseline == top + baselineHeight,
+                                         strength: Strength.REQUIRED)
         } else {
             constraintList.addConstraint(name: "firstBaseline",
-                                         firstBaseline == height,
+                                         firstBaseline == top + height,
                                          strength: Strength.REQUIRED)
         }
     }
