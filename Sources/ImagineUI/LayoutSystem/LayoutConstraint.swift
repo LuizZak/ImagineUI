@@ -440,11 +440,12 @@ public class LayoutConstraint: Hashable {
                                  priority: Double? = nil) -> LayoutConstraint {
 
         let constraint = first._owner?.constraints.first {
-            $0.firstCast.isEqual(to: first) == true && $0.secondCast?.isEqual(to: second) == true
+            $0.firstCast.isEqual(to: first) == true
+                && $0.secondCast?.isEqual(to: second) == true
+                && $0.relationship == relationship
         }
 
         if let constraint = constraint {
-            constraint.relationship = relationship
             constraint.offset = offset
             constraint.multiplier = multiplier
             
@@ -466,11 +467,12 @@ public class LayoutConstraint: Hashable {
                                  priority: Double? = nil) -> LayoutConstraint {
 
         let constraint = first._owner?.constraints.first {
-            $0.firstCast.isEqual(to: first) == true && $0.second == nil
+            $0.firstCast.isEqual(to: first) == true
+                && $0.second == nil
+                && $0.relationship == relationship
         }
 
         if let constraint = constraint {
-            constraint.relationship = relationship
             constraint.offset = offset
             constraint.multiplier = multiplier
             
