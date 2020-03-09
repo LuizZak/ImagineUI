@@ -177,8 +177,8 @@ open class StackView: View {
         /// bounds larger.
         case trailing
         
-        /// All views are forced to match the width of the view with the highest
-        /// content compression resistance.
+        /// Views are forced to match the span of the view with the highest
+        /// content compression resistance or content hugging priority.
         case fill
         
         /// Views increase the boundaries of the stack view, and views that are
