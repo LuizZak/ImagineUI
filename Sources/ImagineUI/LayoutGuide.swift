@@ -84,3 +84,15 @@ extension LayoutGuide: SpatialReferenceType {
         return bounds
     }
 }
+
+extension LayoutGuide: Equatable {
+    public static func == (lhs: LayoutGuide, rhs: LayoutGuide) -> Bool {
+        return lhs === rhs
+    }
+}
+
+extension LayoutGuide: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(ObjectIdentifier(self))
+    }
+}

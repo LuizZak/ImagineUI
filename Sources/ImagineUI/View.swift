@@ -7,7 +7,6 @@ open class View {
     var horizontalHuggingPriority: Int = 150
     var verticalHuggingPriority: Int = 150
     var layoutVariables: LayoutVariables!
-    var layoutGuides: [LayoutGuide] = []
     
     var isLayoutSuspended = false
     
@@ -102,19 +101,20 @@ open class View {
 
     /// A list of constraints that affect this view, or other subviews in the
     /// same hierarchy.
-    /// Should be unique between all constraints created across the view hierarcy.
+    /// Should be unique between all constraints created across the view hierarchy.
     internal var containedConstraints: [LayoutConstraint] = []
 
     /// A list of constraints that are affecting this view.
-    public var constraints: [LayoutConstraint] = []
+    internal(set) public var constraints: [LayoutConstraint] = []
 
     public var intrinsicSize: Size? {
         return nil
     }
 
-    public weak var superview: View?
+    private(set) public weak var superview: View?
 
-    public var subviews: [View] = []
+    private(set) public var subviews: [View] = []
+    private(set) public var layoutGuides: [LayoutGuide] = []
     public var areaIntoConstraintsMask: Set<BoundsConstraintMask> = [.location, .size] {
         didSet {
             setNeedsLayout()
@@ -305,6 +305,10 @@ open class View {
     // MARK: - Layout Guides
     
     open func addLayoutGuide(_ guide: LayoutGuide) {
+        if let previous = guide.owningView {
+            previous.removeLayoutGuide(guide)
+        }
+        
         guide.owningView = self
         layoutGuides.append(guide)
     }
