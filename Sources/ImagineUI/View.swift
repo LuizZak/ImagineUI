@@ -663,6 +663,12 @@ extension View: Equatable {
     }
 }
 
+extension View: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(ObjectIdentifier(self))
+    }
+}
+
 public enum BoundsConstraintMask {
     case location
     case size

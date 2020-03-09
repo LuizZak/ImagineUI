@@ -4,6 +4,7 @@ import Cassowary
 /// vertically automatically
 open class StackView: View {
     private var arrangedSubviews: [View] = []
+    private var customSpacing: [View: Double] = [:]
     
     open var spacing: Double = 0 {
         didSet {
@@ -34,11 +35,17 @@ open class StackView: View {
         }
         
         var previousGuide: LayoutGuide?
+        var previousAfterSpacing: Double?
         for (i, view) in arrangedSubviews.enumerated() {
-            defer { previousGuide = guide }
+            defer {
+                previousGuide = guide
+                previousAfterSpacing = customSpacing[view]
+            }
             
             let isLastView = i == arrangedSubviews.count - 1
             let guide = LayoutGuide()
+            
+            let viewSpacing = previousAfterSpacing ?? spacing
             
             addLayoutGuide(guide)
             
@@ -99,7 +106,7 @@ open class StackView: View {
                     make.bottom == self
                     
                     if let previous = previousGuide {
-                        make.right(of: previous, offset: spacing)
+                        make.right(of: previous, offset: viewSpacing)
                     } else {
                         make.left == self
                     }
@@ -111,7 +118,7 @@ open class StackView: View {
                     make.right == self
                     
                     if let previous = previousGuide {
-                        make.under(previous, offset: spacing)
+                        make.under(previous, offset: viewSpacing)
                     } else {
                         make.top == self
                     }
@@ -137,9 +144,14 @@ open class StackView: View {
     open override func willRemoveSubview(_ view: View) {
         super.willRemoveSubview(view)
         
+        customSpacing.removeValue(forKey: view)
         arrangedSubviews.removeAll(where: { $0 === view })
         
         recreateConstraints()
+    }
+    
+    open func setCustomSpacing(after view: View, _ spacing: Double?) {
+        customSpacing[view] = spacing
     }
     
     public enum Orientation {
