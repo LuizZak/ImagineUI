@@ -157,14 +157,33 @@ open class StackView: View {
     }
     
     public enum Orientation {
+        /// Views are arranged from top to bottom
         case vertical
+        
+        /// Views are arranged from left to right
         case horizontal
     }
     
     public enum Alignment {
+        /// Views are aligned to the leading edge of the view (either left, in
+        /// horizontal orientations, or top, in vertical orientations). Views
+        /// with an increased width or height requirements push the stack view's
+        /// bounds larger.
         case leading
+        
+        /// Views are aligned to the trailing edge of the view (either right, in
+        /// horizontal orientations, or bottom, in vertical orientations). Views
+        /// with an increased width or height requirements push the stack view's
+        /// bounds larger.
         case trailing
+        
+        /// All views are forced to match the width of the view with the highest
+        /// content compression resistance.
         case fill
+        
+        /// Views increase the boundaries of the stack view, and views that are
+        /// smaller than the minimal width are centered horizontally or vertically
+        /// along the available space, perpendicular to the stack view's orientation
         case centered
     }
 }
