@@ -285,14 +285,13 @@ public class LayoutConstraintSolverCache {
                                  relationship: layoutConstraint.relationship,
                                  offset: layoutConstraint.offset,
                                  multiplier: layoutConstraint.multiplier,
-                                 priority: layoutConstraint.priority,
-                                 isEnabled: layoutConstraint.isEnabled)
+                                 priority: layoutConstraint.priority)
     }
     
     fileprivate class ConstraintDefinition: Equatable {
         internal init(constraint: Constraint, containerView: View,
                       relationship: Relationship, offset: Double,
-                      multiplier: Double, priority: Double, isEnabled: Bool) {
+                      multiplier: Double, priority: Double) {
             
             self.constraint = constraint
             self.containerView = containerView
@@ -300,7 +299,6 @@ public class LayoutConstraintSolverCache {
             self.offset = offset
             self.multiplier = multiplier
             self.priority = priority
-            self.isEnabled = isEnabled
         }
         
         var constraint: Constraint
@@ -309,7 +307,6 @@ public class LayoutConstraintSolverCache {
         var offset: Double
         var multiplier: Double 
         var priority: Double
-        var isEnabled: Bool
         
         func matches(_ constraint: LayoutConstraint) -> Bool {
             return containerView === constraint.containerView
@@ -317,7 +314,6 @@ public class LayoutConstraintSolverCache {
                 && offset == constraint.offset
                 && multiplier == constraint.multiplier
                 && priority == constraint.priority
-                && isEnabled == constraint.isEnabled
         }
         
         static func == (lhs: LayoutConstraintSolverCache.ConstraintDefinition,
@@ -328,7 +324,6 @@ public class LayoutConstraintSolverCache {
                 && lhs.offset == rhs.offset
                 && lhs.multiplier == rhs.multiplier
                 && lhs.priority == rhs.priority
-                && lhs.isEnabled == rhs.isEnabled
         }
     }
     
