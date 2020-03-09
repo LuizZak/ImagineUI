@@ -24,6 +24,13 @@ open class StackView: View {
         }
     }
     
+    /// Insets between the edges of the stack view and its contents
+    open var contentInset: EdgeInsets = .zero {
+        didSet {
+            recreateConstraints()
+        }
+    }
+    
     public init(orientation: Orientation) {
         self.orientation = orientation
         super.init()
@@ -32,6 +39,12 @@ open class StackView: View {
     private func recreateConstraints() {
         for layoutGuide in layoutGuides {
             removeLayoutGuide(layoutGuide)
+        }
+        
+        let parentGuide = LayoutGuide()
+        addLayoutGuide(parentGuide)
+        parentGuide.layout.makeConstraints { make in
+            make.edges.equalTo(self, inset: contentInset)
         }
         
         var previousGuide: LayoutGuide?
@@ -102,28 +115,28 @@ open class StackView: View {
             guide.layout.makeConstraints { make in
                 switch orientation {
                 case .horizontal:
-                    make.top == self
-                    make.bottom == self
+                    make.top == parentGuide
+                    make.bottom == parentGuide
                     
                     if let previous = previousGuide {
                         make.right(of: previous, offset: viewSpacing)
                     } else {
-                        make.left == self
+                        make.left == parentGuide
                     }
                     if isLastView {
-                        make.right == self
+                        make.right == parentGuide
                     }
                 default:
-                    make.left == self
-                    make.right == self
+                    make.left == parentGuide
+                    make.right == parentGuide
                     
                     if let previous = previousGuide {
                         make.under(previous, offset: viewSpacing)
                     } else {
-                        make.top == self
+                        make.top == parentGuide
                     }
                     if isLastView {
-                        make.bottom == self
+                        make.bottom == parentGuide
                     }
                 }
             }
