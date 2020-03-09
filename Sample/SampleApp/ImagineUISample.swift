@@ -130,7 +130,7 @@ class ImagineUI: Blend2DSample {
         firstColumn.setCustomSpacing(after: checkBox3, 15)
         
         panelContents.layout.makeConstraints { make in
-            make.edges.equalTo(panel.containerLayoutGuide, inset: EdgeInsets(4))
+            make.edges == panel.containerLayoutGuide
         }
         
         secondColumn.layout.makeConstraints { make in
@@ -285,6 +285,8 @@ class ImagineUI: Blend2DSample {
         }
         
         let window = Window(area: .zero, title: "Debug render settings")
+        window.rootControlSystem = controlSystem
+        window.invalidationDelegate = self
         window.areaIntoConstraintsMask = [.location]
         window.setShouldCompress(true)
         
@@ -322,9 +324,6 @@ class ImagineUI: Blend2DSample {
             
             toggleFlag(self, .constraints, event)
         }
-        
-        window.rootControlSystem = controlSystem
-        window.invalidationDelegate = self
         
         windows.append(window)
     }
