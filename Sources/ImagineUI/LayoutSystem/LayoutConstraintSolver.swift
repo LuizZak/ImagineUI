@@ -85,13 +85,12 @@ class ViewConstraintList {
     /// accordingly.
     func addConstraint(name: String,
                        _ constraint: @autoclosure () -> Constraint,
-                       strength: Double,
-                       tag: Int = 0) {
+                       strength: Double) {
         
         let current = state.constraints[name]
         
-        if current?.strength != strength || current?.tag != tag {
-            state.constraints[name] = (constraint(), strength, tag)
+        if current?.strength != strength {
+            state.constraints[name] = (constraint(), strength)
         }
     }
     
@@ -100,7 +99,7 @@ class ViewConstraintList {
     }
     
     fileprivate struct State {
-        var constraints: [String: (Constraint, strength: Double, tag: Int)] = [:]
+        var constraints: [String: (Constraint, strength: Double)] = [:]
         var suggestedValue: [Variable: (value: Double, strength: Double)] = [:]
         
         func makeDiffFromEmpty() -> StateDiff {
@@ -113,7 +112,7 @@ class ViewConstraintList {
         
         func makeDiff(previous: State) -> StateDiff {
             let constDiff = constraints.makeDifference(withPrevious: previous.constraints,
-                                                       didUpdate: { $1.1 != $2.1 || $1.2 != $2.2 })
+                                                       didUpdate: { $1.1 != $2.1 })
             
             let suggestedDiff = suggestedValue.makeDifference(withPrevious: previous.suggestedValue,
                                                               didUpdate: { $1 != $2 })
@@ -123,7 +122,7 @@ class ViewConstraintList {
     }
     
     fileprivate struct StateDiff {
-        var constraints: [Difference<String, (Constraint, strength: Double, tag: Int)>]
+        var constraints: [Difference<String, (Constraint, strength: Double)>]
         var suggestedValues: [Difference<Variable, (value: Double, strength: Double)>]
         
         var isEmpty: Bool {
@@ -221,10 +220,10 @@ public class LayoutConstraintSolverCache {
         for viewDiff in diff.viewStateDiffs {
             for constDiff in viewDiff.constraints {
                 switch constDiff {
-                case let .added(_, (const, priority, _)):
+                case let .added(_, (const, priority)):
                     try solver.addConstraint(const.setStrength(priority))
                     
-                case .removed(_, (let const, _, _)):
+                case .removed(_, (let const, _)):
                     try solver.removeConstraint(const)
                     
                 case let .updated(_, old, new):
