@@ -107,8 +107,8 @@ open class Label: View {
         super.init()
     }
 
-    open override func render(in context: BLContext) {
-        super.render(in: context)
+    open override func render(in context: BLContext, screenRegion: BLRegion) {
+        super.render(in: context, screenRegion: screenRegion)
 
         _bitmapCache.isCachingEnabled = Label.cacheAsBitmap
         _bitmapCache.updateBitmapBounds(bounds)

@@ -217,14 +217,14 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
     // MARK: - Rendering
 
     /// Paints this control view on a given render context
-    public final override func render(in context: BLContext) {
-        super.render(in: context)
+    public final override func render(in context: BLContext, screenRegion: BLRegion) {
+        super.render(in: context, screenRegion: screenRegion)
         
         let cookie = context.saveWithCookie()
 
         _bitmapCache.cachingOrRendering(context) { ctx in
-            renderBackground(in: ctx)
-            renderForeground(in: ctx)
+            renderBackground(in: ctx, screenRegion: screenRegion)
+            renderForeground(in: ctx, screenRegion: screenRegion)
         }
         
         context.restore(from: cookie)
@@ -233,7 +233,7 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
     }
 
     /// Renders this view's background
-    open func renderBackground(in context: BLContext) {
+    open func renderBackground(in context: BLContext, screenRegion: BLRegion) {
         // Fill
         if backColor.a > 0 {
             context.setFillStyle(backColor)
@@ -261,7 +261,7 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
     }
 
     /// Renders this view's foreground content (not drawn on top of child views)
-    open func renderForeground(in context: BLContext) {
+    open func renderForeground(in context: BLContext, screenRegion: BLRegion) {
 
     }
 

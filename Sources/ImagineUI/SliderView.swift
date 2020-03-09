@@ -229,8 +229,8 @@ public class SliderView: ControlView {
         return value
     }
     
-    public override func renderBackground(in context: BLContext) {
-        super.renderBackground(in: context)
+    public override func renderBackground(in context: BLContext, screenRegion: BLRegion) {
+        super.renderBackground(in: context, screenRegion: screenRegion)
         
         let line = sliderLine().asBLLine
         let endsHeight = 3.0
@@ -244,8 +244,8 @@ public class SliderView: ControlView {
                            p1: line.end + BLPoint(x: 0, y: endsHeight))
     }
     
-    public override func renderForeground(in context: BLContext) {
-        super.renderForeground(in: context)
+    public override func renderForeground(in context: BLContext, screenRegion: BLRegion) {
+        super.renderForeground(in: context, screenRegion: screenRegion)
         
         renderKnob(in: context)
     }

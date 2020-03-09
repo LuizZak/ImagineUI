@@ -228,7 +228,7 @@ class ImagineUI: Blend2DSample {
 
         // Redraw loop
         for window in windows {
-            window.renderRecursive(in: ctx, region: redrawRegion)
+            window.renderRecursive(in: ctx, screenRegion: redrawRegion)
         }
         
         // Debug render

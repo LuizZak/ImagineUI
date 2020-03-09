@@ -25,8 +25,8 @@ public class ImageView: View {
         super.init()
     }
     
-    public override func render(in context: BLContext) {
-        super.render(in: context)
+    public override func render(in context: BLContext, screenRegion: BLRegion) {
+        super.render(in: context, screenRegion: screenRegion)
 
         if let image = image {
             context.blitImage(image, at: BLPoint.zero)

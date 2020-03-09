@@ -75,8 +75,8 @@ public class Panel: ControlView {
         }
     }
 
-    public override func renderBackground(in context: BLContext) {
-        super.renderBackground(in: context)
+    public override func renderBackground(in context: BLContext, screenRegion: BLRegion) {
+        super.renderBackground(in: context, screenRegion: screenRegion)
 
         renderBorder(in: context)
     }

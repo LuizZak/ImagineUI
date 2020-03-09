@@ -14,6 +14,10 @@ public class Window: ControlView {
     private let _buttons = WindowButtons()
     private let _titleBarHeight = 25.0
     
+    private var titleBarArea: Rectangle {
+        return Rectangle(x: bounds.x, y: bounds.y, width: bounds.width, height: _titleBarHeight)
+    }
+    
     public let contentsLayoutArea = LayoutGuide()
     public let titleBarLayoutArea = LayoutGuide()
 
@@ -106,16 +110,19 @@ public class Window: ControlView {
         }
     }
 
-    public override func renderBackground(in context: BLContext) {
-        super.renderBackground(in: context)
+    public override func renderBackground(in context: BLContext, screenRegion: BLRegion) {
+        super.renderBackground(in: context, screenRegion: screenRegion)
 
         drawWindowBackground(context)
     }
 
-    public override func renderForeground(in context: BLContext) {
-        super.renderForeground(in: context)
+    public override func renderForeground(in context: BLContext, screenRegion: BLRegion) {
+        super.renderForeground(in: context, screenRegion: screenRegion)
 
-        drawTitleBar(context)
+        if screenRegion.hitTest(BLBoxI(roundingRect: titleBarArea.transformedBounds(absoluteTransform()).asBLRect)) != .out {
+            drawTitleBar(context)
+        }
+        
         drawWindowBorders(context)
     }
     

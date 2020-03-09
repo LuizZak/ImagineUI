@@ -51,8 +51,8 @@ open class RadioButton: ControlView {
         }
     }
 
-    open override func renderForeground(in context: BLContext) {
-        super.renderForeground(in: context)
+    open override func renderForeground(in context: BLContext, screenRegion: BLRegion) {
+        super.renderForeground(in: context, screenRegion: screenRegion)
 
         drawRadioButton(context)
     }

@@ -25,7 +25,7 @@ public class ProgressBar: ControlView {
         strokeWidth = 1
     }
     
-    public override func renderBackground(in context: BLContext) {
+    public override func renderBackground(in context: BLContext, screenRegion: BLRegion) {
         let rect = progressBarRoundRect()
         
         context.setFillStyle(backColor)

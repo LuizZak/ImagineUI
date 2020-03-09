@@ -149,7 +149,7 @@ open class View {
         setupConstraints()
     }
 
-    public final func renderRecursive(in context: BLContext, region: BLRegion) {
+    public final func renderRecursive(in context: BLContext, screenRegion: BLRegion) {
         if !isVisible {
             return
         }
@@ -160,7 +160,7 @@ open class View {
         //
         // For now, clipping region is merged at sample app before rendering, so
         // it is guaranteed the clipping region is a single box.
-        if region.hitTest(BLBoxI(roundingRect: boundsForRedrawOnScreen().asBLRect)) == .out {
+        if screenRegion.hitTest(BLBoxI(roundingRect: boundsForRedrawOnScreen().asBLRect)) == .out {
             return
         }
 
@@ -171,16 +171,16 @@ open class View {
             context.clipToRect(boundsForRedraw().asBLRect)
         }
 
-        render(in: context)
+        render(in: context, screenRegion: screenRegion)
 
         for view in subviews {
-            view.renderRecursive(in: context, region: region)
+            view.renderRecursive(in: context, screenRegion: screenRegion)
         }
 
         context.restore(from: cookie)
     }
 
-    open func render(in context: BLContext) {
+    open func render(in context: BLContext, screenRegion: BLRegion) {
 
     }
 

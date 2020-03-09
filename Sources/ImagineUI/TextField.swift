@@ -464,14 +464,14 @@ open class TextField: ControlView {
     
     // MARK: - Rendering
     
-    open override func renderBackground(in context: BLContext) {
-        super.renderBackground(in: context)
+    open override func renderBackground(in context: BLContext, screenRegion: BLRegion) {
+        super.renderBackground(in: context, screenRegion: screenRegion)
         
         renderSelection(in: context)
     }
     
-    open override func renderForeground(in context: BLContext) {
-        super.renderForeground(in: context)
+    open override func renderForeground(in context: BLContext, screenRegion: BLRegion) {
+        super.renderForeground(in: context, screenRegion: screenRegion)
         
         if isFirstResponder {
             renderCaret(in: context)
