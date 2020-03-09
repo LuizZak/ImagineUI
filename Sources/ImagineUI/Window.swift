@@ -6,6 +6,7 @@ public protocol WindowRedrawInvalidationDelegate: class {
 }
 
 public class Window: ControlView {
+    private var _shouldCompress = false
     private var _constraintCache = LayoutConstraintSolverCache()
     private var _mouseDown = false
     private var _mouseDownPoint: Vector2 = .zero
@@ -32,6 +33,13 @@ public class Window: ControlView {
     public override var controlSystem: ControlSystem? {
         return rootControlSystem
     }
+    
+    public override var intrinsicSize: Size? {
+        if _shouldCompress {
+            return .zero
+        }
+        return nil
+    }
 
     public weak var invalidationDelegate: WindowRedrawInvalidationDelegate?
 
@@ -50,6 +58,11 @@ public class Window: ControlView {
     private func initialize() {
         _titleLabel.text = title
         _titleLabel.font = titleFont
+    }
+    
+    public func setShouldCompress(_ isOn: Bool) {
+        _shouldCompress = isOn
+        setNeedsLayout()
     }
     
     public override func setupHierarchy() {
@@ -82,7 +95,7 @@ public class Window: ControlView {
         _titleLabel.setContentCompressionResistance(.horizontal, 900)
         _titleLabel.layout.makeConstraints { make in
             make.centerY == titleBarLayoutArea
-            (make.centerX == titleBarLayoutArea).priority = Strength.MEDIUM
+            (make.centerX == titleBarLayoutArea).priority = Strength.WEAK
             make.right <= titleBarLayoutArea - 10
         }
         

@@ -303,8 +303,9 @@ class ImagineUI: Blend2DSample {
             sample.invalidateScreen()
         }
         
-        let window = Window(area: Rectangle(x: 0, y: 0, width: 300, height: 105),
-                            title: "Debug render settings")
+        let window = Window(area: .zero, title: "Debug render settings")
+        window.areaIntoConstraintsMask = [.location]
+        window.setShouldCompress(true)
         
         let boundsCheckbox = Checkbox(title: "View Bounds")
         let layoutCheckbox = Checkbox(title: "Layout Guides")
@@ -321,6 +322,7 @@ class ImagineUI: Blend2DSample {
         stackView.layout.makeConstraints { make in
             make.left == window.contentsLayoutArea + 12
             make.top == window.contentsLayoutArea + 12
+            make.bottom == window.contentsLayoutArea - 12
         }
         
         boundsCheckbox.checkboxStateWillChange.addListener(owner: self) { [weak self] (_, event) in

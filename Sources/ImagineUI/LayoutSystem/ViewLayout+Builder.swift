@@ -1,7 +1,7 @@
 public extension LayoutAnchors {
     func makeConstraints(_ builder: (LayoutAnchorUpdateCreator) -> Void) {
         if let view = container as? View {
-            view.translatesAutoresizingMaskIntoConstraints = false
+            view.areaIntoConstraintsMask = []
         }
         
         builder(LayoutAnchorUpdateCreator(layout: self))

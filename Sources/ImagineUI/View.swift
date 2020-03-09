@@ -45,7 +45,7 @@ open class View {
 
             invalidate()
 
-            if translatesAutoresizingMaskIntoConstraints {
+            if !areaIntoConstraintsMask.isEmpty {
                 setNeedsLayout()
             }
         }
@@ -65,7 +65,7 @@ open class View {
             
             invalidate()
 
-            if translatesAutoresizingMaskIntoConstraints {
+            if !areaIntoConstraintsMask.isEmpty {
                 setNeedsLayout()
             }
         }
@@ -113,7 +113,7 @@ open class View {
     public weak var superview: View?
 
     public var subviews: [View] = []
-    public var translatesAutoresizingMaskIntoConstraints: Bool = true {
+    public var areaIntoConstraintsMask: Set<BoundsConstraintMask> = [.location, .size] {
         didSet {
             setNeedsLayout()
         }
@@ -661,4 +661,9 @@ extension View: Equatable {
     public static func == (lhs: View, rhs: View) -> Bool {
         return lhs === rhs
     }
+}
+
+public enum BoundsConstraintMask {
+    case location
+    case size
 }

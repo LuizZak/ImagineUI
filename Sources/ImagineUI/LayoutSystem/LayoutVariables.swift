@@ -70,25 +70,27 @@ class LayoutVariables {
     }
     
     func deriveViewConstraints(_ view: View, _ constraintList: ViewConstraintList) {
-        if view.translatesAutoresizingMaskIntoConstraints {
+        if view.areaIntoConstraintsMask.contains(.location) {
             let location = view.convert(point: .zero, to: nil)
             
             constraintList.suggestValue(variable: left,
                                         value: location.x,
                                         strength: Strength.STRONG)
             
-            constraintList.suggestValue(variable: width,
-                                        value: view.bounds.width,
-                                        strength: Strength.STRONG)
-            
             constraintList.suggestValue(variable: top,
                                         value: location.y,
+                                        strength: Strength.STRONG)
+        }
+        if view.areaIntoConstraintsMask.contains(.size) {
+            constraintList.suggestValue(variable: width,
+                                        value: view.bounds.width,
                                         strength: Strength.STRONG)
             
             constraintList.suggestValue(variable: height,
                                         value: view.bounds.height,
                                         strength: Strength.STRONG)
         }
+        
         if let intrinsicSize = view.intrinsicSize {
             // Content compression/hugging priority
             constraintList.addConstraint(
