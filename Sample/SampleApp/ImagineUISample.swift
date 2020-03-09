@@ -323,6 +323,7 @@ class ImagineUI: Blend2DSample {
             make.left == window.contentsLayoutArea + 12
             make.top == window.contentsLayoutArea + 12
             make.bottom == window.contentsLayoutArea - 12
+            make.right <= window.contentsLayoutArea - 12
         }
         
         boundsCheckbox.checkboxStateWillChange.addListener(owner: self) { [weak self] (_, event) in
