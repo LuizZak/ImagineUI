@@ -229,7 +229,7 @@ extension TestView: Blend2DSampleDelegate {
 
         let intersectedBounds = rectBounds.intersection(self.bounds)
 
-        redrawBounds.append(rectBounds)
+        redrawBounds.append(intersectedBounds)
     }
 }
 
