@@ -152,6 +152,8 @@ open class StackView: View {
     
     open func setCustomSpacing(after view: View, _ spacing: Double?) {
         customSpacing[view] = spacing
+        
+        recreateConstraints()
     }
     
     public enum Orientation {

@@ -41,6 +41,9 @@ class ImagineUI: Blend2DSample {
         window.invalidationDelegate = self
 
         let panel = Panel(title: "A Panel")
+        let panelContents = StackView(orientation: .vertical)
+        panelContents.spacing = 5
+        panelContents.clipToBounds = false
 
         let radioButton = RadioButton(title: "Unselected")
         let radioButton2 = RadioButton(title: "Selected")
@@ -91,80 +94,58 @@ class ImagineUI: Blend2DSample {
         
         let imageView = ImageView(image: createSampleImage())
 
-        window.addSubview(panel)
-        window.addSubview(radioButton)
-        window.addSubview(radioButton2)
-        window.addSubview(checkBox1)
-        window.addSubview(checkBox2)
-        window.addSubview(checkBox3)
-        window.addSubview(button)
-        window.addSubview(label)
-        window.addSubview(textField)
-        window.addSubview(progressBar)
-        window.addSubview(sliderView)
-        window.addSubview(scrollView)
+        let firstColumn = StackView(orientation: .vertical)
+        firstColumn.spacing = 5
+        firstColumn.clipToBounds = false
+        let secondColumn = StackView(orientation: .vertical)
+        secondColumn.spacing = 5
+        secondColumn.clipToBounds = false
+        secondColumn.alignment = .fill
+        
+        window.addSubview(firstColumn)
+        window.addSubview(secondColumn)
+        firstColumn.addArrangedSubview(panel)
+        firstColumn.addArrangedSubview(radioButton)
+        firstColumn.addArrangedSubview(radioButton2)
+        firstColumn.addArrangedSubview(checkBox1)
+        firstColumn.addArrangedSubview(checkBox2)
+        firstColumn.addArrangedSubview(checkBox3)
+        firstColumn.addArrangedSubview(button)
+        secondColumn.addArrangedSubview(progressBar)
+        secondColumn.addArrangedSubview(sliderView)
+        secondColumn.addArrangedSubview(label)
+        secondColumn.addArrangedSubview(textField)
         window.addSubview(imageView)
-        panel.addSubview(radioButton)
-        panel.addSubview(radioButton2)
+        window.addSubview(scrollView)
+        panel.addSubview(panelContents)
+        panelContents.addArrangedSubview(radioButton)
+        panelContents.addArrangedSubview(radioButton2)
         scrollView.addSubview(scrollViewLabel)
-
-        panel.layout.makeConstraints { make in
+        
+        firstColumn.layout.makeConstraints { make in
             make.top == window.contentsLayoutArea + 4
             make.left == window.contentsLayoutArea + 10
-            make.width == 100
         }
-
-        radioButton.layout.makeConstraints { make in
-            make.left == panel.containerLayoutGuide + 4
-            make.top == panel.containerLayoutGuide + 4
+        firstColumn.setCustomSpacing(after: panel, 10)
+        firstColumn.setCustomSpacing(after: checkBox3, 15)
+        
+        panelContents.layout.makeConstraints { make in
+            make.edges.equalTo(panel.containerLayoutGuide, inset: EdgeInsets(4))
         }
-        radioButton2.layout.makeConstraints { make in
-            make.left == radioButton
-            make.under(radioButton, offset: 5)
-            make.bottom == panel.containerLayoutGuide - 4
+        
+        secondColumn.layout.makeConstraints { make in
+            make.right(of: firstColumn, offset: 15)
+            make.top == window.contentsLayoutArea + 19
         }
-
-        checkBox1.layout.makeConstraints { make in
-            make.left == panel
-            make.under(panel, offset: 10)
-        }
-        checkBox2.layout.makeConstraints { make in
-            make.left == checkBox1
-            make.under(checkBox1, offset: 5)
-        }
-        checkBox3.layout.makeConstraints { make in
-            make.left == checkBox2
-            make.under(checkBox2, offset: 5)
-        }
-
-        button.layout.makeConstraints { make in
-            make.left == checkBox3
-            make.under(checkBox3, offset: 15)
-        }
+        secondColumn.setCustomSpacing(after: label, 15)
         
         progressBar.layout.makeConstraints { make in
-            make.right(of: panel, offset: 15)
-            make.top == panel + 15
             make.width == 100
         }
-
-        sliderView.layout.makeConstraints { make in
-            make.left == progressBar
-            make.under(progressBar, offset: 5)
-            make.width == 100
-        }
-        
         label.layout.makeConstraints { make in
-            make.left == sliderView
-            make.under(sliderView, offset: 5)
-            make.width == 100
-            make.height == 50
+            make.height == 60
         }
-
         textField.layout.makeConstraints { make in
-            make.left == label
-            make.under(label, offset: 15)
-            make.width == 100
             make.height == 24
         }
         
