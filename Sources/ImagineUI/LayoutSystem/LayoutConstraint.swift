@@ -150,11 +150,11 @@ public class LayoutConstraint: Hashable {
     /// The view that effectively contains this constraint
     var containerView: View
 
-    internal var firstCast: AnyLayoutAnchor
-    internal var secondCast: AnyLayoutAnchor?
+    internal let firstCast: AnyLayoutAnchor
+    internal let secondCast: AnyLayoutAnchor?
     
-    private(set) public var first: LayoutAnchorType
-    private(set) public var second: LayoutAnchorType?
+    public let first: LayoutAnchorType
+    public let second: LayoutAnchorType?
     
     public var relationship: Relationship {
         didSet {

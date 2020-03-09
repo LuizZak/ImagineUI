@@ -50,13 +50,13 @@ open class StackView: View {
         var previousGuide: LayoutGuide?
         var previousAfterSpacing: Double?
         for (i, view) in arrangedSubviews.enumerated() {
+            let guide = LayoutGuide()
             defer {
                 previousGuide = guide
                 previousAfterSpacing = customSpacing[view]
             }
             
             let isLastView = i == arrangedSubviews.count - 1
-            let guide = LayoutGuide()
             
             let viewSpacing = previousAfterSpacing ?? spacing
             

@@ -39,6 +39,8 @@ open class Label: View {
             return attributedText.string
         }
         set {
+            if !attributedText.hasAttributes && attributedText.string == newValue { return }
+            
             attributedText = AttributedText(newValue)
         }
     }

@@ -264,6 +264,12 @@ public class LayoutConstraintSolverCache {
         if !constraint.isEnabled {
             return
         }
+        if let previous = previousConstraintDefinitionsMap[constraint] {
+            if previous.matches(constraint) {
+                constraintDefinitionsMap[constraint] = previous
+                return
+            }
+        }
         
         let definition = toDefinition(constraint)
         constraintDefinitionsMap[constraint] = definition
@@ -277,8 +283,6 @@ public class LayoutConstraintSolverCache {
         return
             ConstraintDefinition(constraint: constraint,
                                  containerView: layoutConstraint.containerView,
-                                 first: layoutConstraint.firstCast,
-                                 second: layoutConstraint.secondCast,
                                  relationship: layoutConstraint.relationship,
                                  offset: layoutConstraint.offset,
                                  multiplier: layoutConstraint.multiplier,
@@ -286,16 +290,47 @@ public class LayoutConstraintSolverCache {
                                  isEnabled: layoutConstraint.isEnabled)
     }
     
-    fileprivate struct ConstraintDefinition: Equatable {
+    fileprivate class ConstraintDefinition: Equatable {
+        internal init(constraint: Constraint, containerView: View,
+                      relationship: Relationship, offset: Double,
+                      multiplier: Double, priority: Double, isEnabled: Bool) {
+            
+            self.constraint = constraint
+            self.containerView = containerView
+            self.relationship = relationship
+            self.offset = offset
+            self.multiplier = multiplier
+            self.priority = priority
+            self.isEnabled = isEnabled
+        }
+        
         var constraint: Constraint
         var containerView: View
-        var first: AnyLayoutAnchor
-        var second: AnyLayoutAnchor?
         var relationship: Relationship
         var offset: Double
         var multiplier: Double 
         var priority: Double
         var isEnabled: Bool
+        
+        func matches(_ constraint: LayoutConstraint) -> Bool {
+            return containerView === constraint.containerView
+                && relationship == constraint.relationship
+                && offset == constraint.offset
+                && multiplier == constraint.multiplier
+                && priority == constraint.priority
+                && isEnabled == constraint.isEnabled
+        }
+        
+        static func == (lhs: LayoutConstraintSolverCache.ConstraintDefinition,
+                        rhs: LayoutConstraintSolverCache.ConstraintDefinition) -> Bool {
+            
+            return lhs.containerView === rhs.containerView
+                && lhs.relationship == rhs.relationship
+                && lhs.offset == rhs.offset
+                && lhs.multiplier == rhs.multiplier
+                && lhs.priority == rhs.priority
+                && lhs.isEnabled == rhs.isEnabled
+        }
     }
     
     fileprivate struct StateDiff {

@@ -92,6 +92,8 @@ open class View {
 
     open var isVisible: Bool = true {
         didSet {
+            if isVisible == oldValue { return }
+            
             invalidate()
         }
     }

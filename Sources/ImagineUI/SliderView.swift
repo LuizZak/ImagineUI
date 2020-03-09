@@ -21,7 +21,7 @@ public class SliderView: ControlView {
                 minimumValue = maximumValue
             }
             
-            limitValue()
+            value = limitValue(value)
             updateLabels()
             
             invalidateControlGraphics()
@@ -37,7 +37,7 @@ public class SliderView: ControlView {
                 maximumValue = minimumValue
             }
             
-            limitValue()
+            value = limitValue(value)
             updateLabels()
             
             invalidateControlGraphics()
@@ -53,23 +53,20 @@ public class SliderView: ControlView {
     /// Defaults to 0
     public var stepValue: Double = 0 {
         didSet {
-            limitValue()
+            value = limitValue(value)
             invalidateControlGraphics()
         }
     }
     
     public var value: Double = 0 {
         didSet {
-            if value == oldValue {
+            if limitValue(value) == oldValue {
                 return
             }
             
-            limitValue()
-            updateLabels()
+            value = limitValue(value)
             
-            if value != oldValue {
-                onValueChanged(.init(oldValue: oldValue, newValue: value))
-            }
+            onValueChanged(.init(oldValue: oldValue, newValue: value))
             
             invalidateControlGraphics()
         }
@@ -217,7 +214,8 @@ public class SliderView: ControlView {
         rightLabel.text = String(format: labelFormatString, maximumValue)
     }
     
-    private func limitValue() {
+    private func limitValue(_ value: Double) -> Double {
+        var value = value
         let stepped: Double
         
         if stepValue > 0 {
@@ -227,6 +225,8 @@ public class SliderView: ControlView {
         }
         
         value = max(minimumValue, min(maximumValue, stepped))
+        
+        return value
     }
     
     public override func renderBackground(in context: BLContext) {
