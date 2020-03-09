@@ -209,7 +209,7 @@ public class Window: ControlView {
             case .none:
                 location = mouseLocation - _mouseDownPoint
             }
-        } else if viewUnder(point: event.location) == self {
+        } else {
             updateMouseResizeCursor(event.location)
         }
     }
