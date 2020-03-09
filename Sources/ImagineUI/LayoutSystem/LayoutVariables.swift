@@ -13,6 +13,7 @@ class LayoutVariables {
     let firstBaseline: Variable
     let intrinsicWidth: Variable
     let intrinsicHeight: Variable
+    let baselineHeight: Variable
 
     init(container: LayoutVariablesContainer) {
         let name = LayoutVariables.deriveName(container)
@@ -30,6 +31,7 @@ class LayoutVariables {
         firstBaseline = Variable("\(name)_firstBaseline")
         intrinsicWidth = Variable("\(name)_intrinsicWidth")
         intrinsicHeight = Variable("\(name)_intrinsicHeight")
+        baselineHeight = Variable("\(name)_baselineHeight")
     }
 
     func deriveConstraints(_ constraintList: ViewConstraintList) {
@@ -62,13 +64,16 @@ class LayoutVariables {
                                      strength: Strength.REQUIRED)
         
         if let label = viewForFirstBaseline() as? Label {
+            constraintList.suggestValue(variable: baselineHeight,
+                                        value: label.baselineHeight,
+                                        strength: Strength.STRONG)
+            
             constraintList.addConstraint(name: "firstBaseline",
-                                         firstBaseline == label.layoutVariables.top + label.baselineHeight,
-                                         strength: Strength.REQUIRED,
-                                         tag: label.baselineHeight.hashValue)
+                                         firstBaseline == top + baselineHeight,
+                                         strength: Strength.REQUIRED)
         } else {
             constraintList.addConstraint(name: "firstBaseline",
-                                         firstBaseline == height,
+                                         firstBaseline == top + height,
                                          strength: Strength.REQUIRED)
         }
     }
