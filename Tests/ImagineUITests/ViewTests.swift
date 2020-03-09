@@ -1,5 +1,5 @@
 import XCTest
-import ImagineUI
+@testable import ImagineUI
 
 class ViewTests: XCTestCase {
     func testLayoutWithNoSuperview() {
@@ -51,6 +51,46 @@ class ViewTests: XCTestCase {
         
         XCTAssertNil(child.superview)
         XCTAssert(view.subviews.isEmpty)
+    }
+    
+    func testRemoveFromSuperviewRemovesConstraintFromOutsideHierarchy() {
+        let base = View()
+        let view1 = View()
+        let view2 = View()
+        let child = View()
+        base.addSubview(view1)
+        base.addSubview(view2)
+        view1.addSubview(child)
+        child.layout.makeConstraints { make in
+            make.left == view1
+            make.left == view2
+        }
+        
+        view1.removeFromSuperview()
+        
+        XCTAssertEqual(child.constraints.count, 1)
+        XCTAssert(child.constraints.first?.first.owner === child)
+        XCTAssert(child.constraints.first?.second?.owner === view1)
+    }
+    
+    func testRemoveFromSuperviewRemovesConstraintFromOutsideHierarchy_LayoutGuides() {
+        let base = View()
+        let view1 = View()
+        let view2 = View()
+        let guide = LayoutGuide()
+        base.addSubview(view1)
+        base.addSubview(view2)
+        view1.addLayoutGuide(guide)
+        guide.layout.makeConstraints { make in
+            make.left == view1
+            make.left == view2
+        }
+        
+        view1.removeFromSuperview()
+        
+        XCTAssertEqual(guide.constraints.count, 1)
+        XCTAssert(guide.constraints.first?.first.owner === guide)
+        XCTAssert(guide.constraints.first?.second?.owner === view1)
     }
     
     // MARK: - setNeedsLayout / suspendLayout / resumeLayout
