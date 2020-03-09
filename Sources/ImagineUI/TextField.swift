@@ -64,6 +64,7 @@ open class TextField: ControlView {
         get { _label.text }
         set {
             _label.text = newValue
+            updateLabelSize()
             _textEngine.updateCaretFromTextBuffer()
             updatePlaceholderVisibility()
             setNeedsLayout()
@@ -171,8 +172,7 @@ open class TextField: ControlView {
         
         onTextChanged()
         
-        _label.autoSize()
-        _label.bounds.width = max(_label.bounds.width, _labelContainer.bounds.width)
+        updateLabelSize()
 
         updatePlaceholderVisibility()
         scrollLabel()
@@ -186,6 +186,13 @@ open class TextField: ControlView {
     /// Raises the `caretChanged` event
     open func onCaretChanged(_ event: ValueChangedEventArgs<Caret>) {
         _caretChanged.publishEvent(sender: self, event)
+    }
+    
+    open override func onResize(_ event: ValueChangedEventArgs<Size>) {
+        super.onResize(event)
+        
+        updateLabelAndPlaceholder()
+        scrollLabel()
     }
 
     open override func onStateChanged(_ event: ValueChangedEventArgs<ControlViewState>) {
@@ -630,14 +637,17 @@ open class TextField: ControlView {
     open override func performLayout() {
         super.performLayout()
 
+        updateLabelAndPlaceholder()
+    }
+    
+    private func updateLabelAndPlaceholder() {
         suspendLayout()
-        
+                
         let insetBounds = contentInset.inset(rectangle: bounds)
         _labelContainer.location = insetBounds.topLeft
         _labelContainer.bounds.size = insetBounds.size
         
         // Currently, setting location.y individually causes a runtime crash
-//        _label.location.y = _labelContainer.bounds.height / 2 - _label.bounds.height / 2
         _label.location = Vector2(x: _label.location.x, y: _labelContainer.bounds.height / 2 - _label.bounds.height / 2)
         
         _label.bounds.width = max(_label.bounds.width, _labelContainer.bounds.width)
@@ -646,6 +656,11 @@ open class TextField: ControlView {
         _placeholderLabel.bounds.width = max(_placeholderLabel.bounds.width, _labelContainer.bounds.width)
         
         resumeLayout(setNeedsLayout: false)
+    }
+    
+    private func updateLabelSize() {
+        _label.autoSize()
+        _label.bounds.width = max(_label.bounds.width, _labelContainer.bounds.width)
     }
 
     /// Selects the entire text available on this text field
