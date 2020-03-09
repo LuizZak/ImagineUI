@@ -153,8 +153,12 @@ public class LayoutConstraint: Hashable {
     internal let firstCast: AnyLayoutAnchor
     internal let secondCast: AnyLayoutAnchor?
     
-    public let first: LayoutAnchorType
-    public let second: LayoutAnchorType?
+    public var first: LayoutAnchorType {
+        return firstCast
+    }
+    public var second: LayoutAnchorType? {
+        return secondCast
+    }
     
     public var relationship: Relationship {
         didSet {
@@ -212,8 +216,6 @@ public class LayoutConstraint: Hashable {
         self.containerView = containerView
         self.firstCast = first
         self.secondCast = second
-        self.first = first
-        self.second = second
         self.relationship = relationship
         self.offset = offset
         self.multiplier = multiplier
@@ -229,8 +231,6 @@ public class LayoutConstraint: Hashable {
         self.containerView = containerView
         self.firstCast = first
         self.secondCast = nil
-        self.first = first
-        self.second = nil
         self.relationship = relationship
         self.offset = offset
         self.multiplier = 1
