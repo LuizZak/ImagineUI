@@ -147,6 +147,10 @@ public class SliderView: ControlView {
         }
     }
     
+    override func boundsForRedraw() -> Rectangle {
+        return bounds.inflatedBy(x: 2, y: 0)
+    }
+    
     public func onValueChanged(_ event: ValueChangedEventArgs<Double>) {
         _valueChanged.publishEvent(sender: self, event)
     }
@@ -164,7 +168,7 @@ public class SliderView: ControlView {
         
         if isMouseDown {
             let offset = event.location + mouseDownOffset
-            value = valueAtOffset(x: offset.x)
+            value = limitValue(valueAtOffset(x: offset.x))
         }
     }
     
