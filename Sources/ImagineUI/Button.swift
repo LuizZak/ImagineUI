@@ -62,12 +62,6 @@ open class Button: ControlView {
     open override func setupConstraints() {
         super.setupConstraints()
 
-        // Intrinsic size
-        layout.makeConstraints { make in
-            make.width >= 15
-            make.height >= 15
-        }
-
         // Label constraints
         label.layout.makeConstraints { make in
             make.edges.equalTo(self, inset: contentInset).setPriority(Strength.MEDIUM)

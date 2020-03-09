@@ -27,7 +27,7 @@ public struct Vector2: Equatable, CustomStringConvertible, Codable {
     var theVector: NativeVectorType
     
     /// The Double representation of this vector's x axis
-//    @inlinable
+    @inlinable
     public var x: Double {
         get {
             return theVector.x
@@ -38,7 +38,7 @@ public struct Vector2: Equatable, CustomStringConvertible, Codable {
     }
     
     /// The Double representation of this vector's y axis
-//    @inlinable
+    @inlinable
     public var y: Double {
         get {
             return theVector.y

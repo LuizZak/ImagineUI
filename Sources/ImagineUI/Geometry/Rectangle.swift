@@ -25,6 +25,7 @@ public struct Rectangle: Equatable, Codable {
     
     /// Gets the X position of this Rectangle
     public var x: Double
+    
     /// Gets the Y position of this Rectangle
     public var y: Double
     
@@ -39,6 +40,7 @@ public struct Rectangle: Equatable, Codable {
     public var height: Double
     
     /// The top-left location of this rectangle
+    @inlinable
     public var location: Vector2 {
         get {
             return Vector2(x: x, y: y)
@@ -49,12 +51,14 @@ public struct Rectangle: Equatable, Codable {
     }
 
     /// The size of this rectangle
+    @inlinable
     public var size: Size {
         get {
             return Size(x: width, y: height)
         }
         set {
-            maximum = minimum + newValue
+            width = newValue.x
+            height = newValue.y
         }
     }
     
@@ -172,7 +176,10 @@ public struct Rectangle: Equatable, Codable {
     /// Initializes a Rectangle with the location + size of a rectangle
     @inlinable
     public init(location: Vector2, size: Size) {
-        self.init(min: location, max: location + size)
+        x = location.x
+        y = location.y
+        width = size.x
+        height = size.y
     }
 
     /// Initializes a Rectangle with the corners of a rectangle
