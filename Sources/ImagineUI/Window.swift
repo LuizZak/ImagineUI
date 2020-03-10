@@ -7,6 +7,10 @@ public protocol WindowRedrawInvalidationDelegate: class {
 }
 
 public class Window: ControlView {
+    /// List of temporary constraints applied during window resizing to mantain
+    /// one or more of the boundaries of the window area fixed while the opposite
+    /// sides are resized
+    private var _resizeConstraints: [LayoutConstraint] = []
     private var _targetSize: Size? = nil
     private var _resizeStartArea: Rectangle = .zero
     private var _resizeCorner: BorderResize?
@@ -146,72 +150,18 @@ public class Window: ControlView {
 
         _mouseDownPoint = event.location
         _mouseDown = true
-        _resizeCorner = resizeAtPoint(event.location)
         _resizeStartArea = area
+        _resizeCorner = resizeAtPoint(event.location)
+        if let resize = _resizeCorner {
+            prepareWindowResize(resize)
+        }
     }
 
     public override func onMouseMove(_ event: MouseEventArgs) {
         super.onMouseMove(event)
         
         if _mouseDown {
-            let mouseLocation = convert(point: event.location, to: nil)
-            
-            switch _resizeCorner {
-            case .top:
-                let newArea = _resizeStartArea.stretchingTop(to: mouseLocation.y - _mouseDownPoint.y)
-                
-                _targetSize?.y = newArea.height
-                size.y = newArea.height
-                location = Vector2(x: location.x, y: newArea.y)
-
-            case .topLeft:
-                let newArea = _resizeStartArea
-                    .stretchingTop(to: mouseLocation.y - _mouseDownPoint.y)
-                    .stretchingLeft(to: mouseLocation.x - _mouseDownPoint.x)
-                
-                _targetSize = newArea.size
-                size = newArea.size
-                location = newArea.location
-                
-            case .left:
-                let newArea = _resizeStartArea.stretchingLeft(to: mouseLocation.x - _mouseDownPoint.x)
-                
-                _targetSize?.x = newArea.width
-                size = Vector2(x: newArea.width, y: size.y)
-                location = Vector2(x: newArea.x, y: location.y)
-                
-            case .right:
-                _targetSize?.x = event.location.x
-                setNeedsLayout()
-                
-            case .topRight:
-                let newArea = _resizeStartArea.stretchingTop(to: mouseLocation.y - _mouseDownPoint.y)
-                
-                _targetSize = Vector2(x: event.location.x, y: newArea.height)
-                size = Vector2(x: size.x, y: newArea.height)
-                location = Vector2(x: location.x, y: newArea.y)
-
-            case .bottomRight:
-                _targetSize = event.location
-                setNeedsLayout()
-                
-            case .bottom:
-                _targetSize?.y = event.location.y
-                setNeedsLayout()
-                
-            case .bottomLeft:
-                let newArea = _resizeStartArea.stretchingLeft(to: mouseLocation.x - _mouseDownPoint.x)
-                
-                _targetSize = Vector2(x: newArea.width, y: event.location.y)
-                size = Vector2(x: newArea.width, y: size.y)
-                location = Vector2(x: newArea.x, y: location.y)
-                
-            case .none:
-                location = mouseLocation - _mouseDownPoint
-            }
-            
-            performLayout()
-            setNeedsLayout()
+            performWindowResizeOrDrag(event)
         } else {
             updateMouseResizeCursor(event.location)
         }
@@ -227,7 +177,103 @@ public class Window: ControlView {
         super.onMouseUp(event)
 
         _mouseDown = false
-        _resizeCorner = nil
+        if isResizingWindow() {
+            finishWindowResizing()
+        }
+    }
+    
+    private func isResizingWindow() -> Bool {
+        return _resizeCorner != nil
+    }
+    
+    private func prepareWindowResize(_ resize: BorderResize) {
+        // Fix right edge in place
+        switch resize {
+        case .left, .topLeft, .bottomLeft:
+            _resizeConstraints.append(
+                LayoutConstraint.create(first: layout.right,
+                                        offset: area.right)
+            )
+        default:
+            break
+        }
+        
+        // Fix bottom edge in place
+        switch resize {
+        case .top, .topLeft, .topRight:
+            _resizeConstraints.append(
+                LayoutConstraint.create(first: layout.bottom,
+                                        offset: area.bottom)
+            )
+        default:
+            break
+        }
+    }
+    
+    private func performWindowResizeOrDrag(_ event: MouseEventArgs) {
+        let mouseLocation = convert(point: event.location, to: nil)
+        
+        switch _resizeCorner {
+        case .top:
+            let newArea = _resizeStartArea.stretchingTop(to: mouseLocation.y - _mouseDownPoint.y)
+            
+            _targetSize?.y = newArea.height
+            size = Size(x: size.x, y: newArea.height)
+            location = Vector2(x: location.x, y: newArea.y)
+
+        case .topLeft:
+            let newArea = _resizeStartArea
+                .stretchingTop(to: mouseLocation.y - _mouseDownPoint.y)
+                .stretchingLeft(to: mouseLocation.x - _mouseDownPoint.x)
+            
+            _targetSize = newArea.size
+            size = newArea.size
+            location = newArea.location
+            
+        case .left:
+            let newArea = _resizeStartArea.stretchingLeft(to: mouseLocation.x - _mouseDownPoint.x)
+            
+            _targetSize?.x = newArea.width
+            size = Vector2(x: newArea.width, y: size.y)
+            location = Vector2(x: newArea.x, y: location.y)
+            
+        case .right:
+            _targetSize?.x = event.location.x
+            setNeedsLayout()
+            
+        case .topRight:
+            let newArea = _resizeStartArea.stretchingTop(to: mouseLocation.y - _mouseDownPoint.y)
+            
+            _targetSize = Vector2(x: event.location.x, y: newArea.height)
+            size = Vector2(x: size.x, y: newArea.height)
+            location = Vector2(x: location.x, y: newArea.y)
+
+        case .bottomRight:
+            _targetSize = event.location
+            setNeedsLayout()
+            
+        case .bottom:
+            _targetSize?.y = event.location.y
+            setNeedsLayout()
+            
+        case .bottomLeft:
+            let newArea = _resizeStartArea.stretchingLeft(to: mouseLocation.x - _mouseDownPoint.x)
+            
+            _targetSize = Vector2(x: newArea.width, y: event.location.y)
+            size = Vector2(x: newArea.width, y: size.y)
+            location = Vector2(x: newArea.x, y: location.y)
+            
+        case .none:
+            location = mouseLocation - _mouseDownPoint
+        }
+    }
+    
+    private func finishWindowResizing() {
+        for constraint in _resizeConstraints {
+            constraint.removeConstraint()
+        }
+        
+        _resizeConstraints.removeAll()
     }
 
     private func drawWindowBackground(_ ctx: BLContext) {
@@ -278,7 +324,6 @@ public class Window: ControlView {
     private func updateMouseResizeCursor(_ resize: BorderResize?) {
         var cursor: NSCursor?
         
-        // TODO: Remove the hardcoded image paths
         switch resize {
         case .top, .bottom:
             cursor = NSCursor.resizeUpDown
@@ -287,10 +332,12 @@ public class Window: ControlView {
             cursor = NSCursor.resizeLeftRight
         
         case .topLeft, .bottomRight:
+            // TODO: Remove this hardcoded image paths
             cursor = NSCursor(image: NSImage(byReferencingFile: "/System/Library/Frameworks/WebKit.framework/Versions/Current/Frameworks/WebCore.framework/Resources/northWestSouthEastResizeCursor.png")!,
                                   hotSpot: NSPoint(x: 8, y: 8))
         
         case .topRight, .bottomLeft:
+            // TODO: Remove this hardcoded image paths
             cursor = NSCursor(image: NSImage(byReferencingFile: "/System/Library/Frameworks/WebKit.framework/Versions/Current/Frameworks/WebCore.framework/Resources/northEastSouthWestResizeCursor.png")!,
             hotSpot: NSPoint(x: 8, y: 8))
             
