@@ -292,6 +292,8 @@ public class ScrollBarControl: ControlView {
     /// Size of content to scroll through
     public var contentSize: Double = 0 {
         didSet {
+            guard contentSize != oldValue else { return }
+            
             invalidate()
         }
     }
@@ -299,6 +301,8 @@ public class ScrollBarControl: ControlView {
     /// The size of the content which is visible when scrolled
     public var visibleSize: Double = 0 {
         didSet {
+            guard visibleSize != oldValue else { return }
+            
             invalidate()
         }
     }
@@ -308,6 +312,8 @@ public class ScrollBarControl: ControlView {
     /// Scroll value must be between 0 and `contentSize - visibleSize`.
     public var scroll: Double = 0 {
         didSet {
+            guard scroll != oldValue else { return }
+            
             invalidate()
         }
     }

@@ -3,12 +3,14 @@ import SwiftBlend2D
 public typealias CheckboxStateWillChangeEventArgs = CancellableValueChangedEventArgs<Checkbox.State>
 
 open class Checkbox: ControlView {
+    private let textStates = StatedValueStore<String>()
+    public let label = Label()
+    
     open var checkboxState: State = .unchecked {
         didSet {
             invalidate()
         }
     }
-    let label = Label()
     
     open var title: String {
         get {

@@ -184,13 +184,13 @@ class TestView: NSView {
     func update() {
         sample.update(CACurrentMediaTime())
         
-        let ctx = BLContext(image: blImage)!
-
-        sample.render(context: ctx)
-
-        ctx.end()
-        
         if let first = redrawBounds.first {
+            let ctx = BLContext(image: blImage)!
+
+            sample.render(context: ctx)
+
+            ctx.end()
+            
             let reduced = redrawBounds.reduce(first, { $0.union($1) })
             setNeedsDisplay(reduced)
             
