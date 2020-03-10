@@ -18,6 +18,7 @@ class ImagineUI: Blend2DSample {
     var windows: [Window]
 
     var redrawRegion: BLRegion
+    var currentRedrawRegion: Rectangle? = nil
     
     var debugDrawFlags: Set<DebugDraw.DebugDrawFlags> = []
 
@@ -166,6 +167,7 @@ class ImagineUI: Blend2DSample {
         imageView.layout.makeConstraints { make in
             make.right(of: progressBar, offset: 15)
             make.top == progressBar
+            make.right <= window.contentsLayoutArea - 8
         }
 
         button.mouseClicked.addListener(owner: self) { _ in
@@ -191,9 +193,11 @@ class ImagineUI: Blend2DSample {
 
         bounds = BLRect(location: .zero, size: BLSize(w: Double(width), h: Double(height)))
         redrawRegion = BLRegion(rectangle: BLRectI(x: 0, y: 0, w: Int32(width), h: Int32(height)))
+        currentRedrawRegion = bounds.asRectangle
     }
     
     func invalidateScreen() {
+        currentRedrawRegion = bounds.asRectangle
         redrawRegion.combine(box: BLBoxI(rounding: bounds.asBLBox),
                              operation: .or)
         delegate?.invalidate(bounds: bounds.asRectangle)
@@ -216,18 +220,24 @@ class ImagineUI: Blend2DSample {
     }
 
     func render(context ctx: BLContext) {
+        guard let rect = currentRedrawRegion else {
+            return
+        }
+        
         ctx.scale(by: sampleRenderScale)
         ctx.setFillStyle(BLRgba32.cornflowerBlue)
 
         // Reduce redraw region to a single enclosing rectangle
-        var rect: Rectangle = redrawRegion.regionScans.isEmpty ? .zero : BLRect(boxI: redrawRegion.regionScans[0]).asRectangle
-
-        for box in redrawRegion.regionScans {
-            rect = rect.formUnion(BLRect(boxI: box).asRectangle)
-        }
-
-        redrawRegion.clear()
-        redrawRegion.combine(box: BLBoxI(roundingRect: rect.asBLRect), operation: .or)
+//        var rect: Rectangle = redrawRegion.regionScans.isEmpty ? .zero : BLRect(boxI: redrawRegion.regionScans[0]).asRectangle
+//
+//        for box in redrawRegion.regionScans {
+//            rect = rect.formUnion(BLRect(boxI: box).asRectangle)
+//        }
+//
+//        redrawRegion.clear()
+//        redrawRegion.combine(box: BLBoxI(roundingRect: rect.asBLRect), operation: .or)
+        
+        let redrawRegion = BLRegion(rectangle: BLRectI(rounding: rect.asBLRect))
 
         ctx.fillRect(rect.asBLRect)
 
@@ -241,7 +251,7 @@ class ImagineUI: Blend2DSample {
             DebugDraw.debugDrawRecursive(window, flags: debugDrawFlags, to: ctx)
         }
 
-        redrawRegion.clear()
+        //redrawRegion.clear()
     }
 
     func mouseDown(event: MouseEventArgs) {
@@ -383,12 +393,18 @@ extension ImagineUI: WindowRedrawInvalidationDelegate {
             return
         }
 
-        let box = BLBoxI(x: Int(floor(intersectedRect.x)),
-                         y: Int(floor(intersectedRect.y)),
-                         w: Int(ceil(intersectedRect.width)),
-                         h: Int(ceil(intersectedRect.height)))
-
-        redrawRegion.combine(box: box, operation: .or)
+//        let box = BLBoxI(x: Int(floor(intersectedRect.x)),
+//                         y: Int(floor(intersectedRect.y)),
+//                         w: Int(ceil(intersectedRect.width)),
+//                         h: Int(ceil(intersectedRect.height)))
+//
+//        redrawRegion.combine(box: box, operation: .or)
+        
+        if let current = currentRedrawRegion {
+            currentRedrawRegion = current.formUnion(intersectedRect)
+        } else {
+            currentRedrawRegion = intersectedRect
+        }
 
         delegate?.invalidate(bounds: intersectedRect)
     }

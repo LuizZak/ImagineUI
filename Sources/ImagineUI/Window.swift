@@ -62,6 +62,9 @@ public class Window: ControlView {
         self.area = area
         self._targetSize = area.size
         strokeWidth = 5
+        
+        setContentHuggingPriority(.horizontal, 100)
+        setContentHuggingPriority(.vertical, 100)
     }
 
     private func initialize() {
@@ -104,11 +107,10 @@ public class Window: ControlView {
             make.right == self - 2
         }
         
-        _titleLabel.setContentHuggingPriority(.horizontal, 999)
         _titleLabel.setContentCompressionResistance(.horizontal, 900)
         _titleLabel.layout.makeConstraints { make in
             make.centerY == titleBarLayoutArea
-            (make.centerX == titleBarLayoutArea).priority = Strength.WEAK
+            (make.centerX == titleBarLayoutArea).priority = LayoutConstraintHelpers.strengthFromPriority(50)
             make.right <= titleBarLayoutArea - 10
         }
         

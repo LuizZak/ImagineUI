@@ -74,7 +74,9 @@ class TestView: NSView {
                           height: sample.height * Int(sample.sampleRenderScale.y),
                           format: .xrgb32)
 
-        setNeedsDisplay(bounds)
+        redrawBounds.append(bounds)
+        
+        update()
     }
 
     override func mouseDown(with event: NSEvent) {
@@ -182,10 +184,18 @@ class TestView: NSView {
     func update() {
         sample.update(CACurrentMediaTime())
         
-        for rect in redrawBounds {
-            setNeedsDisplay(rect)
+        let ctx = BLContext(image: blImage)!
+
+        sample.render(context: ctx)
+
+        ctx.end()
+        
+        if let first = redrawBounds.first {
+            let reduced = redrawBounds.reduce(first, { $0.union($1) })
+            setNeedsDisplay(reduced)
+            
+            redrawBounds.removeAll()
         }
-        redrawBounds.removeAll()
     }
 
     override func draw(_ dirtyRect: NSRect) {
@@ -193,11 +203,11 @@ class TestView: NSView {
             return
         }
 
-        let ctx = BLContext(image: blImage)!
-
-        sample.render(context: ctx)
-
-        ctx.end()
+//        let ctx = BLContext(image: blImage)!
+//
+//        sample.render(context: ctx)
+//
+//        ctx.end()
 
         let imageData = blImage.getImageData()
 

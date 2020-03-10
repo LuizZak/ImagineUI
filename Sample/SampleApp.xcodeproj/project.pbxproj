@@ -50,7 +50,7 @@
 		5C3FCFB723E20CCC0045A350 /* SampleAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SampleAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C3FCFBB23E20CCC0045A350 /* SampleAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleAppUITests.swift; sourceTree = "<group>"; };
 		5C3FCFBD23E20CCC0045A350 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		5C3FCFCF23E20E9A0045A350 /* ImagineUI */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "ImagineUI"; path = ../; sourceTree = "<group>"; };
+		5C3FCFCF23E20E9A0045A350 /* ImagineUI */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ImagineUI; path = ../; sourceTree = "<group>"; };
 		5C3FCFD223E20F370045A350 /* TestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestView.swift; sourceTree = "<group>"; };
 		5C3FCFD723E211100045A350 /* ImagineUISample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagineUISample.swift; sourceTree = "<group>"; };
 		5C3FCFD923E2112D0045A350 /* Blend2DSample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Blend2DSample.swift; sourceTree = "<group>"; };

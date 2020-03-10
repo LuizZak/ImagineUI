@@ -6,6 +6,10 @@ open class StackView: View {
     private var arrangedSubviews: [View] = []
     private var customSpacing: [View: Double] = [:]
     
+    public override var intrinsicSize: Size? {
+        return .zero
+    }
+    
     open var spacing: Double = 0 {
         didSet {
             recreateConstraints()
@@ -34,6 +38,9 @@ open class StackView: View {
     public init(orientation: Orientation) {
         self.orientation = orientation
         super.init()
+        
+        setContentHuggingPriority(.vertical, 50)
+        setContentHuggingPriority(.horizontal, 50)
     }
     
     private func recreateConstraints() {
