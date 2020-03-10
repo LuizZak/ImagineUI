@@ -1,4 +1,5 @@
 import Foundation
+import SwiftBlend2D
 
 open class ScrollView: ControlView {
     private let scrollBarSize: Double = 10
@@ -284,21 +285,19 @@ open class ScrollView: ControlView {
 }
 
 public class ScrollBarControl: ControlView {
-    private let scrollBarKnob = ControlView()
-    
     public let orientation: Orientation
     
     /// Size of content to scroll through
     public var contentSize: Double = 0 {
         didSet {
-            updateScrollBarPosition()
+            invalidate()
         }
     }
     
     /// The size of the content which is visible when scrolled
     public var visibleSize: Double = 0 {
         didSet {
-            updateScrollBarPosition()
+            invalidate()
         }
     }
     
@@ -307,7 +306,7 @@ public class ScrollBarControl: ControlView {
     /// Scroll value must be between 0 and `contentSize - visibleSize`.
     public var scroll: Double = 0 {
         didSet {
-            updateScrollBarPosition()
+            invalidate()
         }
     }
     
@@ -320,14 +319,6 @@ public class ScrollBarControl: ControlView {
         self.orientation = orientation
         super.init()
         backColor = .lightGray
-        addSubview(scrollBarKnob)
-        scrollBarKnob.suspendLayout()
-        initStyle()
-        updateScrollBarPosition()
-    }
-    
-    private func initStyle() {
-        scrollBarKnob.backColor = .gray
     }
     
     open override func onResize(_ event: ValueChangedEventArgs<Size>) {
@@ -336,22 +327,27 @@ public class ScrollBarControl: ControlView {
         let size = event.newValue
         
         cornerRadius = min(size.x, size.y) / 2
-        scrollBarKnob.cornerRadius = cornerRadius
-        
-        updateScrollBarPosition()
     }
     
-    private func updateScrollBarPosition() {
+    public override func renderForeground(in context: BLContext, screenRegion: BLRegion) {
+        super.renderForeground(in: context, screenRegion: screenRegion)
+        
+        let barArea = scrollBarBounds()
+        let radius = min(barArea.width, barArea.height) / 2
+        let roundRect = BLRoundRect(rect: barArea.asBLRect, radius: BLPoint(x: radius, y: radius))
+        
+        context.setFillStyle(BLRgba32.gray)
+        context.fillRoundRect(roundRect)
+    }
+    
+    private func scrollBarBounds() -> Rectangle {
         var barArea = bounds
         barArea = barArea.inset(EdgeInsets(top: 2, left: 2, bottom: 2, right: 2))
         
         if orientation == .vertical {
             let ratio = visibleSize / contentSize
             if contentSize == 0 || ratio >= 1 {
-                scrollBarKnob.location = barArea.minimum
-                scrollBarKnob.bounds.size = barArea.size
-
-                return
+                return barArea
             }
             
             let barSize = barArea.height * ratio
@@ -362,15 +358,11 @@ public class ScrollBarControl: ControlView {
             start = max(barArea.top, min(barArea.bottom, start))
             end = max(barArea.top, min(barArea.bottom, end))
 
-            scrollBarKnob.location = Vector2(x: barArea.left, y: start)
-            scrollBarKnob.bounds.size = Size(x: barArea.width, y: end - start)
+            return Rectangle(x: barArea.x, y: start, width: barArea.width, height: end - start)
         } else {
             let ratio = visibleSize / contentSize
             if contentSize == 0 || ratio >= 1 {
-                scrollBarKnob.location = barArea.minimum
-                scrollBarKnob.bounds.size = barArea.size
-
-                return
+                return barArea
             }
 
             let barSize = barArea.width * ratio
@@ -381,8 +373,7 @@ public class ScrollBarControl: ControlView {
             start = max(barArea.left, min(barArea.right, start))
             end = max(barArea.left, min(barArea.right, end))
 
-            scrollBarKnob.location = Vector2(x: start, y: barArea.top)
-            scrollBarKnob.bounds.size = Vector2(x: end - start, y: barArea.height)
+            return Rectangle(x: start, y: barArea.top, width: end - start, height: barArea.height)
         }
     }
 
