@@ -209,6 +209,9 @@ public class Window: ControlView {
             case .none:
                 location = mouseLocation - _mouseDownPoint
             }
+            
+            performLayout()
+            setNeedsLayout()
         } else {
             updateMouseResizeCursor(event.location)
         }
@@ -249,12 +252,11 @@ public class Window: ControlView {
     }
 
     private func drawTitleBar(_ ctx: BLContext) {
-        let titleBarArea = BLRect(x: bounds.x, y: bounds.y, w: bounds.width, h: _titleBarHeight)
         let windowRounded = BLRoundRect(rect: bounds.asBLRect, radius: BLPoint(x: 4, y: 4))
 
         let linearGradient
-            = BLLinearGradientValues(start: titleBarArea.topLeft,
-                                     end: titleBarArea.bottomLeft + BLPoint(x: 0, y: 10))
+            = BLLinearGradientValues(start: titleBarArea.topLeft.asBLPoint,
+                                     end: titleBarArea.bottomLeft.asBLPoint + BLPoint(x: 0, y: 10))
 
         var gradient = BLGradient(linear: linearGradient)
         gradient.addStop(0, BLRgba32.dimGray)
