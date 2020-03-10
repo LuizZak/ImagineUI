@@ -285,6 +285,8 @@ open class ScrollView: ControlView {
 }
 
 public class ScrollBarControl: ControlView {
+    private var isMouseDown = false
+    private var mouseDownPoint: Vector2 = .zero
     public let orientation: Orientation
     
     /// Size of content to scroll through
@@ -321,12 +323,66 @@ public class ScrollBarControl: ControlView {
         backColor = .lightGray
     }
     
+    public override func onStateChanged(_ event: ValueChangedEventArgs<ControlViewState>) {
+        super.onStateChanged(event)
+        
+        invalidate()
+    }
+    
     open override func onResize(_ event: ValueChangedEventArgs<Size>) {
         super.onResize(event)
         
         let size = event.newValue
         
         cornerRadius = min(size.x, size.y) / 2
+    }
+    
+    public override func onMouseDown(_ event: MouseEventArgs) {
+        super.onMouseDown(event)
+        
+        if scrollBarBounds().contains(event.location) {
+            isMouseDown = true
+            isSelected = true
+            mouseDownPoint = event.location - scrollBarBounds().location
+        }
+    }
+    
+    public override func onMouseMove(_ event: MouseEventArgs) {
+        super.onMouseMove(event)
+        
+        isHighlighted = scrollBarBounds().contains(event.location)
+        if isMouseDown {
+            let mouse = event.location - mouseDownPoint
+            let total = contentSize - visibleSize
+            let scrollBarArea = scrollBarMouseArea()
+            let clippedMouse = max(.zero, min(scrollBarArea, mouse))
+            
+            let previousScroll = scroll
+            switch orientation {
+            case .horizontal:
+                scroll = clippedMouse.x / scrollBarArea.x * total
+                
+            case .vertical:
+                scroll = clippedMouse.y / scrollBarArea.y * total
+            }
+            
+            if previousScroll != scroll {
+                _scrollChanged.publishEvent(sender: self, scroll)
+            }
+        }
+    }
+    
+    public override func onMouseUp(_ event: MouseEventArgs) {
+        super.onMouseUp(event)
+        
+        isSelected = false
+        isMouseDown = false
+    }
+    
+    public override func onMouseLeave() {
+        super.onMouseLeave()
+        
+        isHighlighted = false
     }
     
     public override func renderForeground(in context: BLContext, screenRegion: BLRegion) {
@@ -336,16 +392,40 @@ public class ScrollBarControl: ControlView {
         let radius = min(barArea.width, barArea.height) / 2
         let roundRect = BLRoundRect(rect: barArea.asBLRect, radius: BLPoint(x: radius, y: radius))
         
-        context.setFillStyle(BLRgba32.gray)
+        let color: BLRgba32
+        switch currentState {
+        case .highlighted:
+            color = BLRgba32.gray.faded(towards: .white, factor: 0.2)
+        case .selected:
+            color = BLRgba32.gray.faded(towards: .black, factor: 0.2)
+        default:
+            color = BLRgba32.gray
+        }
+        
+        context.setFillStyle(color)
         context.fillRoundRect(roundRect)
+    }
+    
+    private func scrollBarMouseArea() -> Vector2 {
+        let barArea = bounds
+        let ratio = visibleSize / contentSize
+        
+        let barSizeX = barArea.width * ratio
+        let x = barArea.left + barArea.width - barSizeX
+        
+        let barSizeY = barArea.height * ratio
+        let y = barArea.top + barArea.height - barSizeY
+        
+        return Vector2(x: x, y: y)
     }
     
     private func scrollBarBounds() -> Rectangle {
         var barArea = bounds
         barArea = barArea.inset(EdgeInsets(top: 2, left: 2, bottom: 2, right: 2))
         
+        let ratio = visibleSize / contentSize
+        
         if orientation == .vertical {
-            let ratio = visibleSize / contentSize
             if contentSize == 0 || ratio >= 1 {
                 return barArea
             }
@@ -360,7 +440,6 @@ public class ScrollBarControl: ControlView {
 
             return Rectangle(x: barArea.x, y: start, width: barArea.width, height: end - start)
         } else {
-            let ratio = visibleSize / contentSize
             if contentSize == 0 || ratio >= 1 {
                 return barArea
             }
