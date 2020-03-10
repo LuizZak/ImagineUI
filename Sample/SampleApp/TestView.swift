@@ -202,13 +202,7 @@ class TestView: NSView {
         guard let context = NSGraphicsContext.current else {
             return
         }
-
-//        let ctx = BLContext(image: blImage)!
-//
-//        sample.render(context: ctx)
-//
-//        ctx.end()
-
+        
         let imageData = blImage.getImageData()
 
         let colorSpace = CGColorSpaceCreateDeviceRGB()

@@ -68,11 +68,11 @@ class LayoutVariables {
                                         value: label.baselineHeight,
                                         strength: Strength.STRONG)
             
-            constraintList.addConstraint(name: "firstBaseline",
+            constraintList.addConstraint(name: "firstBaseline=baselineHeight",
                                          firstBaseline == top + baselineHeight,
                                          strength: Strength.REQUIRED)
         } else {
-            constraintList.addConstraint(name: "firstBaseline",
+            constraintList.addConstraint(name: "firstBaseline=height",
                                          firstBaseline == top + height,
                                          strength: Strength.REQUIRED)
         }
