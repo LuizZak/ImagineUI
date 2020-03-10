@@ -12,6 +12,7 @@ public class Window: ControlView {
     /// sides are resized
     private var _resizeConstraints: [LayoutConstraint] = []
     private var _targetSize: Size? = nil
+    private var _maxLocationDuringDrag: Vector2 = .zero
     private var _resizeStartArea: Rectangle = .zero
     private var _resizeCorner: BorderResize?
     private var _constraintCache = LayoutConstraintSolverCache()
@@ -203,11 +204,13 @@ public class Window: ControlView {
         switch resize {
         case .left, .topLeft, .bottomLeft:
             // Limit range of left edge to avoid compressin the window too much
-            let minimumLeft = area.right - optimalSize.x
+            let maximumLeft = area.right - optimalSize.x
+            _maxLocationDuringDrag = Vector2(x: maximumLeft, y: 0)
+            
             _resizeConstraints.append(
                 LayoutConstraint.create(first: layout.left,
                                         relationship: .lessThanOrEqual,
-                                        offset: minimumLeft)
+                                        offset: maximumLeft)
             )
             
             // Fix right edge in place
@@ -222,11 +225,13 @@ public class Window: ControlView {
         switch resize {
         case .top, .topLeft, .topRight:
             // Limit range of top edge to avoid compressin the window too much
-            let minimumTop = area.bottom - optimalSize.y
+            let maximumTop = area.bottom - optimalSize.y
+            _maxLocationDuringDrag = Vector2(x: _maxLocationDuringDrag.x, y: maximumTop)
+            
             _resizeConstraints.append(
                 LayoutConstraint.create(first: layout.top,
                                         relationship: .lessThanOrEqual,
-                                        offset: minimumTop)
+                                        offset: maximumTop)
             )
             
             // Fix bottom edge in place
@@ -244,23 +249,28 @@ public class Window: ControlView {
         
         switch _resizeCorner {
         case .top:
-            let newArea = _resizeStartArea.stretchingTop(to: mouseLocation.y - _mouseDownPoint.y)
+            let clippedY = min(mouseLocation.y - _mouseDownPoint.y, _maxLocationDuringDrag.y)
+            let newArea = _resizeStartArea.stretchingTop(to: clippedY)
             
             _targetSize?.y = newArea.height
             size = Size(x: size.x, y: newArea.height)
             location = Vector2(x: location.x, y: newArea.y)
 
         case .topLeft:
+            let clippedX = min(mouseLocation.x - _mouseDownPoint.x, _maxLocationDuringDrag.x)
+            let clippedY = min(mouseLocation.y - _mouseDownPoint.y, _maxLocationDuringDrag.y)
+            
             let newArea = _resizeStartArea
-                .stretchingTop(to: mouseLocation.y - _mouseDownPoint.y)
-                .stretchingLeft(to: mouseLocation.x - _mouseDownPoint.x)
+                .stretchingTop(to: clippedY)
+                .stretchingLeft(to: clippedX)
             
             _targetSize = newArea.size
             size = newArea.size
             location = newArea.location
             
         case .left:
-            let newArea = _resizeStartArea.stretchingLeft(to: mouseLocation.x - _mouseDownPoint.x)
+            let clippedX = min(mouseLocation.x - _mouseDownPoint.x, _maxLocationDuringDrag.x)
+            let newArea = _resizeStartArea.stretchingLeft(to: clippedX)
             
             _targetSize?.x = newArea.width
             size = Vector2(x: newArea.width, y: size.y)
@@ -286,7 +296,8 @@ public class Window: ControlView {
             setNeedsLayout()
             
         case .bottomLeft:
-            let newArea = _resizeStartArea.stretchingLeft(to: mouseLocation.x - _mouseDownPoint.x)
+            let clippedX = min(mouseLocation.x - _mouseDownPoint.x, _maxLocationDuringDrag.x)
+            let newArea = _resizeStartArea.stretchingLeft(to: clippedX)
             
             _targetSize = Vector2(x: newArea.width, y: event.location.y)
             size = Vector2(x: newArea.width, y: size.y)
