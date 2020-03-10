@@ -8,12 +8,6 @@ public class ProgressBar: ControlView {
         }
     }
     
-    public var fillColor: BLRgba32 = .royalBlue {
-        didSet {
-            invalidateControlGraphics()
-        }
-    }
-    
     public override var intrinsicSize: Size? {
         return Size(x: bounds.width, y: 5)
     }
@@ -23,6 +17,7 @@ public class ProgressBar: ControlView {
         backColor = .lightGray
         strokeColor = .lightGray
         strokeWidth = 1
+        foreColor = .royalBlue
     }
     
     public override func renderBackground(in context: BLContext, screenRegion: BLRegion) {
@@ -34,7 +29,7 @@ public class ProgressBar: ControlView {
         context.save()
         context.clipToRect(boundsForCurrentProgress().asBLRect)
         
-        context.setFillStyle(fillColor)
+        context.setFillStyle(foreColor)
         context.fillRoundRect(rect)
         context.restore()
         
