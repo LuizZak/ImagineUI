@@ -15,6 +15,7 @@ protocol Blend2DSample: class {
     func resize(width: Int, height: Int)
 
     func update(_ time: TimeInterval)
+    func performLayout()
     func render(context ctx: BLContext)
 
     func mouseDown(event: MouseEventArgs)

@@ -37,6 +37,7 @@ class ImagineUI: Blend2DSample {
         let window =
             Window(area: Rectangle(x: 50, y: 120, width: 320, height: 330),
                    title: "Window")
+        window.areaIntoConstraintsMask = [.location]
         window.rootControlSystem = controlSystem
         window.invalidationDelegate = self
 
@@ -204,6 +205,10 @@ class ImagineUI: Blend2DSample {
         lastFrame = time
         Scheduler.instance.onFixedFrame(delta)
 
+        performLayout()
+    }
+    
+    func performLayout() {
         // Layout loop
         for window in windows {
             window.performLayout()
@@ -278,10 +283,10 @@ class ImagineUI: Blend2DSample {
         }
         
         let window = Window(area: .zero, title: "Debug render settings")
-        window.rootControlSystem = controlSystem
-        window.invalidationDelegate = self
         window.areaIntoConstraintsMask = [.location]
         window.setShouldCompress(true)
+        window.rootControlSystem = controlSystem
+        window.invalidationDelegate = self
         
         let boundsCheckbox = Checkbox(title: "View Bounds")
         let layoutCheckbox = Checkbox(title: "Layout Guides")
@@ -298,7 +303,7 @@ class ImagineUI: Blend2DSample {
         stackView.layout.makeConstraints { make in
             make.left == window.contentsLayoutArea + 12
             make.top == window.contentsLayoutArea + 12
-            make.bottom == window.contentsLayoutArea - 12
+            make.bottom <= window.contentsLayoutArea - 12
             make.right <= window.contentsLayoutArea - 12
         }
         

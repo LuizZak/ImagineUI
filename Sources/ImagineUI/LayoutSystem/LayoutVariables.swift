@@ -11,6 +11,8 @@ class LayoutVariables {
     let centerX: Variable
     let centerY: Variable
     let firstBaseline: Variable
+    let intrinsicWidth: Variable
+    let intrinsicHeight: Variable
     let baselineHeight: Variable
 
     init(container: LayoutVariablesContainer) {
@@ -27,6 +29,8 @@ class LayoutVariables {
         centerX = Variable("\(name)_centerX")
         centerY = Variable("\(name)_centerY")
         firstBaseline = Variable("\(name)_firstBaseline")
+        intrinsicWidth = Variable("\(name)_intrinsicWidth")
+        intrinsicHeight = Variable("\(name)_intrinsicHeight")
         baselineHeight = Variable("\(name)_baselineHeight")
     }
 
@@ -97,25 +101,32 @@ class LayoutVariables {
         }
         
         if let intrinsicSize = view.intrinsicSize {
+            constraintList.suggestValue(variable: intrinsicWidth,
+                                        value: intrinsicSize.x,
+                                        strength: Strength.WEAK)
+            constraintList.suggestValue(variable: intrinsicHeight,
+                                        value: intrinsicSize.y,
+                                        strength: Strength.WEAK)
+            
             // Content compression/hugging priority
             constraintList.addConstraint(
-                name: "width >= intrinsicSize.x",
-                width >= intrinsicSize.x,
+                name: "width >= intrinsicWidth",
+                width >= intrinsicWidth,
                 strength: LayoutConstraintHelpers.strengthFromPriority(view.horizontalCompressResistance))
             
             constraintList.addConstraint(
-                name: "width <= intrinsicSize.x",
-                width <= intrinsicSize.x,
+                name: "width <= intrinsicWidth",
+                width <= intrinsicWidth,
                 strength: LayoutConstraintHelpers.strengthFromPriority(view.horizontalHuggingPriority))
             
             constraintList.addConstraint(
-                name: "height >= intrinsicSize.y",
-                height >= intrinsicSize.y,
+                name: "height >= intrinsicHeight",
+                height >= intrinsicHeight,
                 strength: LayoutConstraintHelpers.strengthFromPriority(view.verticalCompressResistance))
             
             constraintList.addConstraint(
-                name: "height <= intrinsicSize.y",
-                height <= intrinsicSize.y,
+                name: "height <= intrinsicHeight",
+                height <= intrinsicHeight,
                 strength: LayoutConstraintHelpers.strengthFromPriority(view.verticalHuggingPriority))
         }
     }

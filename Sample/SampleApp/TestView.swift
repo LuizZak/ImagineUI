@@ -15,6 +15,7 @@ class TestView: NSView {
 
     var sample: Blend2DSample!
     var blImage: BLImage!
+    var redrawBounds: [NSRect] = []
 
     override var bounds: NSRect {
         get {
@@ -180,6 +181,11 @@ class TestView: NSView {
 
     func update() {
         sample.update(CACurrentMediaTime())
+        
+        for rect in redrawBounds {
+            setNeedsDisplay(rect)
+        }
+        redrawBounds.removeAll()
     }
 
     override func draw(_ dirtyRect: NSRect) {
@@ -223,7 +229,7 @@ extension TestView: Blend2DSampleDelegate {
 
         let intersectedBounds = rectBounds.intersection(self.bounds)
 
-        setNeedsDisplay(intersectedBounds)
+        redrawBounds.append(intersectedBounds)
     }
 }
 
