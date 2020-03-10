@@ -190,6 +190,14 @@ public class Window: ControlView {
                 _targetSize = Vector2(x: event.location.x, y: newArea.height)
                 size = Vector2(x: size.x, y: newArea.height)
                 location = Vector2(x: location.x, y: newArea.y)
+
+            case .bottomRight:
+                _targetSize = event.location
+                setNeedsLayout()
+                
+            case .bottom:
+                _targetSize?.y = event.location.y
+                setNeedsLayout()
                 
             case .bottomLeft:
                 let newArea = _resizeStartArea.stretchingLeft(to: mouseLocation.x - _mouseDownPoint.x)
@@ -197,14 +205,6 @@ public class Window: ControlView {
                 _targetSize = Vector2(x: newArea.width, y: event.location.y)
                 size = Vector2(x: newArea.width, y: size.y)
                 location = Vector2(x: newArea.x, y: location.y)
-    
-            case .bottom:
-                _targetSize?.y = event.location.y
-                setNeedsLayout()
-                
-            case .bottomRight:
-                _targetSize = event.location
-                setNeedsLayout()
                 
             case .none:
                 location = mouseLocation - _mouseDownPoint
