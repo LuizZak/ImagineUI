@@ -146,6 +146,15 @@ public class Window: ControlView {
         let rect = spatialReference.convert(bounds: bounds, to: nil)
         invalidationDelegate?.window(self, invalidateRect: rect)
     }
+    
+    public override func layoutSizeFitting(size: Size) -> Size {
+        let previousInvalidationDelegate = invalidationDelegate
+        
+        let result = super.layoutSizeFitting(size: size)
+        
+        invalidationDelegate = previousInvalidationDelegate
+        return result
+    }
 
     public override func onMouseDown(_ event: MouseEventArgs) {
         super.onMouseDown(event)
@@ -189,9 +198,19 @@ public class Window: ControlView {
     }
     
     private func prepareWindowResize(_ resize: BorderResize) {
-        // Fix right edge in place
+        let optimalSize = layoutSizeFitting(size: .zero)
+        
         switch resize {
         case .left, .topLeft, .bottomLeft:
+            // Limit range of left edge to avoid compressin the window too much
+            let minimumLeft = area.right - optimalSize.x
+            _resizeConstraints.append(
+                LayoutConstraint.create(first: layout.left,
+                                        relationship: .lessThanOrEqual,
+                                        offset: minimumLeft)
+            )
+            
+            // Fix right edge in place
             _resizeConstraints.append(
                 LayoutConstraint.create(first: layout.right,
                                         offset: area.right)
@@ -200,9 +219,17 @@ public class Window: ControlView {
             break
         }
         
-        // Fix bottom edge in place
         switch resize {
         case .top, .topLeft, .topRight:
+            // Limit range of top edge to avoid compressin the window too much
+            let minimumTop = area.bottom - optimalSize.y
+            _resizeConstraints.append(
+                LayoutConstraint.create(first: layout.top,
+                                        relationship: .lessThanOrEqual,
+                                        offset: minimumTop)
+            )
+            
+            // Fix bottom edge in place
             _resizeConstraints.append(
                 LayoutConstraint.create(first: layout.bottom,
                                         offset: area.bottom)

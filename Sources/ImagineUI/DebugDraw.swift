@@ -10,7 +10,7 @@ public enum DebugDraw {
             debugDraw(view, flags: flags, to: context)
         }
         let traveler = ViewTraveler(visitor: visitor)
-        traveler.visit(view: view)
+        traveler.travelThrough(view: view)
     }
     
     static func debugDraw(_ view: View, flags: Set<DebugDrawFlags>, to context: BLContext) {

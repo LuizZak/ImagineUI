@@ -2,6 +2,11 @@ import Foundation
 import SwiftBlend2D
 
 open class View {
+    /// Whether the layout variables produced by this container should have a
+    /// forced intrinsic size of zero. Used by View's methods that calculate
+    /// minimal content sizes
+    internal var _targetLayoutSize: Size? = nil
+    
     var horizontalCompressResistance: Int = 750
     var verticalCompressResistance: Int = 750
     var horizontalHuggingPriority: Int = 150
@@ -238,6 +243,32 @@ open class View {
         
         superview?.setNeedsLayout()
         needsLayout = true
+    }
+    
+    /// Calculates the optimal size for this view, taking in consideration its
+    /// active constraints, while approaching the target size as much as possible.
+    /// The layout of the view is kept as-is, and no changes to its size are made.
+    open func layoutSizeFitting(size: Size) -> Size {
+        // Store state for later restoring
+        let previousSuperview = superview
+        let previousNeedsLayout = needsLayout
+        let snapshot = LayoutAreaSnapshot.snapshotHierarchy(self)
+        
+        // Remove view from hierarchy to avoid propagating invalidations
+        superview = nil
+        
+        _targetLayoutSize = size
+        performConstraintsLayout()
+        
+        let optimalSize = self.size
+        
+        // Restore views back to previous state
+        snapshot.restore()
+        _targetLayoutSize = nil
+        needsLayout = previousNeedsLayout
+        superview = previousSuperview
+        
+        return optimalSize
     }
 
     // MARK: - Subviews

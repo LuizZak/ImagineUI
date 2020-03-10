@@ -100,7 +100,7 @@ class LayoutVariables {
                                         strength: Strength.STRONG)
         }
         
-        if let intrinsicSize = view.intrinsicSize {
+        if let intrinsicSize = view._targetLayoutSize ?? view.intrinsicSize {
             constraintList.suggestValue(variable: intrinsicWidth,
                                         value: intrinsicSize.x,
                                         strength: Strength.WEAK)

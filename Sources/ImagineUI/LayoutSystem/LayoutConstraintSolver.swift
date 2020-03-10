@@ -20,7 +20,7 @@ public class LayoutConstraintSolver {
         let result = ConstraintCollection()
         let traveler = ViewTraveler(state: result, visitor: visitor)
 
-        traveler.visit(view: viewHierarchy)
+        traveler.travelThrough(view: viewHierarchy)
         
         let locCache = cache ?? LayoutConstraintSolverCache()
         

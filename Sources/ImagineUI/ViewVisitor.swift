@@ -47,7 +47,7 @@ public class ViewTraveler<Visitor: ViewVisitor> {
         self.visitor = visitor
     }
 
-    public func visit(view: View) {
+    public func travelThrough(view: View) {
         if !visitor.shouldVisitView(state, view) {
             return
         }
@@ -56,7 +56,7 @@ public class ViewTraveler<Visitor: ViewVisitor> {
 
         if visitor.visitView(state, view) == .visitChildren {
             for subview in view.subviews {
-                visit(view: subview)
+                travelThrough(view: subview)
             }
         }
 
