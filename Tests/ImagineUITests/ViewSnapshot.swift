@@ -26,7 +26,8 @@ extension SnapshotTestCase {
             
             assertImageMatch(img, testName, file: file, line: line)
         } catch {
-            XCTFail("Error performing snapshot test for \(testName): \(error)")
+            XCTFail("Error performing snapshot test for \(testName): \(error)",
+                    file: file, line: line)
         }
     }
     

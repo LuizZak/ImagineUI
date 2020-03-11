@@ -19,6 +19,7 @@ class LabelTests: SnapshotTestCase {
     
     func testSnapshot() {
         let label = Label()
+        label.areaIntoConstraintsMask = [.location]
         label.text = "A Label"
         label.performLayout()
         
