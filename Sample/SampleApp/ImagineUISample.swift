@@ -38,6 +38,7 @@ class ImagineUI: Blend2DSample {
         let window =
             Window(area: Rectangle(x: 50, y: 120, width: 320, height: 330),
                    title: "Window")
+        window.delegate = self
         window.areaIntoConstraintsMask = [.location]
         window.rootControlSystem = controlSystem
         window.invalidationDelegate = self
@@ -293,6 +294,7 @@ class ImagineUI: Blend2DSample {
         }
         
         let window = Window(area: .zero, title: "Debug render settings")
+        window.delegate = self
         window.areaIntoConstraintsMask = [.location]
         window.setShouldCompress(true)
         window.rootControlSystem = controlSystem
@@ -407,5 +409,32 @@ extension ImagineUI: WindowRedrawInvalidationDelegate {
         }
 
         delegate?.invalidate(bounds: intersectedRect)
+    }
+}
+
+extension ImagineUI: WindowDelegate {
+    func windowWantsToClose(_ window: Window) {
+        if let index = windows.firstIndex(of: window) {
+            windows.remove(at: index)
+            invalidateScreen()
+        }
+    }
+    
+    func windowWantsToMaximize(_ window: Window) {
+        switch window.windowState {
+        case .maximized:
+            window.setWindowState(.normal)
+            
+        case .normal:
+            window.setWindowState(.maximized)
+        }
+    }
+    
+    func windowWantsToMinimize(_ window: Window) {
+        
+    }
+    
+    func windowSizeForFullscreen(_ window: Window) -> Size {
+        return bounds.asRectangle.size
     }
 }

@@ -2,15 +2,33 @@ import SwiftBlend2D
 import Cassowary
 import Cocoa
 
+public protocol WindowDelegate: class {
+    /// Invoked when the user has selected to close the window
+    func windowWantsToClose(_ window: Window)
+    
+    /// Invoked when the user has selected to maximize the window
+    func windowWantsToMaximize(_ window: Window)
+    
+    /// Invoked when the user has selected to minimize the window
+    func windowWantsToMinimize(_ window: Window)
+    
+    /// Returns size for fullscreen
+    func windowSizeForFullscreen(_ window: Window) -> Size
+}
+
 public protocol WindowRedrawInvalidationDelegate: class {
     func window(_ window: Window, invalidateRect rect: Rectangle)
 }
 
 public class Window: ControlView {
+    /// Saves the location of the window before maximizing state
+    private var _normalStateLocation: Vector2 = .zero
+    
     /// List of temporary constraints applied during window resizing to mantain
     /// one or more of the boundaries of the window area fixed while the opposite
     /// sides are resized
     private var _resizeConstraints: [LayoutConstraint] = []
+    
     private var _targetSize: Size? = nil
     private var _maxLocationDuringDrag: Vector2 = .zero
     private var _resizeStartArea: Rectangle = .zero
@@ -47,9 +65,17 @@ public class Window: ControlView {
     }
     
     public override var intrinsicSize: Size? {
-        return _targetSize
+        switch windowState {
+        case .maximized:
+            return delegate?.windowSizeForFullscreen(self) ?? _targetSize
+        case .normal:
+            return _targetSize
+        }
     }
+    
+    private(set) public var windowState: WindowState = .normal
 
+    public weak var delegate: WindowDelegate?
     public weak var invalidationDelegate: WindowRedrawInvalidationDelegate?
 
     public init(area: Rectangle, title: String, titleFont: BLFont = Fonts.defaultFont(size: 12)) {
@@ -71,6 +97,19 @@ public class Window: ControlView {
     private func initialize() {
         _titleLabel.text = title
         _titleLabel.font = titleFont
+        
+        _buttons.close.mouseClicked.addListener(owner: self) { [weak self] (_, _) in
+            guard let self = self else { return }
+            self.delegate?.windowWantsToClose(self)
+        }
+        _buttons.minimize.mouseClicked.addListener(owner: self) { [weak self] (_, _) in
+            guard let self = self else { return }
+            self.delegate?.windowWantsToMinimize(self)
+        }
+        _buttons.maximize.mouseClicked.addListener(owner: self) { [weak self] (_, _) in
+            guard let self = self else { return }
+            self.delegate?.windowWantsToMaximize(self)
+        }
     }
     
     public func setShouldCompress(_ isOn: Bool) {
@@ -79,6 +118,29 @@ public class Window: ControlView {
         } else {
             _targetSize = nil
         }
+        setNeedsLayout()
+    }
+    
+    public func setTargetSize(_ size: Size) {
+        _targetSize = size
+        setNeedsLayout()
+    }
+    
+    public func setWindowState(_ state: WindowState) {
+        // Break maximized constraints, or apply constraints for maximized state
+        switch (windowState, state) {
+        case (.maximized, .normal):
+            location = _normalStateLocation
+            
+        case (.normal, .maximized):
+            _normalStateLocation = location
+            location = .zero
+            
+        default:
+            break
+        }
+        
+        windowState = state
         setNeedsLayout()
     }
     
@@ -245,6 +307,16 @@ public class Window: ControlView {
     }
     
     private func performWindowResizeOrDrag(_ event: MouseEventArgs) {
+        switch windowState {
+        case .maximized:
+            setWindowState(.normal)
+            performLayout()
+            _mouseDownPoint = Vector2(x: size.x / 2, y: _titleBarHeight / 2)
+            
+        case .normal:
+            break
+        }
+        
         let mouseLocation = convert(point: event.location, to: nil)
         
         switch _resizeCorner {
@@ -503,5 +575,12 @@ class WindowButtons: View {
             make.right(of: minimize, offset: 7)
             make.right == self
         }
+    }
+}
+
+public extension Window {
+    enum WindowState {
+        case normal
+        case maximized
     }
 }
