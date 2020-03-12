@@ -418,13 +418,13 @@ extension ImagineUI: WindowDelegate {
         case .maximized:
             window.setWindowState(.normal)
             
-        case .normal:
+        case .normal, .minimized:
             window.setWindowState(.maximized)
         }
     }
     
     func windowWantsToMinimize(_ window: Window) {
-        
+        window.setWindowState(.minimized)
     }
     
     func windowSizeForFullscreen(_ window: Window) -> Size {

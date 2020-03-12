@@ -63,7 +63,7 @@ public class Window: RootView {
         switch windowState {
         case .maximized:
             return delegate?.windowSizeForFullscreen(self) ?? _targetSize
-        case .normal:
+        case .normal, .minimized:
             return _targetSize
         }
     }
@@ -121,12 +121,14 @@ public class Window: RootView {
     }
     
     public func setWindowState(_ state: WindowState) {
+        guard state != windowState else { return }
+        
         // Break maximized constraints, or apply constraints for maximized state
         switch (windowState, state) {
-        case (.maximized, .normal):
+        case (.maximized, _):
             location = _normalStateLocation
             
-        case (.normal, .maximized):
+        case (_, .maximized):
             _normalStateLocation = location
             location = .zero
             
@@ -134,6 +136,7 @@ public class Window: RootView {
             break
         }
         
+        isVisible = state != .minimized
         windowState = state
         setNeedsLayout()
     }
@@ -297,7 +300,7 @@ public class Window: RootView {
             performLayout()
             _mouseDownPoint = Vector2(x: size.x / 2, y: _titleBarHeight / 2)
             
-        case .normal:
+        case .normal, .minimized:
             break
         }
         
@@ -566,5 +569,6 @@ public extension Window {
     enum WindowState {
         case normal
         case maximized
+        case minimized
     }
 }
