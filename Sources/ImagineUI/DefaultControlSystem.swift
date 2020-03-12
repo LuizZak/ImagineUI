@@ -21,8 +21,8 @@ public class DefaultControlSystem: ControlSystem {
     
     // MARK: - Window management
     
-    public func bringWindowToFront(_ window: Window) {
-        delegate?.bringWindowToFront(window)
+    public func bringRootViewToFront(_ rootView: RootView) {
+        delegate?.bringRootViewToFront(rootView)
     }
 
     // MARK: - Mouse Events
@@ -52,8 +52,8 @@ public class DefaultControlSystem: ControlSystem {
             }
         }
         
-        if let window = control.window {
-            bringWindowToFront(window)
+        if let rootView = control.rootView {
+            bringRootViewToFront(rootView)
         }
 
         control.handleOrPass(request)
@@ -230,7 +230,7 @@ private extension MouseEventArgs {
 }
 
 public protocol DefaultControlSystemDelegate: class {
-    func bringWindowToFront(_ window: Window)
+    func bringRootViewToFront(_ rootView: RootView)
     func controlViewUnder(point: Vector2, enabledOnly: Bool) -> ControlView?
 }
 

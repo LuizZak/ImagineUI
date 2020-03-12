@@ -15,12 +15,12 @@ open class View {
     
     var isLayoutSuspended = false
     
-    var window: Window? {
-        if let window = self as? Window {
-            return window
+    var rootView: RootView? {
+        if let rootView = self as? RootView {
+            return rootView
         }
         
-        return superview?.window
+        return superview?.rootView
     }
 
     public internal(set) var needsLayout: Bool = true

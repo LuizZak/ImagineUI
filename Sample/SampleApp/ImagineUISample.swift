@@ -368,11 +368,11 @@ class ImagineUI: Blend2DSample {
 }
 
 extension ImagineUI: DefaultControlSystemDelegate {
-    func bringWindowToFront(_ window: Window) {
-        rootViews.removeAll(where: { $0 == window })
-        rootViews.append(window)
+    func bringRootViewToFront(_ rootView: RootView) {
+        rootViews.removeAll(where: { $0 == rootView })
+        rootViews.append(rootView)
         
-        window.invalidate()
+        rootView.invalidate()
     }
     
     func controlViewUnder(point: Vector2, enabledOnly: Bool) -> ControlView? {
