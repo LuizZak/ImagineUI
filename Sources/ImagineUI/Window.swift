@@ -16,11 +16,7 @@ public protocol WindowDelegate: class {
     func windowSizeForFullscreen(_ window: Window) -> Size
 }
 
-public protocol WindowRedrawInvalidationDelegate: class {
-    func window(_ window: Window, invalidateRect rect: Rectangle)
-}
-
-public class Window: ControlView {
+public class Window: RootView {
     /// Saves the location of the window before maximizing state
     private var _normalStateLocation: Vector2 = .zero
     
@@ -33,7 +29,6 @@ public class Window: ControlView {
     private var _maxLocationDuringDrag: Vector2 = .zero
     private var _resizeStartArea: Rectangle = .zero
     private var _resizeCorner: BorderResize?
-    private var _constraintCache = LayoutConstraintSolverCache()
     private var _mouseDown = false
     private var _mouseDownPoint: Vector2 = .zero
     private let _titleLabel = Label()
@@ -76,7 +71,6 @@ public class Window: ControlView {
     private(set) public var windowState: WindowState = .normal
 
     public weak var delegate: WindowDelegate?
-    public weak var invalidationDelegate: WindowRedrawInvalidationDelegate?
 
     public init(area: Rectangle, title: String, titleFont: BLFont = Fonts.defaultFont(size: 12)) {
         self.title = title
@@ -198,16 +192,6 @@ public class Window: ControlView {
         }
         
         drawWindowBorders(context)
-    }
-    
-    internal override func performConstraintsLayout() {
-        let solver = LayoutConstraintSolver()
-        solver.solve(viewHierarchy: self, cache: _constraintCache)
-    }
-    
-    override func invalidate(bounds: Rectangle, spatialReference: SpatialReferenceType) {
-        let rect = spatialReference.convert(bounds: bounds, to: nil)
-        invalidationDelegate?.window(self, invalidateRect: rect)
     }
     
     public override func layoutSizeFitting(size: Size) -> Size {

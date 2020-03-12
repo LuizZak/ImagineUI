@@ -15,7 +15,7 @@ class ImagineUI: Blend2DSample {
 
     var controlSystem = DefaultControlSystem()
 
-    var windows: [Window]
+    var rootViews: [RootView]
 
     var redrawRegion: BLRegion
     var currentRedrawRegion: Rectangle? = nil
@@ -27,7 +27,7 @@ class ImagineUI: Blend2DSample {
         height = Int(size.h)
         bounds = BLRect(location: .zero, size: BLSize(w: Double(size.w), h: Double(size.h)))
         redrawRegion = BLRegion(rectangle: BLRectI(x: 0, y: 0, w: size.w, h: size.h))
-        windows = []
+        rootViews = []
         controlSystem.delegate = self
         UISettings.scale = sampleRenderScale.asVector2
 
@@ -183,7 +183,7 @@ class ImagineUI: Blend2DSample {
         
         createRenderSettingsWindow()
 
-        windows.append(window)
+        rootViews.append(window)
 
         lastFrame = CACurrentMediaTime()
     }
@@ -215,8 +215,8 @@ class ImagineUI: Blend2DSample {
     
     func performLayout() {
         // Layout loop
-        for window in windows {
-            window.performLayout()
+        for rootView in rootViews {
+            rootView.performLayout()
         }
     }
 
@@ -243,13 +243,13 @@ class ImagineUI: Blend2DSample {
         ctx.fillRect(rect.asBLRect)
 
         // Redraw loop
-        for window in windows {
-            window.renderRecursive(in: ctx, screenRegion: redrawRegion)
+        for rootView in rootViews {
+            rootView.renderRecursive(in: ctx, screenRegion: redrawRegion)
         }
         
         // Debug render
-        for window in windows {
-            DebugDraw.debugDrawRecursive(window, flags: debugDrawFlags, to: ctx)
+        for rootView in rootViews {
+            DebugDraw.debugDrawRecursive(rootView, flags: debugDrawFlags, to: ctx)
         }
 
         //redrawRegion.clear()
@@ -335,7 +335,7 @@ class ImagineUI: Blend2DSample {
             toggleFlag(self, .constraints, event)
         }
         
-        windows.append(window)
+        rootViews.append(window)
     }
     
     func createSampleImage() -> BLImage {
@@ -369,14 +369,14 @@ class ImagineUI: Blend2DSample {
 
 extension ImagineUI: DefaultControlSystemDelegate {
     func bringWindowToFront(_ window: Window) {
-        windows.removeAll(where: { $0 == window })
-        windows.append(window)
+        rootViews.removeAll(where: { $0 == window })
+        rootViews.append(window)
         
         window.invalidate()
     }
     
     func controlViewUnder(point: Vector2, enabledOnly: Bool) -> ControlView? {
-        for window in windows.reversed() {
+        for window in rootViews.reversed() {
             let converted = window.convertFromScreen(point)
             if let view = window.hitTestControl(converted, enabledOnly: enabledOnly) {
                 return view
@@ -387,35 +387,28 @@ extension ImagineUI: DefaultControlSystemDelegate {
     }
 }
 
-extension ImagineUI: WindowRedrawInvalidationDelegate {
-    func window(_ window: Window, invalidateRect rect: Rectangle) {
+extension ImagineUI: RootViewRedrawInvalidationDelegate {
+    func rootView(_ rootView: RootView, invalidateRect rect: Rectangle) {
         let intersectedRect = rect.formIntersection(bounds.asRectangle)
-
+        
         if intersectedRect.width == 0 || intersectedRect.height == 0 {
             return
         }
-
-//        let box = BLBoxI(x: Int(floor(intersectedRect.x)),
-//                         y: Int(floor(intersectedRect.y)),
-//                         w: Int(ceil(intersectedRect.width)),
-//                         h: Int(ceil(intersectedRect.height)))
-//
-//        redrawRegion.combine(box: box, operation: .or)
         
         if let current = currentRedrawRegion {
             currentRedrawRegion = current.formUnion(intersectedRect)
         } else {
             currentRedrawRegion = intersectedRect
         }
-
+        
         delegate?.invalidate(bounds: intersectedRect)
     }
 }
 
 extension ImagineUI: WindowDelegate {
     func windowWantsToClose(_ window: Window) {
-        if let index = windows.firstIndex(of: window) {
-            windows.remove(at: index)
+        if let index = rootViews.firstIndex(of: window) {
+            rootViews.remove(at: index)
             invalidateScreen()
         }
     }
