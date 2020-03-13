@@ -60,7 +60,7 @@ public class ViewBitmapCache {
         let ctx = BLContext(image: bitmap)!
         ctx.clearAll()
 
-        ctx.translate(x: -rectangle.x, y: -rectangle.y)
+        ctx.translate(x: ceil(-rectangle.x), y: ceil(-rectangle.y))
         ctx.scale(by: scale.asBLPoint)
 
         closure(ctx)
