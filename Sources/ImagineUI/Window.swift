@@ -504,6 +504,7 @@ class WindowButtons: View {
     let close = Button(title: "")
     let minimize = Button(title: "")
     let maximize = Button(title: "")
+    let stackView = StackView(orientation: .horizontal)
     
     override init() {
         super.init()
@@ -512,6 +513,8 @@ class WindowButtons: View {
     }
     
     private func initializeView() {
+        stackView.spacing = 7
+        
         configureButton(close)
         configureButton(minimize)
         configureButton(maximize)
@@ -538,29 +541,18 @@ class WindowButtons: View {
     override func setupHierarchy() {
         super.setupHierarchy()
         
-        addSubview(close)
-        addSubview(minimize)
-        addSubview(maximize)
+        addSubview(stackView)
+        
+        stackView.addArrangedSubview(close)
+        stackView.addArrangedSubview(minimize)
+        stackView.addArrangedSubview(maximize)
     }
     
     override func setupConstraints() {
         super.setupConstraints()
         
-        close.layout.makeConstraints { make in
-            make.left == self
-            make.bottom == self
-            make.top == self
-        }
-        minimize.layout.makeConstraints { make in
-            make.top == close
-            make.bottom == self
-            make.right(of: close, offset: 7)
-        }
-        maximize.layout.makeConstraints { make in
-            make.top == close
-            make.bottom == self
-            make.right(of: minimize, offset: 7)
-            make.right == self
+        stackView.layout.makeConstraints { make in
+            make.edges == self
         }
     }
 }
