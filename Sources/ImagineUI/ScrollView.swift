@@ -46,7 +46,7 @@ open class ScrollView: ControlView {
     /// Gets the visible content area of the `containerView` which is not
     /// occluded by scroll bars.
     ///
-    /// If no scroll bars are visible, `bisibleContentBounds` is the same as
+    /// If no scroll bars are visible, `visibleContentBounds` is the same as
     /// `View.bounds`.
     open var visibleContentBounds: Rectangle {
         var final = bounds

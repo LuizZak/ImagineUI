@@ -70,10 +70,13 @@ class ViewConstraintList {
         self.container = container
     }
     
+    fileprivate init(container: LayoutVariablesContainer, state: State) {
+        self.container = container
+        self.state = state
+    }
+    
     func clone() -> ViewConstraintList {
-        let new = ViewConstraintList(container: container)
-        new.state = state
-        return new
+        return ViewConstraintList(container: container, state: state)
     }
     
     /// Adds a constraint with a given name and strength, and optionally a tag

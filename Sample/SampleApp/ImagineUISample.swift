@@ -123,6 +123,10 @@ class ImagineUI: Blend2DSample {
         panelContents.addArrangedSubview(radioButton2)
         scrollView.addSubview(scrollViewLabel)
         
+        LayoutConstraint.create(first: window.layout.height,
+                                relationship: .greaterThanOrEqual,
+                                offset: 330)
+        
         firstColumn.layout.makeConstraints { make in
             make.top == window.contentsLayoutArea + 4
             make.left == window.contentsLayoutArea + 10
