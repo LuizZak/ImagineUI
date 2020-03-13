@@ -17,7 +17,6 @@ class ImagineUI: Blend2DSample {
 
     var rootViews: [RootView]
 
-    var redrawRegion: BLRegion
     var currentRedrawRegion: Rectangle? = nil
     
     var debugDrawFlags: Set<DebugDraw.DebugDrawFlags> = []
@@ -26,7 +25,6 @@ class ImagineUI: Blend2DSample {
         width = Int(size.w)
         height = Int(size.h)
         bounds = BLRect(location: .zero, size: BLSize(w: Double(size.w), h: Double(size.h)))
-        redrawRegion = BLRegion(rectangle: BLRectI(x: 0, y: 0, w: size.w, h: size.h))
         rootViews = []
         controlSystem.delegate = self
         UISettings.scale = sampleRenderScale.asVector2
@@ -193,14 +191,11 @@ class ImagineUI: Blend2DSample {
         self.height = height
 
         bounds = BLRect(location: .zero, size: BLSize(w: Double(width), h: Double(height)))
-        redrawRegion = BLRegion(rectangle: BLRectI(x: 0, y: 0, w: Int32(width), h: Int32(height)))
         currentRedrawRegion = bounds.asRectangle
     }
     
     func invalidateScreen() {
         currentRedrawRegion = bounds.asRectangle
-        redrawRegion.combine(box: BLBoxI(rounding: bounds.asBLBox),
-                             operation: .or)
         delegate?.invalidate(bounds: bounds.asRectangle)
     }
 
@@ -228,16 +223,6 @@ class ImagineUI: Blend2DSample {
         ctx.scale(by: sampleRenderScale)
         ctx.setFillStyle(BLRgba32.cornflowerBlue)
 
-        // Reduce redraw region to a single enclosing rectangle
-//        var rect: Rectangle = redrawRegion.regionScans.isEmpty ? .zero : BLRect(boxI: redrawRegion.regionScans[0]).asRectangle
-//
-//        for box in redrawRegion.regionScans {
-//            rect = rect.formUnion(BLRect(boxI: box).asRectangle)
-//        }
-//
-//        redrawRegion.clear()
-//        redrawRegion.combine(box: BLBoxI(roundingRect: rect.asBLRect), operation: .or)
-        
         let redrawRegion = BLRegion(rectangle: BLRectI(rounding: rect.asBLRect))
 
         ctx.fillRect(rect.asBLRect)
@@ -251,8 +236,6 @@ class ImagineUI: Blend2DSample {
         for rootView in rootViews {
             DebugDraw.debugDrawRecursive(rootView, flags: debugDrawFlags, to: ctx)
         }
-
-        //redrawRegion.clear()
     }
 
     func mouseDown(event: MouseEventArgs) {

@@ -172,12 +172,12 @@ public class Window: RootView {
             make.centerY == titleBarLayoutArea
             (make.centerX == titleBarLayoutArea).priority = LayoutConstraintHelpers.strengthFromPriority(50)
             make.right <= titleBarLayoutArea - 10
+            make.left >= _buttons.layout.right + 10
         }
         
         _buttons.layout.makeConstraints { make in
             make.left == titleBarLayoutArea + 10
             make.centerY == titleBarLayoutArea
-            make.right <= _titleLabel.layout.left - 10
         }
     }
 

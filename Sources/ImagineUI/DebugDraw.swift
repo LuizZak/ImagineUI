@@ -6,6 +6,15 @@ public enum DebugDraw {
             return
         }
         
+        internalDebugDrawRecursive(view, flags: flags.intersection([.viewBounds, .layoutGuideBounds]), to: context)
+        internalDebugDrawRecursive(view, flags: flags.intersection([.constraints]), to: context)
+    }
+    
+    private static func internalDebugDrawRecursive(_ view: View, flags: Set<DebugDrawFlags>, to context: BLContext) {
+        if flags.isEmpty {
+            return
+        }
+        
         let visitor = ClosureViewVisitor<Void> { (_, view) in
             debugDraw(view, flags: flags, to: context)
         }
@@ -13,7 +22,7 @@ public enum DebugDraw {
         traveler.travelThrough(view: view)
     }
     
-    static func debugDraw(_ view: View, flags: Set<DebugDrawFlags>, to context: BLContext) {
+    private static func debugDraw(_ view: View, flags: Set<DebugDrawFlags>, to context: BLContext) {
         if flags.contains(.viewBounds) {
             drawBounds(view, to: context)
         }
@@ -80,12 +89,14 @@ public enum DebugDraw {
             let right = bounds.bottomRight + Vector2(x: 0, y: 2)
             
             drawLine(start: left, end: right, tangentLength: 3, to: context)
+            drawRelationship(relationship: constraint.relationship, at: (left + right) / 2, to: context)
             
         case .height:
             let top = bounds.topRight + Vector2(x: 2, y: 0)
             let bottom = bounds.bottomRight + Vector2(x: 2, y: 0)
             
             drawLine(start: top, end: bottom, tangentLength: 3, to: context)
+            drawRelationship(relationship: constraint.relationship, at: (top + bottom) / 2, to: context)
             
         default:
             break
@@ -104,30 +115,34 @@ public enum DebugDraw {
         // Horizontal constraints
         case (.left, .left), (.left, .right), (.right, .left), (.right, .right):
             let firstEdge = extractEdge(firstBounds, edge: first.kind)
-            let secondEdge = extractEdge(secondBounds, edge: first.kind)
+            let secondEdge = extractEdge(secondBounds, edge: second.kind)
             
             if firstEdge.topLeft.x < secondEdge.topLeft.x {
                 connectHorizontalEdges(edge1: (topLeft: firstEdge.topLeft, height: firstEdge.length),
                                        edge2: (topLeft: secondEdge.topLeft, height: secondEdge.length),
+                                       relationship: constraint.relationship,
                                        context: context)
             } else {
                 connectHorizontalEdges(edge1: (topLeft: secondEdge.topLeft, height: secondEdge.length),
                                        edge2: (topLeft: firstEdge.topLeft, height: firstEdge.length),
+                                       relationship: constraint.relationship,
                                        context: context)
             }
             
         // Vertical constraints
         case (.top, .top), (.top, .bottom), (.bottom, .top), (.bottom, .bottom):
             let firstEdge = extractEdge(firstBounds, edge: first.kind)
-            let secondEdge = extractEdge(secondBounds, edge: first.kind)
+            let secondEdge = extractEdge(secondBounds, edge: second.kind)
             
             if firstEdge.topLeft.y < secondEdge.topLeft.y {
                 connectVerticalEdges(edge1: (topLeft: firstEdge.topLeft, width: firstEdge.length),
                                      edge2: (topLeft: secondEdge.topLeft, width: secondEdge.length),
+                                     relationship: constraint.relationship,
                                      context: context)
             } else {
                 connectVerticalEdges(edge1: (topLeft: secondEdge.topLeft, width: secondEdge.length),
                                      edge2: (topLeft: firstEdge.topLeft, width: firstEdge.length),
+                                     relationship: constraint.relationship,
                                      context: context)
             }
             
@@ -144,6 +159,7 @@ public enum DebugDraw {
     
     private static func connectHorizontalEdges(edge1: (topLeft: Vector2, height: Double),
                                                edge2: (topLeft: Vector2, height: Double),
+                                               relationship: Relationship,
                                                context: BLContext) {
         
         let center2 = edge2.topLeft.y + edge2.height / 2
@@ -162,14 +178,22 @@ public enum DebugDraw {
                      to: context)
         }
         
-        drawLine(start: Vector2(x: edge1.topLeft.x, y: center2),
-                 end: Vector2(x: edge2.topLeft.x, y: center2),
+        let start = Vector2(x: edge1.topLeft.x, y: center2)
+        let end = Vector2(x: edge2.topLeft.x, y: center2)
+        
+        drawLine(start: start,
+                 end: end,
                  tangentLength: 3,
                  to: context)
+        
+        drawRelationship(relationship: relationship,
+                         at: (start + end) / 2,
+                         to: context)
     }
     
     private static func connectVerticalEdges(edge1: (topLeft: Vector2, width: Double),
                                              edge2: (topLeft: Vector2, width: Double),
+                                             relationship: Relationship,
                                              context: BLContext) {
         
         let center2 = edge2.topLeft.x + edge2.width / 2
@@ -188,10 +212,17 @@ public enum DebugDraw {
                      to: context)
         }
         
-        drawLine(start: Vector2(x: center2, y: edge1.topLeft.y),
-                 end: Vector2(x: center2, y: edge2.topLeft.y),
+        let start = Vector2(x: center2, y: edge1.topLeft.y)
+        let end = Vector2(x: center2, y: edge2.topLeft.y)
+        
+        drawLine(start: start,
+                 end: end,
                  tangentLength: 3,
                  to: context)
+        
+        drawRelationship(relationship: relationship,
+                         at: (start + end) / 2,
+                         to: context)
     }
     
     private static func connectCenterX(_ rect1: Rectangle,
@@ -307,9 +338,63 @@ public enum DebugDraw {
         }
     }
     
+    private static func drawRelationship(relationship: Relationship,
+                                         at point: Vector2,
+                                         to context: BLContext) {
+        
+        guard relationship != .equal else { return }
+        
+        let circle = BLCircle(center: point.asBLPoint, radius: 5)
+        prepareDarkStroke(in: context)
+        prepareFill(in: context)
+        context.fillCircle(circle)
+        context.strokeCircle(circle)
+        
+        // Draw '<' or '>'
+        var triangle = BLTriangle.unitEquilateral.offsetBy(point.asBLPoint - BLPoint(x: 0, y: 1)).scaledBy(x: 3, y: 4)
+        
+        switch relationship {
+        case .equal:
+            break
+            
+        case .lessThanOrEqual:
+            triangle = triangle.rotated(by: -.pi / 2)
+            
+        case .greaterThanOrEqual:
+            triangle = triangle.rotated(by: .pi / 2)
+        }
+        
+        context.strokeLine(p0: triangle.p2, p1: triangle.p0)
+        context.strokeLine(p0: triangle.p0, p1: triangle.p1)
+        
+        // Draw second line under triangle to form greater-than or less-than
+        // symbol
+        triangle = triangle.offsetBy(x: 0, y: 2)
+        
+        switch relationship {
+        case .equal:
+            break
+            
+        case .lessThanOrEqual:
+            context.strokeLine(p0: triangle.p2, p1: triangle.p0)
+            
+        case .greaterThanOrEqual:
+            context.strokeLine(p0: triangle.p0, p1: triangle.p1)
+        }
+    }
+    
     private static func prepareStroke(in context: BLContext) {
         context.setStrokeWidth(1)
         context.setStrokeStyle(BLRgba32.lightBlue)
+    }
+    
+    private static func prepareDarkStroke(in context: BLContext) {
+        context.setStrokeWidth(1)
+        context.setStrokeStyle(BLRgba32.blue)
+    }
+    
+    private static func prepareFill(in context: BLContext) {
+        context.setFillStyle(BLRgba32.lightBlue.faded(towards: .white, factor: 0.5))
     }
     
     public enum DebugDrawFlags {
