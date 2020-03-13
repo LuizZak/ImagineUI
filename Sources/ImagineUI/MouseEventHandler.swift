@@ -15,6 +15,10 @@ public protocol MouseEventHandler: EventHandler {
 /// Event requests for mouse input
 public protocol MouseEventRequest: EventRequest {
     var eventType: MouseEventType { get }
+    var screenLocation: Vector2 { get }
+    var buttons: MouseButton { get }
+    var delta: Vector2 { get }
+    var clicks: Int { get }
 }
 
 public struct MouseEventArgs {

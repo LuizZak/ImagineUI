@@ -42,7 +42,7 @@ public class DefaultControlSystem: ControlSystem {
         }
 
         // Make request
-        let request = InnerMouseEventRequest(eventType: .mouseDown) { handler in
+        let request = InnerMouseEventRequest(screenLocation: event.location, buttons: event.buttons, delta: event.delta, clicks: event.clicks, eventType: .mouseDown) { handler in
             handler.onMouseDown(event.convertLocation(handler: handler))
 
             self._mouseDownTarget = handler
@@ -87,7 +87,7 @@ public class DefaultControlSystem: ControlSystem {
     public func onMouseWheel(_ event: MouseEventArgs) {
         if let control = delegate?.controlViewUnder(point: event.location, enabledOnly: true) {
             // Make request
-            let request = InnerMouseEventRequest(eventType: .mouseWheel) { handler in
+            let request = InnerMouseEventRequest(screenLocation: event.location, buttons: event.buttons, delta: event.delta, clicks: event.clicks, eventType: .mouseWheel) { handler in
                 if let mouse = self._mouseDownTarget {
                     mouse.onMouseWheel(event.convertLocation(handler: mouse))
                 } else {
@@ -158,11 +158,8 @@ public class DefaultControlSystem: ControlSystem {
             return
         }
         
-        var event = event
-        event.location = control.convertFromScreen(event.location)
-
         // Make request
-        let request = InnerMouseEventRequest(eventType: eventType) { handler in
+        let request = InnerMouseEventRequest(screenLocation: event.location, buttons: event.buttons, delta: event.delta, clicks: event.clicks, eventType: eventType) { handler in
             if self._mouseHoverTarget !== handler {
                 self._mouseHoverTarget?.onMouseLeave()
                 handler.onMouseEnter()
@@ -171,7 +168,7 @@ public class DefaultControlSystem: ControlSystem {
             }
             else
             {
-                self._mouseHoverTarget?.onMouseMove(event)
+                self._mouseHoverTarget?.onMouseMove(event.convertLocation(handler: handler))
             }
         }
 
@@ -253,10 +250,25 @@ private class InnerEventRequest<THandler> : EventRequest {
 }
 
 private class InnerMouseEventRequest: InnerEventRequest<MouseEventHandler>, MouseEventRequest {
+    var screenLocation: Vector2
+    var buttons: MouseButton
+    var delta: Vector2
+    var clicks: Int
     var eventType: MouseEventType
 
-    init(eventType: MouseEventType, onAccept: @escaping (MouseEventHandler) -> Void) {
+    init(screenLocation: Vector2,
+         buttons: MouseButton,
+         delta: Vector2,
+         clicks: Int,
+         eventType: MouseEventType,
+         onAccept: @escaping (MouseEventHandler) -> Void) {
+        
+        self.screenLocation = screenLocation
+        self.buttons = buttons
+        self.delta = delta
+        self.clicks = clicks
         self.eventType = eventType
+        
         super.init(onAccept: onAccept)
     }
 }
