@@ -25,10 +25,38 @@ open class View {
 
     public internal(set) var needsLayout: Bool = true
 
-    public var rotation: Double = 0
-    public var scale: Vector2 = Vector2(x: 1, y: 1)
+    public var rotation: Double = 0 {
+        willSet {
+            guard rotation != newValue else { return }
+            
+            invalidate()
+        }
+        didSet {
+            guard rotation != oldValue else { return }
+            
+            invalidate()
+        }
+    }
+    public var scale: Vector2 = Vector2(x: 1, y: 1) {
+        willSet {
+            guard scale != newValue else { return }
+            
+            invalidate()
+        }
+        didSet {
+            guard scale != oldValue else { return }
+            
+            invalidate()
+        }
+    }
     
-    open var clipToBounds: Bool = true
+    open var clipToBounds: Bool = true {
+        didSet {
+            guard clipToBounds != oldValue else { return }
+            
+            invalidate()
+        }
+    }
 
     open var transform: Matrix2D {
         return Matrix2D.transformation(xScale: scale.x, yScale: scale.y,
