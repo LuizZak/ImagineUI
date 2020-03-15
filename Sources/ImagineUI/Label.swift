@@ -12,7 +12,7 @@ open class Label: View {
     /// Latest cached text layout instance
     private var _cachedTextLayout: TextLayout?
 
-    private var _bitmapCache = ViewBitmapCache()
+    private var _bitmapCache = ViewBitmapCache(isCachingEnabled: Label.cacheAsBitmap)
 
     /// Same as `minimalTextLayout`, but with view boundaries constraints taken
     /// into account.

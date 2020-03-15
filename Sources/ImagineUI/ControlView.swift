@@ -3,7 +3,7 @@ import SwiftBlend2D
 open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
     private let _stateManager = StateManager()
     private var _isMouseDown: Bool = false
-    private var _bitmapCache = ViewBitmapCache()
+    private var _bitmapCache = ViewBitmapCache(isCachingEnabled: true)
 
     private var isRecursivelyVisible: Bool {
         var view: View? = self

@@ -13,7 +13,7 @@ public class ViewBitmapCache {
         return Int(ceil(rectangle.height * scale.y))
     }
 
-    public var isCachingEnabled: Bool = false {
+    public var isCachingEnabled: Bool {
         didSet {
             if !isCachingEnabled {
                 invalidateCache()
@@ -26,8 +26,8 @@ public class ViewBitmapCache {
         }
     }
 
-    public init() {
-
+    public init(isCachingEnabled: Bool) {
+        self.isCachingEnabled = isCachingEnabled
     }
 
     public func updateBitmapBounds(_ bounds: Rectangle) {
