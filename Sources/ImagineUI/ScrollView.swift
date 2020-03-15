@@ -294,7 +294,7 @@ public class ScrollBarControl: ControlView {
         didSet {
             guard contentSize != oldValue else { return }
             
-            invalidate()
+            invalidateControlGraphics()
         }
     }
     
@@ -303,7 +303,7 @@ public class ScrollBarControl: ControlView {
         didSet {
             guard visibleSize != oldValue else { return }
             
-            invalidate()
+            invalidateControlGraphics()
         }
     }
     
@@ -314,7 +314,7 @@ public class ScrollBarControl: ControlView {
         didSet {
             guard scroll != oldValue else { return }
             
-            invalidate()
+            invalidateControlGraphics()
         }
     }
     
@@ -332,7 +332,7 @@ public class ScrollBarControl: ControlView {
     public override func onStateChanged(_ event: ValueChangedEventArgs<ControlViewState>) {
         super.onStateChanged(event)
         
-        invalidate()
+        invalidateControlGraphics()
     }
     
     open override func onResize(_ event: ValueChangedEventArgs<Size>) {
