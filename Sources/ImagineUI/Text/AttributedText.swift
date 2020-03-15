@@ -247,7 +247,7 @@ public struct AttributedText: Equatable {
         precondition(position >= 0 && position <= length,
                      "Position must be greater than 0 and less than or equal to Length")
 
-        if position == length {
+        if position == 0 || position == length {
             return
         }
 
@@ -277,11 +277,7 @@ public struct AttributedText: Equatable {
 
         segments[index] = firstHalf
 
-        if index == segments.count - 1 {
-            segments.append(secondHalf)
-        } else {
-            segments.insert(secondHalf, at: index + 1)
-        }
+        segments.insert(secondHalf, at: index + 1)
     }
     
     public func segmentUnder(_ position: Int) -> TextSegment? {

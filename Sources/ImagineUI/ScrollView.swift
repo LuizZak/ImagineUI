@@ -126,6 +126,22 @@ open class ScrollView: ControlView {
         verticalBar.scroll = -contentOffset.y
     }
     
+    open override func onResize(_ event: ValueChangedEventArgs<Size>) {
+        super.onResize(event)
+        
+        contentView.location = contentOffset
+        contentView.bounds.size = effectiveContentSize()
+
+        horizontalBar.visibleSize = bounds.width
+        verticalBar.visibleSize = bounds.height
+        
+        updateScrollBarVisibility()
+        limitTargetContentOffset()
+
+        horizontalBar.contentSize = contentSize.x
+        verticalBar.contentSize = contentSize.y
+    }
+
     open override func canHandle(_ eventRequest: EventRequest) -> Bool {
         if let mouseEvent = eventRequest as? MouseEventRequest, mouseEvent.eventType == .mouseWheel {
             return true
@@ -255,22 +271,6 @@ open class ScrollView: ControlView {
         contentView.bounds.size = effectiveContentSize()
     }
     
-    open override func onResize(_ event: ValueChangedEventArgs<Size>) {
-        super.onResize(event)
-        
-        contentView.location = contentOffset
-        contentView.bounds.size = effectiveContentSize()
-
-        horizontalBar.visibleSize = bounds.width
-        verticalBar.visibleSize = bounds.height
-        
-        updateScrollBarVisibility()
-        limitTargetContentOffset()
-
-        horizontalBar.contentSize = contentSize.x
-        verticalBar.contentSize = contentSize.y
-    }
-
     public struct ScrollBarsVisibility: OptionSet {
         public var rawValue: Int
         public init(rawValue: Int) {

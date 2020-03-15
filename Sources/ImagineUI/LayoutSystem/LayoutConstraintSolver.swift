@@ -79,13 +79,7 @@ class ViewConstraintList {
         return ViewConstraintList(container: container, state: state)
     }
     
-    /// Adds a constraint with a given name and strength, and optionally a tag
-    /// to diferentiate constraints with the same name that must be refreshed to
-    /// a new constraint.
-    ///
-    /// Tags should be the same across constraints with the same terms to mantain
-    /// consistency and allow different terms to be correctly detected and updated
-    /// accordingly.
+    /// Adds a constraint with a given name and strength.
     func addConstraint(name: String,
                        _ constraint: @autoclosure () -> Constraint,
                        strength: Double) {
