@@ -115,7 +115,7 @@ internal struct AnyLayoutAnchor: LayoutAnchorType, Equatable {
     // Returns an expression that can be subtracted from this layout anchor's
     // `makeVariable` result to create an expression that is relative to another
     // view's location
-    func makeRelativeExpression(relative: View) -> Expression {
+    func makeRelativeExpression(relative: LayoutVariablesContainer) -> Expression {
         switch kind {
         case .width, .height:
             return Expression(constant: 0)
@@ -128,7 +128,7 @@ internal struct AnyLayoutAnchor: LayoutAnchorType, Equatable {
         }
     }
 
-    func makeExpression(relative: View) -> Expression? {
+    func makeExpression(relative: LayoutVariablesContainer) -> Expression? {
         guard let variable = getVariable() else {
             return nil
         }
@@ -147,8 +147,8 @@ internal struct AnyLayoutAnchor: LayoutAnchorType, Equatable {
 public class LayoutConstraint: Hashable {
     var cachedConstraint: Constraint?
     
-    /// The view that effectively contains this constraint
-    var containerView: View
+    /// The container that effectively contains this constraint
+    var container: LayoutVariablesContainer
 
     internal let firstCast: AnyLayoutAnchor
     internal let secondCast: AnyLayoutAnchor?
@@ -165,7 +165,7 @@ public class LayoutConstraint: Hashable {
             if relationship == oldValue { return }
             
             cachedConstraint = nil
-            containerView.setNeedsLayout()
+            container.setNeedsLayout()
         }
     }
     
@@ -174,7 +174,7 @@ public class LayoutConstraint: Hashable {
             if offset == oldValue { return }
             
             cachedConstraint = nil
-            containerView.setNeedsLayout()
+            container.setNeedsLayout()
         }
     }
     
@@ -183,7 +183,7 @@ public class LayoutConstraint: Hashable {
             if multiplier == oldValue { return }
             
             cachedConstraint = nil
-            containerView.setNeedsLayout()
+            container.setNeedsLayout()
         }
     }
     
@@ -192,7 +192,7 @@ public class LayoutConstraint: Hashable {
             if priority == oldValue { return }
             
             cachedConstraint = nil
-            containerView.setNeedsLayout()
+            container.setNeedsLayout()
         }
     }
     
@@ -201,11 +201,11 @@ public class LayoutConstraint: Hashable {
             if isEnabled == oldValue { return }
             
             cachedConstraint = nil
-            containerView.setNeedsLayout()
+            container.setNeedsLayout()
         }
     }
 
-    private init(containerView: View,
+    private init(container: LayoutVariablesContainer,
                  first: AnyLayoutAnchor,
                  second: AnyLayoutAnchor,
                  relationship: Relationship,
@@ -213,7 +213,7 @@ public class LayoutConstraint: Hashable {
                  multiplier: Double,
                  priority: Double) {
 
-        self.containerView = containerView
+        self.container = container
         self.firstCast = first
         self.secondCast = second
         self.relationship = relationship
@@ -222,13 +222,13 @@ public class LayoutConstraint: Hashable {
         self.priority = priority
     }
     
-    private init(containerView: View,
+    private init(container: LayoutVariablesContainer,
                  first: AnyLayoutAnchor,
                  relationship: Relationship,
                  offset: Double,
                  priority: Double) {
 
-        self.containerView = containerView
+        self.container = container
         self.firstCast = first
         self.secondCast = nil
         self.relationship = relationship
@@ -277,12 +277,12 @@ public class LayoutConstraint: Hashable {
                                         right: secondVariable,
                                         offset: offset)
                         .setStrength(priority)
-            } else if let secondExpr = secondCast.makeExpression(relative: containerView) {
+            } else if let secondExpr = secondCast.makeExpression(relative: container) {
                 constraint =
                     relationship
                         .makeConstraint(left: firstVariable,
                                         right: secondExpr,
-                                        offset: secondCast.makeRelativeExpression(relative: containerView) + offset,
+                                        offset: secondCast.makeRelativeExpression(relative: container) + offset,
                                         multiplier: multiplier)
                         .setStrength(priority)
             }
@@ -299,11 +299,11 @@ public class LayoutConstraint: Hashable {
     }
 
     func removeConstraint() {
-        containerView.setNeedsLayout()
+        container.setNeedsLayout()
         firstCast._owner?.setNeedsLayout()
         secondCast?._owner?.setNeedsLayout()
 
-        containerView.containedConstraints.removeAll { $0 === self }
+        container.containedConstraints.removeAll { $0 === self }
         firstCast._owner?.constraints.removeAll { $0 === self }
         secondCast?._owner?.constraints.removeAll { $0 === self }
     }
@@ -364,7 +364,7 @@ public class LayoutConstraint: Hashable {
         }
 
         let constraint =
-            LayoutConstraint(containerView: ancestor,
+            LayoutConstraint(container: ancestor,
                              first: first,
                              second: second,
                              relationship: relationship,
@@ -390,16 +390,12 @@ public class LayoutConstraint: Hashable {
                                  offset: Double = 0,
                                  priority: Double = Strength.REQUIRED) -> LayoutConstraint {
 
-        guard let view = first._owner?.viewInHierarchy else {
-            if first.owner is LayoutGuide {
-                fatalError("Attempting to add constraint to layout guide that is not contained in a view")
-            } else {
-                fatalError("No view in hierarchy found for input type \(type(of: first))")
-            }
+        guard let container = first._owner else {
+            fatalError("Attempting to create constraint with reference to an anchor of a view or layout guide that was already deallocated")
         }
         
         let constraint =
-            LayoutConstraint(containerView: view,
+            LayoutConstraint(container: container,
                              first: first,
                              relationship: relationship,
                              offset: offset,

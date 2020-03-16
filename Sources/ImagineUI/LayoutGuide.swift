@@ -3,6 +3,11 @@ public class LayoutGuide {
     var layoutVariables: LayoutVariables!
     var constraints: [LayoutConstraint] = []
     
+    var containedConstraints: [LayoutConstraint] {
+        get { return constraints }
+        set { constraints = newValue }
+    }
+    
     var transform: Matrix2D {
         return .translation(x: area.x, y: area.y)
     }

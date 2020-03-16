@@ -4,6 +4,7 @@ protocol LayoutVariablesContainer: AnyObject, SpatialReferenceType {
     var area: Rectangle { get set }
     var viewInHierarchy: View? { get }
     var constraints: [LayoutConstraint] { get set }
+    var containedConstraints: [LayoutConstraint] { get set }
     
     func viewForFirstBaseline() -> View?
     func setNeedsLayout()

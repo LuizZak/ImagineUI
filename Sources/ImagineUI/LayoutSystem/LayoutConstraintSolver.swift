@@ -278,7 +278,7 @@ public class LayoutConstraintSolverCache {
         
         return
             ConstraintDefinition(constraint: constraint,
-                                 containerView: layoutConstraint.containerView,
+                                 container: layoutConstraint.container,
                                  relationship: layoutConstraint.relationship,
                                  offset: layoutConstraint.offset,
                                  multiplier: layoutConstraint.multiplier,
@@ -286,12 +286,12 @@ public class LayoutConstraintSolverCache {
     }
     
     fileprivate class ConstraintDefinition: Equatable {
-        internal init(constraint: Constraint, containerView: View,
+        internal init(constraint: Constraint, container: LayoutVariablesContainer,
                       relationship: Relationship, offset: Double,
                       multiplier: Double, priority: Double) {
             
             self.constraint = constraint
-            self.containerView = containerView
+            self.container = container
             self.relationship = relationship
             self.offset = offset
             self.multiplier = multiplier
@@ -299,14 +299,14 @@ public class LayoutConstraintSolverCache {
         }
         
         var constraint: Constraint
-        var containerView: View
+        var container: LayoutVariablesContainer
         var relationship: Relationship
         var offset: Double
         var multiplier: Double 
         var priority: Double
         
         func matches(_ constraint: LayoutConstraint) -> Bool {
-            return containerView === constraint.containerView
+            return container === constraint.container
                 && relationship == constraint.relationship
                 && offset == constraint.offset
                 && multiplier == constraint.multiplier
@@ -316,7 +316,7 @@ public class LayoutConstraintSolverCache {
         static func == (lhs: LayoutConstraintSolverCache.ConstraintDefinition,
                         rhs: LayoutConstraintSolverCache.ConstraintDefinition) -> Bool {
             
-            return lhs.containerView === rhs.containerView
+            return lhs.container === rhs.container
                 && lhs.relationship == rhs.relationship
                 && lhs.offset == rhs.offset
                 && lhs.multiplier == rhs.multiplier
