@@ -50,30 +50,18 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
     // MARK: - View states
 
     open var isSelected: Bool {
-        get {
-            _stateManager.isSelected
-        }
-        set {
-            _stateManager.isSelected = newValue
-        }
+        get { _stateManager.isSelected }
+        set { _stateManager.isSelected = newValue }
     }
 
     open var isEnabled: Bool {
-        get {
-            _stateManager.isEnabled
-        }
-        set {
-            _stateManager.isEnabled = newValue
-        }
+        get { _stateManager.isEnabled }
+        set { _stateManager.isEnabled = newValue }
     }
 
     open var isHighlighted: Bool {
-        get {
-            _stateManager.isHighlighted
-        }
-        set {
-            _stateManager.isHighlighted = newValue
-        }
+        get { _stateManager.isHighlighted }
+        set { _stateManager.isHighlighted = newValue }
     }
 
     open var currentState: ControlViewState {
