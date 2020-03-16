@@ -345,10 +345,18 @@ public class LayoutConstraint: Hashable {
                                  priority: Double = Strength.REQUIRED) -> LayoutConstraint {
 
         guard let view1 = first._owner?.viewInHierarchy else {
-            fatalError("Cannot add constraint between two views in two different hierarchies")
+            if first.owner is LayoutGuide {
+                fatalError("Attempting to add constraint to layout guide that is not contained in a view")
+            } else {
+                fatalError("No view in hierarchy found for input type \(type(of: first))")
+            }
         }
         guard let view2 = second._owner?.viewInHierarchy else {
-            fatalError("Cannot add constraint between two views in two different hierarchies")
+            if first.owner is LayoutGuide {
+                fatalError("Attempting to add constraint to layout guide that is not contained in a view")
+            } else {
+                fatalError("No view in hierarchy found for input type \(type(of: second))")
+            }
         }
         
         guard let ancestor = View.firstCommonAncestor(between: view1, view2) else {
@@ -383,7 +391,11 @@ public class LayoutConstraint: Hashable {
                                  priority: Double = Strength.REQUIRED) -> LayoutConstraint {
 
         guard let view = first._owner?.viewInHierarchy else {
-            fatalError("No view in hierarchy found for input type \(type(of: first))")
+            if first.owner is LayoutGuide {
+                fatalError("Attempting to add constraint to layout guide that is not contained in a view")
+            } else {
+                fatalError("No view in hierarchy found for input type \(type(of: first))")
+            }
         }
         
         let constraint =
