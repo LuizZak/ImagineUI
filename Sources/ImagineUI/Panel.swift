@@ -4,6 +4,10 @@ import SwiftBlend2D
 public class Panel: ControlView {
     let label: Label
     
+    var isTitleVisible: Bool {
+        return !title.isEmpty
+    }
+    
     /// Layout guide representing the area of the panel that subviews can be laid
     /// out safely without colliding with the panel's label
     public let containerLayoutGuide = LayoutGuide()
@@ -51,22 +55,15 @@ public class Panel: ControlView {
             make.left == self + 8
         }
 
-        containerLayoutGuide.layout.makeConstraints { make in
-            make.top == label.layout.bottom + containerInset.top
-            make.left == self + containerInset.left
-            make.right == self - containerInset.right
-            make.bottom == self - containerInset.bottom
-        }
-
         updateConstraints()
     }
 
     private func updateConstraints() {
         containerLayoutGuide.layout.remakeConstraints { make in
-            if title.isEmpty {
-                make.top == self + containerInset.top
-            } else {
+            if isTitleVisible {
                 make.top == label.layout.bottom + containerInset.top
+            } else {
+                make.top == self + containerInset.top
             }
             
             make.left == self + containerInset.left
@@ -86,7 +83,7 @@ public class Panel: ControlView {
 
         var borderBounds = bounds
         
-        if !title.isEmpty {
+        if isTitleVisible {
             borderBounds.minimum.y = labelBounds.center.y
         }
 
