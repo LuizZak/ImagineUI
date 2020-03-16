@@ -286,7 +286,7 @@ public class LayoutConstraintSolverCache {
     }
     
     fileprivate class ConstraintDefinition: Equatable {
-        internal init(constraint: Constraint, container: LayoutVariablesContainer,
+        internal init(constraint: Constraint, container: LayoutVariablesContainer?,
                       relationship: Relationship, offset: Double,
                       multiplier: Double, priority: Double) {
             
@@ -299,7 +299,7 @@ public class LayoutConstraintSolverCache {
         }
         
         var constraint: Constraint
-        var container: LayoutVariablesContainer
+        var container: LayoutVariablesContainer?
         var relationship: Relationship
         var offset: Double
         var multiplier: Double 

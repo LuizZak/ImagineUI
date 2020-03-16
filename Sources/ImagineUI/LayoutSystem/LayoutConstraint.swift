@@ -148,7 +148,7 @@ public class LayoutConstraint: Hashable {
     var cachedConstraint: Constraint?
     
     /// The container that effectively contains this constraint
-    var container: LayoutVariablesContainer
+    weak var container: LayoutVariablesContainer?
 
     internal let firstCast: AnyLayoutAnchor
     internal let secondCast: AnyLayoutAnchor?
@@ -165,7 +165,7 @@ public class LayoutConstraint: Hashable {
             if relationship == oldValue { return }
             
             cachedConstraint = nil
-            container.setNeedsLayout()
+            container?.setNeedsLayout()
         }
     }
     
@@ -174,7 +174,7 @@ public class LayoutConstraint: Hashable {
             if offset == oldValue { return }
             
             cachedConstraint = nil
-            container.setNeedsLayout()
+            container?.setNeedsLayout()
         }
     }
     
@@ -183,7 +183,7 @@ public class LayoutConstraint: Hashable {
             if multiplier == oldValue { return }
             
             cachedConstraint = nil
-            container.setNeedsLayout()
+            container?.setNeedsLayout()
         }
     }
     
@@ -192,7 +192,7 @@ public class LayoutConstraint: Hashable {
             if priority == oldValue { return }
             
             cachedConstraint = nil
-            container.setNeedsLayout()
+            container?.setNeedsLayout()
         }
     }
     
@@ -201,7 +201,7 @@ public class LayoutConstraint: Hashable {
             if isEnabled == oldValue { return }
             
             cachedConstraint = nil
-            container.setNeedsLayout()
+            container?.setNeedsLayout()
         }
     }
 
@@ -246,7 +246,10 @@ public class LayoutConstraint: Hashable {
         }
         
         var constraint: Constraint?
-        if let secondCast = secondCast, let secondVariable = secondCast.getVariable() {
+        if let secondCast = secondCast,
+            let secondVariable = secondCast.getVariable(),
+            let container = container {
+            
             // Create an expression of the form:
             //
             // first [ == | <= | >= ] (second - containerLocation) * multiplier + containerLocation + offset
@@ -299,11 +302,11 @@ public class LayoutConstraint: Hashable {
     }
 
     func removeConstraint() {
-        container.setNeedsLayout()
+        container?.setNeedsLayout()
         firstCast._owner?.setNeedsLayout()
         secondCast?._owner?.setNeedsLayout()
 
-        container.containedConstraints.removeAll { $0 === self }
+        container?.containedConstraints.removeAll { $0 === self }
         firstCast._owner?.constraints.removeAll { $0 === self }
         secondCast?._owner?.constraints.removeAll { $0 === self }
     }
