@@ -524,10 +524,6 @@ extension LayoutConstraint: CustomStringConvertible {
     }
 }
 
-public struct XLayoutAnchor { }
-public struct YLayoutAnchor { }
-public struct DimensionLayoutAnchor { }
-
 public extension Sequence where Element == LayoutConstraint {
     func setPriority(_ priority: Double) {
         for constraint in self {

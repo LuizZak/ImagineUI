@@ -35,3 +35,7 @@ extension LayoutGuide: LayoutAnchorsContainer {
         return LayoutAnchors(container: self)
     }
 }
+
+public struct XLayoutAnchor { }
+public struct YLayoutAnchor { }
+public struct DimensionLayoutAnchor { }
