@@ -375,11 +375,15 @@ public class LayoutConstraint: Hashable {
 extension LayoutConstraint: CustomStringConvertible {
     public var description: String {
         var trailing = ""
-        if multiplier != 1 {
+        if multiplier != 1 && second != nil {
             trailing += " * \(multiplier)"
         }
         if offset != 0 || second == nil {
-            trailing += " + \(offset)"
+            if second == nil {
+                trailing += " \(offset.description)"
+            } else {
+                trailing += " + \(offset)"
+            }
         }
         if priority != .required {
             trailing += " @ \(priority)"
