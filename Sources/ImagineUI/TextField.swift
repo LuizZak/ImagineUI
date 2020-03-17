@@ -204,7 +204,7 @@ open class TextField: ControlView {
 
     internal func onFixedFrame(interval: TimeInterval) {
         if isFirstResponder && _blinker.checkBlinkerStateChange() {
-            invalidate(bounds: getCaretBounds())
+            invalidateControlGraphics(bounds: getCaretBounds())
         }
     }
 

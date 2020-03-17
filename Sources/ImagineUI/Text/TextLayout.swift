@@ -203,10 +203,11 @@ public class TextLayout: TextLayoutType {
                 advanceOffset += BLPoint(advance.advance)
             }
 
+            let height = Double(segment.font.metrics.ascent + segment.font.metrics.descent)
             segBoxes = segBoxes
                 .map(segment.font.matrix.mapBox)
                 .map {
-                    $0.resized(width: $0.w, height: Double(segment.font.metrics.ascent + segment.font.metrics.descent))
+                    $0.resized(width: $0.w, height: height)
                         .offsetBy(x: line.bounds.topLeft.x + segment.bounds.topLeft.x,
                                   y: line.bounds.topLeft.y + segment.bounds.topLeft.y)
                 }
