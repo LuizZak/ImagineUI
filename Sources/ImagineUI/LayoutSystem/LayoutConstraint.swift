@@ -16,14 +16,7 @@ public class LayoutConstraint: Hashable {
         return secondCast
     }
     
-    public var relationship: Relationship {
-        didSet {
-            if relationship == oldValue { return }
-            
-            cachedConstraint = nil
-            container?.setNeedsLayout()
-        }
-    }
+    public let relationship: Relationship
     
     public var offset: Double {
         didSet {
