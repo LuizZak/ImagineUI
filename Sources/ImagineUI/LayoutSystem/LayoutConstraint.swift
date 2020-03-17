@@ -106,7 +106,7 @@ public class LayoutConstraint: Hashable {
         
         let strength = priority.cassowaryStrength
         
-        var constraint: Constraint?
+        let constraint: Constraint?
         if let secondCast = secondCast,
             let secondVariable = secondCast.getVariable(),
             let container = container {
@@ -141,12 +141,17 @@ public class LayoutConstraint: Hashable {
                                         right: secondVariable,
                                         offset: offset)
                         .setStrength(strength)
-            } else if let secondExpr = secondCast.makeExpression(relative: container) {
+            } else {
+                let secondExpr = secondCast.makeExpression(variable: secondVariable,
+                                                           relative: container)
+                
+                let adjustedOffset = secondCast.makeRelativeExpression(relative: container) + offset
+                
                 constraint =
                     relationship
                         .makeConstraint(left: firstVariable,
                                         right: secondExpr,
-                                        offset: secondCast.makeRelativeExpression(relative: container) + offset,
+                                        offset: adjustedOffset,
                                         multiplier: multiplier)
                         .setStrength(strength)
             }

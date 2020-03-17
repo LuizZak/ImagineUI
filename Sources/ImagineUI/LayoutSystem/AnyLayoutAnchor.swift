@@ -48,11 +48,8 @@ internal struct AnyLayoutAnchor: LayoutAnchorType, Equatable {
             return Expression(term: Term(variable: relative.layoutVariables.top))
         }
     }
-
-    func makeExpression(relative: LayoutVariablesContainer) -> Expression? {
-        guard let variable = getVariable() else {
-            return nil
-        }
+    
+    func makeExpression(variable: Variable, relative: LayoutVariablesContainer) -> Expression {
         return variable - makeRelativeExpression(relative: relative)
     }
     
