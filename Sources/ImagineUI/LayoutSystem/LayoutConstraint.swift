@@ -306,7 +306,7 @@ public class LayoutConstraint: Hashable {
         firstCast._owner?.setNeedsLayout()
         secondCast?._owner?.setNeedsLayout()
 
-        container?.containedConstraints.removeAll { $0 === self }
+        container?.viewInHierarchy?.containedConstraints.removeAll { $0 === self }
         firstCast._owner?.constraints.removeAll { $0 === self }
         secondCast?._owner?.constraints.removeAll { $0 === self }
     }
@@ -404,10 +404,10 @@ public class LayoutConstraint: Hashable {
                              offset: offset,
                              priority: priority)
 
-        first._owner?.viewInHierarchy?.containedConstraints.append(constraint)
-        first._owner?.constraints.append(constraint)
+        container.viewInHierarchy?.containedConstraints.append(constraint)
+        container.constraints.append(constraint)
 
-        first._owner?.setNeedsLayout()
+        container.setNeedsLayout()
 
         return constraint
     }
@@ -514,6 +514,9 @@ extension LayoutConstraint: CustomStringConvertible {
         }
         if offset != 0 || second == nil {
             trailing += " + \(offset)"
+        }
+        if priority != Strength.REQUIRED {
+            trailing += " @ \(priority)"
         }
         
         if let second = second {

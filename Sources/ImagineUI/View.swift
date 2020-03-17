@@ -693,7 +693,6 @@ open class View {
             return view1
         }
 
-        // Search first through view1 to view2
         var parent: View? = view1
         while let p = parent {
             if view2.isDescendant(of: p) {
