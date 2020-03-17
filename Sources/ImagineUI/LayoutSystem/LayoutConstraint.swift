@@ -355,7 +355,7 @@ public class LayoutConstraint: Hashable {
             }
         }
         guard let view2 = second._owner?.viewInHierarchy else {
-            if first.owner is LayoutGuide {
+            if second.owner is LayoutGuide {
                 fatalError("Attempting to add constraint to layout guide that is not contained in a view")
             } else {
                 fatalError("No view in hierarchy found for input type \(type(of: second))")
