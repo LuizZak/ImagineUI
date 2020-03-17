@@ -131,7 +131,12 @@ public struct AttributedText: Equatable {
         let indices = segmentIndicesIntersecting(range)
         
         for i in indices {
-            segments[i] = segments[i].cloneWithAttributes(segments[i].textAttributes.merging(attributes, uniquingKeysWith: { $1 }))
+            let newAttributes =
+                segments[i]
+                    .textAttributes
+                    .merging(attributes, uniquingKeysWith: { $1 })
+            
+            segments[i] = segments[i].cloneWithAttributes(newAttributes)
         }
         
         mergeSegments()
@@ -164,7 +169,10 @@ public struct AttributedText: Equatable {
         let indices = segmentIndicesIntersecting(range)
         
         for i in indices {
-            let attributes = segments[i].textAttributes.filter { !attributeKeys.contains($0.key) }
+            let attributes =
+                segments[i]
+                    .textAttributes
+                    .filter { !attributeKeys.contains($0.key) }
             
             segments[i].textAttributes = attributes
         }
