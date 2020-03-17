@@ -1,3 +1,8 @@
+public protocol LayoutAnchorType: CustomStringConvertible {
+    var kind: AnchorKind { get }
+    var owner: AnyObject? { get }
+}
+
 public struct LayoutAnchor<T>: LayoutAnchorType, Equatable, CustomStringConvertible {
     internal weak var _owner: LayoutVariablesContainer?
     public var owner: AnyObject? { return _owner }

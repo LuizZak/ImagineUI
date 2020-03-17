@@ -170,7 +170,7 @@ public class Window: RootView {
         _titleLabel.setContentCompressionResistance(.horizontal, 900)
         _titleLabel.layout.makeConstraints { make in
             make.centerY == titleBarLayoutArea
-            (make.centerX == titleBarLayoutArea).priority = 50
+            make.centerX.equalTo(titleBarLayoutArea, priority: 50)
             make.right <= titleBarLayoutArea - 10
             make.left >= _buttons.layout.right + 10
         }

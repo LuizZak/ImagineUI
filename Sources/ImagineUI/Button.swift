@@ -64,14 +64,14 @@ open class Button: ControlView {
 
         // Label constraints
         label.layout.makeConstraints { make in
-            make.edges.equalTo(self, inset: contentInset).setPriority(.medium)
+            make.edges.equalTo(self, inset: contentInset, priority: .medium)
         }
     }
 
     func updateLabelConstraints() {
         // Label constraints
         label.layout.updateConstraints { make in
-            make.edges.equalTo(self, inset: contentInset).setPriority(.medium)
+            make.edges.equalTo(self, inset: contentInset, priority: .medium)
         }
     }
     
