@@ -170,7 +170,7 @@ public class Window: RootView {
         _titleLabel.setContentCompressionResistance(.horizontal, 900)
         _titleLabel.layout.makeConstraints { make in
             make.centerY == titleBarLayoutArea
-            (make.centerX == titleBarLayoutArea).priority = LayoutConstraintHelpers.strengthFromPriority(50)
+            (make.centerX == titleBarLayoutArea).priority = 50
             make.right <= titleBarLayoutArea - 10
             make.left >= _buttons.layout.right + 10
         }
@@ -534,7 +534,7 @@ class WindowButtons: View {
         button.cornerRadius = 5
         button.strokeWidth = 0
         button.layout.makeConstraints { make in
-            (make.size == Size(x: 10, y: 10)).setPriority(Strength.REQUIRED)
+            make.size == Size(x: 10, y: 10)
         }
     }
     

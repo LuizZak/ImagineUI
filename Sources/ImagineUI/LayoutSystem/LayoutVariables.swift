@@ -112,22 +112,22 @@ class LayoutVariables {
             constraintList.addConstraint(
                 name: "width >= intrinsicWidth",
                 width >= intrinsicWidth,
-                strength: LayoutConstraintHelpers.strengthFromPriority(view.horizontalCompressResistance))
+                strength: view.horizontalCompressResistance.cassowaryStrength)
             
             constraintList.addConstraint(
                 name: "width <= intrinsicWidth",
                 width <= intrinsicWidth,
-                strength: LayoutConstraintHelpers.strengthFromPriority(view.horizontalHuggingPriority))
+                strength: view.horizontalHuggingPriority.cassowaryStrength)
             
             constraintList.addConstraint(
                 name: "height >= intrinsicHeight",
                 height >= intrinsicHeight,
-                strength: LayoutConstraintHelpers.strengthFromPriority(view.verticalCompressResistance))
+                strength: view.verticalCompressResistance.cassowaryStrength)
             
             constraintList.addConstraint(
                 name: "height <= intrinsicHeight",
                 height <= intrinsicHeight,
-                strength: LayoutConstraintHelpers.strengthFromPriority(view.verticalHuggingPriority))
+                strength: view.verticalHuggingPriority.cassowaryStrength)
         }
     }
 

@@ -285,7 +285,7 @@ public class LayoutConstraintSolverCache {
     fileprivate class ConstraintDefinition: Equatable {
         internal init(constraint: Constraint, container: LayoutVariablesContainer?,
                       relationship: Relationship, offset: Double,
-                      multiplier: Double, priority: Double) {
+                      multiplier: Double, priority: LayoutPriority) {
             
             self.constraint = constraint
             self.container = container
@@ -300,7 +300,7 @@ public class LayoutConstraintSolverCache {
         var relationship: Relationship
         var offset: Double
         var multiplier: Double 
-        var priority: Double
+        var priority: LayoutPriority
         
         func matches(_ constraint: LayoutConstraint) -> Bool {
             return container === constraint.container

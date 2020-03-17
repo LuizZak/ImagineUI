@@ -7,10 +7,10 @@ open class View {
     /// minimal content sizes
     internal var _targetLayoutSize: Size? = nil
     
-    var horizontalCompressResistance: Int = 750
-    var verticalCompressResistance: Int = 750
-    var horizontalHuggingPriority: Int = 150
-    var verticalHuggingPriority: Int = 150
+    var horizontalCompressResistance: LayoutPriority = 750
+    var verticalCompressResistance: LayoutPriority = 750
+    var horizontalHuggingPriority: LayoutPriority = 150
+    var verticalHuggingPriority: LayoutPriority = 150
     var layoutVariables: LayoutVariables!
     
     var isLayoutSuspended = false
@@ -629,7 +629,7 @@ open class View {
     // MARK: - Content Compression/Hugging configuration
     
     public func setContentCompressionResistance(_ orientation: LayoutAnchorOrientation,
-                                                _ priority: Int) {
+                                                _ priority: LayoutPriority) {
         setNeedsLayout()
         
         switch orientation {
@@ -638,7 +638,7 @@ open class View {
         }
     }
     
-    public func contentCompressionResistance(_ orientation: LayoutAnchorOrientation) -> Int {
+    public func contentCompressionResistance(_ orientation: LayoutAnchorOrientation) -> LayoutPriority {
         switch orientation {
         case .horizontal: return horizontalCompressResistance
         case .vertical: return verticalCompressResistance
@@ -646,7 +646,7 @@ open class View {
     }
     
     public func setContentHuggingPriority(_ orientation: LayoutAnchorOrientation,
-                                          _ priority: Int) {
+                                          _ priority: LayoutPriority) {
         setNeedsLayout()
         
         switch orientation {
@@ -655,7 +655,7 @@ open class View {
         }
     }
     
-    public func contentHuggingPriority(_ orientation: LayoutAnchorOrientation) -> Int {
+    public func contentHuggingPriority(_ orientation: LayoutAnchorOrientation) -> LayoutPriority {
         switch orientation {
         case .horizontal: return horizontalHuggingPriority
         case .vertical: return verticalHuggingPriority
