@@ -24,6 +24,23 @@ extension LayoutPriority: ExpressibleByIntegerLiteral {
     }
 }
 
+extension LayoutPriority: CustomStringConvertible {
+    public var description: String {
+        switch self {
+        case .required:
+            return "required (\(value))"
+        case .high:
+            return "high (\(value))"
+        case .medium:
+            return "medium (\(value))"
+        case .low:
+            return "low (\(value))"
+        default:
+            return value.description
+        }
+    }
+}
+
 extension LayoutPriority {
     /// Returns a Double-value priority fit to Cassowary based on this priority's
     /// value ranging from [0 - 1000].
