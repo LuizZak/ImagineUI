@@ -58,7 +58,7 @@ extension LayoutPriority {
         case .medium:
             return Strength.MEDIUM
         case .low:
-            return Strength.WEAK    
+            return Strength.WEAK
         default:
             let doublePriority = Double(value)
 
