@@ -50,25 +50,23 @@ extension LayoutPriority {
     /// Values in between return priorities in between, accordingly, growing in
     /// linear fashion.
     var cassowaryStrength: Double {
-        if self == .required {
+        switch self {
+        case .required:
             return Strength.REQUIRED
-        }
-        if self == .high {
+        case .high:
             return Strength.STRONG
-        }
-        if self == .medium {
+        case .medium:
             return Strength.MEDIUM
+        case .low:
+            return Strength.WEAK    
+        default:
+            let doublePriority = Double(value)
+
+            let upper = min(1.0, max(0.0, (doublePriority - 500.0) / 250.0))
+            let mid = min(1.0, max(0.0, ((doublePriority - 250.0) / 250.0).truncatingRemainder(dividingBy: 1)))
+            let lower = min(1.0, max(0.0, (doublePriority / 250.0).truncatingRemainder(dividingBy: 1)))
+
+            return Strength.create(upper, mid, lower)
         }
-        if self == .low {
-            return Strength.WEAK
-        }
-
-        let doublePriority = Double(value)
-
-        let upper = min(1.0, max(0.0, (doublePriority - 500.0) / 250.0))
-        let mid = min(1.0, max(0.0, ((doublePriority - 250.0) / 250.0).truncatingRemainder(dividingBy: 1)))
-        let lower = min(1.0, max(0.0, (doublePriority / 250.0).truncatingRemainder(dividingBy: 1)))
-
-        return Strength.create(upper, mid, lower)
     }
 }
