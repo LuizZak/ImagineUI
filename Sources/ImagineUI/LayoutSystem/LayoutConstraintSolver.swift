@@ -13,19 +13,15 @@ public class LayoutConstraintSolver {
                 collection.constraints.append(constraint)
             }
         }
-
         let result = ConstraintCollection()
         let traveler = ViewTraveler(state: result, visitor: visitor)
-
         traveler.travelThrough(view: viewHierarchy)
         
         let locCache = cache ?? LayoutConstraintSolverCache()
         
         locCache.saveState()
         
-        register(constraints: result.constraints,
-                 affectedViews: result.affectedLayoutVariables,
-                 cache: locCache)
+        register(result: result, cache: locCache)
 
         let diff = locCache.compareState()
         
@@ -42,15 +38,14 @@ public class LayoutConstraintSolver {
         }
     }
 
-    private func register(constraints: [LayoutConstraint],
-                          affectedViews: [LayoutVariables],
+    private func register(result: ConstraintCollection,
                           cache: LayoutConstraintSolverCache) {
 
-        for affectedView in affectedViews {
+        for affectedView in result.affectedLayoutVariables {
             affectedView.deriveConstraints(cache.constraintList(for: affectedView.container))
         }
         
-        cache.addConstraints(constraints)
+        cache.addConstraints(result.constraints)
     }
 }
 
