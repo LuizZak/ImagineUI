@@ -9,7 +9,6 @@ public class LayoutConstraintSolver {
             }
 
             for constraint in view.containedConstraints where constraint.isEnabled {
-                assert(!collection.constraints.contains(constraint))
                 collection.constraints.append(constraint)
             }
         }
