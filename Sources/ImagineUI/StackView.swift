@@ -202,8 +202,9 @@ open class StackView: View {
         case fill
         
         /// Views increase the boundaries of the stack view, and views that are
-        /// smaller than the minimal width are centered horizontally or vertically
-        /// along the available space, perpendicular to the stack view's orientation
+        /// smaller than the minimal width or height are centered horizontally
+        /// or vertically along the available space, perpendicular to the stack
+        /// view's orientation
         case centered
     }
 }

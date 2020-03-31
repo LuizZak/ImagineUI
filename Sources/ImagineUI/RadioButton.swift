@@ -50,6 +50,10 @@ open class RadioButton: ControlView {
             make.edges.equalTo(self, inset: EdgeInsets(top: 0, left: 16, bottom: 0, right: 0))
         }
     }
+    
+    open override func viewForFirstBaseline() -> View? {
+        return label
+    }
 
     open override func renderForeground(in context: BLContext, screenRegion: BLRegion) {
         super.renderForeground(in: context, screenRegion: screenRegion)
