@@ -285,12 +285,12 @@ extension Vector2 {
     // Double interaction
     @inlinable
     static public func +(lhs: Vector2, rhs: Double) -> Vector2 {
-        return Vector2(lhs.theVector + Vector2.NativeVectorType(repeating: rhs))
+        return Vector2(lhs.theVector + rhs)
     }
     
     @inlinable
     static public func -(lhs: Vector2, rhs: Double) -> Vector2 {
-        return Vector2(lhs.theVector - Vector2.NativeVectorType(repeating: rhs))
+        return Vector2(lhs.theVector - rhs)
     }
     
     @inlinable
@@ -300,7 +300,7 @@ extension Vector2 {
     
     @inlinable
     static public func /(lhs: Vector2, rhs: Double) -> Vector2 {
-        return Vector2(lhs.theVector / Vector2.NativeVectorType(repeating: rhs))
+        return Vector2(lhs.theVector / rhs)
     }
     
     @inlinable
