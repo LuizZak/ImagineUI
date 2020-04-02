@@ -380,6 +380,15 @@ extension ImagineUI: DefaultControlSystemDelegate {
             NSCursor.iBeam.set()
         case .arrow:
             NSCursor.arrow.set()
+        case .resizeLeftRight:
+            NSCursor.resizeLeftRight.set()
+        case .resizeUpDown:
+            NSCursor.resizeUpDown.set()
+        case let .custom(imagePath, hotspot):
+            let cursor = NSCursor(image: NSImage(byReferencingFile: imagePath)!,
+                                  hotSpot: NSPoint(x: hotspot.x, y: hotspot.y))
+            
+            cursor.set()
         }
     }
     

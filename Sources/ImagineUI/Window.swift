@@ -1,6 +1,5 @@
 import SwiftBlend2D
 import Cassowary
-import Cocoa
 
 public protocol WindowDelegate: class {
     /// Invoked when the user has selected to close the window
@@ -230,7 +229,7 @@ public class Window: RootView {
     public override func onMouseLeave() {
         super.onMouseLeave()
         
-        NSCursor.arrow.set()
+        controlSystem?.setMouseCursor(.arrow)
     }
 
     public override func onMouseUp(_ event: MouseEventArgs) {
@@ -420,33 +419,33 @@ public class Window: RootView {
     }
     
     private func updateMouseResizeCursor(_ resize: BorderResize?) {
-        var cursor: NSCursor?
+        var cursor: MouseCursorKind?
         
         switch resize {
         case .top, .bottom:
-            cursor = NSCursor.resizeUpDown
+            cursor = .resizeUpDown
         
         case .left, .right:
-            cursor = NSCursor.resizeLeftRight
+            cursor = .resizeLeftRight
         
         case .topLeft, .bottomRight:
             // TODO: Remove this hardcoded image paths
-            cursor = NSCursor(image: NSImage(byReferencingFile: "/System/Library/Frameworks/WebKit.framework/Versions/Current/Frameworks/WebCore.framework/Resources/northWestSouthEastResizeCursor.png")!,
-                              hotSpot: NSPoint(x: 8, y: 8))
+            cursor = .custom(imagePath: "/System/Library/Frameworks/WebKit.framework/Versions/Current/Frameworks/WebCore.framework/Resources/northWestSouthEastResizeCursor.png",
+                             hotspot: Vector2(x: 8, y: 8))
         
         case .topRight, .bottomLeft:
             // TODO: Remove this hardcoded image paths
-            cursor = NSCursor(image: NSImage(byReferencingFile: "/System/Library/Frameworks/WebKit.framework/Versions/Current/Frameworks/WebCore.framework/Resources/northEastSouthWestResizeCursor.png")!,
-                              hotSpot: NSPoint(x: 8, y: 8))
+            cursor = .custom(imagePath: "/System/Library/Frameworks/WebKit.framework/Versions/Current/Frameworks/WebCore.framework/Resources/northEastSouthWestResizeCursor.png",
+                             hotspot: Vector2(x: 8, y: 8))
             
         case .none:
             break
         }
         
         if let cursor = cursor {
-            cursor.set()
+            controlSystem?.setMouseCursor(cursor)
         } else {
-            NSCursor.arrow.set()
+            controlSystem?.setMouseCursor(.arrow)
         }
     }
     

@@ -30,4 +30,7 @@ public protocol ControlSystem {
 public enum MouseCursorKind {
     case arrow
     case iBeam
+    case resizeUpDown
+    case resizeLeftRight
+    case custom(imagePath: String, hotspot: Vector2)
 }
