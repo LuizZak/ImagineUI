@@ -432,7 +432,7 @@ public class TextLayout: TextLayoutType {
     }
 }
 
-class LineCollector {
+private class LineCollector {
     private var currentWorkingSegment: WorkingSegment
     private var currentWorkingLine: WorkingLine
     private var currentSegment: AttributedText.TextSegment
