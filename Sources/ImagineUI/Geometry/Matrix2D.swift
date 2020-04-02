@@ -440,7 +440,12 @@ public struct Matrix2D: Hashable, CustomStringConvertible {
     /// - Parameter angleX: Angle of skew along the X-axis in radians.
     /// - Parameter angleY: Angle of skew along the Y-axis in radians.
     public static func skew(angleX: Double, angleY: Double) -> Matrix2D {
-        return Matrix2D(m11: Matrix2D.identity.m11, m12: tan(angleX), m21: tan(angleY), m22: Matrix2D.identity.m22, m31: Matrix2D.identity.m31, m32: Matrix2D.identity.m32)
+        return Matrix2D(m11: Matrix2D.identity.m11,
+                        m12: tan(angleX),
+                        m21: tan(angleY),
+                        m22: Matrix2D.identity.m22,
+                        m31: Matrix2D.identity.m31,
+                        m32: Matrix2D.identity.m32)
     }
 
     /// Calculates the inverse of the specified matrix.

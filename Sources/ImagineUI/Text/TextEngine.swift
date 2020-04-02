@@ -33,7 +33,7 @@ class TextEngine: TextEngineType {
     ///
     /// Defaults to an operating system-based clipboard handler, but can be
     /// replaced at any time with any other implementation.
-    public var textClipboard: TextClipboard = MacOSTextClipboard()
+    public var textClipboard: TextClipboard = GlobalTextClipboard()
 
     /// Gets the caret range.
     ///

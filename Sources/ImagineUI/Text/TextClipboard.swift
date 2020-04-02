@@ -1,4 +1,10 @@
-import Cocoa
+public var globalTextClipboard: TextClipboard? {
+    willSet {
+        if newValue is GlobalTextClipboard {
+            fatalError("Cannot set a GlobalTextClipboard as the global text clipboard instance as that would lead into an infinite recursion")
+        }
+    }
+}
 
 /// Basic text clipboard for a `TextEngine` to use during copy/cut/paste operations.
 public protocol TextClipboard {
@@ -12,17 +18,16 @@ public protocol TextClipboard {
     func containsText() -> Bool
 }
 
-class MacOSTextClipboard: TextClipboard {
+class GlobalTextClipboard: TextClipboard {
     func getText() -> String? {
-        NSPasteboard.general.string(forType: .string)
+        return globalTextClipboard?.getText()
     }
-
+    
     func setText(_ text: String) {
-        NSPasteboard.general.declareTypes([.string], owner: nil)
-        NSPasteboard.general.setString(text, forType: .string)
+        globalTextClipboard?.setText(text)
     }
-
+    
     func containsText() -> Bool {
-        return getText() != nil
+        return globalTextClipboard?.containsText() ?? false
     }
 }
