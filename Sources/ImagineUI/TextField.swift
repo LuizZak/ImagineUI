@@ -1,7 +1,6 @@
 import Foundation
 import QuartzCore
 import SwiftBlend2D
-import Cocoa
 
 open class TextField: ControlView {
     private let _blinker = CursorBlinker()
@@ -286,7 +285,7 @@ open class TextField: ControlView {
         super.onMouseEnter()
 
         if canBecomeFirstResponder {
-            NSCursor.iBeam.set()
+            controlSystem?.setMouseCursor(.iBeam)
         }
 
         invalidate()
@@ -296,7 +295,7 @@ open class TextField: ControlView {
         super.onMouseLeave()
 
         if canBecomeFirstResponder {
-            NSCursor.arrow.set()
+            controlSystem?.setMouseCursor(.arrow)
         }
 
         invalidate()
@@ -334,7 +333,7 @@ open class TextField: ControlView {
     open override func onKeyDown(_ event: KeyEventArgs) {
         super.onKeyDown(event)
         
-        NSCursor.setHiddenUntilMouseMoves(true)
+        controlSystem?.setMouseHiddenUntilMouseMoves()
         
         if event.handled { return }
 

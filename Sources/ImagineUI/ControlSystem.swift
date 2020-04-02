@@ -17,6 +17,17 @@ public protocol ControlSystem {
     /// responder was successful.
     func removeAsFirstResponder(_ eventHandler: EventHandler) -> Bool
 
-    /// Returns whether a given event handler is the current first responder
+    /// Returns whether a given event handler is the current first responder.
     func isFirstResponder(_ eventHandler: EventHandler) -> Bool
+    
+    /// Changes the current mouse cursor.
+    func setMouseCursor(_ cursor: MouseCursorKind)
+    
+    /// Hides the mouse until it is moved by the user.
+    func setMouseHiddenUntilMouseMoves()
+}
+
+public enum MouseCursorKind {
+    case arrow
+    case iBeam
 }

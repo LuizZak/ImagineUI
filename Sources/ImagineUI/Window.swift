@@ -432,12 +432,12 @@ public class Window: RootView {
         case .topLeft, .bottomRight:
             // TODO: Remove this hardcoded image paths
             cursor = NSCursor(image: NSImage(byReferencingFile: "/System/Library/Frameworks/WebKit.framework/Versions/Current/Frameworks/WebCore.framework/Resources/northWestSouthEastResizeCursor.png")!,
-                                  hotSpot: NSPoint(x: 8, y: 8))
+                              hotSpot: NSPoint(x: 8, y: 8))
         
         case .topRight, .bottomLeft:
             // TODO: Remove this hardcoded image paths
             cursor = NSCursor(image: NSImage(byReferencingFile: "/System/Library/Frameworks/WebKit.framework/Versions/Current/Frameworks/WebCore.framework/Resources/northEastSouthWestResizeCursor.png")!,
-            hotSpot: NSPoint(x: 8, y: 8))
+                              hotSpot: NSPoint(x: 8, y: 8))
             
         case .none:
             break

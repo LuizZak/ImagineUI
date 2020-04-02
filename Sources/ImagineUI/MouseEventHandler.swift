@@ -1,5 +1,3 @@
-import SwiftBlend2D
-
 public protocol MouseEventHandler: EventHandler {
     func onMouseDown(_ event: MouseEventArgs)
     func onMouseMove(_ event: MouseEventArgs)

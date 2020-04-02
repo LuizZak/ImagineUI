@@ -3,6 +3,7 @@ import QuartzCore
 import SwiftBlend2D
 import ImagineUI
 import Cassowary
+import Cocoa
 
 class ImagineUI: Blend2DSample {
     private var lastFrame: TimeInterval = 0
@@ -371,6 +372,19 @@ extension ImagineUI: DefaultControlSystemDelegate {
         }
 
         return nil
+    }
+    
+    func setMouseCursor(_ cursor: MouseCursorKind) {
+        switch cursor {
+        case .iBeam:
+            NSCursor.iBeam.set()
+        case .arrow:
+            NSCursor.arrow.set()
+        }
+    }
+    
+    func setMouseHiddenUntilMouseMoves() {
+        NSCursor.setHiddenUntilMouseMoves(true)
     }
 }
 

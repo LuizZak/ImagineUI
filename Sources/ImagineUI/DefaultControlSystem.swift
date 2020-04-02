@@ -213,7 +213,15 @@ public class DefaultControlSystem: ControlSystem {
         return _firstResponder === eventHandler
     }
 
-    // MARK: -
+    // MARK: - Mouse Cursor
+    
+    public func setMouseCursor(_ cursor: MouseCursorKind) {
+        delegate?.setMouseCursor(cursor)
+    }
+    
+    public func setMouseHiddenUntilMouseMoves() {
+        delegate?.setMouseHiddenUntilMouseMoves()
+    }
 }
 
 private extension MouseEventArgs {
@@ -229,6 +237,8 @@ private extension MouseEventArgs {
 public protocol DefaultControlSystemDelegate: class {
     func bringRootViewToFront(_ rootView: RootView)
     func controlViewUnder(point: Vector2, enabledOnly: Bool) -> ControlView?
+    func setMouseCursor(_ cursor: MouseCursorKind)
+    func setMouseHiddenUntilMouseMoves()
 }
 
 private class InnerEventRequest<THandler> : EventRequest {
