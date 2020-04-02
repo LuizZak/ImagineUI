@@ -96,6 +96,7 @@ class ImagineUI: Blend2DSample {
         scrollViewLabel.textColor = .black
         
         let imageView = ImageView(image: createSampleImage())
+        let imageViewPanel = Panel(title: "Image View")
 
         let firstColumn = StackView(orientation: .vertical)
         firstColumn.spacing = 5
@@ -104,9 +105,13 @@ class ImagineUI: Blend2DSample {
         secondColumn.spacing = 5
         secondColumn.clipToBounds = false
         secondColumn.alignment = .fill
+        let thirdColumn = StackView(orientation: .vertical)
+        thirdColumn.spacing = 5
+        thirdColumn.clipToBounds = false
         
         window.addSubview(firstColumn)
         window.addSubview(secondColumn)
+        window.addSubview(thirdColumn)
         firstColumn.addArrangedSubview(panel)
         firstColumn.addArrangedSubview(radioButton)
         firstColumn.addArrangedSubview(radioButton2)
@@ -118,7 +123,8 @@ class ImagineUI: Blend2DSample {
         secondColumn.addArrangedSubview(sliderView)
         secondColumn.addArrangedSubview(label)
         secondColumn.addArrangedSubview(textField)
-        window.addSubview(imageView)
+        thirdColumn.addArrangedSubview(imageViewPanel)
+        imageViewPanel.addSubview(imageView)
         window.addSubview(scrollView)
         panel.addSubview(panelContents)
         panelContents.addArrangedSubview(radioButton)
@@ -146,6 +152,16 @@ class ImagineUI: Blend2DSample {
         }
         secondColumn.setCustomSpacing(after: label, 15)
         
+        thirdColumn.layout.makeConstraints { make in
+            make.right(of: secondColumn, offset: 15)
+            make.top == window.contentsLayoutArea + 4
+            make.right <= window.contentsLayoutArea - 8
+        }
+        
+        imageView.layout.makeConstraints { make in
+            make.edges == imageViewPanel.containerLayoutGuide
+        }
+        
         progressBar.layout.makeConstraints { make in
             make.width == 100
         }
@@ -167,12 +183,6 @@ class ImagineUI: Blend2DSample {
         scrollViewLabel.setContentHuggingPriority(.vertical, 50)
         scrollViewLabel.layout.makeConstraints { make in
             make.edges == scrollView.contentView
-        }
-        
-        imageView.layout.makeConstraints { make in
-            make.right(of: progressBar, offset: 15)
-            make.top == progressBar
-            make.right <= window.contentsLayoutArea - 8
         }
 
         button.mouseClicked.addListener(owner: self) { _ in
