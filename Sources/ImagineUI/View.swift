@@ -25,7 +25,7 @@ open class View {
 
     public internal(set) var needsLayout: Bool = true
 
-    public var rotation: Double = 0 {
+    open var rotation: Double = 0 {
         willSet {
             guard rotation != newValue else { return }
             
@@ -37,7 +37,8 @@ open class View {
             invalidate()
         }
     }
-    public var scale: Vector2 = Vector2(x: 1, y: 1) {
+    
+    open var scale: Vector2 = Vector2(x: 1, y: 1) {
         willSet {
             guard scale != newValue else { return }
             
@@ -390,6 +391,10 @@ open class View {
     }
 
     open func invalidate(bounds: Rectangle) {
+        var bounds = bounds
+        if clipToBounds {
+            bounds = bounds.formIntersection(self.boundsForRedraw())
+        }
         if bounds.width == 0 || bounds.height == 0 {
             return
         }
