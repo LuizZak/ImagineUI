@@ -131,6 +131,7 @@ public struct Rectangle: Equatable, Codable {
     /// clockwise order, starting from the top-left corner.
     ///
     /// Always contains 4 elements.
+    @inlinable
     public var corners: [Vector2] {
         return [topLeft, topRight, bottomRight, bottomLeft]
     }
