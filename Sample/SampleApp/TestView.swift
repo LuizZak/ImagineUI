@@ -185,10 +185,13 @@ class TestView: NSView {
         sample.update(CACurrentMediaTime())
         
         if let first = redrawBounds.first {
-            let ctx = BLContext(image: blImage)!
+            let options = BLContext.CreateOptions(threadCount: 4)
+            
+            let ctx = BLContext(image: blImage, options: options)!
 
             sample.render(context: ctx)
 
+            ctx.flush(flags: .sync)
             ctx.end()
             
             let reduced = redrawBounds.reduce(first, { $0.union($1) })
