@@ -338,14 +338,18 @@ public struct Matrix2D: Hashable, CustomStringConvertible {
     /// - Parameter x: Scaling factor that is applied along the x-axis.
     /// - Parameter y: Scaling factor that is applied along the y-axis.
     public static func scaling(x: Double, y: Double) -> Matrix2D {
-        return Matrix2D(m11: x, m12: Matrix2D.identity.m12, m21: Matrix2D.identity.m21, m22: y, m31: Matrix2D.identity.m31, m32: Matrix2D.identity.m32)
+        return Matrix2D(m11: x, m12: 0,
+                        m21: 0, m22: y,
+                        m31: 0, m32: 0)
     }
 
     /// Creates a matrix that uniformly scales along both axes.
     ///
     /// - Parameter scale: The uniform scale that is applied along both axes.
     public static func scaling(scale: Double) -> Matrix2D {
-        return Matrix2D(m11: scale, m12: Matrix2D.identity.m12, m21: Matrix2D.identity.m21, m22: scale, m31: Matrix2D.identity.m31, m32: Matrix2D.identity.m32)
+        return Matrix2D(m11: scale, m12: 0,
+                        m21: 0, m22: scale,
+                        m31: 0, m32: 0)
     }
 
     /// Creates a matrix that is scaling from a specified center.
@@ -354,7 +358,9 @@ public struct Matrix2D: Hashable, CustomStringConvertible {
     /// - Parameter y: Scaling factor that is applied along the y-axis.
     /// - Parameter center: The center of the scaling.
     public static func scaling(x: Double, y: Double, center: Vector2) -> Matrix2D {
-        return Matrix2D(m11: x, m12: 0, m21: 0, m22: y, m31: center.x - x * center.x, m32: center.y - y * center.y)
+        return Matrix2D(m11: x, m12: 0,
+                        m21: 0, m22: y,
+                        m31: center.x - x * center.x, m32: center.y - y * center.y)
     }
 
     /// Calculates the determinant of this matrix.
@@ -374,7 +380,9 @@ public struct Matrix2D: Hashable, CustomStringConvertible {
         let cosAngle = cos(angle)
         let sinAngle = sin(angle)
 
-        return Matrix2D(m11: cosAngle, m12: sinAngle, m21: -sinAngle, m22: cosAngle, m31: Matrix2D.identity.m31, m32: Matrix2D.identity.m32)
+        return Matrix2D(m11: cosAngle, m12: sinAngle,
+                        m21: -sinAngle, m22: cosAngle,
+                        m31: 0, m32: 0)
     }
 
     /// Creates a matrix that rotates about a specified center.
@@ -394,10 +402,15 @@ public struct Matrix2D: Hashable, CustomStringConvertible {
     /// clockwise when looking along the rotation axis.
     /// - Parameter xOffset: X-coordinate offset.
     /// - Parameter yOffset: Y-coordinate offset.
-    public static func transformation(xScale: Double, yScale: Double, angle: Double,
-                                      xOffset: Double, yOffset: Double) -> Matrix2D {
+    public static func transformation(xScale: Double,
+                                      yScale: Double,
+                                      angle: Double,
+                                      xOffset: Double,
+                                      yOffset: Double) -> Matrix2D {
 
-        return scaling(x: xScale, y: yScale) * rotation(angle: angle) * translation(x: xOffset, y: yOffset)
+        return scaling(x: xScale, y: yScale)
+            * rotation(angle: angle)
+            * translation(x: xOffset, y: yOffset)
     }
 
     /// Creates a translation matrix using the specified offsets.
@@ -414,7 +427,9 @@ public struct Matrix2D: Hashable, CustomStringConvertible {
     /// - Parameter x: X-coordinate offset.
     /// - Parameter y: Y-coordinate offset.
     public static func translation(x: Double, y: Double) -> Matrix2D {
-        return Matrix2D(m11: identity.m11, m12: identity.m12, m21: identity.m21, m22: identity.m22, m31: x, m32: y)
+        return Matrix2D(m11: 1, m12: 0,
+                        m21: 0, m22: 1,
+                        m31: x, m32: y)
     }
 
     /// Transforms a vector by this matrix.
@@ -440,12 +455,9 @@ public struct Matrix2D: Hashable, CustomStringConvertible {
     /// - Parameter angleX: Angle of skew along the X-axis in radians.
     /// - Parameter angleY: Angle of skew along the Y-axis in radians.
     public static func skew(angleX: Double, angleY: Double) -> Matrix2D {
-        return Matrix2D(m11: Matrix2D.identity.m11,
-                        m12: tan(angleX),
-                        m21: tan(angleY),
-                        m22: Matrix2D.identity.m22,
-                        m31: Matrix2D.identity.m31,
-                        m32: Matrix2D.identity.m32)
+        return Matrix2D(m11: 1, m12: tan(angleX),
+                        m21: tan(angleY), m22: 1,
+                        m31: 0, m32: 0)
     }
 
     /// Calculates the inverse of the specified matrix.
@@ -456,7 +468,7 @@ public struct Matrix2D: Hashable, CustomStringConvertible {
         let determinant = value.determinant()
 
         if Matrix2D.isZero(determinant) {
-            return .identity
+            return identity
         }
 
         let invdet = 1.0 / determinant
