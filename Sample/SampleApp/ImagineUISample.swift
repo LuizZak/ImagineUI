@@ -208,6 +208,10 @@ class ImagineUI: Blend2DSample {
 
         bounds = BLRect(location: .zero, size: BLSize(w: Double(width), h: Double(height)))
         currentRedrawRegion = bounds.asRectangle
+        
+        for case let window as Window in rootViews where window.windowState == .maximized {
+            window.setNeedsLayout()
+        }
     }
     
     func invalidateScreen() {
