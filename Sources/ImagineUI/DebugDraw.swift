@@ -1,28 +1,49 @@
 import SwiftBlend2D
 
 public enum DebugDraw {
-    public static func debugDrawRecursive(_ view: View, flags: Set<DebugDrawFlags>, to context: BLContext) {
+    public static func debugDrawRecursive(_ view: View,
+                                          flags: Set<DebugDrawFlags>,
+                                          to context: BLContext) {
         if flags.isEmpty {
             return
         }
         
-        internalDebugDrawRecursive(view, flags: flags.intersection([.viewBounds, .layoutGuideBounds]), to: context)
-        internalDebugDrawRecursive(view, flags: flags.intersection([.constraints]), to: context)
+        let state = State()
+        
+        internalDebugDrawRecursive(
+            view,
+            flags: flags.intersection([.viewBounds, .layoutGuideBounds]),
+            to: context,
+            state: state)
+        
+        internalDebugDrawRecursive(
+            view,
+            flags: flags.intersection([.constraints]),
+            to: context,
+            state: state)
     }
     
-    private static func internalDebugDrawRecursive(_ view: View, flags: Set<DebugDrawFlags>, to context: BLContext) {
+    private static func internalDebugDrawRecursive(_ view: View,
+                                                   flags: Set<DebugDrawFlags>,
+                                                   to context: BLContext,
+                                                   state: State) {
+        
         if flags.isEmpty {
             return
         }
         
         let visitor = ClosureViewVisitor<Void> { (_, view) in
-            debugDraw(view, flags: flags, to: context)
+            debugDraw(view, flags: flags, to: context, state: state)
         }
         let traveler = ViewTraveler(visitor: visitor)
         traveler.travelThrough(view: view)
     }
     
-    private static func debugDraw(_ view: View, flags: Set<DebugDrawFlags>, to context: BLContext) {
+    private static func debugDraw(_ view: View,
+                                  flags: Set<DebugDrawFlags>,
+                                  to context: BLContext,
+                                  state: State) {
+        
         if flags.contains(.viewBounds) {
             drawBounds(view, to: context)
         }
@@ -30,7 +51,7 @@ public enum DebugDraw {
             drawLayoutGuideBounds(view, to: context)
         }
         if flags.contains(.constraints) {
-            drawConstraints(view, to: context)
+            drawConstraints(view, to: context, state: state)
         }
     }
     
@@ -55,33 +76,40 @@ public enum DebugDraw {
         }
     }
     
-    private static func drawConstraints(_ view: View, to context: BLContext) {
+    private static func drawConstraints(_ view: View, to context: BLContext, state: State) {
         let cookie = context.saveWithCookie()
         context.restoreClipping()
         context.resetMatrix()
         context.scale(by: UISettings.scale.asBLPoint)
         
         for constraint in view.containedConstraints {
-            drawConstraint(constraint, to: context)
+            drawConstraint(constraint, to: context, state: state)
         }
         
         context.restore(from: cookie)
     }
     
-    private static func drawConstraint(_ constraint: LayoutConstraint, to context: BLContext) {
+    private static func drawConstraint(_ constraint: LayoutConstraint,
+                                       to context: BLContext,
+                                       state: State) {
+        
         if let second = constraint.secondCast {
             drawDualAnchorConstraint(constraint,
                                      first: constraint.firstCast,
                                      second: second,
-                                     to: context)
+                                     to: context,
+                                     state: state)
         } else {
-            drawSingleAnchorConstraint(constraint, to: context)
+            drawSingleAnchorConstraint(constraint, to: context, state: state)
         }
     }
     
-    private static func drawSingleAnchorConstraint(_ constraint: LayoutConstraint, to context: BLContext) {
+    private static func drawSingleAnchorConstraint(_ constraint: LayoutConstraint,
+                                                   to context: BLContext,
+                                                   state: State) {
+        
         guard let view = constraint.firstCast._owner else { return }
-        let bounds = view.boundsForRedrawOnScreen()
+        let bounds = state.boundsForRedrawOnScreen(for: view)
         
         switch constraint.first.kind {
         case .width:
@@ -106,10 +134,14 @@ public enum DebugDraw {
     private static func drawDualAnchorConstraint(_ constraint: LayoutConstraint,
                                                  first: AnyLayoutAnchor,
                                                  second: AnyLayoutAnchor,
-                                                 to context: BLContext) {
+                                                 to context: BLContext,
+                                                 state: State) {
         
-        guard let firstBounds = first._owner?.boundsForRedrawOnScreen() else { return }
-        guard let secondBounds = second._owner?.boundsForRedrawOnScreen() else { return }
+        guard let firstOwner = first._owner else { return }
+        guard let secondOwner = second._owner else { return }
+        
+        let firstBounds = state.boundsForRedrawOnScreen(for: firstOwner)
+        let secondBounds = state.boundsForRedrawOnScreen(for: secondOwner)
         
         switch (first.kind, second.kind) {
         // Horizontal constraints
@@ -330,8 +362,10 @@ public enum DebugDraw {
         context.strokeLine(p0: start.asBLPoint, p1: end.asBLPoint)
         
         if tangentLength > 0 {
-            let tangentLeft = (end - start).normalized().leftRotated() * tangentLength
-            let tangentRight = (end - start).normalized().rightRotated() * tangentLength
+            let normal = (end - start).normalized()
+            
+            let tangentLeft = normal.leftRotated() * tangentLength
+            let tangentRight = normal.rightRotated() * tangentLength
             
             context.strokeLine(p0: (start + tangentLeft).asBLPoint, p1: (start + tangentRight).asBLPoint)
             context.strokeLine(p0: (end + tangentLeft).asBLPoint, p1: (end + tangentRight).asBLPoint)
@@ -406,5 +440,22 @@ public enum DebugDraw {
         
         /// Render constraints
         case constraints
+    }
+    
+    /// A small stateful container that is passed around the inner debug draw
+    /// methods to cache useful calculations.
+    private class State {
+        var boundsCache: [ObjectIdentifier: Rectangle] = [:]
+        
+        func boundsForRedrawOnScreen(for layoutContainer: LayoutVariablesContainer) -> Rectangle {
+            if let bounds = boundsCache[ObjectIdentifier(layoutContainer)] {
+                return bounds
+            }
+            
+            let bounds = layoutContainer.boundsForRedrawOnScreen()
+            boundsCache[ObjectIdentifier(layoutContainer)] = bounds
+            
+            return bounds
+        }
     }
 }
