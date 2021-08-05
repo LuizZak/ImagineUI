@@ -234,7 +234,7 @@ private extension MouseEventArgs {
     }
 }
 
-public protocol DefaultControlSystemDelegate: class {
+public protocol DefaultControlSystemDelegate: AnyObject {
     func bringRootViewToFront(_ rootView: RootView)
     func controlViewUnder(point: Vector2, enabledOnly: Bool) -> ControlView?
     func setMouseCursor(_ cursor: MouseCursorKind)

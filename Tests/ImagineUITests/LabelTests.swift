@@ -13,7 +13,7 @@ class LabelTests: SnapshotTestCase {
     
     override func setUp() {
         super.setUp()
-        
+     
         Fonts.fontFilePath = "\(pathToResources())/NotoSans-Regular.ttf"
     }
     

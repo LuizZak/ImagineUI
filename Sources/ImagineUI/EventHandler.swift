@@ -1,7 +1,7 @@
 import SwiftBlend2D
 
 /// Base event handler interface
-public protocol EventHandler: class {
+public protocol EventHandler: AnyObject {
     /// Returns whether this event handler is the first responder in the
     /// responder chain.
     var isFirstResponder: Bool { get }

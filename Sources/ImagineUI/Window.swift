@@ -1,7 +1,7 @@
 import SwiftBlend2D
 import Cassowary
 
-public protocol WindowDelegate: class {
+public protocol WindowDelegate: AnyObject {
     /// Invoked when the user has selected to close the window
     func windowWantsToClose(_ window: Window)
     

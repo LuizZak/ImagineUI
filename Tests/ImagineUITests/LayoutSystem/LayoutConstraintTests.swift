@@ -55,7 +55,7 @@ class LayoutConstraintTests: XCTestCase {
         
         XCTAssertEqual(view1.constraints, [result])
         XCTAssertEqual(view2.constraints, [result])
-        XCTAssertEqual(result.containerView, parent)
+        XCTAssertIdentical(result.container, parent)
         XCTAssertNotNil(view1.constraints.first?.second)
         XCTAssertEqual(view1.constraints.first?.relationship, .equal)
         XCTAssertEqual(view1.constraints.first?.offset, 10)
@@ -86,7 +86,7 @@ class LayoutConstraintTests: XCTestCase {
         XCTAssertEqual(constraint, result)
         XCTAssertEqual(view1.constraints, [constraint])
         XCTAssertEqual(view2.constraints, [constraint])
-        XCTAssertEqual(constraint.containerView, parent)
+        XCTAssertIdentical(constraint.container, parent)
         XCTAssertNotNil(view1.constraints.first?.second)
         XCTAssertEqual(view1.constraints.first?.relationship, .equal)
         XCTAssertEqual(view1.constraints.first?.offset, 100)

@@ -21,6 +21,11 @@ extension SnapshotTestCase {
                        file: StaticString = #file,
                        line: UInt = #line) {
         
+        if forceRecordMode {
+            recordSnapshot(view, testName: testName, file: file, line: line)
+            return
+        }
+        
         do {
             let img = try produceSnapshot(view)
             

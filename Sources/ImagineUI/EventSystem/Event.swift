@@ -1,4 +1,4 @@
-public protocol EventPublisherType: class {
+public protocol EventPublisherType: AnyObject {
 
 }
 

@@ -84,9 +84,9 @@ public class SliderView: ControlView {
         }
     }
     
-    /// The format string that is used to format the minimum and maximum values
+    /// A formatter function that is used to format the minimum and maximum values
     /// for the left and right labels
-    public var labelFormatString: String = "%0.lf" {
+    public var labelFormat: (Double) -> String = { String(format: "%0.lf", $0) } {
         didSet {
             updateLabels()
         }
@@ -214,8 +214,8 @@ public class SliderView: ControlView {
         
         leftLabel.isVisible = true
         rightLabel.isVisible = true
-        leftLabel.text = String(format: labelFormatString, minimumValue)
-        rightLabel.text = String(format: labelFormatString, maximumValue)
+        leftLabel.text = labelFormat(minimumValue)
+        rightLabel.text = labelFormat(maximumValue)
     }
     
     private func limitValue(_ value: Double) -> Double {

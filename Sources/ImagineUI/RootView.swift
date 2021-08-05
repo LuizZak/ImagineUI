@@ -1,4 +1,4 @@
-public protocol RootViewRedrawInvalidationDelegate: class {
+public protocol RootViewRedrawInvalidationDelegate: AnyObject {
     func rootView(_ rootView: RootView, invalidateRect rect: Rectangle)
 }
 
