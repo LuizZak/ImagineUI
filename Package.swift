@@ -19,7 +19,11 @@ let package = Package(
         .target(
             name: "Geometry"),
         .target(
-            name: "Rendering"),
+            name: "Rendering",
+            dependencies: ["Geometry"]),
+        .target(
+            name: "Blend2DRenderer",
+            dependencies: ["Geometry", "Rendering", "SwiftBlend2D"]),
         .target(
             name: "ImagineUI",
             dependencies: ["Geometry", "Rendering", "SwiftBlend2D", "Cassowary"]),

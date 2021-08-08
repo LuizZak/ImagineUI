@@ -51,7 +51,7 @@ public class EventPublisher<T>: EventPublisherType {
     }
 }
 
-public class EventSource<T> {
+public struct EventSource<T> {
     private let publisher: EventPublisher<T>
 
     init(publisher: EventPublisher<T>) {

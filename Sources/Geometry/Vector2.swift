@@ -1,7 +1,7 @@
 import simd
 
 /// Represents a 2D vector
-public struct Vector2: Equatable, CustomStringConvertible, Codable {
+public struct Vector2: Equatable, Codable, CustomStringConvertible {
     /// Used to match `Double`'s native type
     public typealias NativeVectorType = SIMD2<Double>
     

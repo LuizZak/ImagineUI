@@ -50,7 +50,7 @@ import Foundation
 */
 
 /// Plain Matrix3x2.
-public struct Matrix2D: Hashable, CustomStringConvertible {
+public struct Matrix2D: Hashable, Codable, CustomStringConvertible {
     /// Gets the identity matrix.
     public static let identity = Matrix2D(m11: 1, m12: 0, m21: 0, m22: 1, m31: 0, m32: 0)
 
