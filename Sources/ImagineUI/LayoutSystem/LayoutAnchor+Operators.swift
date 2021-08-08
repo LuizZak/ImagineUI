@@ -1,3 +1,5 @@
+import Geometry
+
 public extension LayoutAnchorCreator {
     @discardableResult
     static func == (lhs: Self, rhs: LayoutAnchor<T>) -> LayoutConstraint {

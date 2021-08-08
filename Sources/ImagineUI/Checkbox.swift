@@ -1,3 +1,4 @@
+import Geometry
 import SwiftBlend2D
 
 public typealias CheckboxStateWillChangeEventArgs = CancellableValueChangedEventArgs<Checkbox.State>

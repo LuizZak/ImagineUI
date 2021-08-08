@@ -1,3 +1,4 @@
+import Geometry
 import SwiftBlend2D
 
 /// A view which renders a bitmap image within its bounds

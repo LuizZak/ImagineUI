@@ -1,5 +1,6 @@
 import Foundation
 import QuartzCore
+import Geometry
 import SwiftBlend2D
 
 open class TextField: ControlView {

@@ -1,3 +1,5 @@
+import Geometry
+
 /// A protocol that describes a type that has its own local spatial transformation
 /// information
 public protocol SpatialReferenceType {

@@ -1,4 +1,5 @@
 import Foundation
+import Geometry
 import SwiftBlend2D
 
 open class View {

@@ -1,3 +1,5 @@
+import Geometry
+
 /// General UI settings that affects all views and controls
 public class UISettings {
     /// Rendering scale for UI.

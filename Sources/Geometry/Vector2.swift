@@ -60,7 +60,7 @@ public struct Vector2: Equatable, CustomStringConvertible, Codable {
         return length_squared(theVector)
     }
     
-    /// Returns the magnitude (or square root of the squared length) of this 
+    /// Returns the magnitude (or square root of the squared length) of this
     /// Vector2
     @inlinable
     public var magnitude : Double {
@@ -179,7 +179,7 @@ extension Vector2 {
     }
     
     /// Calculates the cross product between this and another provided Vector2.
-    /// The resulting scalar would match the 'z' axis of the cross product 
+    /// The resulting scalar would match the 'z' axis of the cross product
     /// between 3d vectors matching the x and y coordinates of the operands, with
     /// the 'z' coordinate being 0.
     @inlinable
@@ -455,7 +455,7 @@ extension Vector2 {
 
 // MARK: Rotation
 extension Vector2 {
-    /// Returns a rotated version of this vector, rotated around by a given 
+    /// Returns a rotated version of this vector, rotated around by a given
     /// angle in radians
     @inlinable
     public func rotated(by angleInRadians: Double) -> Vector2 {
@@ -529,14 +529,14 @@ extension Collection where Iterator.Element == Vector2 {
     }
 }
 
-/// Returns a Vector2 that represents the minimum coordinates between two 
+/// Returns a Vector2 that represents the minimum coordinates between two
 /// Vector2 objects
 @inlinable
 public func min(_ a: Vector2, _ b: Vector2) -> Vector2 {
     return Vector2(min(a.theVector, b.theVector))
 }
 
-/// Returns a Vector2 that represents the maximum coordinates between two 
+/// Returns a Vector2 that represents the maximum coordinates between two
 /// Vector2 objects
 @inlinable
 public func max(_ a: Vector2, _ b: Vector2) -> Vector2 {

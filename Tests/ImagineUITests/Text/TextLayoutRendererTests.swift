@@ -1,4 +1,5 @@
 import XCTest
+import Geometry
 import SwiftBlend2D
 import TestUtils
 

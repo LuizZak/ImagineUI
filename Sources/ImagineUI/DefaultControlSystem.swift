@@ -1,3 +1,4 @@
+import Geometry
 import SwiftBlend2D
 
 public class DefaultControlSystem: ControlSystem {

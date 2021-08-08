@@ -1,3 +1,4 @@
+import Geometry
 import SwiftBlend2D
 
 open class Label: View {

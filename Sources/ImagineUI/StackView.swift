@@ -1,3 +1,4 @@
+import Geometry
 import Cassowary
 
 /// A view that lays out a set of its arranged subviews horizontally or

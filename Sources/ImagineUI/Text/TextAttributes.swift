@@ -1,3 +1,4 @@
+import Geometry
 import SwiftBlend2D
 
 extension BLFont: TextAttributeType { }

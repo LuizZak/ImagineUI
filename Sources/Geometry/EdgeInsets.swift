@@ -1,5 +1,3 @@
-import SwiftBlend2D
-
 public struct EdgeInsets: Equatable {
     public static let zero = EdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
 
@@ -28,12 +26,5 @@ public struct EdgeInsets: Equatable {
 
     public func inset(rectangle: Rectangle) -> Rectangle {
         return rectangle.inset(self)
-    }
-    
-    public func inset(rectangle: BLRect) -> BLRect {
-        return BLRect(x: rectangle.x + left,
-                      y: rectangle.y + top,
-                      w: rectangle.w - left - right,
-                      h: rectangle.h - top - bottom)
     }
 }

@@ -1,4 +1,5 @@
 import XCTest
+import Geometry
 @testable import ImagineUI
 
 class ViewTests: XCTestCase {

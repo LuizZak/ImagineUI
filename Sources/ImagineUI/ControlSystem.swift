@@ -1,3 +1,5 @@
+import Geometry
+
 /// Base for a control system which handles views and controls from a full
 /// hierarchy
 public protocol ControlSystem {

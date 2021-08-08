@@ -1,3 +1,5 @@
+import Geometry
+
 public protocol MouseEventHandler: EventHandler {
     func onMouseDown(_ event: MouseEventArgs)
     func onMouseMove(_ event: MouseEventArgs)

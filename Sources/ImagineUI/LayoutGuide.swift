@@ -1,3 +1,5 @@
+import Geometry
+
 /// A rectangular area that can interact with the layout constraint system
 public class LayoutGuide {
     var layoutVariables: LayoutVariables!

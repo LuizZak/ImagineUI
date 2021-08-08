@@ -1,3 +1,4 @@
+import Geometry
 import SwiftBlend2D
 
 public extension Vector2 {
@@ -39,5 +40,14 @@ public extension Rectangle {
 public extension BLRect {
     var asRectangle: Rectangle {
         return Rectangle(x: x, y: y, width: w, height: h)
+    }
+}
+
+public extension EdgeInsets {
+    func inset(rectangle: BLRect) -> BLRect {
+        return BLRect(x: rectangle.x + left,
+                      y: rectangle.y + top,
+                      w: rectangle.w - left - right,
+                      h: rectangle.h - top - bottom)
     }
 }

@@ -1,3 +1,5 @@
+import Geometry
+
 /// Stores information about a view or layout guide's location and size, which
 /// can be later restored
 struct LayoutAreaSnapshot {

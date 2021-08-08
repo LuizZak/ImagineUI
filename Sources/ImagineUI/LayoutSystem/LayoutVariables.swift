@@ -1,3 +1,4 @@
+import Geometry
 import Cassowary
 
 class LayoutVariables {

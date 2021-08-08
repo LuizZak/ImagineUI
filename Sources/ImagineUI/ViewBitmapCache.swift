@@ -1,3 +1,4 @@
+import Geometry
 import SwiftBlend2D
 
 /// Utility class used to cache view bitmaps.

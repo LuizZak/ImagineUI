@@ -1,5 +1,6 @@
 import XCTest
 @testable import ImagineUI
+import Geometry
 import SwiftBlend2D
 import TestUtils
 

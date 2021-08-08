@@ -1,3 +1,5 @@
+import Geometry
+
 protocol LayoutVariablesContainer: AnyObject, SpatialReferenceType {
     var layoutVariables: LayoutVariables! { get }
     var parent: SpatialReferenceType? { get }
