@@ -1,6 +1,3 @@
-import Geometry
-import SwiftBlend2D
-
 public struct AttributedText: Equatable {
     public typealias Attributes = [AttributeName: TextAttributeType]
     
@@ -72,8 +69,6 @@ public struct AttributedText: Equatable {
             segments.removeAll()
         }
         
-        assertAttributes(attributes)
-        
         let segment = TextSegment(text: string,
                                   textAttributes: attributes,
                                   textRange: TextRange(start: text.count, length: string.count))
@@ -103,8 +98,6 @@ public struct AttributedText: Equatable {
     }
     
     public mutating func setAttributes(_ range: TextRange, _ attributes: Attributes) {
-        assertAttributes(attributes)
-        
         if range.length == 0 {
             return
         }
@@ -121,8 +114,6 @@ public struct AttributedText: Equatable {
     }
     
     public mutating func addAttributes(_ range: TextRange, _ attributes: Attributes) {
-        assertAttributes(attributes)
-        
         if range.length == 0 {
             return
         }
@@ -313,54 +304,56 @@ public struct AttributedText: Equatable {
         }
     }
     
-    private func assertAttributes(_ attributes: Attributes) {
-        func assertIsType<T>(_ key: AttributeName, type: T.Type) {
-            if let value = attributes[key] {
-                assert(value is T,
-                       "Attribute AttributeName.\(key.rawValue) is not a \(type) type")
-            }
-        }
-        
-        func assertIsColor(_ key: AttributeName) {
-            if let value = attributes[key] {
-                switch value {
-                case is BLRgba32, is BLRgba64:
-                    break
-                default:
-                    assertionFailure("Attribute AttributeName.\(key.rawValue) is not a BLRgba- color type")
-                }
-            }
-        }
-        
-        assertIsType(.font, type: BLFont.self)
-        
-        assertIsColor(.foregroundColor)
-        
-        assertIsColor(.backgroundColor)
-        assertIsType(.cornerRadius, type: Vector2.self)
-        assertIsType(.backgroundColorBounds, type: TextBackgroundBoundsAttribute.self)
-        
-        assertIsColor(.strokeColor)
-        assertIsType(.strokeWidth, type: Double.self)
-        
-        assertIsType(.underlineStyle, type: UnderlineStyleTextAttribute.self)
-        assertIsColor(.underlineColor)
-        
-        assertIsType(.strikethroughStyle, type: StrikethroughStyleTextAttribute.self)
-        assertIsColor(.strikethroughColor)
-    }
-    
+    // TODO: Find a way to re-enable this in one of the dependents (Rendering or Blend2DRenderer)
+//
+//    private func assertAttributes(_ attributes: Attributes) {
+//        func assertIsType<T>(_ key: AttributeName, type: T.Type) {
+//            if let value = attributes[key] {
+//                assert(value is T,
+//                       "Attribute AttributeName.\(key.rawValue) is not a \(type) type")
+//            }
+//        }
+//
+//        func assertIsColor(_ key: AttributeName) {
+//            if let value = attributes[key] {
+//                switch value {
+//                case is Color:
+//                    break
+//                default:
+//                    assertionFailure("Attribute AttributeName.\(key.rawValue) is not a Color type")
+//                }
+//            }
+//        }
+//
+//        assertIsType(.font, type: Font.self)
+//
+//        assertIsColor(.foregroundColor)
+//
+//        assertIsColor(.backgroundColor)
+//        assertIsType(.cornerRadius, type: Vector2.self)
+//        assertIsType(.backgroundColorBounds, type: TextBackgroundBoundsAttribute.self)
+//
+//        assertIsColor(.strokeColor)
+//        assertIsType(.strokeWidth, type: Double.self)
+//
+//        assertIsType(.underlineStyle, type: UnderlineStyleTextAttribute.self)
+//        assertIsColor(.underlineColor)
+//
+//        assertIsType(.strikethroughStyle, type: StrikethroughStyleTextAttribute.self)
+//        assertIsColor(.strikethroughColor)
+//    }
+//
     public struct TextSegment: Equatable {
         public var text: String
         public var textAttributes: Attributes
         public var textRange: TextRange
         
-        func cloneWithAttributes(_ attributes: Attributes) -> TextSegment {
-            return TextSegment(text: text, textAttributes: attributes, textRange: textRange)
+        public func attribute<T>(named name: AttributeName, type: T.Type) -> T? {
+            return textAttributes[name] as? T
         }
         
-        func attribute<T>(named name: AttributeName, type: T.Type) -> T? {
-            return textAttributes[name] as? T
+        func cloneWithAttributes(_ attributes: Attributes) -> TextSegment {
+            return TextSegment(text: text, textAttributes: attributes, textRange: textRange)
         }
         
         func attributesMatch(_ other: TextSegment) -> Bool {
@@ -404,32 +397,6 @@ public struct AttributedText: Equatable {
             
             return true
         }
-    }
-}
-
-// MARK: - Rendering
-public extension AttributedText {
-    /// Renders this attributed text to a given context.
-    ///
-    /// - Parameter context: The context to render the text to.
-    /// - Parameter origin: The top-left origin of the text in respect to the
-    /// context.
-    /// - Parameter baseFont: The base font to use when a text segment specifies
-    /// no font attribute. Does not override fonts specified by attributes.
-    /// - Parameter horizontalAlignment: Horizontal alignment of the text layout.
-    /// - Parameter verticalAlignment: Vertical alignment of the text layout.
-    func render(to context: BLContext,
-                origin: BLPoint,
-                baseFont: BLFont,
-                horizontalAlignment: HorizontalTextAlignment = .leading,
-                verticalAlignment: VerticalTextAlignment = .near) {
-        
-        let layout = TextLayout(font: baseFont,
-                                attributedText: self,
-                                horizontalAlignment: horizontalAlignment,
-                                verticalAlignment: verticalAlignment)
-        
-        layout.renderText(in: context, location: origin)
     }
 }
 

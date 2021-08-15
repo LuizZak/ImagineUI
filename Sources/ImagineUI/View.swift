@@ -1,6 +1,6 @@
 import Foundation
 import Geometry
-import SwiftBlend2D
+import Rendering
 
 open class View {
     /// Whether the layout variables produced by this container should have a
@@ -184,7 +184,7 @@ open class View {
         setupConstraints()
     }
 
-    public final func renderRecursive(in context: BLContext, screenRegion: BLRegion) {
+    public final func renderRecursive(in renderer: Renderer, screenRegion: ClipRegion) {
         if !isVisible {
             return
         }
@@ -195,27 +195,31 @@ open class View {
         //
         // For now, clipping region is merged at sample app before rendering, so
         // it is guaranteed the clipping region is a single box.
-        if screenRegion.hitTest(BLBoxI(roundingRect: boundsForRedrawOnScreen().asBLRect)) == .out {
+        if screenRegion.hitTest(boundsForRedrawOnScreen()) == .out {
             return
         }
+        
+        let token = renderer.saveState()
 
-        let cookie = context.saveWithCookie()
+        let state = renderer.saveState()
 
-        context.transform(transform.asBLMatrix2D)
+        renderer.transform(transform)
         if clipToBounds {
-            context.clipToRect(boundsForRedraw().asBLRect)
+            renderer.clip(boundsForRedraw())
         }
 
-        render(in: context, screenRegion: screenRegion)
+        render(in: renderer, screenRegion: screenRegion)
 
         for view in subviews {
-            view.renderRecursive(in: context, screenRegion: screenRegion)
+            view.renderRecursive(in: renderer, screenRegion: screenRegion)
         }
+        
+        renderer.restoreState(token)
 
-        context.restore(from: cookie)
+        renderer.restoreState(state)
     }
 
-    open func render(in context: BLContext, screenRegion: BLRegion) {
+    open func render(in context: Renderer, screenRegion: ClipRegion) {
 
     }
 

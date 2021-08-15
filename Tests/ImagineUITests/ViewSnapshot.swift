@@ -3,6 +3,7 @@ import XCTest
 import Geometry
 import SwiftBlend2D
 import TestUtils
+import Blend2DRenderer
 
 extension SnapshotTestCase {
     func recordSnapshot(_ view: View, testName: String = #function,
@@ -53,7 +54,9 @@ extension SnapshotTestCase {
         
         ctx.translate(x: -bounds.x, y: -bounds.y)
         
-        view.renderRecursive(in: ctx, screenRegion: region)
+        let renderer = Blend2DRenderer(context: ctx)
+        
+        view.renderRecursive(in: renderer, screenRegion: Blend2DClipRegion(region: region))
         
         ctx.end()
         

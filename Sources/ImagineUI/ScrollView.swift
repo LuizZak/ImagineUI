@@ -1,6 +1,7 @@
 import Foundation
 import Geometry
 import SwiftBlend2D
+import Rendering
 
 open class ScrollView: ControlView {
     private let scrollBarSize: Double = 10
@@ -392,25 +393,25 @@ public class ScrollBarControl: ControlView {
         isHighlighted = false
     }
     
-    public override func renderForeground(in context: BLContext, screenRegion: BLRegion) {
+    public override func renderForeground(in context: Renderer, screenRegion: ClipRegion) {
         super.renderForeground(in: context, screenRegion: screenRegion)
         
         let barArea = scrollBarBounds()
         let radius = min(barArea.width, barArea.height) / 2
-        let roundRect = BLRoundRect(rect: barArea.asBLRect, radius: BLPoint(x: radius, y: radius))
+        let roundRect = barArea.rounded(radius: radius)
         
-        let color: BLRgba32
+        let color: Color
         switch currentState {
         case .highlighted:
-            color = BLRgba32.gray.faded(towards: .white, factor: 0.2)
+            color = .gray.faded(towards: .white, factor: 0.2)
         case .selected:
-            color = BLRgba32.gray.faded(towards: .black, factor: 0.2)
+            color = .gray.faded(towards: .black, factor: 0.2)
         default:
-            color = BLRgba32.gray
+            color = .gray
         }
         
-        context.setFillStyle(color)
-        context.fillRoundRect(roundRect)
+        context.setFill(color)
+        context.fill(roundRect)
     }
     
     private func scrollBarMouseArea() -> Vector2 {

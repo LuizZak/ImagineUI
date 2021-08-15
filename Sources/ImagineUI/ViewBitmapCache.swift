@@ -1,17 +1,17 @@
 import Geometry
-import SwiftBlend2D
+import Rendering
 
 /// Utility class used to cache view bitmaps.
 /// Used primarily by `ControlView`
 public class ViewBitmapCache {
-    var bitmap: BLImage?
+    var bitmap: Image?
     var rectangle: Rectangle = .zero
 
     var bitmapWidth: Int {
-        return Int(ceil(rectangle.width * scale.x))
+        return Int((rectangle.width * scale.x).rounded(.up))
     }
     var bitmapHeight: Int {
-        return Int(ceil(rectangle.height * scale.y))
+        return Int((rectangle.height * scale.y).rounded(.up))
     }
 
     public var isCachingEnabled: Bool {
@@ -42,34 +42,34 @@ public class ViewBitmapCache {
         bitmap = nil
     }
 
-    public func cachingOrRendering(_ context: BLContext, _ closure: (BLContext) -> Void) {
+    public func cachingOrRendering(_ renderer: Renderer, _ closure: (Renderer) -> Void) {
         if !isCachingEnabled || bitmapWidth <= 0 || bitmapHeight <= 0 {
-            closure(context)
+            closure(renderer)
             return
         }
 
-        let rect = BLRect(x: rectangle.x, y: rectangle.y,
-                          w: Double(bitmapWidth) / scale.x,
-                          h: Double(bitmapHeight) / scale.y)
+        let rect = Rectangle(x: rectangle.x, y: rectangle.y,
+                             width: Double(bitmapWidth) / scale.x,
+                             height: Double(bitmapHeight) / scale.y)
 
         if let bitmap = bitmap {
-            context.blitScaledImage(bitmap, rectangle: rect)
+            renderer.drawImageScaled(bitmap, area: rect)
             return
         }
-
-        let bitmap = BLImage(width: bitmapWidth, height: bitmapHeight, format: .prgb32)
-        let ctx = BLContext(image: bitmap)!
-        ctx.clearAll()
-
-        ctx.translate(x: ceil(-rectangle.x), y: ceil(-rectangle.y))
-        ctx.scale(by: scale.asBLPoint)
-
-        closure(ctx)
-
-        ctx.end()
-
-        context.blitScaledImage(bitmap, rectangle: rect)
-
-        self.bitmap = bitmap
+        
+        let ctx = renderer.context.createImageRenderer(width: bitmapWidth, height: bitmapHeight)
+        
+        ctx.renderer.clear()
+        
+        ctx.renderer.translate(by: ceil(-rectangle.location))
+        ctx.renderer.scale(by: scale)
+        
+        closure(ctx.renderer)
+        
+        let image = ctx.renderedImage()
+        
+        renderer.drawImageScaled(image, area: rect)
+        
+        self.bitmap = image
     }
 }

@@ -50,15 +50,19 @@ public struct Gradient {
 public extension Gradient {
     /// Parameters for a linear gradient type
     struct LinearGradientParameters: Equatable {
-        /// The bounds of the linear gradient
-        public var bounds: Rectangle
+        /// The line of the linear gradient
+        public var line: Line
         
-        public init(left: Double, top: Double, right: Double, bottom: Double) {
-            bounds = Rectangle(left: left, top: top, right: right, bottom: bottom)
+        public init(startX: Double, startY: Double, endX: Double, endY: Double) {
+            line = Line(x1: startX, y1: startY, x2: endX, y2: endY)
         }
         
-        public init(bounds: Rectangle) {
-            self.bounds = bounds
+        public init(start: Vector2, end: Vector2) {
+            line = Line(start: start, end: end)
+        }
+        
+        public init(line: Line) {
+            self.line = line
         }
     }
     
@@ -91,8 +95,15 @@ public extension Gradient {
 }
 
 public extension Gradient {
-    static func linear(bounds: Rectangle, stops: [Stop] = [], extendMode: ExtendMode = .pad, matrix: Matrix2D = .identity) -> Gradient {
-        return Gradient(type: .linear(LinearGradientParameters(bounds: bounds)),
+    static func linear(start: Vector2, end: Vector2, stops: [Stop] = [], extendMode: ExtendMode = .pad, matrix: Matrix2D = .identity) -> Gradient {
+        return Gradient(type: .linear(LinearGradientParameters(start: start, end: end)),
+                        stops: stops,
+                        extendMode: extendMode,
+                        matrix: matrix)
+    }
+    
+    static func linear(line: Line, stops: [Stop] = [], extendMode: ExtendMode = .pad, matrix: Matrix2D = .identity) -> Gradient {
+        return Gradient(type: .linear(LinearGradientParameters(line: line)),
                         stops: stops,
                         extendMode: extendMode,
                         matrix: matrix)

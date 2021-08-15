@@ -19,19 +19,28 @@ let package = Package(
         .target(
             name: "Geometry"),
         .target(
-            name: "Rendering",
+            name: "Text",
             dependencies: ["Geometry"]),
         .target(
+            name: "Rendering",
+            dependencies: ["Geometry", "Text"]),
+        .target(
             name: "Blend2DRenderer",
-            dependencies: ["Geometry", "Rendering", "SwiftBlend2D"]),
+            dependencies: ["SwiftBlend2D", "Geometry", "Rendering", "Text"]),
         .target(
             name: "ImagineUI",
-            dependencies: ["Geometry", "Rendering", "SwiftBlend2D", "Cassowary"]),
+            dependencies: ["Geometry", "Rendering", "SwiftBlend2D", "Text", "Blend2DRenderer", "Cassowary"]),
         .target(
             name: "TestUtils",
-            dependencies: ["SwiftBlend2D", "LibPNG"]),
+            dependencies: ["SwiftBlend2D", "Blend2DRenderer", "LibPNG"]),
+        .testTarget(
+            name: "TextTests",
+            dependencies: ["Geometry", "Text", "SwiftBlend2D", "Blend2DRenderer"]),
+        .testTarget(
+            name: "Blend2DRendererTests",
+            dependencies: ["Geometry", "Text", "Rendering", "SwiftBlend2D", "Blend2DRenderer", "TestUtils"]),
         .testTarget(
             name: "ImagineUITests",
-            dependencies: ["ImagineUI", "TestUtils"]),
+            dependencies: ["Geometry", "Text", "Rendering", "Blend2DRenderer", "ImagineUI", "TestUtils"]),
     ]
 )

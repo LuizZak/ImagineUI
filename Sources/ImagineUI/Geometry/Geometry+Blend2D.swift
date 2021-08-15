@@ -25,6 +25,12 @@ public extension BLPoint {
     }
 }
 
+public extension BLPointI {
+    var asVector2: Vector2 {
+        return Vector2(x: Double(x), y: Double(y))
+    }
+}
+
 public extension Matrix2D {
     var asBLMatrix2D: BLMatrix2D {
         return BLMatrix2D(m00: m11, m01: m12, m10: m21, m11: m22, m20: m31, m21: m32)

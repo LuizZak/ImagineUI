@@ -1,5 +1,6 @@
 import XCTest
 import ImagineUI
+import Blend2DRenderer
 import TestUtils
 
 class LabelTests: SnapshotTestCase {
@@ -11,10 +12,10 @@ class LabelTests: SnapshotTestCase {
         return pathToSnapshotFailures()
     }
     
-    override func setUp() {
-        super.setUp()
-     
-        Fonts.fontFilePath = "\(pathToResources())/NotoSans-Regular.ttf"
+    override func setUp() async throws {
+        try await super.setUp()
+        
+        try UISettings.initialize(.init(fontManager: Blend2DFontManager(), defaultFontPath: "\(pathToResources())/NotoSans-Regular.ttf"))
     }
     
     func testSnapshot() {

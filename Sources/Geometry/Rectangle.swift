@@ -1,4 +1,4 @@
-/// Represents an axis-aligned bounding box
+/// Represents a rectangle
 public struct Rectangle: Equatable, Codable {
     /// Returns an empty rectangle
     public static let zero = Rectangle(x: 0, y: 0, width: 0, height: 0)
@@ -75,7 +75,12 @@ public struct Rectangle: Equatable, Codable {
 
     @inlinable
     public var center: Vector2 {
-        return (topLeft + bottomRight) / 2
+        get {
+            return (topLeft + bottomRight) / 2
+        }
+        set {
+            (x, y) = (newValue.x - width / 2, newValue.y - height / 2)
+        }
     }
 
     /// Returns true iff this Rectangle's area is empty (i.e. `width == 0 && height == 0`).
@@ -225,11 +230,18 @@ public struct Rectangle: Equatable, Codable {
     ///
     /// Same as calling `expand(toInclude:Vector2)` over each point.
     /// If the array is empty, nothing is done.
-    public mutating func expand<C: Collection>(toInclude points: C) where C.Element == Vector2 {
+    public mutating func expand<S: Sequence>(toInclude points: S) where S.Element == Vector2 {
         for p in points {
-            minimum = min(minimum, p)
-            maximum = max(maximum, p)
+            expand(toInclude: p)
         }
+    }
+    
+    /// Returns whether a given point is contained within this bounding box.
+    /// The check is inclusive, so the edges of the bounding box are considered
+    /// to contain the point as well.
+    @inlinable
+    public func contains(x: Double, y: Double) -> Bool {
+        return contains(Vector2(x: x, y: y))
     }
     
     /// Returns whether a given point is contained within this bounding box.
@@ -239,7 +251,7 @@ public struct Rectangle: Equatable, Codable {
     public func contains(_ point: Vector2) -> Bool {
         return point >= minimum && point <= maximum
     }
-
+    
     /// Returns whether a given Rectangle rests completely inside the boundaries
     /// of this Rectangle.
     @inlinable
@@ -463,5 +475,21 @@ public struct Rectangle: Equatable, Codable {
 extension Rectangle: CustomStringConvertible {
     public var description: String {
         return "Rectangle(x: \(x), y: \(y), width: \(width), height: \(height))"
+    }
+}
+
+public extension Rectangle {
+    /// Returns a `RoundRectangle` which has the same bounds as this rectangle,
+    /// with the given radius vector describing the dimensions of the corner arcs
+    /// on the X and Y axis.
+    func rounded(radius: Vector2) -> RoundRectangle {
+        return RoundRectangle(bounds: self, radius: radius)
+    }
+    
+    /// Returns a `RoundRectangle` which has the same bounds as this rectangle,
+    /// with the given radius value describing the dimensions of the corner arcs
+    /// on the X and Y axis.
+    func rounded(radius: Double) -> RoundRectangle {
+        return RoundRectangle(bounds: self, radiusX: radius, radiusY: radius)
     }
 }

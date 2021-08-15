@@ -3,7 +3,6 @@ import Foundation
 // This source code is partially based on SharpDX's Matrix3x2.cs & MathUtils.cs
 // implementations, the license of which is stated bellow:
 
-
 // Copyright (c) 2010-2014 SharpDX - Alexandre Mutel
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy

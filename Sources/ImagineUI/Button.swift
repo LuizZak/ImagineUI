@@ -1,9 +1,9 @@
 import Geometry
-import SwiftBlend2D
+import Rendering
 import Cassowary
 
 open class Button: ControlView {
-    private var _backColor = StatedValueStore<BLRgba32>()
+    private var _backColor = StatedValueStore<Color>()
     
     public let label = Label()
 
@@ -22,7 +22,7 @@ open class Button: ControlView {
         }
     }
     
-    open override var backColor: BLRgba32 {
+    open override var backColor: Color {
         get {
             return _backColor.getValue(currentState, defaultValue: .royalBlue)
         }
@@ -44,8 +44,8 @@ open class Button: ControlView {
     
     private func initStyle() {
         _backColor.setValue(.royalBlue, forState: .normal)
-        _backColor.setValue(BLRgba32.royalBlue.faded(towards: .white, factor: 0.1), forState: .highlighted)
-        _backColor.setValue(BLRgba32.royalBlue.faded(towards: .black, factor: 0.1), forState: .selected)
+        _backColor.setValue(.royalBlue.faded(towards: .white, factor: 0.1), forState: .highlighted)
+        _backColor.setValue(.royalBlue.faded(towards: .black, factor: 0.1), forState: .selected)
     }
 
     open override func onStateChanged(_ event: ValueChangedEventArgs<ControlViewState>) {
@@ -78,7 +78,7 @@ open class Button: ControlView {
     
     /// Sets the appropriate background color while this button is in a given
     /// state
-    func setBackgroundColor(_ color: BLRgba32, forState state: ControlViewState) {
+    func setBackgroundColor(_ color: Color, forState state: ControlViewState) {
         _backColor.setValue(color, forState: state)
         
         if state == currentState {

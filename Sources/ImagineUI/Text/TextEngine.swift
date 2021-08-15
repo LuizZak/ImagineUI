@@ -1,4 +1,5 @@
 import Foundation
+import Text
 
 /// A text + caret engine that handles manipulation of strings by insertion/removal
 /// of strings at locations that can be specified via a caret position.
@@ -435,7 +436,7 @@ class TextEngine: TextEngineType {
     /// If no word is under or near the position, the non-word (white space)
     ///
     /// - Parameter position: Position to get word segment under
-    public func wordSegmentIn(position: Int) -> TextRange {
+    public func wordSegmentIn(position: Int) -> Text.TextRange {
         if position >= textBuffer.textLength {
             return TextRange(start: textBuffer.textLength, length: 0)
         }
@@ -506,7 +507,7 @@ class TextEngine: TextEngineType {
     /// If `range.length > 0`, the caret is treated as a selection range.
     ///
     /// Calls to this method fire the `caretChanged` event.
-    public func setCaret(_ range: TextRange, position: CaretPosition = .start) {
+    public func setCaret(_ range: Text.TextRange, position: CaretPosition = .start) {
         setCaret(Caret(range: range, position: position))
     }
 
@@ -656,12 +657,12 @@ public class TextDeleteUndo : UndoTask {
     /// Range of text that was removed.
     ///
     /// Must always have `length > 0`.
-    public let deletedRange: TextRange
+    public let deletedRange: Text.TextRange
 
     /// Text string that was deleted
     public let text: String
     
-    public init(textEngine: TextEngineType, beforeCaret: Caret, deletedRange: TextRange, text: String) {
+    public init(textEngine: TextEngineType, beforeCaret: Caret, deletedRange: Text.TextRange, text: String) {
         self.textEngine = textEngine
         self.deletedRange = deletedRange
         self.text = text

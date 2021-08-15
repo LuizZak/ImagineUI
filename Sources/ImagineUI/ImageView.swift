@@ -1,11 +1,12 @@
 import Geometry
-import SwiftBlend2D
+import Rendering
 
 /// A view which renders a bitmap image within its bounds
 public class ImageView: View {
-    public var image: BLImage? {
+    public var image: Image? {
         didSet {
-            if image == oldValue { return }
+            if image == nil && oldValue == nil { return }
+            if let old = oldValue, image?.pixelEquals(to: old) == true { return }
             
             setNeedsLayout()
             invalidate()
@@ -14,23 +15,23 @@ public class ImageView: View {
     
     public override var intrinsicSize: Size? {
         if let image = image {
-            return Size(x: Double(image.size.w), y: Double(image.size.h))
+            return Size(x: Double(image.width), y: Double(image.height))
         }
         
         return nil
     }
     
-    public init(image: BLImage?) {
+    public init(image: Image?) {
         self.image = image
         
         super.init()
     }
     
-    public override func render(in context: BLContext, screenRegion: BLRegion) {
-        super.render(in: context, screenRegion: screenRegion)
+    public override func render(in renderer: Renderer, screenRegion: ClipRegion) {
+        super.render(in: renderer, screenRegion: screenRegion)
 
         if let image = image {
-            context.blitImage(image, at: BLPoint.zero)
+            renderer.drawImage(image, at: .zero)
         }
     }
 }

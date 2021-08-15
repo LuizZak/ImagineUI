@@ -1,7 +1,9 @@
+import Text
+
 /// Caret position of a `TextEngine`.
 public struct Caret: Hashable, CustomStringConvertible {
     /// Range of text this caret covers on a text engine
-    public var textRange: TextRange
+    public var textRange: Text.TextRange
 
     /// Position of this text caret.
     ///

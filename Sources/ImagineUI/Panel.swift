@@ -1,5 +1,6 @@
 import Geometry
 import SwiftBlend2D
+import Rendering
 
 /// A container control that places components within an outlined panel area
 public class Panel: ControlView {
@@ -73,47 +74,47 @@ public class Panel: ControlView {
         }
     }
 
-    public override func renderBackground(in context: BLContext, screenRegion: BLRegion) {
+    public override func renderBackground(in context: Renderer, screenRegion: ClipRegion) {
         super.renderBackground(in: context, screenRegion: screenRegion)
 
         renderBorder(in: context)
     }
 
-    private func renderBorder(in context: BLContext) {
+    private func renderBorder(in renderer: Renderer) {
         let labelBounds = label.boundsForRedrawOnSuperview().insetBy(x: -4, y: -4)
-
+        
         var borderBounds = bounds
         
         if isTitleVisible {
             borderBounds.minimum.y = labelBounds.center.y
         }
-
-        let roundRect = BLRoundRect(rect: borderBounds.asBLRect,
-                                    radius: BLPoint(x: 4, y: 4))
-
-        context.setStrokeStyle(BLRgba32.white)
-        context.setStrokeWidth(strokeWidth)
-        context.save()
+        
+        let roundRect = borderBounds.rounded(radius: 4)
+        
+        renderer.setStroke(.white)
+        renderer.setStrokeWidth(strokeWidth)
+        // context.save()
         
         if title.isEmpty {
-            context.strokeRoundRect(roundRect)
+            renderer.stroke(roundRect)
             return
         }
-
+        
         // Create a clipping region for the borders
-        var region = BLRegion(rectangle: BLRectI(rounding: boundsForRedraw().inflatedBy(x: 1, y: 1).asBLRect))
-
+        var region = renderer.context.createRegion()
+        
+        region.combine(boundsForRedraw().inflatedBy(x: 1, y: 1), operation: .or)
+        
         // Subtract from the borders region the bounds for the label
-        region.combine(box: BLRectI(rounding: labelBounds.asBLRect).asBLBoxI,
-                       operation: .sub)
-
+        region.combine(labelBounds, operation: .subtract)
+        
         // Use the region scans from the clipping region to clip the borders as
         // we draw them. This should result in a complete border around the view
         // which clips under the label
-        for scan in region.regionScans {
-            context.clipToRect(scan.asBLRectI)
-            context.strokeRoundRect(roundRect)
-            context.restoreClipping()
+        for scan in region.scans() {
+            renderer.clip(scan)
+            renderer.stroke(roundRect)
+            renderer.restoreClipping()
         }
     }
 }

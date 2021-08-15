@@ -35,10 +35,10 @@ extension Gradient.GradientType {
 
 extension Gradient.LinearGradientParameters {
     var asBLLinearGradientValues: BLLinearGradientValues {
-        return BLLinearGradientValues(x0: bounds.left,
-                                      y0: bounds.right,
-                                      x1: bounds.right,
-                                      y1: bounds.bottom)
+        return BLLinearGradientValues(x0: line.start.x,
+                                      y0: line.start.y,
+                                      x1: line.end.x,
+                                      y1: line.end.y)
     }
 }
 

@@ -1,5 +1,6 @@
 import Geometry
 import SwiftBlend2D
+import Rendering
 
 open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
     private let _stateManager = StateManager()
@@ -80,14 +81,14 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
     // MARK: - Visual Style / Colors
 
     /// This view's neutral background color
-    open var backColor: BLRgba32 = .transparentBlack { // TODO: Should be KnownColor.Control
+    open var backColor: Color = .transparentBlack { // TODO: Should be KnownColor.Control
         didSet {
             invalidate()
         }
     }
 
     /// This view's foreground color
-    open var foreColor: BLRgba32 = .black {
+    open var foreColor: Color = .black {
         didSet {
             invalidate()
         }
@@ -102,7 +103,7 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
     }
 
     /// Stroke color around the bounds of the control view
-    open var strokeColor: BLRgba32 = .transparentBlack {
+    open var strokeColor: Color = .transparentBlack {
         didSet {
             invalidate()
         }
@@ -206,51 +207,49 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
     // MARK: - Rendering
 
     /// Paints this control view on a given render context
-    public final override func render(in context: BLContext, screenRegion: BLRegion) {
-        super.render(in: context, screenRegion: screenRegion)
+    public final override func render(in renderer: Renderer, screenRegion: ClipRegion) {
+        super.render(in: renderer, screenRegion: screenRegion)
         
-        let cookie = context.saveWithCookie()
-
-        _bitmapCache.cachingOrRendering(context) { ctx in
+        let state = renderer.saveState()
+        
+        _bitmapCache.cachingOrRendering(renderer) { ctx in
             renderBackground(in: ctx, screenRegion: screenRegion)
             renderForeground(in: ctx, screenRegion: screenRegion)
         }
         
-        context.restore(from: cookie)
+        renderer.restoreState(state)
         
-        _painted.publishEvent(sender: self, context)
+        _painted.publishEvent(sender: self, renderer)
     }
 
     /// Renders this view's background
-    open func renderBackground(in context: BLContext, screenRegion: BLRegion) {
+    open func renderBackground(in renderer: Renderer, screenRegion: ClipRegion) {
         // Fill
-        if backColor.a > 0 {
-            context.setFillStyle(backColor)
-
+        if backColor.alpha > 0 {
+            renderer.setFill(backColor)
+            
             if cornerRadius <= 0 {
-                context.fillRect(bounds.asBLRect)
+                renderer.fill(bounds)
             } else {
-                context.fillRoundRect(BLRoundRect(rect: bounds.asBLRect,
-                                                  radius: BLPoint(x: cornerRadius, y: cornerRadius)))
+                renderer.fill(bounds.rounded(radius: cornerRadius))
             }
         }
 
         // Stroke
-        if strokeColor.a > 0 && strokeWidth > 0 {
-            context.setStrokeStyle(strokeColor)
-            context.setStrokeWidth(strokeWidth)
+        if strokeColor.alpha > 0 && strokeWidth > 0 {
+            renderer.setStroke(strokeColor)
+            renderer.setStrokeWidth(strokeWidth)
 
             if cornerRadius <= 0 {
-                context.strokeRect(bounds.asBLRect)
+                renderer.stroke(bounds)
             } else {
-                context.strokeRoundRect(BLRoundRect(rect: bounds.asBLRect,
-                                                    radius: BLPoint(x: cornerRadius, y: cornerRadius)))
+                renderer.stroke(bounds.rounded(radius: cornerRadius))
             }
         }
     }
 
     /// Renders this view's foreground content (not drawn on top of child views)
-    open func renderForeground(in context: BLContext, screenRegion: BLRegion) {
+    open func renderForeground(in renderer: Renderer, screenRegion: ClipRegion) {
 
     }
 

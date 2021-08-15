@@ -1,18 +1,9 @@
 import XCTest
 import Geometry
-import ImagineUI
-import SwiftBlend2D
-import TestUtils
 
-class TextLayoutTests: SnapshotTestCase {
-    override var snapshotPath: String {
-        return pathToSnapshots()
-    }
-    
-    override var snapshotFailuresPath: String {
-        return pathToSnapshotFailures()
-    }
-    
+@testable import Text
+
+class TextLayoutTests: XCTestCase {
     func testLocationOfCharacter() {
         let sut = makeSut(text: "A string")
         
@@ -76,50 +67,6 @@ class TextLayoutTests: SnapshotTestCase {
         XCTAssertEqual(hitTest.textPosition, 10)
     }
     
-    func testRenderInitWithAttributedText() {
-        var attributedText = AttributedText()
-        attributedText.append("small", attributes: [.font: makeFont(size: 10)])
-        attributedText.append("\nmedium", attributes: [.font: makeFont(size: 20)])
-        attributedText.append("\nlarge", attributes: [.font: makeFont(size: 30)])
-        let sut = makeSut(attributedText: attributedText)
-        let img = BLImage(width: Int(sut.size.x),
-                          height: Int(sut.size.y),
-                          format: .prgb32)
-        let ctx = BLContext(image: img)!
-        ctx.compOp = .sourceCopy
-        ctx.setFillStyle(BLRgba32.transparentBlack)
-        ctx.fillAll()
-        ctx.compOp = .sourceOver
-        ctx.setFillStyle(BLRgba32.black)
-        
-        sut.fillText(in: ctx, location: .zero)
-        
-        ctx.end()
-        assertImageMatch(img)
-    }
-    
-    func testRenderInitWithAttributedTextFontChangeDuringSentence() {
-        var attributedText = AttributedText()
-        attributedText.append("small", attributes: [.font: makeFont(size: 10)])
-        attributedText.append("medium", attributes: [.font: makeFont(size: 20)])
-        attributedText.append("large", attributes: [.font: makeFont(size: 30)])
-        let sut = makeSut(attributedText: attributedText)
-        let img = BLImage(width: Int(sut.size.x),
-                          height: Int(sut.size.y),
-                          format: .prgb32)
-        let ctx = BLContext(image: img)!
-        ctx.compOp = .sourceCopy
-        ctx.setFillStyle(BLRgba32.transparentBlack)
-        ctx.fillAll()
-        ctx.compOp = .sourceOver
-        ctx.setFillStyle(BLRgba32.black)
-        
-        sut.fillText(in: ctx, location: .zero)
-        
-        ctx.end()
-        assertImageMatch(img)
-    }
-    
     func testBoundsForCharacters() {
         let sut = makeSut(text: "A string\nAnother line")
         
@@ -146,8 +93,7 @@ class TextLayoutTests: SnapshotTestCase {
         return TextLayout(font: font, attributedText: attributedText)
     }
     
-    func makeFont(size: Float) -> BLFont {
-        let face = try! BLFontFace(fromFile: "\(pathToResources())/NotoSans-Regular.ttf")
-        return BLFont(fromFace: face, size: size)
+    func makeFont(size: Float) -> Font {
+        return TestFont(size: size)
     }
 }

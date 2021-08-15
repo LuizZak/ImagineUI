@@ -1,5 +1,5 @@
 import Geometry
-import SwiftBlend2D
+import Rendering
 
 public class ProgressBar: ControlView {
     public var progress: Double = 0 {
@@ -21,27 +21,27 @@ public class ProgressBar: ControlView {
         foreColor = .royalBlue
     }
     
-    public override func renderBackground(in context: BLContext, screenRegion: BLRegion) {
+    public override func renderBackground(in context: Renderer, screenRegion: ClipRegion) {
         let rect = progressBarRoundRect()
         
-        context.setFillStyle(backColor)
-        context.fillRoundRect(rect)
+        context.setFill(backColor)
+        context.fill(rect)
         
-        context.save()
-        context.clipToRect(boundsForCurrentProgress().asBLRect)
+        let state = context.saveState()
+        context.clip(boundsForCurrentProgress())
         
-        context.setFillStyle(foreColor)
-        context.fillRoundRect(rect)
-        context.restore()
+        context.setFill(foreColor)
+        context.fill(rect)
+        context.restoreState(state)
         
-        context.setStrokeStyle(strokeColor)
+        context.setStroke(strokeColor)
         context.setStrokeWidth(strokeWidth)
-        context.strokeRoundRect(rect)
+        context.stroke(rect)
     }
     
-    func progressBarRoundRect() -> BLRoundRect {
-        let rect = progressBarBounds().asBLRect
-        return BLRoundRect(rect: rect, radius: BLPoint(x: rect.h / 2, y: rect.h / 2))
+    func progressBarRoundRect() -> RoundRectangle {
+        let rect = progressBarBounds()
+        return RoundRectangle(bounds: rect, radius: Vector2(x: rect.height / 2, y: rect.height / 2))
     }
     
     func progressBarBounds() -> Rectangle {

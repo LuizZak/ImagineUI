@@ -1,12 +1,6 @@
 import Geometry
 import SwiftBlend2D
 
-extension Vector2 {
-    var asBLPoint: BLPoint {
-        return BLPoint(x: x, y: y)
-    }
-}
-
 extension Line {
     var asBLLine: BLLine {
         return BLLine(x0: start.x, y0: start.y, x1: end.x, y1: end.y)
@@ -22,6 +16,24 @@ extension BLLine {
 extension BLPoint {
     var asVector2: Vector2 {
         return Vector2(x: x, y: y)
+    }
+}
+
+extension Vector2 {
+    var asBLPoint: BLPoint {
+        return BLPoint(x: x, y: y)
+    }
+}
+
+extension BLPointI {
+    var asIntPoint: IntPoint {
+        return IntPoint(x: Int(x), y: Int(y))
+    }
+}
+
+extension IntPoint {
+    var asBLPointI: BLPointI {
+        return BLPointI(x: Int32(x), y: Int32(y))
     }
 }
 
@@ -43,6 +55,24 @@ extension BLRect {
     }
 }
 
+extension BLBox {
+    var asRectangle: Rectangle {
+        return Rectangle(x: x0, y: y0, width: w, height: h)
+    }
+}
+
+extension BLRectI {
+    var asRectangle: Rectangle {
+        return Rectangle(x: Double(x), y: Double(y), width: Double(w), height: Double(h))
+    }
+}
+
+extension BLBoxI {
+    var asRectangle: Rectangle {
+        return Rectangle(x: Double(x0), y: Double(y0), width: Double(w), height: Double(h))
+    }
+}
+
 extension BLRoundRect {
     var asRoundRectangle: RoundRectangle {
         return RoundRectangle(bounds: Rectangle(x: x, y: y, width: w, height: h), radiusX: rx, radiusY: ry)
@@ -51,7 +81,7 @@ extension BLRoundRect {
 
 extension RoundRectangle {
     var asBLRoundRect: BLRoundRect {
-        return BLRoundRect(rect: bounds.asBLRect, radius: BLPoint(x: radiusX, y: radiusX))
+        return BLRoundRect(rect: bounds.asBLRect, radius: BLPoint(x: radius.x, y: radius.y))
     }
 }
 

@@ -1,54 +1,36 @@
 import Foundation
 import Geometry
-import SwiftBlend2D
-
-public protocol TextLayoutType {
-    var font: BLFont { get }
-    var text: String { get }
-    var attributedText: AttributedText { get }
-    var horizontalAlignment: HorizontalTextAlignment { get }
-    var verticalAlignment: VerticalTextAlignment { get }
-    var numberOfLines: Int { get }
-
-    /// Total size of text layout area
-    var size: Size { get }
-
-    func locationOfCharacter(index: Int) -> Vector2
-    func boundsForCharacters(startIndex: Int, length: Int) -> [Rectangle]
-    func boundsForCharacters(in range: TextRange) -> [Rectangle]
-    func hitTestPoint(_ point: Vector2) -> TextLayoutHitTestResult
-    func font(atLocation index: Int) -> BLFont
-    func baselineHeightForLine(atIndex index: Int) -> Float
-
-    func strokeText(in context: BLContext, location: BLPoint)
-    func fillText(in context: BLContext, location: BLPoint)
-    
-    /// Fully renders the contained text by utilizing information associated with
-    /// the attributed text structure
-    func renderText(in context: BLContext, location: BLPoint)
-}
 
 public class TextLayout: TextLayoutType {
-    internal var lines: [Line] = []
     internal var minimalSize: Size = Size()
-
-    public let font: BLFont
+    
+    public let font: Font
+    
+    public internal(set) var lines: [TextLayoutLine] = []
+    
     public var text: String {
         return attributedText.string
     }
+    
     public let attributedText: AttributedText
+    
     public let horizontalAlignment: HorizontalTextAlignment
+    
     public let verticalAlignment: VerticalTextAlignment
+    
     public var numberOfLines: Int {
         return lines.count
     }
-
+    
     public let availableSize: Size?
+    
     public var size: Size {
         return availableSize ?? minimalSize
     }
 
-    public init(font: BLFont, text: String, availableSize: Size? = nil,
+    public init(font: Font,
+                text: String,
+                availableSize: Size? = nil,
                 horizontalAlignment: HorizontalTextAlignment = .leading,
                 verticalAlignment: VerticalTextAlignment = .near) {
 
@@ -61,7 +43,9 @@ public class TextLayout: TextLayoutType {
         layoutLines()
     }
     
-    public init(font: BLFont, attributedText: AttributedText, availableSize: Size? = nil,
+    public init(font: Font,
+                attributedText: AttributedText,
+                availableSize: Size? = nil,
                 horizontalAlignment: HorizontalTextAlignment = .leading,
                 verticalAlignment: VerticalTextAlignment = .near) {
 
@@ -75,24 +59,27 @@ public class TextLayout: TextLayoutType {
     }
 
     public func locationOfCharacter(index: Int) -> Vector2 {
-        func offsetFromLineSegment(line: Line, segment: LineSegment, offset: Int) -> Vector2 {
+        func offsetFromLineSegment(line: TextLayoutLine,
+                                   segment: TextLayoutLineSegment,
+                                   offset: Int) -> Vector2 {
+            
             let offsetIndex = offset - segment.startCharacterIndex
             
             var location = line.bounds.topLeft + segment.bounds.topLeft
-            var iterator = BLGlyphRunIterator(glyphRun: segment.glyphBuffer.glyphRun)
+            var iterator = segment.glyphBuffer.makeIterator()
             for _ in 0..<offsetIndex {
-                if case .advanceOffset(let placement) = iterator.placementData {
-                    location += segment.font.matrix.mapPoint(BLPoint(placement.advance))
+                if let placement = iterator.advanceOffset {
+                    location += segment.font.matrix.transform(Vector2(placement.advance))
                 }
                 
                 iterator.advance()
             }
             
-            return location.asVector2
+            return location
         }
         
         if index <= 0 {
-            return (lines[0].bounds.topLeft + lines[0].segments[0].bounds.topLeft).asVector2
+            return lines[0].bounds.topLeft + lines[0].segments[0].bounds.topLeft
         }
         
         for line in lines {
@@ -119,7 +106,7 @@ public class TextLayout: TextLayoutType {
     }
     
     public func boundsForCharacters(in range: TextRange) -> [Rectangle] {
-        var boundsList: [BLRect] = []
+        var boundsList: [Rectangle] = []
 
         for line in lines where line.textRange.intersects(range) {
             for segment in line.segments(intersecting: range) {
@@ -127,33 +114,35 @@ public class TextLayout: TextLayoutType {
                     continue
                 }
                 
-                var segmentBounds: [BLRect] = []
+                var segmentBounds: [Rectangle] = []
                 
-                var advanceOffset: BLPoint = .zero
+                var advanceOffset: Vector2 = .zero
                 
-                var iterator = BLGlyphRunIterator(glyphRun: segment.glyphBuffer.glyphRun)
+                var iterator = segment.glyphBuffer.makeIterator()
                 while !iterator.atEnd {
                     defer { iterator.advance() }
-                    guard case .advanceOffset(let advance) = iterator.placementData else {
+                    guard let advance = iterator.advanceOffset else {
                         continue
                     }
                     
                     if intersection.contains(segment.startCharacterIndex + iterator.index) {
-                        let bounds = BLRect(x: advanceOffset.x,
-                                            y: advanceOffset.y,
-                                            w: Double(advance.advance.x),
-                                            h: 0)
+                        let bounds = Rectangle(x: advanceOffset.x,
+                                               y: advanceOffset.y,
+                                               width: Double(advance.advance.x),
+                                               height: 0)
                         
                         segmentBounds.append(bounds)
                     }
                     
-                    advanceOffset += BLPoint(advance.advance)
+                    advanceOffset += Vector2(advance.advance)
                 }
                 
+                let height = Double(segment.font.metrics.ascent + segment.font.metrics.descent)
+                
                 segmentBounds = segmentBounds
-                    .map(segment.font.matrix.mapRect)
-                    .map {
-                        $0.resized(width: $0.w, height: Double(segment.font.metrics.ascent + segment.font.metrics.descent))
+                    .map(segment.font.matrix.transform)
+                    .map { (box: Rectangle) -> Rectangle in
+                        return box.withSize(width: box.width, height: height)
                             .offsetBy(x: line.bounds.topLeft.x + segment.bounds.topLeft.x,
                                       y: line.bounds.topLeft.y + segment.bounds.topLeft.y)
                     }
@@ -162,12 +151,10 @@ public class TextLayout: TextLayoutType {
             }
         }
         
-        return boundsList.map { $0.asRectangle }
+        return boundsList.map { $0 }
     }
     
     public func hitTestPoint(_ point: Vector2) -> TextLayoutHitTestResult {
-        let point = point.asBLPoint
-
         guard let line = lineAtHeight(point.y) else {
             return TextLayoutHitTestResult(isInside: false,
                                            textPosition: 0,
@@ -177,38 +164,39 @@ public class TextLayout: TextLayoutType {
                                            height: 0)
         }
         
-        var boxes: [BLBox] = []
+        var boxes: [Rectangle] = []
         
         for segment in line.segments {
-            var advanceOffset: BLPoint = .zero
+            var advanceOffset: Vector2 = .zero
             
             // TODO: Support cases where font's transform matrix doesn't in fact
             // inverts Y axis (so we would need to fetch the topLeft corner,
             // instead)
             advanceOffset += segment.originalBounds.bottomLeft // Inverted Y axis
             
-            var segBoxes: [BLBox] = []
+            var segBoxes: [Rectangle] = []
             
-            var iterator = BLGlyphRunIterator(glyphRun: segment.glyphBuffer.glyphRun)
+            var iterator = segment.glyphBuffer.makeIterator()
             while !iterator.atEnd {
                 defer { iterator.advance() }
-                guard case .advanceOffset(let advance) = iterator.placementData else {
+                guard let advance = iterator.advanceOffset else {
                     continue
                 }
                 
-                segBoxes.append(BLBox(x: advanceOffset.x,
-                                      y: advanceOffset.y,
-                                      w: Double(advance.advance.x),
-                                      h: 0))
-
-                advanceOffset += BLPoint(advance.advance)
+                segBoxes.append(
+                    Rectangle(x: advanceOffset.x,
+                              y: advanceOffset.y,
+                              width: Double(advance.advance.x),
+                              height: 0))
+                
+                advanceOffset += Vector2(advance.advance)
             }
-
+            
             let height = Double(segment.font.metrics.ascent + segment.font.metrics.descent)
             segBoxes = segBoxes
-                .map(segment.font.matrix.mapBox)
-                .map {
-                    $0.resized(width: $0.w, height: height)
+                .map(segment.font.matrix.transform)
+                .map { (box: Rectangle) -> Rectangle in
+                    box.withSize(width: box.width, height: height)
                         .offsetBy(x: line.bounds.topLeft.x + segment.bounds.topLeft.x,
                                   y: line.bounds.topLeft.y + segment.bounds.topLeft.y)
                 }
@@ -234,8 +222,8 @@ public class TextLayout: TextLayoutType {
                         textPosition: line.startCharacterIndex + i,
                         stringIndex: text.index(line.startIndex, offsetBy: i),
                         isTrailing: box.center.x < point.x,
-                        width: box.w,
-                        height: box.h)
+                        width: box.width,
+                        height: box.height)
             }
             
             // TODO: Should do distance to corner of box, not its center
@@ -248,11 +236,11 @@ public class TextLayout: TextLayoutType {
                                        textPosition: line.startCharacterIndex + closest,
                                        stringIndex: text.index(line.startIndex, offsetBy: closest),
                                        isTrailing: boxes[closest].center.x < point.x,
-                                       width: boxes[closest].w,
-                                       height: boxes[closest].h)
+                                       width: boxes[closest].width,
+                                       height: boxes[closest].height)
     }
     
-    public func font(atLocation index: Int) -> BLFont {
+    public func font(atLocation index: Int) -> Font {
         let line = lines.first(where: { $0.textRange.contains(index) })
         guard let segment = line?.segment(containing: index) else {
             return font
@@ -265,79 +253,48 @@ public class TextLayout: TextLayoutType {
         return lines[index].baselineHeight
     }
     
-    private func lineAtHeight(_ height: Double) -> Line? {
+    private func lineAtHeight(_ height: Double) -> TextLayoutLine? {
         if height < 0 {
             return lines.first
         }
         for line in lines {
-            if line.bounds.contains(line.bounds.x, height) {
+            if line.bounds.contains(x: line.bounds.x, y: height) {
                 return line
             }
         }
         
         return lines.last
     }
-
-    public func strokeText(in context: BLContext, location: BLPoint) {
-        iterateSegments { line, segment in
-            let offset = line.bounds.topLeft
-                + segment.bounds.topLeft
-                + segment.offset
-                + location
-                
-            context.strokeGlyphRun(segment.glyphBufferMinusLineBreak.glyphRun,
-                                   at: offset,
-                                   font: segment.font)
-        }
-    }
-
-    public func fillText(in context: BLContext, location: BLPoint) {
-        iterateSegments { line, segment in
-            let offset = line.bounds.topLeft
-                + segment.bounds.topLeft
-                + segment.offset
-                + location
-            
-            context.fillGlyphRun(segment.glyphBufferMinusLineBreak.glyphRun,
-                                 at: offset,
-                                 font: segment.font)
-        }
-    }
     
-    public func renderText(in context: BLContext, location: BLPoint) {
-        let renderer = TextLayoutRenderer(textLayout: self)
-        renderer.render(to: context, origin: location)
-    }
-    
-    private func iterateSegments(_ closure: (Line, LineSegment) -> Void) {
+    public func iterateSegments(_ closure: (TextLayoutLine, TextLayoutLineSegment) -> Void) {
         for line in lines {
             for segment in line.segments {
                 closure(line, segment)
             }
         }
     }
-
+    
     private func layoutLines() {
         let collector = LineCollector(attributedText: attributedText, font: font)
         collector.collect()
         
         self.lines = collector.lines
         self.minimalSize = collector.minimalSize
-
+        
         adjustAlignment()
     }
-
+    
     private func adjustAlignment() {
         guard !lines.isEmpty else { return }
-
+        
         /// By default, text layouts are already produced with a top-left text
         /// alignment
         if horizontalAlignment == .leading && verticalAlignment == .near { return }
-
+        
         var accumulatedHeight: Double = 0
-
+        
         for (i, line) in lines.enumerated() {
-            var rect = line.bounds.asRectangle
+            var rect = line.bounds
 
             // Horizontal alignment
             switch horizontalAlignment {
@@ -348,88 +305,33 @@ public class TextLayout: TextLayoutType {
             case .trailing:
                 rect = rect.movingRight(to: size.x)
             }
-
+            
             // Vertical alignment
             switch verticalAlignment {
             case .near, .center:
                 rect = rect.movingTop(to: accumulatedHeight)
-                accumulatedHeight += line.bounds.h
+                accumulatedHeight += line.bounds.height
             case .far:
                 rect = rect.movingTop(to: size.y - minimalSize.y + accumulatedHeight)
-                accumulatedHeight += line.bounds.h
+                accumulatedHeight += line.bounds.height
             }
-
-            lines[i].bounds = rect.asBLRect
+            
+            lines[i].bounds = rect
         }
-
+        
         // Vertical centered text
         if verticalAlignment == .center {
-            let centerY = lines.reduce(0) { $0 + $1.bounds.h } / 2
+            let centerY: Double = lines.reduce(0) { $0 + $1.bounds.height } / 2
             let offset = size.y / 2 - centerY
-
+            
             for (i, line) in lines.enumerated() {
-                lines[i].bounds = line.bounds.asRectangle.offsetBy(x: 0, y: offset).asBLRect
+                lines[i].bounds = line.bounds.offsetBy(x: 0, y: offset)
             }
         }
     }
-
+    
     private func isLineBreak(_ character: Character) -> Bool {
         return character.unicodeScalars.contains(where: CharacterSet.newlines.contains)
-    }
-    
-    internal struct LineSegment {
-        var textRange: TextRange {
-            return TextRange.fromOffsets(startCharacterIndex, endCharacterIndex)
-        }
-        
-        var startCharacterIndex: Int
-        var endCharacterIndex: Int
-        var startIndex: String.Index
-        var endIndex: String.Index
-        var text: Substring
-        var glyphBuffer: BLGlyphBuffer
-        var glyphBufferMinusLineBreak: BLGlyphBuffer
-        var font: BLFont
-        var textSegment: AttributedText.TextSegment
-        
-        /// Boundaries of this line segment, relative to the line's origin
-        var bounds: BLRect
-        
-        /// Rendering offset to apply to this segment
-        var offset: BLPoint
-        
-        /// `bounds` property's value, mapped to the original transformation
-        /// space before being multiplied by the font's transform matrix
-        var originalBounds: BLRect
-    }
-
-    internal struct Line {
-        var textRange: TextRange {
-            return TextRange.fromOffsets(startCharacterIndex, endCharacterIndex)
-        }
-        
-        var segments: [LineSegment]
-        
-        var startCharacterIndex: Int
-        var endCharacterIndex: Int
-        var startIndex: String.Index
-        var endIndex: String.Index
-        var text: Substring
-        var baselineHeight: Float
-        
-        /// Largest underline offset from this line
-        var underlineOffset: Float
-        
-        /// Boundaries of line, in screen-space coordinates
-        var bounds: BLRect
-        
-        func segment(containing index: Int) -> LineSegment? {
-            return segments.first(where: { index >= $0.startCharacterIndex && index <= $0.endCharacterIndex })
-        }
-        
-        func segments(intersecting range: TextRange) -> [LineSegment] {
-            return segments.filter { $0.textRange.intersects(range) }
-        }
     }
 }
 
@@ -439,17 +341,17 @@ private class LineCollector {
     private var currentSegment: AttributedText.TextSegment
     
     let attributedText: AttributedText
-    let font: BLFont
+    let font: Font
     var index: String.Index
     var intIndex: Int
-    var lines: [TextLayout.Line] = []
+    var lines: [TextLayoutLine] = []
     var minimalSize: Size
     
     var text: String {
         return attributedText.string
     }
     
-    init(attributedText: AttributedText, font: BLFont) {
+    init(attributedText: AttributedText, font: Font) {
         self.attributedText = attributedText
         self.font = font
         self.index = attributedText.string.startIndex
@@ -490,7 +392,7 @@ private class LineCollector {
     }
     
     private func moveForward() {
-        index = text.index(after: index)
+        text.formIndex(after: &index)
         intIndex += 1
     }
     
@@ -516,13 +418,13 @@ private class LineCollector {
         
         lines.append(line)
         
-        minimalSize = max(minimalSize, line.bounds.bottomRight.asVector2)
+        minimalSize = max(minimalSize, line.bounds.bottomRight)
         
         prepareWorkingLineFromCurrentState(topLeft: line.bounds.bottomLeft)
     }
     
-    private func prepareWorkingSegmentFromCurrentState(topLeft: BLPoint) {
-        let segmentFontAttribute = currentSegment.textAttributes[.font] as? BLFont
+    private func prepareWorkingSegmentFromCurrentState(topLeft: Vector2) {
+        let segmentFontAttribute = currentSegment.textAttributes[.font] as? Font
         let segmentFont = segmentFontAttribute ?? font
         
         currentWorkingSegment =
@@ -532,7 +434,7 @@ private class LineCollector {
                            topLeft: topLeft)
     }
     
-    private func prepareWorkingLineFromCurrentState(topLeft: BLPoint) {
+    private func prepareWorkingLineFromCurrentState(topLeft: Vector2) {
         prepareWorkingSegmentFromCurrentState(topLeft: .zero)
         
         currentWorkingLine =
@@ -551,36 +453,37 @@ private class LineCollector {
     }
     
     private struct WorkingSegment {
-        var font: BLFont
+        var font: Font
         var startIndex: String.Index
         var startCharIndex: Int
-        var topLeft: BLPoint
+        var topLeft: Vector2
         
         func makeLineSegment(endCharIndex: Int, endIndex: String.Index,
                              text: String,
-                             segment: AttributedText.TextSegment) -> TextLayout.LineSegment {
+                             segment: AttributedText.TextSegment) -> TextLayoutLineSegment {
             
             let substring = text[startIndex..<endIndex]
+            let substringMinusLineBreaks = substring.filter { !isLineBreak($0) }
             let lineGap = startIndex == text.startIndex ? 0.0 : font.metrics.lineGap
             let minHeight = Double(font.metrics.ascent + font.metrics.descent + lineGap)
             
-            let glyphBuffer = BLGlyphBuffer(text: substring)
-            let glyphBufferMinusLineBreak = BLGlyphBuffer(text: substring.filter { !isLineBreak($0) })
-            font.shape(glyphBuffer)
-            font.shape(glyphBufferMinusLineBreak)
+            let glyphBuffer = font.createGlyphBuffer(substring)
+            let glyphBufferMinusLineBreak = font.createGlyphBuffer(substringMinusLineBreaks)
             
-            let metrics = font.getTextMetrics(glyphBufferMinusLineBreak)
+            // Ok to force-unwrap: FontType.createGlyphBuffer guarantees a glyph
+            // buffer that works with the same FontType.getTextMetrics
+            let metrics = font.getTextMetrics(glyphBufferMinusLineBreak)!
             
-            let bounds = BLRect(x: topLeft.x,
-                                y: topLeft.y,
-                                w: metrics.advance.x,
-                                h: max(minHeight, metrics.boundingBox.h))
+            let bounds = Rectangle(x: topLeft.x,
+                                   y: topLeft.y,
+                                   width: metrics.advance.x,
+                                   height: max(minHeight, metrics.boundingBox.height))
             
-            let originalBounds = font.matrix.toMatrix2D().inverted.mapRect(bounds)
+            let originalBounds = font.matrix.toMatrix2D().inverted().transform(bounds)
             
-            let offset = BLPoint(x: 0, y: Double(font.metrics.ascent))
+            let offset = Vector2(x: 0, y: Double(font.metrics.ascent))
             
-            return TextLayout.LineSegment(
+            return TextLayoutLineSegment(
                 startCharacterIndex: startCharIndex,
                 endCharacterIndex: endCharIndex,
                 startIndex: startIndex,
@@ -599,11 +502,10 @@ private class LineCollector {
     private struct WorkingLine {
         var startIndex: String.Index
         var startCharIndex: Int
-        var segments: [TextLayout.LineSegment]
-        var topLeft: BLPoint
+        var segments: [TextLayoutLineSegment]
+        var topLeft: Vector2
         
-        func makeLine(text: String) -> TextLayout.Line {
-            
+        func makeLine(text: String) -> TextLayoutLine {
             let startIndex = segments[0].startIndex
             let startCharIndex = segments[0].startCharacterIndex
             let endIndex = segments.last!.endIndex
@@ -619,7 +521,7 @@ private class LineCollector {
             var highestUnderline: Float = 0
             
             for segment in segments {
-                bounds = bounds.formUnion(segment.bounds.asRectangle)
+                bounds = bounds.formUnion(segment.bounds)
                 highestAscent = max(highestAscent, segment.font.metrics.ascent)
                 highestDescent = max(highestDescent, segment.font.metrics.descent)
                 highestUnderline = max(highestUnderline, segment.font.metrics.underlinePosition)
@@ -633,13 +535,13 @@ private class LineCollector {
                         + Double(segment.font.metrics.descent)
                     
                 segments[i].bounds =
-                    segment.bounds.asRectangle.movingBottom(to: bottom).asBLRect
+                    segment.bounds.movingBottom(to: bottom)
                 
                 segments[i].originalBounds =
-                    segments[i].font.matrix.mapRect(segments[i].bounds)
+                    segments[i].font.matrix.transform(segments[i].bounds)
             }
             
-            return TextLayout.Line(
+            return TextLayoutLine(
                 segments: segments,
                 startCharacterIndex: startCharIndex,
                 endCharacterIndex: endCharIndex,
@@ -648,16 +550,7 @@ private class LineCollector {
                 text: substring,
                 baselineHeight: highestAscent,
                 underlineOffset: highestUnderline,
-                bounds: bounds.withLocation(topLeft.asVector2).asBLRect)
+                bounds: bounds.withLocation(topLeft))
         }
     }
-}
-
-public struct TextLayoutHitTestResult {
-    public var isInside: Bool
-    public var textPosition: Int
-    public var stringIndex: String.Index
-    public var isTrailing: Bool
-    public var width: Double
-    public var height: Double
 }

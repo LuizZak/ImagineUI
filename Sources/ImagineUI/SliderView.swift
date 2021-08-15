@@ -1,5 +1,5 @@
 import Geometry
-import SwiftBlend2D
+import Rendering
 
 public class SliderView: ControlView {
     private var isMouseDown = false
@@ -10,7 +10,7 @@ public class SliderView: ControlView {
     private var knobSize = Size(x: 11, y: 19)
     private var knobTop = 2.0
     private var knobDip = 5.0
-    private var knobPath = BLPath()
+    private var knobPoly = Polygon()
     
     public var minimumValue: Double = 0 {
         didSet {
@@ -113,13 +113,11 @@ public class SliderView: ControlView {
     }
     
     private func createKnobPath() {
-        knobPath.clear()
-        knobPath.moveTo(x: 0, y: knobTop)
-        knobPath.lineTo(x: knobSize.x, y: knobTop)
-        knobPath.lineTo(x: knobSize.x, y: knobSize.y - knobDip)
-        knobPath.lineTo(x: knobSize.x / 2, y: knobSize.y)
-        knobPath.lineTo(x: 0, y: knobSize.y - knobDip)
-        knobPath.close()
+        knobPoly.addVertex(x: 0, y: knobTop)
+        knobPoly.addVertex(x: knobSize.x, y: knobTop)
+        knobPoly.addVertex(x: knobSize.x, y: knobSize.y - knobDip)
+        knobPoly.addVertex(x: knobSize.x / 2, y: knobSize.y)
+        knobPoly.addVertex(x: 0, y: knobSize.y - knobDip)
     }
     
     public override func setupHierarchy() {
@@ -234,40 +232,40 @@ public class SliderView: ControlView {
         return value
     }
     
-    public override func renderBackground(in context: BLContext, screenRegion: BLRegion) {
-        super.renderBackground(in: context, screenRegion: screenRegion)
+    public override func renderBackground(in renderer: Renderer, screenRegion: ClipRegion) {
+        super.renderBackground(in: renderer, screenRegion: screenRegion)
         
-        let line = sliderLine().asBLLine
+        let line = sliderLine()
         let endsHeight = 3.0
         
-        context.setStrokeStyle(BLRgba32.lightGray)
-        context.setStrokeWidth(2)
-        context.strokeLine(line)
-        context.strokeLine(p0: line.start - BLPoint(x: 0, y: endsHeight),
-                           p1: line.start + BLPoint(x: 0, y: endsHeight))
-        context.strokeLine(p0: line.end - BLPoint(x: 0, y: endsHeight),
-                           p1: line.end + BLPoint(x: 0, y: endsHeight))
+        renderer.setStroke(.lightGray)
+        renderer.setStrokeWidth(2)
+        renderer.stroke(line)
+        renderer.strokeLine(start: line.start - Vector2(x: 0, y: endsHeight),
+                            end: line.start + Vector2(x: 0, y: endsHeight))
+        renderer.strokeLine(start: line.end - Vector2(x: 0, y: endsHeight),
+                            end: line.end + Vector2(x: 0, y: endsHeight))
     }
     
-    public override func renderForeground(in context: BLContext, screenRegion: BLRegion) {
-        super.renderForeground(in: context, screenRegion: screenRegion)
+    public override func renderForeground(in renderer: Renderer, screenRegion: ClipRegion) {
+        super.renderForeground(in: renderer, screenRegion: screenRegion)
         
-        renderKnob(in: context)
+        renderKnob(in: renderer)
     }
     
-    private func renderKnob(in context: BLContext) {
-        context.translate(x: knobOffset(), y: 0)
+    private func renderKnob(in renderer: Renderer) {
+        renderer.translate(x: knobOffset(), y: 0)
         
-        var color = BLRgba32.royalBlue
+        var color: Color = .royalBlue
         if currentState == .highlighted {
             color = color.faded(towards: .white, factor: 0.2)
         }
         
-        context.setFillStyle(color)
-        context.setStrokeStyle(BLRgba32.white)
-        context.fillPath(knobPath)
-        context.setStrokeWidth(1)
-        context.strokePath(knobPath)
+        renderer.setFill(color)
+        renderer.setStroke(.white)
+        renderer.fill(knobPoly)
+        renderer.setStrokeWidth(1)
+        renderer.stroke(knobPoly)
         
         // Stroke two dashes within the knob's area
         let dash1x = knobSize.x / 3
@@ -275,9 +273,9 @@ public class SliderView: ControlView {
         let dashY = knobTop + 3
         let dashH = knobSize.y / 3
         
-        context.setStrokeStyle(BLRgba32.royalBlue.faded(towards: .white, factor: 0.5))
-        context.strokeLine(x0: dash1x, y0: dashY, x1: dash1x, y1: dashY + dashH)
-        context.strokeLine(x0: dash2x, y0: dashY, x1: dash2x, y1: dashY + dashH)
+        renderer.setStroke(.royalBlue.faded(towards: .white, factor: 0.5))
+        renderer.strokeLine(start: Vector2(x: dash1x, y: dashY), end: Vector2(x: dash1x, y: dashY + dashH))
+        renderer.strokeLine(start: Vector2(x: dash2x, y: dashY), end: Vector2(x: dash2x, y: dashY + dashH))
     }
     
     private func knobArea() -> Rectangle {

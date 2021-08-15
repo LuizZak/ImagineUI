@@ -1,9 +1,7 @@
 import Geometry
-import SwiftBlend2D
+import Text
 
-extension BLFont: TextAttributeType { }
-extension BLRgba32: TextAttributeType { }
-extension BLRgba64: TextAttributeType { }
+extension Color: TextAttributeType { }
 extension Vector2: TextAttributeType { }
 extension Double: TextAttributeType { }
 

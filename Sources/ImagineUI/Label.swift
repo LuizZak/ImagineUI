@@ -1,5 +1,6 @@
 import Geometry
-import SwiftBlend2D
+import Text
+import Rendering
 
 open class Label: View {
     /// Whether to cache all labels' text as a bitmap.
@@ -8,10 +9,10 @@ open class Label: View {
     public static var cacheAsBitmap: Bool = true
 
     /// The bare text layout with no external text sizing constraints applied
-    var minimalTextLayout: TextLayout
+    var minimalTextLayout: TextLayoutType
 
     /// Latest cached text layout instance
-    private var _cachedTextLayout: TextLayout?
+    private var _cachedTextLayout: TextLayoutType?
 
     private var _bitmapCache = ViewBitmapCache(isCachingEnabled: Label.cacheAsBitmap)
 
@@ -25,10 +26,8 @@ open class Label: View {
         return Double(minimalTextLayout.baselineHeightForLine(atIndex: 0))
     }
     
-    open var font: BLFont {
+    open var font: Font {
         didSet {
-            if font == oldValue { return }
-
             invalidate()
             setNeedsLayout()
             
@@ -56,7 +55,7 @@ open class Label: View {
         }
     }
 
-    open var textColor: BLRgba32 = .white {
+    open var textColor: Color = .white {
         didSet {
             if textColor == oldValue { return }
 
@@ -101,22 +100,22 @@ open class Label: View {
         super.init()
     }
 
-    public init(font: BLFont) {
+    public init(font: Font) {
         self.font = font
         minimalTextLayout = TextLayout(font: font, attributedText: AttributedText())
 
         super.init()
     }
 
-    open override func render(in context: BLContext, screenRegion: BLRegion) {
-        super.render(in: context, screenRegion: screenRegion)
-
+    open override func render(in renderer: Renderer, screenRegion: ClipRegion) {
+        super.render(in: renderer, screenRegion: screenRegion)
+        
         _bitmapCache.isCachingEnabled = Label.cacheAsBitmap
         _bitmapCache.updateBitmapBounds(bounds)
-        _bitmapCache.cachingOrRendering(context) { context in
-            context.setFillStyle(textColor)
-            context.setStrokeStyle(textColor)
-            textLayout.renderText(in: context, location: .zero)
+        _bitmapCache.cachingOrRendering(renderer) { renderer in
+            renderer.setFill(textColor)
+            renderer.setStroke(textColor)
+            renderer.drawTextLayout(textLayout, at: .zero)
         }
     }
     
@@ -145,7 +144,7 @@ open class Label: View {
         _cachedTextLayout = nil
     }
 
-    private func recreateCachedTextLayout() -> TextLayout {
+    private func recreateCachedTextLayout() -> TextLayoutType {
         _cachedTextLayout = TextLayout(font: font, attributedText: attributedText,
                                        availableSize: bounds.size,
                                        horizontalAlignment: horizontalTextAlignment,
@@ -156,25 +155,26 @@ open class Label: View {
 
     private class InnerLabelTextLayout: TextLayoutType {
         let label: Label
-        var textLayout: TextLayout {
+        var textLayout: TextLayoutType {
             if let cached = label._cachedTextLayout {
                 return cached
             }
             return label.recreateCachedTextLayout()
         }
-
-        var font: BLFont { textLayout.font }
+        
+        var lines: [TextLayoutLine] { textLayout.lines }
+        var font: Font { textLayout.font }
         var text: String { textLayout.text }
         var attributedText: AttributedText { textLayout.attributedText }
         var horizontalAlignment: HorizontalTextAlignment { textLayout.horizontalAlignment }
         var verticalAlignment: VerticalTextAlignment { textLayout.verticalAlignment }
         var numberOfLines: Int { textLayout.numberOfLines }
         var size: Size { textLayout.size }
-
+        
         init(label: Label) {
             self.label = label
         }
-
+        
         func locationOfCharacter(index: Int) -> Vector2 {
             return textLayout.locationOfCharacter(index: index)
         }
@@ -187,21 +187,21 @@ open class Label: View {
         func hitTestPoint(_ point: Vector2) -> TextLayoutHitTestResult {
             return textLayout.hitTestPoint(point)
         }
-        func font(atLocation index: Int) -> BLFont {
+        func font(atLocation index: Int) -> Font {
             return textLayout.font(atLocation: index)
         }
         func baselineHeightForLine(atIndex index: Int) -> Float {
             return textLayout.baselineHeightForLine(atIndex: index)
         }
-
-        func strokeText(in context: BLContext, location: BLPoint) {
-            return textLayout.strokeText(in: context, location: location)
+        
+        func strokeText(in renderer: Renderer, location: Vector2) {
+            renderer.strokeTextLayout(self, at: location)
         }
-        func fillText(in context: BLContext, location: BLPoint) {
-            return textLayout.fillText(in: context, location: location)
+        func fillText(in renderer: Renderer, location: Vector2) {
+            renderer.fillTextLayout(self, at: location)
         }
-        func renderText(in context: BLContext, location: BLPoint) {
-            return textLayout.renderText(in: context, location: location)
+        func renderText(in renderer: Renderer, location: Vector2) {
+            renderer.drawTextLayout(self, at: location)
         }
     }
 }

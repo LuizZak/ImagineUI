@@ -1,5 +1,5 @@
 import Geometry
-import SwiftBlend2D
+import Rendering
 
 public typealias CheckboxStateWillChangeEventArgs = CancellableValueChangedEventArgs<Checkbox.State>
 
@@ -68,10 +68,10 @@ open class Checkbox: ControlView {
         return label
     }
 
-    open override func renderForeground(in context: BLContext, screenRegion: BLRegion) {
-        super.renderForeground(in: context, screenRegion: screenRegion)
+    open override func renderForeground(in renderer: Renderer, screenRegion: ClipRegion) {
+        super.renderForeground(in: renderer, screenRegion: screenRegion)
 
-        drawCheckBox(state: checkboxState, context)
+        drawCheckBox(state: checkboxState, renderer)
     }
 
     open override func onMouseClick(_ event: MouseEventArgs) {
@@ -96,8 +96,8 @@ open class Checkbox: ControlView {
         }
     }
 
-    func drawCheckBox(state: State, _ ctx: BLContext) {
-        func tintColorWithState(_ color: BLRgba32) -> BLRgba32 {
+    func drawCheckBox(state: State, _ renderer: Renderer) {
+        func tintColorWithState(_ color: Color) -> Color {
             var color = color
             if currentState == .selected {
                 color = color.faded(towards: .black, factor: 0.1)
@@ -112,54 +112,57 @@ open class Checkbox: ControlView {
             return color
         }
 
-        var rect = BLRect(x: 0, y: 0, w: 10, h: 10)
+        var rect = Rectangle(x: 0, y: 0, width: 10, height: 10)
         rect.center.y = label.bounds.height / 2
 
         if state == .unchecked {
-            ctx.setStrokeStyle(BLRgba32.gray)
-            ctx.setStrokeWidth(1)
-            ctx.strokeRect(rect)
+            renderer.setStroke(.gray)
+            renderer.setStrokeWidth(1)
+            renderer.stroke(rect)
 
-            ctx.setFillStyle(tintColorWithState(BLRgba32.white))
-            ctx.fillRect(rect)
+            renderer.setFill(tintColorWithState(.white))
+            renderer.fill(rect)
         } else if state == .partial {
             let checkArea = rect.insetBy(x: 5.5, y: 5.5)
 
-            ctx.setStrokeStyle(BLRgba32.lightSteelBlue)
-            ctx.setStrokeWidth(strokeWidth)
-            ctx.strokeRect(rect)
+            renderer.setStroke(.lightSteelBlue)
+            renderer.setStrokeWidth(strokeWidth)
+            renderer.stroke(rect)
 
-            ctx.setFillStyle(tintColorWithState(BLRgba32.royalBlue))
-            ctx.fillRect(rect)
+            renderer.setFill(tintColorWithState(.royalBlue))
+            renderer.fill(rect)
 
-            ctx.setFillStyle(BLRgba32.white)
-            ctx.fillRect(checkArea)
+            renderer.setFill(.white)
+            renderer.fill(checkArea)
         } else if state == .checked {
             let checkArea = rect.insetBy(x: 3, y: 5)
             let checkAreaBottomLeftSize: Double = 3
-            let checkAreaBottomLeft = BLRect(x: checkArea.x,
-                                             y: checkArea.bottom - checkAreaBottomLeftSize,
-                                             w: checkAreaBottomLeftSize,
-                                             h: checkAreaBottomLeftSize)
+            let checkAreaBottomLeft = Rectangle(x: checkArea.x,
+                                                y: checkArea.bottom - checkAreaBottomLeftSize,
+                                                width: checkAreaBottomLeftSize,
+                                                height: checkAreaBottomLeftSize)
 
-            ctx.setStrokeStyle(BLRgba32.lightSteelBlue)
-            ctx.setStrokeWidth(strokeWidth)
-            ctx.strokeRect(rect)
+            renderer.setStroke(.lightSteelBlue)
+            renderer.setStrokeWidth(strokeWidth)
+            renderer.stroke(rect)
 
-            ctx.setFillStyle(tintColorWithState(BLRgba32.royalBlue))
-            ctx.fillRect(rect)
+            renderer.setFill(tintColorWithState(.royalBlue))
+            renderer.fill(rect)
 
             let points = [
-                BLPoint(x: checkArea.left, y: checkAreaBottomLeft.top),
-                BLPoint(x: checkAreaBottomLeft.right, y: checkArea.bottom),
+                Vector2(x: checkArea.left, y: checkAreaBottomLeft.top),
+                Vector2(x: checkAreaBottomLeft.right, y: checkArea.bottom),
                 checkArea.topRight
             ]
+            
+            let stroke = StrokeStyle(color: .white,
+                                     width: 1.5,
+                                     startCap: .butt,
+                                     endCap: .butt)
+            
+            renderer.setStroke(stroke)
 
-            ctx.setStrokeStyle(BLRgba32.white)
-            ctx.setStrokeCaps(.butt)
-            ctx.setStrokeWidth(1.5)
-
-            ctx.strokePolyline(points)
+            renderer.stroke(polyline: points)
         }
     }
 

@@ -1,5 +1,5 @@
 import Geometry
-import SwiftBlend2D
+import Rendering
 
 open class RadioButton: ControlView {
     public let label = Label()
@@ -56,10 +56,10 @@ open class RadioButton: ControlView {
         return label
     }
 
-    open override func renderForeground(in context: BLContext, screenRegion: BLRegion) {
-        super.renderForeground(in: context, screenRegion: screenRegion)
+    open override func renderForeground(in renderer: Renderer, screenRegion: ClipRegion) {
+        super.renderForeground(in: renderer, screenRegion: screenRegion)
 
-        drawRadioButton(context)
+        drawRadioButton(renderer)
     }
     
     open override func onMouseClick(_ event: MouseEventArgs) {
@@ -87,27 +87,27 @@ open class RadioButton: ControlView {
         return nil
     }
 
-    func drawRadioButton(_ ctx: BLContext) {
-        var circle = BLCircle(center: BLPoint(x: 6, y: 6), radius: 6)
+    func drawRadioButton(_ renderer: Renderer) {
+        var circle = Circle(center: Vector2(x: 6, y: 6), radius: 6)
         circle.center.y = label.bounds.height / 2
 
         if isSelected {
-            ctx.setStrokeStyle(BLRgba32.lightSteelBlue)
-            ctx.setStrokeWidth(strokeWidth)
-            ctx.strokeCircle(circle)
+            renderer.setStroke(.lightSteelBlue)
+            renderer.setStrokeWidth(strokeWidth)
+            renderer.stroke(circle)
 
-            ctx.setFillStyle(BLRgba32.royalBlue)
-            ctx.fillCircle(circle)
+            renderer.setFill(.royalBlue)
+            renderer.fill(circle)
 
-            ctx.setFillStyle(BLRgba32.white)
-            ctx.fillCircle(circle.expanded(by: -3.5))
+            renderer.setFill(.white)
+            renderer.fill(circle.expanded(by: -3.5))
         } else {
-            ctx.setStrokeStyle(BLRgba32.gray)
-            ctx.setStrokeWidth(strokeWidth)
-            ctx.strokeCircle(circle)
+            renderer.setStroke(.gray)
+            renderer.setStrokeWidth(strokeWidth)
+            renderer.stroke(circle)
 
-            ctx.setFillStyle(BLRgba32.white)
-            ctx.fillCircle(circle)
+            renderer.setFill(.white)
+            renderer.fill(circle)
         }
     }
 }

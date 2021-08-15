@@ -1,7 +1,9 @@
 import Foundation
 import QuartzCore
 import Geometry
+import Text
 import SwiftBlend2D
+import Rendering
 
 open class TextField: ControlView {
     private let _blinker = CursorBlinker()
@@ -35,7 +37,7 @@ open class TextField: ControlView {
     /// `acceptsEnterKey` is true
     @Event public var enterKey: EventSourceWithSender<TextField, Void>
 
-    open var textColor: BLRgba32 {
+    open var textColor: Color {
         get { _label.textColor }
         set { _label.textColor = newValue }
     }
@@ -471,21 +473,21 @@ open class TextField: ControlView {
     
     // MARK: - Rendering
     
-    open override func renderBackground(in context: BLContext, screenRegion: BLRegion) {
-        super.renderBackground(in: context, screenRegion: screenRegion)
+    open override func renderBackground(in renderer: Renderer, screenRegion: ClipRegion) {
+        super.renderBackground(in: renderer, screenRegion: screenRegion)
         
-        renderSelection(in: context)
+        renderSelection(in: renderer)
     }
     
-    open override func renderForeground(in context: BLContext, screenRegion: BLRegion) {
-        super.renderForeground(in: context, screenRegion: screenRegion)
+    open override func renderForeground(in renderer: Renderer, screenRegion: ClipRegion) {
+        super.renderForeground(in: renderer, screenRegion: screenRegion)
         
         if isFirstResponder {
-            renderCaret(in: context)
+            renderCaret(in: renderer)
         }
     }
     
-    private func renderSelection(in context: BLContext) {
+    private func renderSelection(in renderer: Renderer) {
         // Draw selected region
         guard caret.length > 0 && !style.selectionColor.isTransparent else {
             return
@@ -496,19 +498,19 @@ open class TextField: ControlView {
             return
         }
         
-        context.setFillStyle(style.selectionColor)
+        renderer.setFill(style.selectionColor)
 
         // TODO: Support selection backgrounds that span different lines
         let charBounds = characterBounds.reduce(characterBounds[0], Rectangle.union)
         let transformed = _label.convert(bounds: charBounds, to: self)
 
-        context.save()
-        context.clipToRect(_labelContainer.area.asBLRect)
-        context.fillRect(transformed.asBLRect)
-        context.restore()
+        renderer.saveState()
+        renderer.clip(_labelContainer.area)
+        renderer.fill(transformed)
+        renderer.restoreState()
     }
     
-    private func renderCaret(in context: BLContext) {
+    private func renderCaret(in renderer: Renderer) {
         let transparency = _blinker.blinkState
         
         if transparency <= 0 {
@@ -517,8 +519,8 @@ open class TextField: ControlView {
         
         let caretBounds = getCaretBounds()
         
-        context.setFillStyle(style.caretColor.withTransparency(UInt32(transparency * 255)))
-        context.fillRect(caretBounds.asBLRect)
+        renderer.setFill(style.caretColor.withTransparency(Int(transparency * 255)))
+        renderer.fill(caretBounds)
     }
 
     private func invalidateCaret(at offset: Int) {
@@ -849,21 +851,21 @@ private class LabelViewTextBuffer: TextEngineTextualBuffer {
 /// Used to specify separate visual styles depending on the first-responding
 /// state of the textfield.
 public struct TextFieldVisualStyleParameters {
-    public var textColor: BLRgba32 = .black
-    public var placeholderTextColor: BLRgba32 = .black
-    public var backgroundColor: BLRgba32 = .white
-    public var strokeColor: BLRgba32 = .black
+    public var textColor: Color = .black
+    public var placeholderTextColor: Color = .black
+    public var backgroundColor: Color = .white
+    public var strokeColor: Color = .black
     public var strokeWidth: Double = 0
-    public var caretColor: BLRgba32 = .black
-    public var selectionColor: BLRgba32 = .black
+    public var caretColor: Color = .black
+    public var selectionColor: Color = .black
     
-    public init(textColor: BLRgba32 = .black,
-                placeholderTextColor: BLRgba32 = .black,
-                backgroundColor: BLRgba32 = .white,
-                strokeColor: BLRgba32 = .black,
+    public init(textColor: Color = .black,
+                placeholderTextColor: Color = .black,
+                backgroundColor: Color = .white,
+                strokeColor: Color = .black,
                 strokeWidth: Double = 0,
-                caretColor: BLRgba32 = .black,
-                selectionColor: BLRgba32 = .black) {
+                caretColor: Color = .black,
+                selectionColor: Color = .black) {
         
         self.textColor = textColor
         self.placeholderTextColor = placeholderTextColor
@@ -880,7 +882,7 @@ public struct TextFieldVisualStyleParameters {
                 TextFieldVisualStyleParameters(
                     textColor: .gray,
                     placeholderTextColor: .dimGray,
-                    backgroundColor: BLRgba32(r: 40, g: 40, b: 40),
+                    backgroundColor: Color(red: 40, green: 40, blue: 40),
                     strokeColor: .transparentBlack,
                     strokeWidth: 0,
                     caretColor: .white,
@@ -891,7 +893,7 @@ public struct TextFieldVisualStyleParameters {
                     textColor: .white,
                     placeholderTextColor: .dimGray,
                     backgroundColor: .black,
-                    strokeColor: BLRgba32(r: 50, g: 50, b: 50, a: 255),
+                    strokeColor: Color(alpha: 255, red: 50, green: 50, blue: 50),
                     strokeWidth: 1,
                     caretColor: .white,
                     selectionColor: .slateGray),
@@ -901,7 +903,7 @@ public struct TextFieldVisualStyleParameters {
                     textColor: .white,
                     placeholderTextColor: .dimGray,
                     backgroundColor: .black,
-                    strokeColor: BLRgba32.cornflowerBlue,
+                    strokeColor: .cornflowerBlue,
                     strokeWidth: 1,
                     caretColor: .white,
                     selectionColor: .steelBlue)

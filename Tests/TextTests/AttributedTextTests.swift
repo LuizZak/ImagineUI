@@ -1,5 +1,6 @@
 import XCTest
-import ImagineUI
+
+@testable import Text
 
 class AttributedTextTests: XCTestCase {
     func testInitialState() {

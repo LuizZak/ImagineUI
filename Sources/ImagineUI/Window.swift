@@ -1,6 +1,6 @@
 import Geometry
-import SwiftBlend2D
 import Cassowary
+import Rendering
 
 public protocol WindowDelegate: AnyObject {
     /// Invoked when the user has selected to close the window
@@ -49,7 +49,7 @@ public class Window: RootView {
             _titleLabel.text = title
         }
     }
-    public var titleFont: BLFont {
+    public var titleFont: Font {
         didSet {
             _titleLabel.font = titleFont
         }
@@ -72,7 +72,7 @@ public class Window: RootView {
 
     public weak var delegate: WindowDelegate?
 
-    public init(area: Rectangle, title: String, titleFont: BLFont = Fonts.defaultFont(size: 12)) {
+    public init(area: Rectangle, title: String, titleFont: Font = Fonts.defaultFont(size: 12)) {
         self.title = title
         self.titleFont = titleFont
 
@@ -179,17 +179,17 @@ public class Window: RootView {
             make.centerY == titleBarLayoutArea
         }
     }
+    
+    public override func renderBackground(in renderer: Renderer, screenRegion: ClipRegion) {
+        super.renderBackground(in: renderer, screenRegion: screenRegion)
 
-    public override func renderBackground(in context: BLContext, screenRegion: BLRegion) {
-        super.renderBackground(in: context, screenRegion: screenRegion)
-
-        drawWindowBackground(context)
+        drawWindowBackground(renderer)
     }
 
-    public override func renderForeground(in context: BLContext, screenRegion: BLRegion) {
+    public override func renderForeground(in context: Renderer, screenRegion: ClipRegion) {
         super.renderForeground(in: context, screenRegion: screenRegion)
 
-        if screenRegion.hitTest(BLBoxI(roundingRect: titleBarArea.transformedBounds(absoluteTransform()).asBLRect)) != .out {
+        if screenRegion.hitTest(titleBarArea.transformedBounds(absoluteTransform())) != .out {
             drawTitleBar(context)
         }
         
@@ -374,44 +374,43 @@ public class Window: RootView {
         _resizeConstraints.removeAll()
     }
 
-    private func drawWindowBackground(_ ctx: BLContext) {
-        let windowRounded = BLRoundRect(rect: bounds.asBLRect, radius: BLPoint(x: 4, y: 4))
+    private func drawWindowBackground(_ renderer: Renderer) {
+        let windowRounded = bounds.rounded(radius: 4)
 
-        ctx.setFillStyle(BLRgba32.gray)
-        ctx.fillRoundRect(windowRounded)
+        renderer.setFill(.gray)
+        renderer.fill(windowRounded)
     }
 
-    private func drawWindowBorders(_ ctx: BLContext) {
-        let windowRounded = BLRoundRect(rect: bounds.asBLRect, radius: BLPoint(x: 4, y: 4))
+    private func drawWindowBorders(_ renderer: Renderer) {
+        let windowRounded = bounds.rounded(radius: 4)
 
-        ctx.setStrokeWidth(1.5)
+        renderer.setStrokeWidth(1.5)
 
-        ctx.setStrokeStyle(BLRgba32.lightGray)
-        ctx.strokeRoundRect(windowRounded)
+        renderer.setStroke(.lightGray)
+        renderer.stroke(windowRounded)
 
-        ctx.setStrokeWidth(0.5)
+        renderer.setStrokeWidth(0.5)
 
-        ctx.setStrokeStyle(BLRgba32.black)
-        ctx.strokeRoundRect(windowRounded)
+        renderer.setStroke(.black)
+        renderer.stroke(windowRounded)
     }
 
-    private func drawTitleBar(_ ctx: BLContext) {
-        let windowRounded = BLRoundRect(rect: bounds.asBLRect, radius: BLPoint(x: 4, y: 4))
-
-        let linearGradient
-            = BLLinearGradientValues(start: titleBarArea.topLeft.asBLPoint,
-                                     end: titleBarArea.bottomLeft.asBLPoint + BLPoint(x: 0, y: 10))
-
-        var gradient = BLGradient(linear: linearGradient)
-        gradient.addStop(0, BLRgba32.dimGray)
-        gradient.addStop(1, BLRgba32.gray)
-
-        ctx.clipToRect(BLRect(x: bounds.x, y: bounds.y, w: bounds.width, h: 25))
-
-        ctx.setFillStyle(gradient)
-        ctx.fillRoundRect(windowRounded)
-
-        ctx.restoreClipping()
+    private func drawTitleBar(_ renderer: Renderer) {
+        let windowRounded = bounds.rounded(radius: 4)
+        
+        var gradient
+            = Gradient.linear(start: titleBarArea.topLeft,
+                              end: titleBarArea.bottomLeft + Vector2(x: 0, y: 10))
+        
+        gradient.addStop(offset: 0, color: .dimGray)
+        gradient.addStop(offset: 1, color: .gray)
+        
+        renderer.clip(bounds.withSize(width: bounds.width, height: 25))
+        
+        renderer.setFill(gradient)
+        renderer.fill(windowRounded)
+        
+        renderer.restoreClipping()
     }
     
     private func updateMouseResizeCursor(_ point: Vector2) {
@@ -523,7 +522,7 @@ class WindowButtons: View {
         setButtonColor(maximize, .limeGreen)
     }
     
-    private func setButtonColor(_ button: Button, _ color: BLRgba32) {
+    private func setButtonColor(_ button: Button, _ color: Color) {
         button.setBackgroundColor(color, forState: .normal)
         button.setBackgroundColor(color.faded(towards: .white, factor: 0.1), forState: .highlighted)
         button.setBackgroundColor(color.faded(towards: .black, factor: 0.1), forState: .selected)

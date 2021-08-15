@@ -1,4 +1,5 @@
 import SwiftBlend2D
+import Rendering
 
 // MARK: - Event typealiases
 
@@ -18,7 +19,7 @@ public typealias CancelablleValueChangeEvent<Sender, Value> = EventSourceWithSen
 // MARK: - Event argument typealiases
 
 /// A typealias for arguments for a `ControlView.painted` event
-public typealias PaintEventArgs = BLContext
+public typealias PaintEventArgs = Renderer
 
 // MARK: - Event argument structures
 
