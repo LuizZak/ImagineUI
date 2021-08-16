@@ -101,20 +101,28 @@ public class TextLayout: TextLayoutType {
         return .zero
     }
     
+    /// Returns the rectangular boundaries for a glyph at a given index.
+    /// - precondition: `index >= 0 && index < text.count`
+    public func boundsForCharacter(at index: Int) -> Rectangle {
+        precondition(index >= 0 && index < text.count)
+        
+        return boundsForCharacters(in: TextRange(start: index, length: 1))[0]
+    }
+    
     public func boundsForCharacters(startIndex: Int, length: Int) -> [Rectangle] {
         return boundsForCharacters(in: TextRange(start: startIndex, length: length))
     }
     
     public func boundsForCharacters(in range: TextRange) -> [Rectangle] {
         var boundsList: [Rectangle] = []
-
+        
         for line in lines where line.textRange.intersects(range) {
             for segment in line.segments(intersecting: range) {
                 guard let intersection = segment.textRange.intersection(range) else {
                     continue
                 }
                 
-                var segmentBounds: [Rectangle] = []
+                let height = Double(segment.font.metrics.ascent + segment.font.metrics.descent)
                 
                 var advanceOffset: Vector2 = .zero
                 
@@ -128,34 +136,28 @@ public class TextLayout: TextLayoutType {
                     let index = segment.startCharacterIndex + iterator.index
                     
                     if intersection.contains(index) {
-                        let bounds = Rectangle(x: advanceOffset.x,
+                        var bounds = Rectangle(x: advanceOffset.x,
                                                y: advanceOffset.y,
                                                width: Double(advance.advance.x),
                                                height: 0)
                         
-                        segmentBounds.append(bounds)
+                        bounds = segment.font.matrix.transform(bounds)
+                        bounds = bounds
+                            .withSize(width: bounds.width, height: height)
+                            .offsetBy(x: line.bounds.topLeft.x + segment.bounds.topLeft.x,
+                                      y: line.bounds.topLeft.y + segment.bounds.topLeft.y)
+                        
+                        boundsList.append(bounds)
                     } else if intersection.end < index {
                         break
                     }
                     
                     advanceOffset += Vector2(advance.advance)
                 }
-                
-                let height = Double(segment.font.metrics.ascent + segment.font.metrics.descent)
-                
-                segmentBounds = segmentBounds
-                    .map(segment.font.matrix.transform)
-                    .map { (box: Rectangle) -> Rectangle in
-                        return box.withSize(width: box.width, height: height)
-                            .offsetBy(x: line.bounds.topLeft.x + segment.bounds.topLeft.x,
-                                      y: line.bounds.topLeft.y + segment.bounds.topLeft.y)
-                    }
-                
-                boundsList.append(contentsOf: segmentBounds)
             }
         }
         
-        return boundsList.map { $0 }
+        return boundsList
     }
     
     public func hitTestPoint(_ point: Vector2) -> TextLayoutHitTestResult {

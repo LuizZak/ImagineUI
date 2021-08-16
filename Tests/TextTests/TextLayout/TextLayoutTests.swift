@@ -67,6 +67,36 @@ class TextLayoutTests: XCTestCase {
         XCTAssertEqual(hitTest.textPosition, 10)
     }
     
+    func testBoundsForCharacter() {
+        let sut = makeSut(text: "A string\nAnother line")
+        
+        let result = sut.boundsForCharacters(startIndex: 7, length: 1)
+        
+        XCTAssertEqual(result, [
+            Rectangle(x: 60.556640625, y: 0.0, width: 12.3046875, height: 27.236328125),
+        ])
+    }
+    
+    func testBoundsForCharacter_lineBreak() {
+        let sut = makeSut(text: "A string\nAnother line")
+        
+        let result = sut.boundsForCharacters(startIndex: 8, length: 1)
+        
+        XCTAssertEqual(result, [
+            Rectangle(x: 72.861328125, y: 0.0, width: 12.001953125, height: 27.236328125)
+        ])
+    }
+    
+    func testBoundsForCharacter_postLineBreak() {
+        let sut = makeSut(text: "A string\nAnother line")
+        
+        let result = sut.boundsForCharacters(startIndex: 9, length: 1)
+        
+        XCTAssertEqual(result, [
+            Rectangle(x: 0.0, y: 27.236328125, width: 12.783203125, height: 27.236328125)
+        ])
+    }
+    
     func testBoundsForCharacters() {
         let sut = makeSut(text: "A string\nAnother line")
         

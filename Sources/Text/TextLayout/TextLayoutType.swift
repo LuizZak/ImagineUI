@@ -1,6 +1,5 @@
 import Geometry
 
-
 public protocol TextLayoutType {
     var lines: [TextLayoutLine] { get }
     var font: Font { get }
