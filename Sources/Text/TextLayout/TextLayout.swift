@@ -177,12 +177,10 @@ public class TextLayout: TextLayoutType {
         for segment in line.segments {
             let height = Double(segment.font.metrics.ascent + segment.font.metrics.descent)
             
-            var advanceOffset: Vector2 = .zero
-            
             // TODO: Support cases where font's transform matrix doesn't in fact
             // inverts Y axis (so we would need to fetch the topLeft corner,
             // instead)
-            advanceOffset += segment.originalBounds.bottomLeft // Inverted Y axis
+            var advanceOffset = segment.originalBounds.bottomLeft // Inverted Y axis
             
             var iterator = segment.glyphBuffer.makeIterator()
             while !iterator.atEnd {

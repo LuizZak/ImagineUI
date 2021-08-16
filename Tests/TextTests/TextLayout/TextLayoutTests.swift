@@ -52,8 +52,8 @@ class TextLayoutTests: XCTestCase {
     
     func testHitTestPoint_segmentedText() {
         var attributed = AttributedText("A string")
-        attributed.addAttributes(Text.TextRange(start: 3, length: 2), [
-            .init(rawValue: "custom"): TestAttribute()
+        attributed.addAttributes(.init(start: 3, length: 2), [
+            "custom": TestAttribute()
         ])
         let sut = makeSut(attributedText: attributed)
         
@@ -124,31 +124,37 @@ class TextLayoutTests: XCTestCase {
     func testBoundsForCharacter() {
         let sut = makeSut(text: "A string\nAnother line")
         
-        let result = sut.boundsForCharacters(startIndex: 7, length: 1)
+        let result = sut.boundsForCharacter(at: 7)
         
-        XCTAssertEqual(result, [
-            Rectangle(x: 60.556640625, y: 0.0, width: 12.3046875, height: 27.236328125),
+        XCTAssertEqual(result, Rectangle(x: 60.556640625, y: 0.0, width: 12.3046875, height: 27.236328125))
+    }
+    
+    func testBoundsForCharacter_segmentedLine() {
+        var attributed = AttributedText("A string Another String")
+        attributed.addAttributes(.init(start: 3, length: 10), [
+            "custom": TestAttribute()
         ])
+        let sut = makeSut(attributedText: attributed)
+        
+        let result = sut.boundsForCharacter(at: 7)
+        
+        XCTAssertEqual(result, Rectangle(x: 60.556640625, y: 0.0, width: 12.3046875, height: 27.236328125))
     }
     
     func testBoundsForCharacter_lineBreak() {
         let sut = makeSut(text: "A string\nAnother line")
         
-        let result = sut.boundsForCharacters(startIndex: 8, length: 1)
+        let result = sut.boundsForCharacter(at: 8)
         
-        XCTAssertEqual(result, [
-            Rectangle(x: 72.861328125, y: 0.0, width: 12.001953125, height: 27.236328125)
-        ])
+        XCTAssertEqual(result, Rectangle(x: 72.861328125, y: 0.0, width: 12.001953125, height: 27.236328125))
     }
     
     func testBoundsForCharacter_postLineBreak() {
         let sut = makeSut(text: "A string\nAnother line")
         
-        let result = sut.boundsForCharacters(startIndex: 9, length: 1)
+        let result = sut.boundsForCharacter(at: 9)
         
-        XCTAssertEqual(result, [
-            Rectangle(x: 0.0, y: 27.236328125, width: 12.783203125, height: 27.236328125)
-        ])
+        XCTAssertEqual(result, Rectangle(x: 0.0, y: 27.236328125, width: 12.783203125, height: 27.236328125))
     }
     
     func testBoundsForCharacters() {
