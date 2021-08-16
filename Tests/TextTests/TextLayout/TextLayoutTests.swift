@@ -50,6 +50,20 @@ class TextLayoutTests: XCTestCase {
         XCTAssertFalse(hitTest.isTrailing)
     }
     
+    func testHitTestPoint_segmentedText() {
+        var attributed = AttributedText("A string")
+        attributed.addAttributes(Text.TextRange(start: 3, length: 2), [
+            .init(rawValue: "custom"): TestAttribute()
+        ])
+        let sut = makeSut(attributedText: attributed)
+        
+        let hitTest = sut.hitTestPoint(Vector2(x: 40, y: 2))
+        
+        XCTAssert(hitTest.isInside)
+        XCTAssertEqual(hitTest.textPosition, 4)
+        XCTAssertTrue(hitTest.isTrailing)
+    }
+    
     func testHitTestPointTrailing() {
         let sut = makeSut(text: "A string")
         
@@ -187,6 +201,12 @@ extension TextLayoutTests {
     
     func makeFont(size: Float) -> Font {
         return TestFont(size: size)
+    }
+}
+
+private class TestAttribute: TextAttributeType {
+    func isEqual(to other: TextAttributeType) -> Bool {
+        other as? TestAttribute === self
     }
 }
 

@@ -173,6 +173,7 @@ public class TextLayout: TextLayoutType {
         var closestIndex = 0
         var closestRect = Rectangle.zero
         
+        var absoluteIndex = 0
         for segment in line.segments {
             let height = Double(segment.font.metrics.ascent + segment.font.metrics.descent)
             
@@ -185,6 +186,7 @@ public class TextLayout: TextLayoutType {
             
             var iterator = segment.glyphBuffer.makeIterator()
             while !iterator.atEnd {
+                defer { absoluteIndex += 1 }
                 defer { iterator.advance() }
                 guard let advance = iterator.advanceOffset else {
                     continue
@@ -205,8 +207,8 @@ public class TextLayout: TextLayoutType {
                     return
                         TextLayoutHitTestResult(
                             isInside: true,
-                            textPosition: line.startCharacterIndex + iterator.index,
-                            stringIndex: text.index(line.startIndex, offsetBy: iterator.index),
+                            textPosition: segment.startCharacterIndex + iterator.index,
+                            stringIndex: text.index(segment.startIndex, offsetBy: iterator.index),
                             isTrailing: rect.center.x < point.x,
                             width: rect.width,
                             height: rect.height)
@@ -216,7 +218,7 @@ public class TextLayout: TextLayoutType {
                 if iterator.index == 0 {
                     closestRect = rect
                 } else if closestRect.center.distanceSquared(to: point) > rect.center.distanceSquared(to: point) {
-                    closestIndex = iterator.index
+                    closestIndex = absoluteIndex
                     closestRect = rect
                 }
                 
