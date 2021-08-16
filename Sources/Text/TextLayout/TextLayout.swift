@@ -170,17 +170,18 @@ public class TextLayout: TextLayoutType {
                                            height: 0)
         }
         
-        var boxes: [Rectangle] = []
+        var closestIndex = 0
+        var closestRect = Rectangle.zero
         
         for segment in line.segments {
+            let height = Double(segment.font.metrics.ascent + segment.font.metrics.descent)
+            
             var advanceOffset: Vector2 = .zero
             
             // TODO: Support cases where font's transform matrix doesn't in fact
             // inverts Y axis (so we would need to fetch the topLeft corner,
             // instead)
             advanceOffset += segment.originalBounds.bottomLeft // Inverted Y axis
-            
-            var segBoxes: [Rectangle] = []
             
             var iterator = segment.glyphBuffer.makeIterator()
             while !iterator.atEnd {
@@ -189,61 +190,46 @@ public class TextLayout: TextLayoutType {
                     continue
                 }
                 
-                segBoxes.append(
-                    Rectangle(x: advanceOffset.x,
-                              y: advanceOffset.y,
-                              width: Double(advance.advance.x),
-                              height: 0))
+                var rect = Rectangle(x: advanceOffset.x,
+                                     y: advanceOffset.y,
+                                     width: Double(advance.advance.x),
+                                     height: 0)
+                
+                rect = segment.font.matrix.transform(rect)
+                rect = rect
+                    .withSize(width: rect.width, height: height)
+                    .offsetBy(x: line.bounds.topLeft.x + segment.bounds.topLeft.x,
+                              y: line.bounds.topLeft.y + segment.bounds.topLeft.y)
+                
+                if rect.contains(point) {
+                    return
+                        TextLayoutHitTestResult(
+                            isInside: true,
+                            textPosition: line.startCharacterIndex + iterator.index,
+                            stringIndex: text.index(line.startIndex, offsetBy: iterator.index),
+                            isTrailing: rect.center.x < point.x,
+                            width: rect.width,
+                            height: rect.height)
+                }
+                
+                // TODO: Should do distance to corner of rect, not its center
+                if iterator.index == 0 {
+                    closestRect = rect
+                } else if closestRect.center.distanceSquared(to: point) > rect.center.distanceSquared(to: point) {
+                    closestIndex = iterator.index
+                    closestRect = rect
+                }
                 
                 advanceOffset += Vector2(advance.advance)
-            }
-            
-            let height = Double(segment.font.metrics.ascent + segment.font.metrics.descent)
-            segBoxes = segBoxes
-                .map(segment.font.matrix.transform)
-                .map { (box: Rectangle) -> Rectangle in
-                    box.withSize(width: box.width, height: height)
-                        .offsetBy(x: line.bounds.topLeft.x + segment.bounds.topLeft.x,
-                                  y: line.bounds.topLeft.y + segment.bounds.topLeft.y)
-                }
-            
-            boxes.append(contentsOf: segBoxes)
-        }
-        
-        guard !boxes.isEmpty else {
-            return TextLayoutHitTestResult(isInside: false,
-                                           textPosition: 0,
-                                           stringIndex: text.startIndex,
-                                           isTrailing: false,
-                                           width: 0,
-                                           height: 0)
-        }
-        
-        var closest = 0
-        for (i, box) in boxes.enumerated() {
-            if box.contains(point) {
-                return
-                    TextLayoutHitTestResult(
-                        isInside: true,
-                        textPosition: line.startCharacterIndex + i,
-                        stringIndex: text.index(line.startIndex, offsetBy: i),
-                        isTrailing: box.center.x < point.x,
-                        width: box.width,
-                        height: box.height)
-            }
-            
-            // TODO: Should do distance to corner of box, not its center
-            if boxes[closest].center.distanceSquared(to: point) > box.center.distanceSquared(to: point) {
-                closest = i
             }
         }
         
         return TextLayoutHitTestResult(isInside: false,
-                                       textPosition: line.startCharacterIndex + closest,
-                                       stringIndex: text.index(line.startIndex, offsetBy: closest),
-                                       isTrailing: boxes[closest].center.x < point.x,
-                                       width: boxes[closest].width,
-                                       height: boxes[closest].height)
+                                       textPosition: line.startCharacterIndex + closestIndex,
+                                       stringIndex: text.index(line.startIndex, offsetBy: closestIndex),
+                                       isTrailing: closestRect.center.x < point.x,
+                                       width: closestRect.width,
+                                       height: closestRect.height)
     }
     
     public func font(atLocation index: Int) -> Font {
