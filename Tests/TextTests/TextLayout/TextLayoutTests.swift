@@ -81,6 +81,18 @@ class TextLayoutTests: XCTestCase {
         ])
     }
     
+    func testBoundsForCharacters_performance() {
+        let sut = makeSut(text: "A string\nAnother line")
+        
+        measure {
+            for _ in 0..<1000 {
+                _ = sut.boundsForCharacters(startIndex: 5, length: 5)
+            }
+        }
+    }
+}
+
+extension TextLayoutTests {
     func makeSut(text: String) -> TextLayout {
         let font = makeFont(size: 20)
         

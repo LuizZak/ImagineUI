@@ -6,7 +6,7 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
     private let _stateManager = StateManager()
     private var _isMouseDown: Bool = false
     private var _bitmapCache = ViewBitmapCache(isCachingEnabled: true)
-
+    
     private var isRecursivelyVisible: Bool {
         var view: View? = self
         while let v = view {
@@ -15,31 +15,31 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
             }
             view = v.superview
         }
-
+        
         return true
     }
-
+    
     open var cacheAsBitmap: Bool {
         get { _bitmapCache.isCachingEnabled }
         set { _bitmapCache.isCachingEnabled = newValue }
     }
-
+    
     open var isFirstResponder: Bool {
         return controlSystem?.isFirstResponder(self) ?? false
     }
-
+    
     open var canBecomeFirstResponder: Bool {
         return false
     }
-
+    
     open var canResignFirstResponder: Bool {
         return true
     }
-
+    
     open var next: EventHandler? {
         return ControlView.closestParentViewOfType(self, type: ControlView.self)
     }
-
+    
     open override var bounds: Rectangle {
         didSet {
             if bounds.size != oldValue.size {

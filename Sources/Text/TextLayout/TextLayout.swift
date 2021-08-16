@@ -125,13 +125,17 @@ public class TextLayout: TextLayoutType {
                         continue
                     }
                     
-                    if intersection.contains(segment.startCharacterIndex + iterator.index) {
+                    let index = segment.startCharacterIndex + iterator.index
+                    
+                    if intersection.contains(index) {
                         let bounds = Rectangle(x: advanceOffset.x,
                                                y: advanceOffset.y,
                                                width: Double(advance.advance.x),
                                                height: 0)
                         
                         segmentBounds.append(bounds)
+                    } else if intersection.end < index {
+                        break
                     }
                     
                     advanceOffset += Vector2(advance.advance)

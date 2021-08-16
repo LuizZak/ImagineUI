@@ -1,6 +1,6 @@
 import Geometry
 
-/// Text metrics for a text segment when  font.
+/// Text metrics for a text segment.
 public struct TextMetrics {
     var advance: Vector2
     var leadingBearing: Vector2
