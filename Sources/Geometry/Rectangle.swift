@@ -23,42 +23,56 @@ public struct Rectangle: Equatable, Codable {
         }
     }
     
+    /// The top-left location of this rectangle
+    public var location: Vector2
+    
+    /// The size of this rectangle
+    public var size: Size
+    
     /// Gets the X position of this Rectangle
-    public var x: Double
+    @inlinable
+    public var x: Double {
+        get {
+            return location.x
+        }
+        set {
+            location.x = newValue
+        }
+    }
     
     /// Gets the Y position of this Rectangle
-    public var y: Double
+    @inlinable
+    public var y: Double {
+        get {
+            return location.y
+        }
+        set {
+            location.y = newValue
+        }
+    }
     
     /// Gets the width of this Rectangle.
     ///
     /// When setting this value, `width` must always be `>= 0`
-    public var width: Double
+    @inlinable
+    public var width: Double {
+        get {
+            return size.x
+        }
+        set {
+            size.x = newValue
+        }
+    }
     
     /// Gets the height of this Rectangle
     ///
     /// When setting this value, `height` must always be `>= 0`
-    public var height: Double
-    
-    /// The top-left location of this rectangle
-    @inlinable
-    public var location: Vector2 {
+    public var height: Double {
         get {
-            return Vector2(x: x, y: y)
+            return size.y
         }
         set {
-            (x, y) = (newValue.x, newValue.y)
-        }
-    }
-
-    /// The size of this rectangle
-    @inlinable
-    public var size: Size {
-        get {
-            return Size(x: width, y: height)
-        }
-        set {
-            width = newValue.x
-            height = newValue.y
+            size.y = newValue
         }
     }
     
@@ -144,10 +158,8 @@ public struct Rectangle: Equatable, Codable {
     /// Initializes an empty Rectangle instance
     @inlinable
     public init() {
-        x = 0
-        y = 0
-        width = 0
-        height = 0
+        location = .zero
+        size = .zero
     }
     
     /// Initializes a Rectangle containing the minimum area capable of containing
@@ -165,27 +177,22 @@ public struct Rectangle: Equatable, Codable {
     /// assigned to `minimum` and `maximum` properties.
     @inlinable
     public init(min: Vector2, max: Vector2) {
-        (x, y) = (min.x, min.y)
-        width = max.x - min.x
-        height = max.y - min.y
+        location = min
+        size = max - min
     }
 
     /// Initializes a Rectangle with the coordinates of a rectangle
     @inlinable
     public init(x: Double, y: Double, width: Double, height: Double) {
-        self.x = x
-        self.y = y
-        self.width = width
-        self.height = height
+        location = Vector2(x: x, y: y)
+        size = Vector2(x: width, y: height)
     }
 
     /// Initializes a Rectangle with the location + size of a rectangle
     @inlinable
     public init(location: Vector2, size: Size) {
-        x = location.x
-        y = location.y
-        width = size.x
-        height = size.y
+        self.location = location
+        self.size = size
     }
 
     /// Initializes a Rectangle with the corners of a rectangle
@@ -204,17 +211,13 @@ public struct Rectangle: Equatable, Codable {
     /// smallest bounding box capable of fitting each point.
     public init<C: Collection>(points: C) where C.Element == Vector2 {
         guard let first = points.first else {
-            x = 0
-            y = 0
-            width = 0
-            height = 0
+            location = .zero
+            size = .zero
             return
         }
         
-        x = first.x
-        y = first.y
-        width = 0
-        height = 0
+        location = first
+        size = .zero
         
         expand(toInclude: points)
     }
