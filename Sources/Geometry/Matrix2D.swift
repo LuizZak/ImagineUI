@@ -572,7 +572,7 @@ public struct Matrix2D: Hashable, Codable, CustomStringConvertible {
     /// - Parameter amount: Interpolation amount.
     /// - Returns: The result of linear interpolation of values based on the amount.
     private static func lerp(from: Double, to: Double, amount: Double) -> Double {
-        return (1 - amount) * from + amount * to;
+        return (1 - amount) * from + amount * to
     }
 
     /// Performs smooth (cubic Hermite) interpolation between 0 and 1.

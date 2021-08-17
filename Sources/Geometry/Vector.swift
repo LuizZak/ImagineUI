@@ -195,6 +195,57 @@ public extension VectorT where T: Numeric {
         return x * other.x + y * other.y
     }
     
+    /// Returns the vector that lies within this and another vector's ratio line
+    /// projected at a specified ratio along the line created by the vectors.
+    ///
+    /// A vector on ratio of 0 is the same as this vector's position, and 1 is the
+    /// same as the other vector's position.
+    ///
+    /// Values beyond 0 - 1 range project the point across the limits of the line.
+    ///
+    /// - Parameters:
+    ///   - ratio: A ratio (usually 0 through 1) between this and the second vector.
+    ///   - other: The second vector to form the line that will have the point
+    /// projected onto.
+    /// - Returns: A vector that lies within the line created by the two vectors.
+    @inlinable
+    func ratio(_ ratio: T, to other: VectorT) -> VectorT {
+        return self + (other - self) * ratio
+    }
+    
+    /// Performs a linear interpolation between two points.
+    ///
+    /// Passing `amount` a value of 0 will cause `start` to be returned; a value
+    /// of 1 will cause `end` to be returned.
+    ///
+    /// - Parameter start: Start point.
+    /// - Parameter end: End point.
+    /// - Parameter amount: Value between 0 and 1 indicating the weight of `end`.
+    static func lerp(start: VectorT, end: VectorT, amount: T) -> VectorT {
+        return start.ratio(amount, to: end)
+    }
+    
+    /// Performs a cubic interpolation between two points.
+    ///
+    /// - Parameter start: Start point.
+    /// - Parameter end: End point.
+    /// - Parameter amount: Value between 0 and 1 indicating the weight of `end`.
+    static func smoothStep(start: VectorT, end: VectorT, amount: T) -> VectorT {
+        let amount = smoothStep(amount)
+        
+        return lerp(start: start, end: end, amount: amount)
+    }
+    
+    /// Performs smooth (cubic Hermite) interpolation between 0 and 1.
+    /// - Remarks:
+    /// See https://en.wikipedia.org/wiki/Smoothstep
+    /// - Parameter amount: Value between 0 and 1 indicating interpolation amount.
+    private static func smoothStep(_ amount: T) -> T {
+        return amount <= 0 ? 0
+            : amount >= 1 ? 1
+            : amount * amount * (3 - 2 * amount)
+    }
+    
     @inlinable
     static func * (lhs: VectorT, rhs: VectorT) -> VectorT {
         return VectorT(x: lhs.x * rhs.x, y: lhs.y * rhs.y)
@@ -358,27 +409,6 @@ public extension VectorT where T: FloatingPoint {
     @inlinable
     static func /= <B: BinaryInteger>(lhs: inout VectorT, rhs: VectorT<B>) {
         lhs = lhs / VectorT(rhs)
-    }
-}
-
-// MARK: Misc math
-public extension VectorT where T: Numeric {
-    /// Returns the vector that lies within this and another vector's ratio line
-    /// projected at a specified ratio along the line created by the vectors.
-    ///
-    /// A vector on ratio of 0 is the same as this vector's position, and 1 is the
-    /// same as the other vector's position.
-    ///
-    /// Values beyond 0 - 1 range project the point across the limits of the line.
-    ///
-    /// - Parameters:
-    ///   - ratio: A ratio (usually 0 through 1) between this and the second vector.
-    ///   - other: The second vector to form the line that will have the point
-    /// projected onto.
-    /// - Returns: A vector that lies within the line created by the two vectors.
-    @inlinable
-    func ratio(_ ratio: T, to other: VectorT) -> VectorT {
-        return self + (other - self) * ratio
     }
 }
 
