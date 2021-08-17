@@ -1,6 +1,8 @@
+/// Describes a polygon as a series of connected double-precision, floating-point
+/// vertices
 public typealias Polygon = PolygonT<Double>
 
-/// Represents a polygon as a series of connected vertices
+/// Describes a polygon as a series of connected vertices
 public struct PolygonT<T: VectorScalar> {
     public var vertices: [VectorT<T>]
     

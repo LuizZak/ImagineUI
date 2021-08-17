@@ -1,7 +1,7 @@
-/// A double precision floating-point rectangle
+/// Describes a double-precision, floating-point rectangle
 public typealias Rectangle = RectangleT<Double>
 
-/// Represents a rectangle
+/// Describes a rectangle
 public struct RectangleT<T: VectorScalar>: Equatable, Codable {
     /// Returns an empty rectangle
     public static var zero: RectangleT { RectangleT(x: 0, y: 0, width: 0, height: 0) }

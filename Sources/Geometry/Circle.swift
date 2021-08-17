@@ -1,6 +1,8 @@
+/// Describes a circle with a double-precision, floating-point center point and
+/// radius parameters
 public typealias Circle = CircleT<Double>
 
-/// Represents a circle with a center point and radius
+/// Describes a circle with a center point and radius
 public struct CircleT<T: VectorScalar>: Equatable, Codable {
     public var center: VectorT<T>
     public var radius: T

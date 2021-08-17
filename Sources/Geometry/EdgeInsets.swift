@@ -1,5 +1,7 @@
+/// Describes an edge inset with double-precision, floating-point parameters
 public typealias EdgeInsets = EdgeInsetsT<Double>
 
+/// Describes an edge inset
 public struct EdgeInsetsT<T: VectorScalar>: Equatable {
     public static var zero: Self { EdgeInsetsT(top: 0, left: 0, bottom: 0, right: 0) }
 

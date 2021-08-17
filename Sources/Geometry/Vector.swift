@@ -23,7 +23,7 @@ public struct VectorT<T: VectorScalar>: Equatable, Codable, CustomStringConverti
     public typealias HomogenousVectorType = SIMD3<T>
     
     /// A zeroed-value Vector
-    public static var zero: VectorT { VectorT(x: .zero, y: .zero) }
+    public static var zero: VectorT { VectorT(NativeVectorType()) }
     
     /// An unit-valued Vector
     public static var unit: VectorT { VectorT(x: 1, y: 1) }

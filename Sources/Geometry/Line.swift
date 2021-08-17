@@ -1,3 +1,5 @@
+/// Describes a line as a pair of double-precision, floating-point start and end
+/// vectors
 public typealias Line = LineT<Double>
 
 /// Describes a line as a pair of start and end positions

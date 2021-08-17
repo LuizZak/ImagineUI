@@ -1,4 +1,5 @@
-/// Represents a rounded rectangle with double-point bounds and X and Y radius
+/// Represents a rounded rectangle with double-precision, floating-point bounds
+/// and X and Y radius
 public typealias RoundRectangle = RoundRectangleT<Double>
 
 /// Represents a rounded rectangle with bounds and X and Y radius
