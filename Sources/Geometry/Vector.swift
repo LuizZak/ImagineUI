@@ -210,7 +210,7 @@ public extension VectorT where T: Numeric {
     /// - Returns: A vector that lies within the line created by the two vectors.
     @inlinable
     func ratio(_ ratio: T, to other: VectorT) -> VectorT {
-        return self + (other - self) * ratio
+        return self * (1 - ratio) + other * ratio
     }
     
     /// Performs a linear interpolation between two points.
