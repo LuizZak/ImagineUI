@@ -288,7 +288,7 @@ public struct RectangleT<T: VectorScalar>: Equatable, Codable {
     /// offset by a given amount.
     @inlinable
     public func offsetBy(_ vector: VectorT<T>) -> RectangleT {
-        return RectangleT(min: minimum + vector, max: maximum + vector)
+        return RectangleT(location: location + vector, size: size)
     }
     
     /// Returns a copy of this Rectangle with the minimum and maximum coordinates
@@ -301,7 +301,7 @@ public struct RectangleT<T: VectorScalar>: Equatable, Codable {
     /// Returns a Rectangle which is the minimum Rectangle that can fit this
     /// Rectangle with another given Rectangle.
     @inlinable
-    public func formUnion(_ other: RectangleT) -> RectangleT {
+    public func union(_ other: RectangleT) -> RectangleT {
         return RectangleT.union(self, other)
     }
     
@@ -310,7 +310,7 @@ public struct RectangleT<T: VectorScalar>: Equatable, Codable {
     ///
     /// Result is an empty Rectangle if the two rectangles do not intersect
     @inlinable
-    public func formIntersection(_ other: RectangleT) -> RectangleT {
+    public func intersection(_ other: RectangleT) -> RectangleT {
         return RectangleT.intersect(self, other)
     }
     
@@ -417,62 +417,7 @@ public extension RectangleT where T: DivisibleArithmetic {
             location = newValue - size / 2
         }
     }
-}
-
-public extension RectangleT where T: BinaryInteger {
-    /// Returns a Rectangle which is an inflated version of this Rectangle
-    /// (i.e. bounds are larger by `size`, but center remains the same)
-    @inlinable
-    func inflatedBy(_ size: VectorT<T>) -> RectangleT {
-        if size == .zero {
-            return self
-        }
-        
-        return RectangleT(min: minimum - size / 2, max: maximum + size / 2)
-    }
     
-    /// Returns a Rectangle which is an inflated version of this Rectangle
-    /// (i.e. bounds are larger by `size`, but center remains the same)
-    @inlinable
-    func inflatedBy(x: T, y: T) -> RectangleT {
-        return inflatedBy(VectorT<T>(x: x, y: y))
-    }
-    
-    /// Returns a Rectangle which is an inset version of this Rectangle
-    /// (i.e. bounds are smaller by `size`, but center remains the same)
-    @inlinable
-    func insetBy(_ size: VectorT<T>) -> RectangleT {
-        if size == .zero {
-            return self
-        }
-        
-        return RectangleT(min: minimum + size / 2, max: maximum - size / 2)
-    }
-    
-    /// Returns a Rectangle which is an inset version of this Rectangle
-    /// (i.e. bounds are smaller by `size`, but center remains the same)
-    @inlinable
-    func insetBy(x: T, y: T) -> RectangleT {
-        return insetBy(VectorT<T>(x: x, y: y))
-    }
-    
-    /// Returns a new Rectangle with the same width and height as the current
-    /// instance, where the center of the boundaries lay on the coordinates
-    /// composed of `[x, y]`
-    @inlinable
-    func movingCenter(toX x: T, y: T) -> RectangleT {
-        return movingCenter(to: VectorT<T>(x: x, y: y))
-    }
-    
-    /// Returns a new Rectangle with the same width and height as the current
-    /// instance, where the center of the boundaries lay on `center`
-    @inlinable
-    func movingCenter(to center: VectorT<T>) -> RectangleT {
-        return RectangleT(min: center - size / 2, max: center + size / 2)
-    }
-}
-
-public extension RectangleT where T: FloatingPoint {
     /// Returns a Rectangle which is an inflated version of this Rectangle
     /// (i.e. bounds are larger by `size`, but center remains the same)
     @inlinable

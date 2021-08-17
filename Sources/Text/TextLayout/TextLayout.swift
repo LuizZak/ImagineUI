@@ -220,7 +220,7 @@ public class TextLayout: TextLayoutType {
                     closestRect = rect
                 }
                 
-                advanceOffset += Vector2(advance.advance)
+                advanceOffset += advance.advance
             }
         }
         
@@ -513,7 +513,7 @@ private class LineCollector {
             var highestUnderline: Float = 0
             
             for segment in segments {
-                bounds = bounds.formUnion(segment.bounds)
+                bounds = bounds.union(segment.bounds)
                 highestAscent = max(highestAscent, segment.font.metrics.ascent)
                 highestDescent = max(highestDescent, segment.font.metrics.descent)
                 highestUnderline = max(highestUnderline, segment.font.metrics.underlinePosition)

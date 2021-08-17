@@ -264,7 +264,7 @@ public enum DebugDraw {
         
         prepareStroke(in: context)
         
-        let union = rect1.formUnion(rect2)
+        let union = rect1.union(rect2)
         
         let rect1Top: BLPoint
         let rect1Bottom: BLPoint
@@ -306,7 +306,7 @@ public enum DebugDraw {
         
         prepareStroke(in: context)
         
-        let union = rect1.formUnion(rect2)
+        let union = rect1.union(rect2)
         
         let rect1Left: BLPoint
         let rect1Right: BLPoint
