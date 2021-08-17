@@ -1,12 +1,6 @@
 import simd
 
 public extension VectorT where Scalar == Float {
-    /// Returns the angle in radians of this Vector relative to the origin (0, 0).
-    @inlinable
-    var angle: Float {
-        return atan2f(y, x)
-    }
-    
     /// Returns the squared length of this Vector
     @inlinable
     var length: Float {
@@ -89,45 +83,6 @@ public extension VectorT where Scalar == Float {
     @inlinable
     func ratio(_ ratio: Scalar, to other: VectorT) -> VectorT {
         return VectorT(mix(self.theVector, other.theVector, t: ratio))
-    }
-}
-
-// MARK: - Rotation
-extension VectorT where Scalar == Float {
-    /// Returns a rotated version of this vector, rotated around by a given
-    /// angle in radians
-    @inlinable
-    public func rotated(by angleInRadians: Float) -> VectorT {
-        return VectorT.rotate(self, by: angleInRadians)
-    }
-    
-    /// Rotates this vector around by a given angle in radians
-    @inlinable
-    public mutating func rotate(by angleInRadians: Float) -> VectorT {
-        self = rotated(by: angleInRadians)
-        return self
-    }
-    
-    /// Rotates a given vector by an angle in radians
-    @inlinable
-    public static func rotate(_ vec: VectorT, by angleInRadians: Float) -> VectorT {
-        
-        // Check if we have a 0º or 180º rotation - these we can figure out
-        // using conditionals to speedup common paths.
-        let remainder =
-            angleInRadians.truncatingRemainder(dividingBy: .pi * 2)
-        
-        if remainder == 0 {
-            return vec
-        }
-        if remainder == .pi {
-            return -vec
-        }
-        
-        let c = cosf(angleInRadians)
-        let s = sinf(angleInRadians)
-        
-        return VectorT(x: (c * vec.x) - (s * vec.y), y: (c * vec.y) + (s * vec.x))
     }
 }
 

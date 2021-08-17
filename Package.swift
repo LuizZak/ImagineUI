@@ -11,13 +11,15 @@ let package = Package(
             targets: ["ImagineUI"]),
     ],
     dependencies: [
+        .package(url: "https://github.com/apple/swift-numerics", from: "0.1.0"),
         .package(url: "https://github.com/LuizZak/CassowarySwift.git", .branch("master")),
         .package(url: "https://github.com/LuizZak/swift-blend2d.git", .branch("master")),
         .package(url: "https://github.com/LuizZak/swift-libpng.git", .branch("master"))
     ],
     targets: [
         .target(
-            name: "Geometry"),
+            name: "Geometry",
+            dependencies: [.product(name: "Numerics", package: "swift-numerics")]),
         .target(
             name: "Text",
             dependencies: ["Geometry"]),

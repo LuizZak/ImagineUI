@@ -1,4 +1,5 @@
 import simd
+import RealModule
 
 /// Represents a 2D point with `Double` coordinate domains
 public typealias Vector2 = VectorT<Double>
@@ -410,6 +411,39 @@ public extension VectorT where Scalar: FloatingPoint {
     }
 }
 
+// MARK: - Rotation and angle
+public extension VectorT where Scalar: RealFunctions {
+    /// Returns the angle in radians of this Vector relative to the origin (0, 0).
+    @inlinable
+    var angle: Scalar {
+        return Scalar.atan2(y: y, x: x)
+    }
+}
+
+public extension VectorT where Scalar: ElementaryFunctions {
+    /// Returns a rotated version of this vector, rotated around by a given
+    /// angle in radians
+    @inlinable
+    func rotated(by angleInRadians: Scalar) -> VectorT {
+        return VectorT.rotate(self, by: angleInRadians)
+    }
+    
+    /// Rotates this vector around by a given angle in radians
+    @inlinable
+    mutating func rotate(by angleInRadians: Scalar) -> VectorT {
+        self = rotated(by: angleInRadians)
+        return self
+    }
+    
+    /// Rotates a given vector by an angle in radians
+    @inlinable
+    static func rotate(_ vec: VectorT, by angleInRadians: Scalar) -> VectorT {
+        let c = Scalar.cos(angleInRadians)
+        let s = Scalar.sin(angleInRadians)
+        
+        return VectorT(x: (c * vec.x) - (s * vec.y), y: (c * vec.y) + (s * vec.x))
+    }
+}
 public extension Collection {
     /// Averages this collection of vectors into one Vector point as the mean
     /// location of each vector.

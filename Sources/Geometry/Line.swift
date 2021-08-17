@@ -20,6 +20,20 @@ public struct LineT<Scalar: VectorScalar>: Equatable, Codable {
     }
 }
 
+extension LineT where Scalar == Float {
+    /// Returns the angle of this line, in radians
+    @inlinable
+    public var angle: Scalar {
+        return (end - start).angle
+    }
+    
+    /// Returns the magnitude of this line
+    @inlinable
+    public var magnitude: Scalar {
+        return (end - start).magnitude
+    }
+}
+
 extension LineT where Scalar == Double {
     /// Returns the angle of this line, in radians
     @inlinable
