@@ -396,16 +396,16 @@ public struct RectangleT<T: VectorScalar>: Equatable, Codable {
     }
 }
 
-public extension RectangleT where T: BinaryInteger {
+public extension RectangleT where T: DivisibleArithmetic {
     /// Gets the middle X position of this Rectangle
     @inlinable
     var midX: T {
-        return (left + right) / 2
+        return center.x
     }
     /// Gets the middle Y position of this Rectangle
     @inlinable
     var midY: T {
-        return (top + bottom) / 2
+        return center.y
     }
     
     @inlinable
@@ -417,7 +417,9 @@ public extension RectangleT where T: BinaryInteger {
             location = newValue - size / 2
         }
     }
-    
+}
+
+public extension RectangleT where T: BinaryInteger {
     /// Returns a Rectangle which is an inflated version of this Rectangle
     /// (i.e. bounds are larger by `size`, but center remains the same)
     @inlinable
@@ -471,27 +473,6 @@ public extension RectangleT where T: BinaryInteger {
 }
 
 public extension RectangleT where T: FloatingPoint {
-    /// Gets the middle X position of this Rectangle
-    @inlinable
-    var midX: T {
-        return (left + right) / 2
-    }
-    /// Gets the middle Y position of this Rectangle
-    @inlinable
-    var midY: T {
-        return (top + bottom) / 2
-    }
-    
-    @inlinable
-    var center: VectorT<T> {
-        get {
-            return (topLeft + bottomRight) / 2
-        }
-        set {
-            (x, y) = (newValue.x - width / 2, newValue.y - height / 2)
-        }
-    }
-    
     /// Returns a Rectangle which is an inflated version of this Rectangle
     /// (i.e. bounds are larger by `size`, but center remains the same)
     @inlinable
