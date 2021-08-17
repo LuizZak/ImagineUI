@@ -262,6 +262,66 @@ public extension Vector where T: FloatingPoint {
     }
 }
 
+/// BinaryInteger - FloatingPoint operations
+public extension Vector where T: FloatingPoint {
+    @inlinable
+    static func + <B: BinaryInteger>(lhs: Vector, rhs: Vector<B>) -> Vector {
+        return lhs + Vector(rhs)
+    }
+    
+    @inlinable
+    static func - <B: BinaryInteger>(lhs: Vector, rhs: Vector<B>) -> Vector {
+        return lhs - Vector(rhs)
+    }
+    
+    @inlinable
+    static func * <B: BinaryInteger>(lhs: Vector, rhs: Vector<B>) -> Vector {
+        return lhs * Vector(rhs)
+    }
+    
+    @inlinable
+    static func / <B: BinaryInteger>(lhs: Vector, rhs: Vector<B>) -> Vector {
+        return lhs / Vector(rhs)
+    }
+    
+    @inlinable
+    static func + <B: BinaryInteger>(lhs: Vector<B>, rhs: Vector) -> Vector {
+        return Vector(lhs) + rhs
+    }
+    
+    @inlinable
+    static func - <B: BinaryInteger>(lhs: Vector<B>, rhs: Vector) -> Vector {
+        return Vector(lhs) - rhs
+    }
+    
+    @inlinable
+    static func * <B: BinaryInteger>(lhs: Vector<B>, rhs: Vector) -> Vector {
+        return Vector(lhs) * rhs
+    }
+    
+    @inlinable
+    static func / <B: BinaryInteger>(lhs: Vector<B>, rhs: Vector) -> Vector {
+        return Vector(lhs) / rhs
+    }
+    
+    @inlinable
+    static func += <B: BinaryInteger>(lhs: inout Vector, rhs: Vector<B>) {
+        lhs = lhs + Vector(rhs)
+    }
+    @inlinable
+    static func -= <B: BinaryInteger>(lhs: inout Vector, rhs: Vector<B>) {
+        lhs = lhs - Vector(rhs)
+    }
+    @inlinable
+    static func *= <B: BinaryInteger>(lhs: inout Vector, rhs: Vector<B>) {
+        lhs = lhs * Vector(rhs)
+    }
+    @inlinable
+    static func /= <B: BinaryInteger>(lhs: inout Vector, rhs: Vector<B>) {
+        lhs = lhs / Vector(rhs)
+    }
+}
+
 public extension Vector where T == Double {
     /// Inits a vector 2 with two integer components
     @inlinable

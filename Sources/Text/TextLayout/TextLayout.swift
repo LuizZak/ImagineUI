@@ -152,7 +152,7 @@ public class TextLayout: TextLayoutType {
                         break
                     }
                     
-                    advanceOffset += Vector2(advance.advance)
+                    advanceOffset += advance.advance
                 }
             }
         }
