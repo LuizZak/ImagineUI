@@ -13,14 +13,12 @@ public typealias Size = Vector2
 public typealias VectorScalar = Comparable & Numeric & SIMDScalar
 
 /// Represents a 2D vector
-public struct VectorT<T: VectorScalar>: Equatable, Codable, CustomStringConvertible {
-    public typealias Scalar = T
-    
-    /// Used to match `T`'s native type
-    public typealias NativeVectorType = SIMD2<T>
+public struct VectorT<Scalar: VectorScalar>: Equatable, Codable, CustomStringConvertible {
+    /// Used to match `Scalar`'s native type
+    public typealias NativeVectorType = SIMD2<Scalar>
     
     /// This is used during affine transformation
-    public typealias HomogenousVectorType = SIMD3<T>
+    public typealias HomogenousVectorType = SIMD3<Scalar>
     
     /// A zeroed-value Vector
     public static var zero: VectorT { VectorT(NativeVectorType()) }
@@ -37,7 +35,7 @@ public struct VectorT<T: VectorScalar>: Equatable, Codable, CustomStringConverti
     var theVector: NativeVectorType
     
     @inlinable
-    public var x: T {
+    public var x: Scalar {
         get {
             return theVector.x
         }
@@ -47,7 +45,7 @@ public struct VectorT<T: VectorScalar>: Equatable, Codable, CustomStringConverti
     }
     
     @inlinable
-    public var y: T {
+    public var y: Scalar {
         get {
             return theVector.y
         }
@@ -68,20 +66,20 @@ public struct VectorT<T: VectorScalar>: Equatable, Codable, CustomStringConverti
     
     /// Inits a Vector
     @inlinable
-    public init(x: T, y: T) {
+    public init(x: Scalar, y: Scalar) {
         theVector = NativeVectorType(x, y)
     }
     
     /// Inits a Vector where both components have the same given value
     @inlinable
-    public init(_ xy: T) {
+    public init(_ xy: Scalar) {
         theVector = NativeVectorType(xy, xy)
     }
     
     /// Inits a 0-valued Vector
     @inlinable
     public init() {
-        theVector = NativeVectorType(repeating: T.zero)
+        theVector = NativeVectorType(repeating: Scalar.zero)
     }
 }
 
@@ -126,7 +124,7 @@ public extension VectorT {
     }
 }
 
-public extension VectorT where T: AdditiveArithmetic {
+public extension VectorT where Scalar: AdditiveArithmetic {
     @inlinable
     static func + (lhs: VectorT, rhs: VectorT) -> VectorT {
         return VectorT(x: lhs.x + rhs.x, y: lhs.y + rhs.y)
@@ -138,12 +136,12 @@ public extension VectorT where T: AdditiveArithmetic {
     }
     
     @inlinable
-    static func + (lhs: VectorT, rhs: T) -> VectorT {
+    static func + (lhs: VectorT, rhs: Scalar) -> VectorT {
         return VectorT(x: lhs.x + rhs, y: lhs.y + rhs)
     }
     
     @inlinable
-    static func - (lhs: VectorT, rhs: T) -> VectorT {
+    static func - (lhs: VectorT, rhs: Scalar) -> VectorT {
         return VectorT(x: lhs.x - rhs, y: lhs.y - rhs)
     }
     
@@ -158,32 +156,32 @@ public extension VectorT where T: AdditiveArithmetic {
     }
     
     @inlinable
-    static func += (lhs: inout VectorT, rhs: T) {
+    static func += (lhs: inout VectorT, rhs: Scalar) {
         lhs = lhs + rhs
     }
     
     @inlinable
-    static func -= (lhs: inout VectorT, rhs: T) {
+    static func -= (lhs: inout VectorT, rhs: Scalar) {
         lhs = lhs - rhs
     }
 }
 
-public extension VectorT where T: DivisibleArithmetic {
+public extension VectorT where Scalar: DivisibleArithmetic {
     @inlinable
     static func / (lhs: VectorT, rhs: VectorT) -> VectorT {
         return VectorT(x: lhs.x / rhs.x, y: lhs.y / rhs.y)
     }
     
     @inlinable
-    static func / (lhs: VectorT, rhs: T) -> VectorT {
+    static func / (lhs: VectorT, rhs: Scalar) -> VectorT {
         return VectorT(x: lhs.x / rhs, y: lhs.y / rhs)
     }
 }
 
-public extension VectorT where T: Numeric {
+public extension VectorT where Scalar: Numeric {
     /// Returns the distance squared between this Vector and another Vector
     @inlinable
-    func distanceSquared(to vec: VectorT) -> T {
+    func distanceSquared(to vec: VectorT) -> Scalar {
         let d = self - vec
         
         return d.x * d.x + d.y * d.y
@@ -191,7 +189,7 @@ public extension VectorT where T: Numeric {
     
     /// Calculates the dot product between this and another provided Vector
     @inlinable
-    func dot(_ other: VectorT) -> T {
+    func dot(_ other: VectorT) -> Scalar {
         return x * other.x + y * other.y
     }
     
@@ -209,7 +207,7 @@ public extension VectorT where T: Numeric {
     /// projected onto.
     /// - Returns: A vector that lies within the line created by the two vectors.
     @inlinable
-    func ratio(_ ratio: T, to other: VectorT) -> VectorT {
+    func ratio(_ ratio: Scalar, to other: VectorT) -> VectorT {
         return self * (1 - ratio) + other * ratio
     }
     
@@ -221,7 +219,7 @@ public extension VectorT where T: Numeric {
     /// - Parameter start: Start point.
     /// - Parameter end: End point.
     /// - Parameter amount: Value between 0 and 1 indicating the weight of `end`.
-    static func lerp(start: VectorT, end: VectorT, amount: T) -> VectorT {
+    static func lerp(start: VectorT, end: VectorT, amount: Scalar) -> VectorT {
         return start.ratio(amount, to: end)
     }
     
@@ -230,7 +228,7 @@ public extension VectorT where T: Numeric {
     /// - Parameter start: Start point.
     /// - Parameter end: End point.
     /// - Parameter amount: Value between 0 and 1 indicating the weight of `end`.
-    static func smoothStep(start: VectorT, end: VectorT, amount: T) -> VectorT {
+    static func smoothStep(start: VectorT, end: VectorT, amount: Scalar) -> VectorT {
         let amount = smoothStep(amount)
         
         return lerp(start: start, end: end, amount: amount)
@@ -240,7 +238,7 @@ public extension VectorT where T: Numeric {
     /// - Remarks:
     /// See https://en.wikipedia.org/wiki/Smoothstep
     /// - Parameter amount: Value between 0 and 1 indicating interpolation amount.
-    private static func smoothStep(_ amount: T) -> T {
+    private static func smoothStep(_ amount: Scalar) -> Scalar {
         return amount <= 0 ? 0
             : amount >= 1 ? 1
             : amount * amount * (3 - 2 * amount)
@@ -252,17 +250,17 @@ public extension VectorT where T: Numeric {
     }
     
     @inlinable
-    static func * (lhs: VectorT, rhs: T) -> VectorT {
+    static func * (lhs: VectorT, rhs: Scalar) -> VectorT {
         return VectorT(x: lhs.x * rhs, y: lhs.y * rhs)
     }
     
     @inlinable
-    static func *= (lhs: inout VectorT, rhs: T) {
+    static func *= (lhs: inout VectorT, rhs: Scalar) {
         lhs = lhs * rhs
     }
 }
 
-public extension VectorT where T: SignedNumeric {
+public extension VectorT where Scalar: SignedNumeric {
     /// Makes this Vector perpendicular to its current position relative to the
     /// origin.
     /// This alters the vector instance
@@ -299,19 +297,19 @@ public extension VectorT where T: SignedNumeric {
     }
 }
 
-public extension VectorT where T: BinaryInteger {
+public extension VectorT where Scalar: BinaryInteger {
     @inlinable
     static func / (lhs: VectorT, rhs: VectorT) -> VectorT {
         return VectorT(x: lhs.x / rhs.x, y: lhs.y / rhs.y)
     }
     
     @inlinable
-    static func / (lhs: VectorT, rhs: T) -> VectorT {
+    static func / (lhs: VectorT, rhs: Scalar) -> VectorT {
         return VectorT(x: lhs.x / rhs, y: lhs.y / rhs)
     }
 }
 
-public extension VectorT where T: FloatingPoint {
+public extension VectorT where Scalar: FloatingPoint {
     /// Creates a new Vector, with each coordinate rounded to the closest
     /// possible representation.
     ///
@@ -321,7 +319,7 @@ public extension VectorT where T: FloatingPoint {
     /// - parameter vector: The integer vector to convert to a floating-point vector.
     @inlinable
     init<U>(_ vector: VectorT<U>) where U: BinaryInteger {
-        self.init(x: T.init(vector.x), y: T.init(vector.y))
+        self.init(x: Scalar.init(vector.x), y: Scalar.init(vector.y))
     }
     
     @inlinable
@@ -331,7 +329,7 @@ public extension VectorT where T: FloatingPoint {
     }
     
     @inlinable
-    static func % (lhs: VectorT, rhs: T) -> VectorT {
+    static func % (lhs: VectorT, rhs: Scalar) -> VectorT {
         return VectorT(x: lhs.x.truncatingRemainder(dividingBy: rhs),
                        y: lhs.y.truncatingRemainder(dividingBy: rhs))
     }
@@ -342,18 +340,18 @@ public extension VectorT where T: FloatingPoint {
     }
     
     @inlinable
-    static func / (lhs: T, rhs: VectorT) -> VectorT {
+    static func / (lhs: Scalar, rhs: VectorT) -> VectorT {
         return VectorT(x: lhs / rhs.x, y: lhs / rhs.y)
     }
     
     @inlinable
-    static func / (lhs: VectorT, rhs: T) -> VectorT {
+    static func / (lhs: VectorT, rhs: Scalar) -> VectorT {
         return VectorT(x: lhs.x / rhs, y: lhs.y / rhs)
     }
 }
 
 /// BinaryInteger - FloatingPoint operations
-public extension VectorT where T: FloatingPoint {
+public extension VectorT where Scalar: FloatingPoint {
     @inlinable
     static func + <B: BinaryInteger>(lhs: VectorT, rhs: VectorT<B>) -> VectorT {
         return lhs + VectorT(rhs)

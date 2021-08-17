@@ -1,6 +1,6 @@
 import simd
 
-public extension VectorT where T == Float {
+public extension VectorT where Scalar == Float {
     /// Returns the angle in radians of this Vector relative to the origin (0, 0).
     @inlinable
     var angle: Float {
@@ -87,13 +87,13 @@ public extension VectorT where T == Float {
     /// projected onto.
     /// - Returns: A vector that lies within the line created by the two vectors.
     @inlinable
-    func ratio(_ ratio: T, to other: VectorT) -> VectorT {
+    func ratio(_ ratio: Scalar, to other: VectorT) -> VectorT {
         return VectorT(mix(self.theVector, other.theVector, t: ratio))
     }
 }
 
 // MARK: - Rotation
-extension VectorT where T == Float {
+extension VectorT where Scalar == Float {
     /// Returns a rotated version of this vector, rotated around by a given
     /// angle in radians
     @inlinable
@@ -132,7 +132,7 @@ extension VectorT where T == Float {
 }
 
 // MARK: - Operators
-public extension VectorT where T == Float {
+public extension VectorT where Scalar == Float {
     /// Calculates the dot product between two provided coordinates.
     /// See `Vector.dot`
     @inlinable
@@ -168,22 +168,22 @@ public extension VectorT where T == Float {
     }
     
     @inlinable
-    static func + (lhs: VectorT, rhs: T) -> VectorT {
+    static func + (lhs: VectorT, rhs: Scalar) -> VectorT {
         return VectorT(lhs.theVector + rhs)
     }
     
     @inlinable
-    static func - (lhs: VectorT, rhs: T) -> VectorT {
+    static func - (lhs: VectorT, rhs: Scalar) -> VectorT {
         return VectorT(lhs.theVector - rhs)
     }
     
     @inlinable
-    static func * (lhs: VectorT, rhs: T) -> VectorT {
+    static func * (lhs: VectorT, rhs: Scalar) -> VectorT {
         return VectorT(lhs.theVector * rhs)
     }
     
     @inlinable
-    static func / (lhs: VectorT, rhs: T) -> VectorT {
+    static func / (lhs: VectorT, rhs: Scalar) -> VectorT {
         return VectorT(lhs.theVector / rhs)
     }
     

@@ -1,6 +1,6 @@
 import simd
 
-public extension VectorT where T == Double {
+public extension VectorT where Scalar == Double {
     /// Returns the angle in radians of this Vector relative to the origin (0, 0).
     @inlinable
     var angle: Double {
@@ -87,13 +87,13 @@ public extension VectorT where T == Double {
     /// projected onto.
     /// - Returns: A vector that lies within the line created by the two vectors.
     @inlinable
-    func ratio(_ ratio: T, to other: VectorT) -> VectorT {
+    func ratio(_ ratio: Scalar, to other: VectorT) -> VectorT {
         return VectorT(mix(self.theVector, other.theVector, t: ratio))
     }
 }
 
 // MARK: - Rotation
-extension VectorT where T == Double {
+extension VectorT where Scalar == Double {
     /// Returns a rotated version of this vector, rotated around by a given
     /// angle in radians
     @inlinable
@@ -132,7 +132,7 @@ extension VectorT where T == Double {
 }
 
 // MARK: Matrix-transformation
-extension VectorT where T == Double {
+extension VectorT where Scalar == Double {
     /// The 3x3 matrix type that can be used to apply transformations by
     /// multiplying on this Vector
     public typealias NativeMatrixType = double3x3
@@ -232,7 +232,7 @@ extension VectorT where T == Double {
 }
 
 // MARK: - Operators
-public extension VectorT where T == Double {
+public extension VectorT where Scalar == Double {
     /// Calculates the dot product between two provided coordinates.
     /// See `Vector.dot`
     @inlinable
@@ -268,22 +268,22 @@ public extension VectorT where T == Double {
     }
     
     @inlinable
-    static func + (lhs: VectorT, rhs: T) -> VectorT {
+    static func + (lhs: VectorT, rhs: Scalar) -> VectorT {
         return VectorT(lhs.theVector + rhs)
     }
     
     @inlinable
-    static func - (lhs: VectorT, rhs: T) -> VectorT {
+    static func - (lhs: VectorT, rhs: Scalar) -> VectorT {
         return VectorT(lhs.theVector - rhs)
     }
     
     @inlinable
-    static func * (lhs: VectorT, rhs: T) -> VectorT {
+    static func * (lhs: VectorT, rhs: Scalar) -> VectorT {
         return VectorT(lhs.theVector * rhs)
     }
     
     @inlinable
-    static func / (lhs: VectorT, rhs: T) -> VectorT {
+    static func / (lhs: VectorT, rhs: Scalar) -> VectorT {
         return VectorT(lhs.theVector / rhs)
     }
     
