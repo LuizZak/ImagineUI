@@ -1,10 +1,13 @@
+/// Represents an ellipse as a double-point center with X and Y radii
+public typealias Ellipse = EllipseT<Double>
+
 /// Represents an ellipse as a center with X and Y radii
-public struct Ellipse: Equatable, Codable {
-    public var center: Vector2
-    public var radiusX: Double
-    public var radiusY: Double
+public struct EllipseT<T: VectorScalar>: Equatable, Codable {
+    public var center: VectorT<T>
+    public var radiusX: T
+    public var radiusY: T
     
-    public init(center: Vector2, radiusX: Double, radiusY: Double) {
+    public init(center: VectorT<T>, radiusX: T, radiusY: T) {
         self.center = center
         self.radiusX = radiusX
         self.radiusY = radiusY

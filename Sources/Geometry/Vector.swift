@@ -22,13 +22,13 @@ public struct VectorT<T: VectorScalar>: Equatable, Codable, CustomStringConverti
     /// This is used during affine transformation
     public typealias HomogenousVectorType = SIMD3<T>
     
-    /// A zeroed-value Vector2
+    /// A zeroed-value Vector
     public static var zero: VectorT { VectorT(x: .zero, y: .zero) }
     
-    /// An unit-valued Vector2
+    /// An unit-valued Vector
     public static var unit: VectorT { VectorT(x: 1, y: 1) }
     
-    /// An unit-valued Vector2.
+    /// An unit-valued Vector.
     /// Aliast for 'unit'.
     public static var one: VectorT { unit }
     
@@ -72,45 +72,10 @@ public struct VectorT<T: VectorScalar>: Equatable, Codable, CustomStringConverti
         theVector = NativeVectorType(x, y)
     }
     
-    /// Inits a 0-valued Vector2
+    /// Inits a 0-valued Vector
     @inlinable
     public init() {
         theVector = NativeVectorType(repeating: T.zero)
-    }
-}
-
-public extension VectorT where T: SignedNumeric {
-    /// Makes this Vector perpendicular to its current position.
-    /// This alters the vector instance
-    @inlinable
-    mutating func formPerpendicular() -> VectorT {
-        self = perpendicular()
-        return self
-    }
-    
-    /// Returns a Vector perpendicular to this Vector2
-    @inlinable
-    func perpendicular() -> VectorT {
-        return VectorT(x: -y, y: x)
-    }
-    
-    /// Returns a vector that represents this vector's point, rotated 90º counter
-    /// clockwise
-    @inlinable
-    func leftRotated() -> VectorT {
-        return VectorT(x: -y, y: x)
-    }
-    
-    /// Returns a vector that represents this vector's point, rotated 90º clockwise
-    @inlinable
-    func rightRotated() -> VectorT {
-        return VectorT(x: y, y: -x)
-    }
-    
-    // Unary operators
-    @inlinable
-    static prefix func - (lhs: VectorT) -> VectorT {
-        return VectorT(x: -lhs.x, y: -lhs.y)
     }
 }
 
@@ -137,6 +102,20 @@ public extension VectorT where T: AdditiveArithmetic {
 }
 
 public extension VectorT where T: Numeric {
+    /// Returns the distance squared between this Vector and another Vector
+    @inlinable
+    func distanceSquared(to vec: VectorT) -> T {
+        let d = self - vec
+        
+        return d.x * d.x + d.y * d.y
+    }
+    
+    /// Calculates the dot product between this and another provided Vector
+    @inlinable
+    func dot(_ other: VectorT) -> T {
+        return x * other.x + y * other.y
+    }
+    
     @inlinable
     static func * (lhs: VectorT, rhs: VectorT) -> VectorT {
         return VectorT(x: lhs.x * rhs.x, y: lhs.y * rhs.y)
@@ -146,14 +125,54 @@ public extension VectorT where T: Numeric {
     static func * (lhs: VectorT, rhs: T) -> VectorT {
         return VectorT(x: lhs.x * rhs, y: lhs.y * rhs)
     }
-    
-    /// Performs a linear interpolation between `start` and `end` with a specified
-    /// factor.
-    ///
-    /// Alias for `start.ratio(factor, to: end)`.
+}
+
+public extension VectorT where T: SignedNumeric {
+    /// Makes this Vector perpendicular to its current position relative to the
+    /// origin.
+    /// This alters the vector instance
     @inlinable
-    static func lerp(start: VectorT, end: VectorT, factor: T) -> VectorT {
-        return start.ratio(factor, to: end)
+    mutating func formPerpendicular() -> VectorT {
+        self = perpendicular()
+        return self
+    }
+    
+    /// Returns a Vector perpendicular to this Vector relative to the origin
+    @inlinable
+    func perpendicular() -> VectorT {
+        return VectorT(x: -y, y: x)
+    }
+    
+    /// Returns a vector that represents this vector's point, rotated 90º counter
+    /// clockwise relative to the origin.
+    @inlinable
+    func leftRotated() -> VectorT {
+        return VectorT(x: -y, y: x)
+    }
+    
+    /// Returns a vector that represents this vector's point, rotated 90º clockwise
+    /// clockwise relative to the origin.
+    @inlinable
+    func rightRotated() -> VectorT {
+        return VectorT(x: y, y: -x)
+    }
+    
+    /// Negates this Vector
+    @inlinable
+    static prefix func - (lhs: VectorT) -> VectorT {
+        return VectorT(x: -lhs.x, y: -lhs.y)
+    }
+}
+
+public extension VectorT where T: BinaryInteger {
+    @inlinable
+    static func / (lhs: VectorT, rhs: VectorT) -> VectorT {
+        return VectorT(x: lhs.x / rhs.x, y: lhs.y / rhs.y)
+    }
+    
+    @inlinable
+    static func / (lhs: VectorT, rhs: T) -> VectorT {
+        return VectorT(x: lhs.x / rhs, y: lhs.y / rhs)
     }
 }
 
@@ -326,19 +345,19 @@ public extension VectorT where T: FloatingPoint {
 }
 
 public extension VectorT where T == Double {
-    /// Inits a vector 2 with two integer components
+    /// Inits a Vector with two integer components
     @inlinable
     init(x: Int, y: Int) {
         theVector = NativeVectorType(Double(x), Double(y))
     }
     
-    /// Inits a vector 2 with two float components
+    /// Inits a Vector with two float components
     @inlinable
     init(x: Float, y: Float) {
         theVector = NativeVectorType(Double(x), Double(y))
     }
     
-    /// Inits a vector 2 with X and Y defined as a given float
+    /// Inits a Vector with X and Y defined as a given float
     @inlinable
     init(value: Double) {
         theVector = NativeVectorType(repeating: value)
@@ -370,13 +389,13 @@ public extension VectorT where T == Double {
         return VectorT(simd.normalize(theVector))
     }
     
-    /// Calculates the dot product between this and another provided Vector2
+    /// Calculates the dot product between this and another provided Vector
     @inlinable
     func dot(_ other: VectorT) -> Double {
         return simd.dot(theVector, other.theVector)
     }
     
-    /// Calculates the cross product between this and another provided Vector2.
+    /// Calculates the cross product between this and another provided Vector.
     /// The resulting scalar would match the 'z' axis of the cross product
     /// between 3d vectors matching the x and y coordinates of the operands, with
     /// the 'z' coordinate being 0.
@@ -385,20 +404,20 @@ public extension VectorT where T == Double {
         return simd.cross(theVector, other.theVector).z
     }
     
-    /// Returns the angle in radians of this Vector2
+    /// Returns the angle in radians of this Vector relative to the origin (0, 0).
     @inlinable
     var angle: Double {
         return atan2(y, x)
     }
     
-    /// Returns the squared length of this Vector2
+    /// Returns the squared length of this Vector
     @inlinable
     var length: Double {
         return length_squared(theVector)
     }
     
     /// Returns the magnitude (or square root of the squared length) of this
-    /// Vector2
+    /// Vector
     @inlinable
     var magnitude: Double {
         return simd.length(theVector)
@@ -559,17 +578,17 @@ extension VectorT where T == Double {
     /// multiplying on this Vector
     public typealias NativeMatrixType = double3x3
     
-    /// Creates a matrix that when multiplied with a Vector2 object applies the
+    /// Creates a matrix that when multiplied with a Vector object applies the
     /// given set of transformations.
     ///
     /// If all default values are set, an identity matrix is created, which does
-    /// not alter a Vector2's coordinates once applied.
+    /// not alter a Vector's coordinates once applied.
     ///
     /// The order of operations are: scaling -> rotation -> translation
     @inlinable
-    static public func matrix(scalingBy scale: VectorT = VectorT.unit,
-                              rotatingBy angle: T = 0,
-                              translatingBy translate: VectorT = VectorT.zero) -> VectorT.NativeMatrixType {
+    static public func matrix(scalingBy scale: VectorT = .unit,
+                              rotatingBy angle: Double = 0,
+                              translatingBy translate: VectorT = .zero) -> VectorT.NativeMatrixType {
         
         var matrix = VectorT.NativeMatrixType(1)
         
@@ -821,7 +840,7 @@ public func vectorsAreCCW(_ A: VectorT<Float>, B: VectorT<Float>) -> Bool {
 }
 
 ////////
-//// Define the operations to be performed on the Vector2
+//// Define the operations to be performed on the Vector
 ////////
 
 // This • character is available as 'Option-8' combination on Mac keyboards

@@ -1,20 +1,22 @@
+public typealias Circle = CircleT<Double>
+
 /// Represents a circle with a center point and radius
-public struct Circle: Equatable, Codable {
-    public var center: Vector2
-    public var radius: Double
+public struct CircleT<T: VectorScalar>: Equatable, Codable {
+    public var center: VectorT<T>
+    public var radius: T
     
-    public init(center: Vector2, radius: Double) {
+    public init(center: VectorT<T>, radius: T) {
         self.center = center
         self.radius = radius
     }
     
     @inlinable
-    public func expanded(by value: Double) -> Circle {
-        return Circle(center: center, radius: radius + value)
+    public func expanded(by value: T) -> CircleT {
+        return CircleT(center: center, radius: radius + value)
     }
     
     @inlinable
-    public func contains(x: Double, y: Double) -> Bool {
+    public func contains(x: T, y: T) -> Bool {
         let dx = x - center.x
         let dy = y - center.y
         
@@ -22,7 +24,7 @@ public struct Circle: Equatable, Codable {
     }
     
     @inlinable
-    public func contains(_ point: Vector2) -> Bool {
+    public func contains(_ point: VectorT<T>) -> Bool {
         return contains(x: point.x, y: point.y)
     }
 }
