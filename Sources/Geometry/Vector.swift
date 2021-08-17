@@ -106,41 +106,41 @@ public extension Vector where T: SignedNumeric {
     
     // Unary operators
     @inlinable
-    static prefix func -(lhs: Vector) -> Vector {
+    static prefix func - (lhs: Vector) -> Vector {
         return Vector(x: -lhs.x, y: -lhs.y)
     }
 }
 
 public extension Vector where T: AdditiveArithmetic {
     @inlinable
-    static func +(lhs: Vector, rhs: Vector) -> Vector {
+    static func + (lhs: Vector, rhs: Vector) -> Vector {
         return Vector(x: lhs.x + rhs.x, y: lhs.y + rhs.y)
     }
     
     @inlinable
-    static func -(lhs: Vector, rhs: Vector) -> Vector {
+    static func - (lhs: Vector, rhs: Vector) -> Vector {
         return Vector(x: lhs.x - rhs.x, y: lhs.y - rhs.y)
     }
     
     @inlinable
-    static func +(lhs: Vector, rhs: T) -> Vector {
+    static func + (lhs: Vector, rhs: T) -> Vector {
         return Vector(x: lhs.x + rhs, y: lhs.y + rhs)
     }
     
     @inlinable
-    static func -(lhs: Vector, rhs: T) -> Vector {
+    static func - (lhs: Vector, rhs: T) -> Vector {
         return Vector(x: lhs.x - rhs, y: lhs.y - rhs)
     }
 }
 
 public extension Vector where T: Numeric {
     @inlinable
-    static func *(lhs: Vector, rhs: Vector) -> Vector {
+    static func * (lhs: Vector, rhs: Vector) -> Vector {
         return Vector(x: lhs.x * rhs.x, y: lhs.y * rhs.y)
     }
     
     @inlinable
-    static func *(lhs: Vector, rhs: T) -> Vector {
+    static func * (lhs: Vector, rhs: T) -> Vector {
         return Vector(x: lhs.x * rhs, y: lhs.y * rhs)
     }
     
@@ -161,103 +161,103 @@ public extension Vector where T: FloatingPoint {
     /// If two representable values are equally close, the result is the value
     /// with more trailing zeros in its significand bit pattern.
     ///
-    /// - parameter vector: The integer vector to convert to a floating-point value.
+    /// - parameter vector: The integer vector to convert to a floating-point vector.
     @inlinable
     init<U>(_ vector: Vector<U>) where U: BinaryInteger {
         self.init(x: T.init(vector.x), y: T.init(vector.y))
     }
     
     @inlinable
-    static func +(lhs: Vector, rhs: Vector) -> Vector {
+    static func + (lhs: Vector, rhs: Vector) -> Vector {
         return Vector(lhs.theVector + rhs.theVector)
     }
     
     @inlinable
-    static func -(lhs: Vector, rhs: Vector) -> Vector {
+    static func - (lhs: Vector, rhs: Vector) -> Vector {
         return Vector(lhs.theVector - rhs.theVector)
     }
     
     @inlinable
-    static func *(lhs: Vector, rhs: Vector) -> Vector {
+    static func * (lhs: Vector, rhs: Vector) -> Vector {
         return Vector(lhs.theVector * rhs.theVector)
     }
     
     @inlinable
-    static func /(lhs: Vector, rhs: Vector) -> Vector {
+    static func / (lhs: Vector, rhs: Vector) -> Vector {
         return Vector(lhs.theVector / rhs.theVector)
     }
     
     @inlinable
-    static func %(lhs: Vector, rhs: Vector) -> Vector {
+    static func % (lhs: Vector, rhs: Vector) -> Vector {
         return Vector(x: lhs.x.truncatingRemainder(dividingBy: rhs.x),
                        y: lhs.y.truncatingRemainder(dividingBy: rhs.y))
     }
     
     @inlinable
-    static func +(lhs: Vector, rhs: T) -> Vector {
+    static func + (lhs: Vector, rhs: T) -> Vector {
         return Vector(lhs.theVector + rhs)
     }
     
     @inlinable
-    static func -(lhs: Vector, rhs: T) -> Vector {
+    static func - (lhs: Vector, rhs: T) -> Vector {
         return Vector(lhs.theVector - rhs)
     }
     
     @inlinable
-    static func *(lhs: Vector, rhs: T) -> Vector {
+    static func * (lhs: Vector, rhs: T) -> Vector {
         return Vector(lhs.theVector * rhs)
     }
     
     @inlinable
-    static func /(lhs: Vector, rhs: T) -> Vector {
+    static func / (lhs: Vector, rhs: T) -> Vector {
         return Vector(lhs.theVector / rhs)
     }
     
     @inlinable
-    static func %(lhs: Vector, rhs: T) -> Vector {
+    static func % (lhs: Vector, rhs: T) -> Vector {
         return Vector(x: lhs.x.truncatingRemainder(dividingBy: rhs),
                        y: lhs.y.truncatingRemainder(dividingBy: rhs))
     }
     
     @inlinable
-    static func /(lhs: T, rhs: Vector) -> Vector {
+    static func / (lhs: T, rhs: Vector) -> Vector {
         return Vector(x: lhs / rhs.x, y: lhs / rhs.y)
     }
     
     @inlinable
-    static func +=(lhs: inout Vector, rhs: Vector) {
+    static func += (lhs: inout Vector, rhs: Vector) {
         lhs.theVector += rhs.theVector
     }
     @inlinable
-    static func -=(lhs: inout Vector, rhs: Vector) {
+    static func -= (lhs: inout Vector, rhs: Vector) {
         lhs.theVector -= rhs.theVector
     }
     @inlinable
-    static func *=(lhs: inout Vector, rhs: Vector) {
+    static func *= (lhs: inout Vector, rhs: Vector) {
         lhs.theVector *= rhs.theVector
     }
     @inlinable
-    static func /=(lhs: inout Vector, rhs: Vector) {
+    static func /= (lhs: inout Vector, rhs: Vector) {
         lhs.theVector /= rhs.theVector
     }
     
     @inlinable
-    static func +=(lhs: inout Vector, rhs: T) {
+    static func += (lhs: inout Vector, rhs: T) {
         lhs = lhs + rhs
     }
     
     @inlinable
-    static func -=(lhs: inout Vector, rhs: T) {
+    static func -= (lhs: inout Vector, rhs: T) {
         lhs = lhs - rhs
     }
     
     @inlinable
-    static func *=(lhs: inout Vector, rhs: T) {
+    static func *= (lhs: inout Vector, rhs: T) {
         lhs = lhs * rhs
     }
     
     @inlinable
-    static func /=(lhs: inout Vector, rhs: T) {
+    static func /= (lhs: inout Vector, rhs: T) {
         lhs = lhs / rhs
     }
 }
@@ -404,14 +404,14 @@ public extension Vector where T == Double {
     /// Calculates the dot product between two provided coordinates.
     /// See `Vector.dot`
     @inlinable
-    static func •(lhs: Vector, rhs: Vector) -> Double {
+    static func • (lhs: Vector, rhs: Vector) -> Double {
         return lhs.dot(rhs)
     }
     
     /// Calculates the dot product between two provided coordinates
     /// See `Vector.cross`
     @inlinable
-    static func =/(lhs: Vector, rhs: Vector) -> Double {
+    static func =/ (lhs: Vector, rhs: Vector) -> Double {
         return lhs.cross(rhs)
     }
 }
@@ -497,14 +497,14 @@ public extension Vector where T == Float {
     /// Calculates the dot product between two provided coordinates.
     /// See `Vector.dot`
     @inlinable
-    static func •(lhs: Vector, rhs: Vector) -> Float {
+    static func • (lhs: Vector, rhs: Vector) -> Float {
         return lhs.dot(rhs)
     }
     
     /// Calculates the dot product between two provided coordinates
     /// See `Vector.cross`
     @inlinable
-    static func =/(lhs: Vector, rhs: Vector) -> Float {
+    static func =/ (lhs: Vector, rhs: Vector) -> Float {
         return lhs.cross(rhs)
     }
 }
@@ -512,7 +512,7 @@ public extension Vector where T == Float {
 // MARK: Operators
 public extension Vector {
     @inlinable
-    static func ==(lhs: Vector, rhs: Vector) -> Bool {
+    static func == (lhs: Vector, rhs: Vector) -> Bool {
         return lhs.theVector == rhs.theVector
     }
     
@@ -520,7 +520,7 @@ public extension Vector {
     ///
     /// Performs `lhs.x > rhs.x && lhs.y > rhs.y`
     @inlinable
-    static func >(lhs: Vector, rhs: Vector) -> Bool {
+    static func > (lhs: Vector, rhs: Vector) -> Bool {
         return lhs.theVector.x > rhs.theVector.x && lhs.theVector.y > rhs.theVector.y
     }
     
@@ -529,7 +529,7 @@ public extension Vector {
     ///
     /// Performs `lhs.x >= rhs.x && lhs.y >= rhs.y`
     @inlinable
-    static func >=(lhs: Vector, rhs: Vector) -> Bool {
+    static func >= (lhs: Vector, rhs: Vector) -> Bool {
         return lhs.theVector.x >= rhs.theVector.x && lhs.theVector.y >= rhs.theVector.y
     }
     
@@ -537,7 +537,7 @@ public extension Vector {
     ///
     /// Performs `lhs.x < rhs.x && lhs.y < rhs.y`
     @inlinable
-    static func <(lhs: Vector, rhs: Vector) -> Bool {
+    static func < (lhs: Vector, rhs: Vector) -> Bool {
         return lhs.theVector.x < rhs.theVector.x && lhs.theVector.y < rhs.theVector.y
     }
     
@@ -545,7 +545,7 @@ public extension Vector {
     ///
     /// Performs `lhs.x <= rhs.x && lhs.y <= rhs.y`
     @inlinable
-    static func <=(lhs: Vector, rhs: Vector) -> Bool {
+    static func <= (lhs: Vector, rhs: Vector) -> Bool {
         return lhs.theVector.x <= rhs.theVector.x && lhs.theVector.y <= rhs.theVector.y
     }
 }
