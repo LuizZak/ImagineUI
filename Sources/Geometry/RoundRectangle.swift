@@ -3,17 +3,17 @@
 public typealias RoundRectangle = RoundRectangleT<Double>
 
 /// Represents a rounded rectangle with bounds and X and Y radius
-public struct RoundRectangleT<T: VectorScalar>: Equatable, Codable {
-    public var bounds: RectangleT<T>
-    public var radius: VectorT<T>
+public struct RoundRectangleT<Scalar: VectorScalar>: Equatable, Codable {
+    public var bounds: RectangleT<Scalar>
+    public var radius: VectorT<Scalar>
     
-    public init(bounds: RectangleT<T>, radius: VectorT<T>) {
+    public init(bounds: RectangleT<Scalar>, radius: VectorT<Scalar>) {
         self.bounds = bounds
         self.radius = radius
     }
     
-    public init(bounds: RectangleT<T>, radiusX: T, radiusY: T) {
+    public init(bounds: RectangleT<Scalar>, radiusX: Scalar, radiusY: Scalar) {
         self.bounds = bounds
-        self.radius = VectorT<T>(x: radiusX, y: radiusY)
+        self.radius = VectorT<Scalar>(x: radiusX, y: radiusY)
     }
 }

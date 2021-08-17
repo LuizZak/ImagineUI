@@ -2,12 +2,12 @@
 public typealias Rectangle = RectangleT<Double>
 
 /// Describes a rectangle
-public struct RectangleT<T: VectorScalar>: Equatable, Codable {
+public struct RectangleT<Scalar: VectorScalar>: Equatable, Codable {
     /// Returns an empty rectangle
     public static var zero: RectangleT { RectangleT(x: 0, y: 0, width: 0, height: 0) }
     
     /// Minimum point for this rectangle.
-    public var minimum: VectorT<T> {
+    public var minimum: VectorT<Scalar> {
         get { return topLeft }
         set {
             let diff = newValue - minimum
@@ -18,7 +18,7 @@ public struct RectangleT<T: VectorScalar>: Equatable, Codable {
     }
     
     /// Maximum point for this rectangle.
-    public var maximum: VectorT<T> {
+    public var maximum: VectorT<Scalar> {
         get { return bottomRight }
         set {
             width = newValue.x - x
@@ -27,14 +27,14 @@ public struct RectangleT<T: VectorScalar>: Equatable, Codable {
     }
     
     /// The top-left location of this rectangle
-    public var location: VectorT<T>
+    public var location: VectorT<Scalar>
     
     /// The size of this rectangle
-    public var size: VectorT<T>
+    public var size: VectorT<Scalar>
     
     /// Gets the X position of this Rectangle
     @inlinable
-    public var x: T {
+    public var x: Scalar {
         get {
             return location.x
         }
@@ -45,7 +45,7 @@ public struct RectangleT<T: VectorScalar>: Equatable, Codable {
     
     /// Gets the Y position of this Rectangle
     @inlinable
-    public var y: T {
+    public var y: Scalar {
         get {
             return location.y
         }
@@ -58,7 +58,7 @@ public struct RectangleT<T: VectorScalar>: Equatable, Codable {
     ///
     /// When setting this value, `width` must always be `>= 0`
     @inlinable
-    public var width: T {
+    public var width: Scalar {
         get {
             return size.x
         }
@@ -70,7 +70,7 @@ public struct RectangleT<T: VectorScalar>: Equatable, Codable {
     /// Gets the height of this Rectangle
     ///
     /// When setting this value, `height` must always be `>= 0`
-    public var height: T {
+    public var height: Scalar {
         get {
             return size.y
         }
@@ -88,44 +88,44 @@ public struct RectangleT<T: VectorScalar>: Equatable, Codable {
     ///
     /// Alias for `y`
     @inlinable
-    public var top: T { y }
+    public var top: Scalar { y }
     
     /// The x coordinate of the left corner of this rectangle.
     ///
     /// Alias for `x`
     @inlinable
-    public var left: T { x }
+    public var left: Scalar { x }
     
     /// The x coordinate of the right corner of this rectangle.
     ///
     /// Alias for `x + width`
     @inlinable
-    public var right: T { x + width }
+    public var right: Scalar { x + width }
     
     /// The y coordinate of the bottom corner of this rectangle.
     ///
     /// Alias for `y + height`
     @inlinable
-    public var bottom: T { y + height }
+    public var bottom: Scalar { y + height }
     
     @inlinable
-    public var topLeft: VectorT<T> {
-        return VectorT<T>(x: left, y: top)
+    public var topLeft: VectorT<Scalar> {
+        return VectorT<Scalar>(x: left, y: top)
     }
     
     @inlinable
-    public var topRight: VectorT<T> {
-        return VectorT<T>(x: right, y: top)
+    public var topRight: VectorT<Scalar> {
+        return VectorT<Scalar>(x: right, y: top)
     }
     
     @inlinable
-    public var bottomLeft: VectorT<T> {
-        return VectorT<T>(x: left, y: bottom)
+    public var bottomLeft: VectorT<Scalar> {
+        return VectorT<Scalar>(x: left, y: bottom)
     }
     
     @inlinable
-    public var bottomRight: VectorT<T> {
-        return VectorT<T>(x: right, y: bottom)
+    public var bottomRight: VectorT<Scalar> {
+        return VectorT<Scalar>(x: right, y: bottom)
     }
     
     /// Returns an array of vectors that represent this `Rectangle`'s corners in
@@ -133,7 +133,7 @@ public struct RectangleT<T: VectorScalar>: Equatable, Codable {
     ///
     /// Always contains 4 elements.
     @inlinable
-    public var corners: [VectorT<T>] {
+    public var corners: [VectorT<Scalar>] {
         return [topLeft, topRight, bottomRight, bottomLeft]
     }
     
@@ -149,7 +149,7 @@ public struct RectangleT<T: VectorScalar>: Equatable, Codable {
     ///
     /// If no points are supplied, an empty Rectangle is created instead.
     @inlinable
-    public init(of points: VectorT<T>...) {
+    public init(of points: VectorT<Scalar>...) {
         self = RectangleT(points: points)
     }
     
@@ -158,34 +158,34 @@ public struct RectangleT<T: VectorScalar>: Equatable, Codable {
     /// The coordinates are not checked for ordering, and will be directly
     /// assigned to `minimum` and `maximum` properties.
     @inlinable
-    public init(min: VectorT<T>, max: VectorT<T>) {
+    public init(min: VectorT<Scalar>, max: VectorT<Scalar>) {
         location = min
         size = max - min
     }
     
     /// Initializes a Rectangle with the coordinates of a rectangle
     @inlinable
-    public init(x: T, y: T, width: T, height: T) {
-        location = VectorT<T>(x: x, y: y)
-        size = VectorT<T>(x: width, y: height)
+    public init(x: Scalar, y: Scalar, width: Scalar, height: Scalar) {
+        location = VectorT<Scalar>(x: x, y: y)
+        size = VectorT<Scalar>(x: width, y: height)
     }
     
     /// Initializes a Rectangle with the location + size of a rectangle
     @inlinable
-    public init(location: VectorT<T>, size: VectorT<T>) {
+    public init(location: VectorT<Scalar>, size: VectorT<Scalar>) {
         self.location = location
         self.size = size
     }
     
     /// Initializes a Rectangle with the corners of a rectangle
     @inlinable
-    public init(left: T, top: T, right: T, bottom: T) {
+    public init(left: Scalar, top: Scalar, right: Scalar, bottom: Scalar) {
         self.init(x: left, y: top, width: right - left, height: bottom - top)
     }
     
     /// Initializes a Rectangle out of a set of points, expanding to the
     /// smallest bounding box capable of fitting each point.
-    public init<C: Collection>(points: C) where C.Element == VectorT<T> {
+    public init<C: Collection>(points: C) where C.Element == VectorT<Scalar> {
         guard let first = points.first else {
             location = .zero
             size = .zero
@@ -199,7 +199,7 @@ public struct RectangleT<T: VectorScalar>: Equatable, Codable {
     }
     
     /// Expands the bounding box of this Rectangle to include the given point.
-    public mutating func expand(toInclude point: VectorT<T>) {
+    public mutating func expand(toInclude point: VectorT<Scalar>) {
         minimum = min(minimum, point)
         maximum = max(maximum, point)
     }
@@ -209,7 +209,7 @@ public struct RectangleT<T: VectorScalar>: Equatable, Codable {
     ///
     /// Same as calling `expand(toInclude:Vector2)` over each point.
     /// If the array is empty, nothing is done.
-    public mutating func expand<S: Sequence>(toInclude points: S) where S.Element == VectorT<T> {
+    public mutating func expand<S: Sequence>(toInclude points: S) where S.Element == VectorT<Scalar> {
         for p in points {
             expand(toInclude: p)
         }
@@ -219,15 +219,15 @@ public struct RectangleT<T: VectorScalar>: Equatable, Codable {
     /// The check is inclusive, so the edges of the bounding box are considered
     /// to contain the point as well.
     @inlinable
-    public func contains(x: T, y: T) -> Bool {
-        return contains(VectorT<T>(x: x, y: y))
+    public func contains(x: Scalar, y: Scalar) -> Bool {
+        return contains(VectorT<Scalar>(x: x, y: y))
     }
     
     /// Returns whether a given point is contained within this bounding box.
     /// The check is inclusive, so the edges of the bounding box are considered
     /// to contain the point as well.
     @inlinable
-    public func contains(_ point: VectorT<T>) -> Bool {
+    public func contains(_ point: VectorT<Scalar>) -> Bool {
         return point >= minimum && point <= maximum
     }
     
@@ -248,54 +248,54 @@ public struct RectangleT<T: VectorScalar>: Equatable, Codable {
     
     /// Returns a Rectangle that matches this Rectangle's size with a new location
     @inlinable
-    public func withLocation(_ location: VectorT<T>) -> RectangleT {
+    public func withLocation(_ location: VectorT<Scalar>) -> RectangleT {
         return RectangleT(location: location, size: size)
     }
     
     /// Returns a rectangle that matches this Rectangle's size with a new location
     @inlinable
-    public func withLocation(x: T, y: T) -> RectangleT {
-        return withLocation(VectorT<T>(x: x, y: y))
+    public func withLocation(x: Scalar, y: Scalar) -> RectangleT {
+        return withLocation(VectorT<Scalar>(x: x, y: y))
     }
     
     /// Returns a Rectangle that matches this Rectangle's size with a new location
     @inlinable
-    public func withSize(_ size: VectorT<T>) -> RectangleT {
+    public func withSize(_ size: VectorT<Scalar>) -> RectangleT {
         return RectangleT(location: minimum, size: size)
     }
     
     /// Returns a Rectangle that matches this Rectangle's size with a new location
     @inlinable
-    public func withSize(width: T, height: T) -> RectangleT {
-        return withSize(VectorT<T>(x: width, y: height))
+    public func withSize(width: Scalar, height: Scalar) -> RectangleT {
+        return withSize(VectorT<Scalar>(x: width, y: height))
     }
     
     /// Returns a Rectangle with the same position as this Rectangle, with its
     /// width and height multiplied by the coordinates of the given vector
     @inlinable
-    public func scaledBy(vector: VectorT<T>) -> RectangleT {
+    public func scaledBy(vector: VectorT<Scalar>) -> RectangleT {
         return scaledBy(x: vector.x, y: vector.y)
     }
     
     /// Returns a Rectangle with the same position as this Rectangle, with its
     /// width and height multiplied by the coordinates of the given vector
     @inlinable
-    public func scaledBy(x: T, y: T) -> RectangleT {
+    public func scaledBy(x: Scalar, y: Scalar) -> RectangleT {
         return RectangleT(x: x, y: y, width: width * x, height: height * y)
     }
     
     /// Returns a copy of this Rectangle with the minimum and maximum coordinates
     /// offset by a given amount.
     @inlinable
-    public func offsetBy(_ vector: VectorT<T>) -> RectangleT {
+    public func offsetBy(_ vector: VectorT<Scalar>) -> RectangleT {
         return RectangleT(location: location + vector, size: size)
     }
     
     /// Returns a copy of this Rectangle with the minimum and maximum coordinates
     /// offset by a given amount.
     @inlinable
-    public func offsetBy(x: T, y: T) -> RectangleT {
-        return offsetBy(VectorT<T>(x: x, y: y))
+    public func offsetBy(x: Scalar, y: Scalar) -> RectangleT {
+        return offsetBy(VectorT<Scalar>(x: x, y: y))
     }
     
     /// Returns a Rectangle which is the minimum Rectangle that can fit this
@@ -315,7 +315,7 @@ public struct RectangleT<T: VectorScalar>: Equatable, Codable {
     }
     
     /// Insets this Rectangle with a given set of edge inset values.
-    public func inset(_ inset: EdgeInsetsT<T>) -> RectangleT {
+    public func inset(_ inset: EdgeInsetsT<Scalar>) -> RectangleT {
         return RectangleT(left: left + inset.left,
                           top: top + inset.top,
                           right: right - inset.right,
@@ -324,49 +324,49 @@ public struct RectangleT<T: VectorScalar>: Equatable, Codable {
     
     /// Returns a new Rectangle with the same left, right, and height as the current
     /// instance, where the `top` lays on `value`.
-    public func movingTop(to value: T) -> RectangleT {
+    public func movingTop(to value: Scalar) -> RectangleT {
         return RectangleT(left: left, top: value, right: right, bottom: value + height)
     }
     
     /// Returns a new Rectangle with the same left, right, and height as the current
     /// instance, where the `bottom` lays on `value`.
-    public func movingBottom(to value: T) -> RectangleT {
+    public func movingBottom(to value: Scalar) -> RectangleT {
         return RectangleT(left: left, top: value - height, right: right, bottom: value)
     }
     
     /// Returns a new Rectangle with the same top, bottom, and width as the current
     /// instance, where the `left` lays on `value`.
-    public func movingLeft(to value: T) -> RectangleT {
+    public func movingLeft(to value: Scalar) -> RectangleT {
         return RectangleT(left: value, top: top, right: value + width, bottom: bottom)
     }
     
     /// Returns a new Rectangle with the same top, bottom, and width as the current
     /// instance, where the `right` lays on `value`.
-    public func movingRight(to value: T) -> RectangleT {
+    public func movingRight(to value: Scalar) -> RectangleT {
         return RectangleT(left: value - width, top: top, right: value, bottom: bottom)
     }
     
     /// Returns a new Rectangle with the same left, right, and bottom as the current
     /// instance, where the `top` lays on `value`.
-    public func stretchingTop(to value: T) -> RectangleT {
+    public func stretchingTop(to value: Scalar) -> RectangleT {
         return RectangleT(left: left, top: value, right: right, bottom: bottom)
     }
     
     /// Returns a new Rectangle with the same left, right, and top as the current
     /// instance, where the `bottom` lays on `value`.
-    public func stretchingBottom(to value: T) -> RectangleT {
+    public func stretchingBottom(to value: Scalar) -> RectangleT {
         return RectangleT(left: left, top: top, right: right, bottom: value)
     }
     
     /// Returns a new Rectangle with the same top, bottom, and right as the current
     /// instance, where the `left` lays on `value`.
-    public func stretchingLeft(to value: T) -> RectangleT {
+    public func stretchingLeft(to value: Scalar) -> RectangleT {
         return RectangleT(left: value, top: top, right: right, bottom: bottom)
     }
     
     /// Returns a new Rectangle with the same top, bottom, and left as the current
     /// instance, where the `right` lays on `value`.
-    public func stretchingRight(to value: T) -> RectangleT {
+    public func stretchingRight(to value: Scalar) -> RectangleT {
         return RectangleT(left: left, top: top, right: value, bottom: bottom)
     }
     
@@ -396,20 +396,20 @@ public struct RectangleT<T: VectorScalar>: Equatable, Codable {
     }
 }
 
-public extension RectangleT where T: DivisibleArithmetic {
+public extension RectangleT where Scalar: DivisibleArithmetic {
     /// Gets the middle X position of this Rectangle
     @inlinable
-    var midX: T {
+    var midX: Scalar {
         return center.x
     }
     /// Gets the middle Y position of this Rectangle
     @inlinable
-    var midY: T {
+    var midY: Scalar {
         return center.y
     }
     
     @inlinable
-    var center: VectorT<T> {
+    var center: VectorT<Scalar> {
         get {
             return location + size / 2
         }
@@ -421,7 +421,7 @@ public extension RectangleT where T: DivisibleArithmetic {
     /// Returns a Rectangle which is an inflated version of this Rectangle
     /// (i.e. bounds are larger by `size`, but center remains the same)
     @inlinable
-    func inflatedBy(_ size: VectorT<T>) -> RectangleT {
+    func inflatedBy(_ size: VectorT<Scalar>) -> RectangleT {
         if size == .zero {
             return self
         }
@@ -432,14 +432,14 @@ public extension RectangleT where T: DivisibleArithmetic {
     /// Returns a Rectangle which is an inflated version of this Rectangle
     /// (i.e. bounds are larger by `size`, but center remains the same)
     @inlinable
-    func inflatedBy(x: T, y: T) -> RectangleT {
-        return inflatedBy(VectorT<T>(x: x, y: y))
+    func inflatedBy(x: Scalar, y: Scalar) -> RectangleT {
+        return inflatedBy(VectorT<Scalar>(x: x, y: y))
     }
     
     /// Returns a Rectangle which is an inset version of this Rectangle
     /// (i.e. bounds are smaller by `size`, but center remains the same)
     @inlinable
-    func insetBy(_ size: VectorT<T>) -> RectangleT {
+    func insetBy(_ size: VectorT<Scalar>) -> RectangleT {
         if size == .zero {
             return self
         }
@@ -450,35 +450,35 @@ public extension RectangleT where T: DivisibleArithmetic {
     /// Returns a Rectangle which is an inset version of this Rectangle
     /// (i.e. bounds are smaller by `size`, but center remains the same)
     @inlinable
-    func insetBy(x: T, y: T) -> RectangleT {
-        return insetBy(VectorT<T>(x: x, y: y))
+    func insetBy(x: Scalar, y: Scalar) -> RectangleT {
+        return insetBy(VectorT<Scalar>(x: x, y: y))
     }
     
     /// Returns a new Rectangle with the same width and height as the current
     /// instance, where the center of the boundaries lay on the coordinates
     /// composed of `[x, y]`
     @inlinable
-    func movingCenter(toX x: T, y: T) -> RectangleT {
-        return movingCenter(to: VectorT<T>(x: x, y: y))
+    func movingCenter(toX x: Scalar, y: Scalar) -> RectangleT {
+        return movingCenter(to: VectorT<Scalar>(x: x, y: y))
     }
     
     /// Returns a new Rectangle with the same width and height as the current
     /// instance, where the center of the boundaries lay on `center`
     @inlinable
-    func movingCenter(to center: VectorT<T>) -> RectangleT {
+    func movingCenter(to center: VectorT<Scalar>) -> RectangleT {
         return RectangleT(min: center - size / 2, max: center + size / 2)
     }
 }
 
-public extension RectangleT where T: FloatingPoint {
+public extension RectangleT where Scalar: FloatingPoint {
     /// Initializes a Rectangle with the coordinates of a rectangle
     @inlinable
     init<B: BinaryInteger>(x: B, y: B, width: B, height: B) {
-        self.init(x: T(x), y: T(y), width: T(width), height: T(height))
+        self.init(x: Scalar(x), y: Scalar(y), width: Scalar(width), height: Scalar(height))
     }
 }
 
-public extension RectangleT where T == Double {
+public extension RectangleT where Scalar == Double {
     /// Applies the given Matrix on all corners of this Rectangle, returning a new
     /// minimal Rectangle capable of containing the transformed points.
     func transformedBounds(_ matrix: Matrix2D) -> RectangleT {
@@ -496,14 +496,14 @@ public extension RectangleT {
     /// Returns a `RoundRectangle` which has the same bounds as this rectangle,
     /// with the given radius vector describing the dimensions of the corner arcs
     /// on the X and Y axis.
-    func rounded(radius: VectorT<T>) -> RoundRectangleT<T> {
+    func rounded(radius: VectorT<Scalar>) -> RoundRectangleT<Scalar> {
         return RoundRectangleT(bounds: self, radius: radius)
     }
     
     /// Returns a `RoundRectangle` which has the same bounds as this rectangle,
     /// with the given radius value describing the dimensions of the corner arcs
     /// on the X and Y axis.
-    func rounded(radius: T) -> RoundRectangleT<T> {
+    func rounded(radius: Scalar) -> RoundRectangleT<Scalar> {
         return RoundRectangleT(bounds: self, radiusX: radius, radiusY: radius)
     }
 }

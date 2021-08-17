@@ -3,33 +3,33 @@
 public typealias Line = LineT<Double>
 
 /// Describes a line as a pair of start and end positions
-public struct LineT<T: VectorScalar>: Equatable, Codable {
-    public var start: VectorT<T>
-    public var end: VectorT<T>
+public struct LineT<Scalar: VectorScalar>: Equatable, Codable {
+    public var start: VectorT<Scalar>
+    public var end: VectorT<Scalar>
     
     @inlinable
-    public init(start: VectorT<T>, end: VectorT<T>) {
+    public init(start: VectorT<Scalar>, end: VectorT<Scalar>) {
         self.start = start
         self.end = end
     }
     
     @inlinable
-    public init(x1: T, y1: T, x2: T, y2: T) {
+    public init(x1: Scalar, y1: Scalar, x2: Scalar, y2: Scalar) {
         start = VectorT(x: x1, y: y1)
         end = VectorT(x: x2, y: y2)
     }
 }
 
-extension LineT where T == Double {
+extension LineT where Scalar == Double {
     /// Returns the angle of this line, in radians
     @inlinable
-    public var angle: T {
+    public var angle: Scalar {
         return (end - start).angle
     }
     
     /// Returns the magnitude of this line
     @inlinable
-    public var magnitude: T {
+    public var magnitude: Scalar {
         return (end - start).magnitude
     }
 }
