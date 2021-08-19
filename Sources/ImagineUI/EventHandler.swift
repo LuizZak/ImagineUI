@@ -39,7 +39,7 @@ public protocol EventHandler: AnyObject {
     /// Asks this event handler to convert a screen-coordinate space point into
     /// its own local coordinates when synthesizing location events (e.g. mouse
     /// events) into this event handler.
-    func convertFromScreen(_ point: Vector2) -> Vector2
+    func convertFromScreen(_ point: Vector) -> Vector
 
     func handleOrPass(_ eventRequest: EventRequest)
 }

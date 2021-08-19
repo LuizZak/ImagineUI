@@ -114,15 +114,15 @@ public enum DebugDraw {
         
         switch constraint.first.kind {
         case .width:
-            let left = bounds.bottomLeft + Vector2(x: 0, y: 2)
-            let right = bounds.bottomRight + Vector2(x: 0, y: 2)
+            let left = bounds.bottomLeft + Vector(x: 0, y: 2)
+            let right = bounds.bottomRight + Vector(x: 0, y: 2)
             
             drawLine(start: left, end: right, tangentLength: 3, to: context)
             drawRelationship(relationship: constraint.relationship, at: (left + right) / 2, to: context)
             
         case .height:
-            let top = bounds.topRight + Vector2(x: 2, y: 0)
-            let bottom = bounds.bottomRight + Vector2(x: 2, y: 0)
+            let top = bounds.topRight + Vector(x: 2, y: 0)
+            let bottom = bounds.bottomRight + Vector(x: 2, y: 0)
             
             drawLine(start: top, end: bottom, tangentLength: 3, to: context)
             drawRelationship(relationship: constraint.relationship, at: (top + bottom) / 2, to: context)
@@ -190,14 +190,14 @@ public enum DebugDraw {
         }
     }
     
-    private static func connectHorizontalEdges(edge1: (topLeft: Vector2, height: Double),
-                                               edge2: (topLeft: Vector2, height: Double),
+    private static func connectHorizontalEdges(edge1: (topLeft: Vector, height: Double),
+                                               edge2: (topLeft: Vector, height: Double),
                                                relationship: Relationship,
                                                context: BLContext) {
         
         let center2 = edge2.topLeft.y + edge2.height / 2
         
-        let edge1BottomLeft = Vector2(x: edge1.topLeft.x, y: edge1.topLeft.y + edge1.height)
+        let edge1BottomLeft = Vector(x: edge1.topLeft.x, y: edge1.topLeft.y + edge1.height)
         
         let edge1Top = min(edge1.topLeft.y, center2)
         let edge1Bottom = max(edge1BottomLeft.y, center2)
@@ -205,14 +205,14 @@ public enum DebugDraw {
         // Only draw first edge if the horizontal line to be drawn is outside the
         // range of the boundary
         if center2 < edge1.topLeft.y || center2 > edge1.topLeft.y + edge1.height {
-            drawLine(start: Vector2(x: edge1.topLeft.x, y: edge1Top),
-                     end: Vector2(x: edge1.topLeft.x, y: edge1Bottom),
+            drawLine(start: Vector(x: edge1.topLeft.x, y: edge1Top),
+                     end: Vector(x: edge1.topLeft.x, y: edge1Bottom),
                      tangentLength: 0,
                      to: context)
         }
         
-        let start = Vector2(x: edge1.topLeft.x, y: center2)
-        let end = Vector2(x: edge2.topLeft.x, y: center2)
+        let start = Vector(x: edge1.topLeft.x, y: center2)
+        let end = Vector(x: edge2.topLeft.x, y: center2)
         
         drawLine(start: start,
                  end: end,
@@ -224,14 +224,14 @@ public enum DebugDraw {
                          to: context)
     }
     
-    private static func connectVerticalEdges(edge1: (topLeft: Vector2, width: Double),
-                                             edge2: (topLeft: Vector2, width: Double),
+    private static func connectVerticalEdges(edge1: (topLeft: Vector, width: Double),
+                                             edge2: (topLeft: Vector, width: Double),
                                              relationship: Relationship,
                                              context: BLContext) {
         
         let center2 = edge2.topLeft.x + edge2.width / 2
         
-        let edge1TopRight = Vector2(x: edge1.topLeft.x + edge1.width, y: edge1.topLeft.y)
+        let edge1TopRight = Vector(x: edge1.topLeft.x + edge1.width, y: edge1.topLeft.y)
         
         let edge1Left = min(edge1.topLeft.x, center2)
         let edge1Right = max(edge1TopRight.x, center2)
@@ -239,14 +239,14 @@ public enum DebugDraw {
         // Only draw first edge if the vertical line to be drawn is outside the
         // range of the boundary
         if center2 < edge1.topLeft.x || center2 > edge1.topLeft.x + edge1.width {
-            drawLine(start: Vector2(x: edge1Left, y: edge1.topLeft.y),
-                     end: Vector2(x: edge1Right, y: edge1.topLeft.y),
+            drawLine(start: Vector(x: edge1Left, y: edge1.topLeft.y),
+                     end: Vector(x: edge1Right, y: edge1.topLeft.y),
                      tangentLength: 0,
                      to: context)
         }
         
-        let start = Vector2(x: center2, y: edge1.topLeft.y)
-        let end = Vector2(x: center2, y: edge2.topLeft.y)
+        let start = Vector(x: center2, y: edge1.topLeft.y)
+        let end = Vector(x: center2, y: edge2.topLeft.y)
         
         drawLine(start: start,
                  end: end,
@@ -342,7 +342,7 @@ public enum DebugDraw {
         context.strokeLine(p0: lineStart, p1: lineEnd)
     }
     
-    private static func extractEdge(_ rectangle: Rectangle, edge: AnchorKind) -> (topLeft: Vector2, length: Double) {
+    private static func extractEdge(_ rectangle: Rectangle, edge: AnchorKind) -> (topLeft: Vector, length: Double) {
         switch edge {
         case .left:
             return (topLeft: rectangle.topLeft, length: rectangle.height)
@@ -357,7 +357,7 @@ public enum DebugDraw {
         }
     }
     
-    private static func drawLine(start: Vector2, end: Vector2, tangentLength: Double, to context: BLContext) {
+    private static func drawLine(start: Vector, end: Vector, tangentLength: Double, to context: BLContext) {
         prepareStroke(in: context)
         
         context.strokeLine(p0: start.asBLPoint, p1: end.asBLPoint)
@@ -374,7 +374,7 @@ public enum DebugDraw {
     }
     
     private static func drawRelationship(relationship: Relationship,
-                                         at point: Vector2,
+                                         at point: Vector,
                                          to context: BLContext) {
         
         guard relationship != .equal else { return }

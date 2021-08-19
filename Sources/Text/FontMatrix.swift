@@ -23,14 +23,14 @@ public struct FontMatrix {
     
     /// Transforms a given polygon by multiplying each coordinate by this matrix.
     @inlinable
-    public func transform(_ polygon: [Vector2]) -> [Vector2] {
+    public func transform(_ polygon: [Vector]) -> [Vector] {
         return polygon.map(transform(_:))
     }
     
     @inlinable
-    public func transform(_ point: Vector2) -> Vector2 {
-        return Vector2(x: point.x * m11 + point.y * m21,
-                       y: point.x * m12 + point.y * m22)
+    public func transform(_ point: Vector) -> Vector {
+        return Vector(x: point.x * m11 + point.y * m21,
+                      y: point.x * m12 + point.y * m22)
     }
     
     /// Maps the corners of a given rectangle into a newer minimal rectangle

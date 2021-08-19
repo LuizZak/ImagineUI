@@ -12,8 +12,8 @@ class LabelTests: SnapshotTestCase {
         return pathToSnapshotFailures()
     }
     
-    override func setUp() async throws {
-        try await super.setUp()
+    override func setUpWithError() throws {
+        try super.setUpWithError()
         
         try UISettings.initialize(.init(fontManager: Blend2DFontManager(), defaultFontPath: "\(pathToResources())/NotoSans-Regular.ttf"))
     }

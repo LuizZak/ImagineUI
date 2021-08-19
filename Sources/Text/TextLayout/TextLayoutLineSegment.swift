@@ -20,7 +20,7 @@ public struct TextLayoutLineSegment {
     public var bounds: Rectangle
     
     /// Rendering offset to apply to this segment
-    public var offset: Vector2
+    public var offset: Vector
     
     /// `bounds` property's value, mapped to the original transformation
     /// space before being multiplied by the font's transform matrix
@@ -36,7 +36,7 @@ public struct TextLayoutLineSegment {
                 font: Font,
                 textSegment: AttributedText.TextSegment,
                 bounds: Rectangle,
-                offset: Vector2,
+                offset: Vector,
                 originalBounds: Rectangle) {
         
         self.startCharacterIndex = startCharacterIndex

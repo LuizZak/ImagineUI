@@ -3,7 +3,7 @@ import Rendering
 
 public class SliderView: ControlView {
     private var isMouseDown = false
-    private var mouseDownOffset = Vector2.zero
+    private var mouseDownOffset = Vector.zero
     private var leftLabel = Label()
     private var rightLabel = Label()
     
@@ -241,10 +241,10 @@ public class SliderView: ControlView {
         renderer.setStroke(.lightGray)
         renderer.setStrokeWidth(2)
         renderer.stroke(line)
-        renderer.strokeLine(start: line.start - Vector2(x: 0, y: endsHeight),
-                            end: line.start + Vector2(x: 0, y: endsHeight))
-        renderer.strokeLine(start: line.end - Vector2(x: 0, y: endsHeight),
-                            end: line.end + Vector2(x: 0, y: endsHeight))
+        renderer.strokeLine(start: line.start - Vector(x: 0, y: endsHeight),
+                            end: line.start + Vector(x: 0, y: endsHeight))
+        renderer.strokeLine(start: line.end - Vector(x: 0, y: endsHeight),
+                            end: line.end + Vector(x: 0, y: endsHeight))
     }
     
     public override func renderForeground(in renderer: Renderer, screenRegion: ClipRegion) {
@@ -274,8 +274,8 @@ public class SliderView: ControlView {
         let dashH = knobSize.y / 3
         
         renderer.setStroke(.royalBlue.faded(towards: .white, factor: 0.5))
-        renderer.strokeLine(start: Vector2(x: dash1x, y: dashY), end: Vector2(x: dash1x, y: dashY + dashH))
-        renderer.strokeLine(start: Vector2(x: dash2x, y: dashY), end: Vector2(x: dash2x, y: dashY + dashH))
+        renderer.strokeLine(start: Vector(x: dash1x, y: dashY), end: Vector(x: dash1x, y: dashY + dashH))
+        renderer.strokeLine(start: Vector(x: dash2x, y: dashY), end: Vector(x: dash2x, y: dashY + dashH))
     }
     
     private func knobArea() -> Rectangle {
@@ -285,8 +285,8 @@ public class SliderView: ControlView {
     }
     
     private func sliderLine() -> Line {
-        let left = Vector2(x: knobSize.x / 2, y: knobSize.y / 2)
-        let right = Vector2(x: size.x - knobSize.x / 2, y: knobSize.y / 2)
+        let left = Vector(x: knobSize.x / 2, y: knobSize.y / 2)
+        let right = Vector(x: size.x - knobSize.x / 2, y: knobSize.y / 2)
         
         return Line(start: left, end: right)
     }
@@ -299,7 +299,7 @@ public class SliderView: ControlView {
     private func valueAtOffset(x: Double) -> Double {
         let line = sliderLine()
         
-        let xOffset = (x - line.start.x) / (line.magnitude)
+        let xOffset = (x - line.start.x) / (line.length)
         return minimumValue + xOffset * (maximumValue - minimumValue)
     }
 }

@@ -57,7 +57,7 @@ public extension Gradient {
             line = Line(x1: startX, y1: startY, x2: endX, y2: endY)
         }
         
-        public init(start: Vector2, end: Vector2) {
+        public init(start: Vector, end: Vector) {
             line = Line(start: start, end: end)
         }
         
@@ -86,7 +86,7 @@ public extension Gradient {
     
     struct ConicalGradientParameters: Equatable {
         /// The center point of the conical gradient
-        public var center: Vector2
+        public var center: Vector
         
         /// The angle for the conical gradient which separates the
         /// last and first stop colors
@@ -95,28 +95,47 @@ public extension Gradient {
 }
 
 public extension Gradient {
-    static func linear(start: Vector2, end: Vector2, stops: [Stop] = [], extendMode: ExtendMode = .pad, matrix: Matrix2D = .identity) -> Gradient {
+    static func linear(start: Vector,
+                       end: Vector,
+                       stops: [Stop] = [],
+                       extendMode: ExtendMode = .pad,
+                       matrix: Matrix2D = .identity) -> Gradient {
+        
         return Gradient(type: .linear(LinearGradientParameters(start: start, end: end)),
                         stops: stops,
                         extendMode: extendMode,
                         matrix: matrix)
     }
     
-    static func linear(line: Line, stops: [Stop] = [], extendMode: ExtendMode = .pad, matrix: Matrix2D = .identity) -> Gradient {
+    static func linear(line: Line,
+                       stops: [Stop] = [],
+                       extendMode: ExtendMode = .pad,
+                       matrix: Matrix2D = .identity) -> Gradient {
+        
         return Gradient(type: .linear(LinearGradientParameters(line: line)),
                         stops: stops,
                         extendMode: extendMode,
                         matrix: matrix)
     }
     
-    static func radial(bounds: Rectangle, radius: Double, stops: [Stop] = [], extendMode: ExtendMode = .pad, matrix: Matrix2D = .identity) -> Gradient {
+    static func radial(bounds: Rectangle,
+                       radius: Double,
+                       stops: [Stop] = [],
+                       extendMode: ExtendMode = .pad,
+                       matrix: Matrix2D = .identity) -> Gradient {
+        
         return Gradient(type: .radial(RadialGradientParameters(bounds: bounds, radius: radius)),
                         stops: stops,
                         extendMode: extendMode,
                         matrix: matrix)
     }
     
-    static func conical(center: Vector2, angle: Double, stops: [Stop] = [], extendMode: ExtendMode = .pad, matrix: Matrix2D = .identity) -> Gradient {
+    static func conical(center: Vector,
+                        angle: Double,
+                        stops: [Stop] = [],
+                        extendMode: ExtendMode = .pad,
+                        matrix: Matrix2D = .identity) -> Gradient {
+        
         return Gradient(type: .conical(ConicalGradientParameters(center: center, angle: angle)),
                         stops: stops,
                         extendMode: extendMode,

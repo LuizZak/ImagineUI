@@ -39,7 +39,7 @@ open class View {
         }
     }
     
-    open var scale: Vector2 = Vector2(x: 1, y: 1) {
+    open var scale: Vector = Vector(x: 1, y: 1) {
         willSet {
             guard scale != newValue else { return }
             
@@ -66,7 +66,7 @@ open class View {
                                        xOffset: location.x, yOffset: location.y)
     }
 
-    public var location: Vector2 {
+    public var location: Vector {
         willSet {
             if location != newValue {
                 invalidate()
@@ -435,7 +435,7 @@ open class View {
         return transform
     }
 
-    open func convert(point: Vector2, to other: SpatialReferenceType?) -> Vector2 {
+    open func convert(point: Vector, to other: SpatialReferenceType?) -> Vector {
         var point = point
         point *= absoluteTransform()
         if let other = other {
@@ -444,7 +444,7 @@ open class View {
         return point
     }
 
-    open func convert(point: Vector2, from other: SpatialReferenceType?) -> Vector2 {
+    open func convert(point: Vector, from other: SpatialReferenceType?) -> Vector {
         var point = point
         if let other = other {
             point *= other.absoluteTransform()
@@ -472,7 +472,7 @@ open class View {
         return bounds
     }
 
-    open func convertFromScreen(_ point: Vector2) -> Vector2 {
+    open func convertFromScreen(_ point: Vector) -> Vector {
         return convert(point: point, from: nil)
     }
 
@@ -485,7 +485,7 @@ open class View {
     ///
     /// The `inflatingArea` argument can be used to inflate the area of the
     /// views to perform less precise hit tests.
-    public func viewUnder(point: Vector2, inflatingArea: Vector2 = .zero) -> View? {
+    public func viewUnder(point: Vector, inflatingArea: Vector = .zero) -> View? {
         guard contains(point: point, inflatingArea: inflatingArea) else {
             return nil
         }
@@ -509,7 +509,7 @@ open class View {
     ///
     /// The `inflatingArea` argument can be used to inflate the area of the views
     /// to perform less precise hit tests.
-    public func viewUnder(point: Vector2, inflatingArea: Vector2 = .zero, predicate: (View) -> Bool) -> View? {
+    public func viewUnder(point: Vector, inflatingArea: Vector = .zero, predicate: (View) -> Bool) -> View? {
         guard contains(point: point, inflatingArea: inflatingArea) else {
             return nil
         }
@@ -540,7 +540,7 @@ open class View {
     /// - Parameter inflatingArea: Used to inflate the area of the views to
     /// perform less precise hit tests.
     /// - Returns: An array where each view returned crosses the given point.
-    public func viewsUnder(point: Vector2, inflatingArea: Vector2 = .zero) -> [View] {
+    public func viewsUnder(point: Vector, inflatingArea: Vector = .zero) -> [View] {
         var views: [View] = []
 
         internalViewsUnder(point: point, inflatingArea, &views)
@@ -548,7 +548,7 @@ open class View {
         return views
     }
 
-    private func internalViewsUnder(point: Vector2, _ inflatingArea: Vector2, _ target: inout [View]) {
+    private func internalViewsUnder(point: Vector, _ inflatingArea: Vector, _ target: inout [View]) {
         guard contains(point: point, inflatingArea: inflatingArea) else {
             return
         }
@@ -580,7 +580,7 @@ open class View {
     /// less precise hit tests.
     /// - Returns: An enumerable where each view returned intersects the given
     /// `BLRect`
-    public func viewsUnder(area: Rectangle, inflatingArea: Vector2 = .zero) -> [View] {
+    public func viewsUnder(area: Rectangle, inflatingArea: Vector = .zero) -> [View] {
         var views: [View] = []
 
         internalViewsUnder(area: area, inflatingArea, &views)
@@ -588,7 +588,7 @@ open class View {
         return views
     }
 
-    private func internalViewsUnder(area: Rectangle, _ inflatingArea: Vector2, _ target: inout [View]) {
+    private func internalViewsUnder(area: Rectangle, _ inflatingArea: Vector, _ target: inout [View]) {
         for view in subviews.reversed() {
             let transformed = view.transform.transform(area)
 
@@ -615,7 +615,7 @@ open class View {
     /// - Parameter point: Point to test
     /// - Parameter inflatingArea: Used to inflate the area of the view to
     /// perform less precise hit tests.
-    public func contains(point: Vector2, inflatingArea: Vector2 = .zero) -> Bool {
+    public func contains(point: Vector, inflatingArea: Vector = .zero) -> Bool {
         if inflatingArea == .zero {
             return bounds.contains(point)
         }
@@ -632,7 +632,7 @@ open class View {
     /// - Parameter area: area to test
     /// - Parameter inflatingArea: Used to inflate the area of the view to
     /// perform less precise hit tests.
-    public func intersects(area: Rectangle, inflatingArea: Vector2 = .zero) -> Bool {
+    public func intersects(area: Rectangle, inflatingArea: Vector = .zero) -> Bool {
         return bounds.insetBy(x: -inflatingArea.x, y: -inflatingArea.y).intersects(area)
     }
     

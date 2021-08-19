@@ -11,11 +11,20 @@
         }
       },
       {
+        "package": "Geometria",
+        "repositoryURL": "https://github.com/LuizZak/Geometria.git",
+        "state": {
+          "branch": "main",
+          "revision": "cc68c9e8f5c9aa463268e0bec524ff6ddcfb10eb",
+          "version": null
+        }
+      },
+      {
         "package": "SwiftBlend2D",
         "repositoryURL": "https://github.com/LuizZak/swift-blend2d.git",
         "state": {
           "branch": "master",
-          "revision": "1bc5e0586703033bd9533d476afc10fa53258013",
+          "revision": "5a9aea80027666bdf17918920b8fe0d61074df4b",
           "version": null
         }
       },

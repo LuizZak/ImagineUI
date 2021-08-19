@@ -6,8 +6,8 @@ import Rendering
 open class ScrollView: ControlView {
     private let scrollBarSize: Double = 10
 
-    internal var contentOffset: Vector2 = .zero
-    internal var targetContentOffset: Vector2 = .zero
+    internal var contentOffset: Vector = .zero
+    internal var targetContentOffset: Vector = .zero
     
     public let contentView = View()
     
@@ -94,13 +94,13 @@ open class ScrollView: ControlView {
     }
     
     private func horizontalScrollChanged(_ scroll: Double) {
-        targetContentOffset = Vector2(x: -horizontalBar.scroll, y: targetContentOffset.y)
-        contentOffset = Vector2(x: -horizontalBar.scroll, y: contentOffset.y)
+        targetContentOffset = Vector(x: -horizontalBar.scroll, y: targetContentOffset.y)
+        contentOffset = Vector(x: -horizontalBar.scroll, y: contentOffset.y)
     }
     
     private func verticalScrollChanged(_ scroll: Double) {
-        targetContentOffset = Vector2(x: targetContentOffset.x, y: -verticalBar.scroll)
-        contentOffset = Vector2(x: contentOffset.x, y: -verticalBar.scroll)
+        targetContentOffset = Vector(x: targetContentOffset.x, y: -verticalBar.scroll)
+        contentOffset = Vector(x: contentOffset.x, y: -verticalBar.scroll)
     }
     
     open override func addSubview(_ view: View) {
@@ -163,7 +163,7 @@ open class ScrollView: ControlView {
         incrementContentOffset(event.delta)
     }
 
-    private func incrementContentOffset(_ offset: Vector2) {
+    private func incrementContentOffset(_ offset: Vector) {
         if offset == .zero {
             return
         }
@@ -185,7 +185,7 @@ open class ScrollView: ControlView {
     
     /// Limits an offset vector (like `contentOffset` or `targetContentOffset`)
     /// to always be within the scrollable limits of this scroll view.
-    private func limitOffsetVector(_ offset: Vector2) -> Vector2 {
+    private func limitOffsetVector(_ offset: Vector) -> Vector {
         // Limit content offset within a maximum visible bounds
         var contentOffsetClip = Rectangle(min: -(effectiveContentSize() - bounds.size), max: .zero)
         
@@ -288,7 +288,7 @@ open class ScrollView: ControlView {
 
 public class ScrollBarControl: ControlView {
     private var isMouseDown = false
-    private var mouseDownPoint: Vector2 = .zero
+    private var mouseDownPoint: Vector = .zero
     public let orientation: Orientation
     
     /// Size of content to scroll through
@@ -414,7 +414,7 @@ public class ScrollBarControl: ControlView {
         context.fill(roundRect)
     }
     
-    private func scrollBarMouseArea() -> Vector2 {
+    private func scrollBarMouseArea() -> Vector {
         let barArea = bounds
         let ratio = visibleSize / contentSize
         

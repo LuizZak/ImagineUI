@@ -106,11 +106,11 @@ public class Blend2DRenderer: Renderer {
         _context.strokePolygon(polygon.vertices.map(\.asBLPoint))
     }
     
-    public func strokeLine(start: Vector2, end: Vector2) {
+    public func strokeLine(start: Vector, end: Vector) {
         _context.strokeLine(p0: start.asBLPoint, p1: end.asBLPoint)
     }
     
-    public func stroke(polyline: [Vector2]) {
+    public func stroke(polyline: [Vector]) {
         _context.strokePolyline(polyline.map(\.asBLPoint))
     }
     
@@ -122,7 +122,7 @@ public class Blend2DRenderer: Renderer {
         _context.blitScaledImage(image, rectangle: area.asBLRect)
     }
     
-    public func drawImage(_ image: Image, at point: Vector2) {
+    public func drawImage(_ image: Image, at point: Vector) {
         let image = blImage(from: image)
         
         _context.blitImage(image, at: point.asBLPoint)
@@ -130,23 +130,17 @@ public class Blend2DRenderer: Renderer {
     
     // MARK: - Text
     
-    public func drawTextLayout(_ layout: TextLayoutType, at point: Vector2) {
-        let layout = textLayout(from: layout)
-        
+    public func drawTextLayout(_ layout: TextLayoutType, at point: Vector) {
         let renderer = TextLayoutRenderer(textLayout: layout)
         renderer.render(in: _context, location: point.asBLPoint)
     }
     
-    public func strokeTextLayout(_ layout: TextLayoutType, at point: Vector2) {
-        let layout = textLayout(from: layout)
-        
+    public func strokeTextLayout(_ layout: TextLayoutType, at point: Vector) {
         let renderer = TextLayoutRenderer(textLayout: layout)
         renderer.strokeText(in: _context, location: point.asBLPoint)
     }
     
-    public func fillTextLayout(_ layout: TextLayoutType, at point: Vector2) {
-        let layout = textLayout(from: layout)
-        
+    public func fillTextLayout(_ layout: TextLayoutType, at point: Vector) {
         let renderer = TextLayoutRenderer(textLayout: layout)
         renderer.fillText(in: _context, location: point.asBLPoint)
     }
@@ -165,7 +159,7 @@ public class Blend2DRenderer: Renderer {
         _context.translate(x: x, y: y)
     }
     
-    public func translate(by vec: Vector2) {
+    public func translate(by vec: Vector) {
         _context.translate(x: vec.x, y: vec.y)
     }
     
@@ -173,7 +167,7 @@ public class Blend2DRenderer: Renderer {
         _context.scale(x: x, y: y)
     }
     
-    public func scale(by factor: Vector2) {
+    public func scale(by factor: Vector) {
         _context.scale(x: factor.x, y: factor.y)
     }
     
@@ -181,7 +175,7 @@ public class Blend2DRenderer: Renderer {
         _context.rotate(angle: angle)
     }
     
-    public func rotate(by angle: Double, around center: Vector2) {
+    public func rotate(by angle: Double, around center: Vector) {
         _context.rotate(angle: angle, x: center.x, y: center.y)
     }
     
@@ -221,14 +215,6 @@ public class Blend2DRenderer: Renderer {
         }
         
         return image.image
-    }
-    
-    private func textLayout(from textLayout: TextLayoutType) -> TextLayout {
-        guard let textLayout = textLayout as? TextLayout else {
-            fatalError("Unknown text layout type \(type(of: textLayout))")
-        }
-        
-        return textLayout
     }
 }
 

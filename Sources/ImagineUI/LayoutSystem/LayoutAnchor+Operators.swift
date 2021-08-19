@@ -163,7 +163,7 @@ public extension LayoutAnchorSizeUpdater {
     }
     
     @discardableResult
-    static func == (lhs: LayoutAnchorSizeUpdater, rhs: Vector2) -> [LayoutConstraint] {
+    static func == (lhs: LayoutAnchorSizeUpdater, rhs: Vector) -> [LayoutConstraint] {
         return lhs.equalTo(rhs)
     }
 }

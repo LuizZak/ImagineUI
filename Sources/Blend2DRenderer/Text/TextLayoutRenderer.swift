@@ -7,9 +7,9 @@ class TextLayoutRenderer {
     typealias Line = TextLayoutLine
     typealias LineSegment = TextLayoutLineSegment
     
-    let textLayout: TextLayout
+    let textLayout: TextLayoutType
     
-    init(textLayout: TextLayout) {
+    init(textLayout: TextLayoutType) {
         self.textLayout = textLayout
     }
     
@@ -78,7 +78,7 @@ class TextLayoutRenderer {
                 
                 // Corner radius attribute
                 if let radius = segment.textSegment.attribute(named: .cornerRadius,
-                                                              type: Vector2.self) {
+                                                              type: Vector.self) {
                     context.fillRoundRect(bounds.rounded(radius: radius).asBLRoundRect)
                 } else {
                     context.fillRect(bounds.asBLRect)

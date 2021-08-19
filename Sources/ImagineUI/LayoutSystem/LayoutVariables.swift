@@ -133,11 +133,11 @@ class LayoutVariables {
     }
 
     func applyVariables() {
-        let location: Vector2
+        let location: Vector
         if let parent = container.parent {
-            location = parent.convert(point: Vector2(x: left.value, y: top.value), from: nil)
+            location = parent.convert(point: Vector(x: left.value, y: top.value), from: nil)
         } else {
-            location = Vector2(x: left.value, y: top.value)
+            location = Vector(x: left.value, y: top.value)
         }
         
         container.area = Rectangle(location: location, size: Size(x: width.value, y: height.value))

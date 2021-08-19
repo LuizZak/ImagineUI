@@ -21,7 +21,7 @@ public class ViewBitmapCache {
             }
         }
     }
-    public var scale: Vector2 = UISettings.scale {
+    public var scale: Vector = UISettings.scale {
         didSet {
             invalidateCache()
         }

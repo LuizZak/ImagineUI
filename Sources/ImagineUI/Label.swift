@@ -175,7 +175,7 @@ open class Label: View {
             self.label = label
         }
         
-        func locationOfCharacter(index: Int) -> Vector2 {
+        func locationOfCharacter(index: Int) -> Vector {
             return textLayout.locationOfCharacter(index: index)
         }
         func boundsForCharacters(startIndex: Int, length: Int) -> [Rectangle] {
@@ -184,7 +184,7 @@ open class Label: View {
         func boundsForCharacters(in range: TextRange) -> [Rectangle] {
             return textLayout.boundsForCharacters(in: range)
         }
-        func hitTestPoint(_ point: Vector2) -> TextLayoutHitTestResult {
+        func hitTestPoint(_ point: Vector) -> TextLayoutHitTestResult {
             return textLayout.hitTestPoint(point)
         }
         func font(atLocation index: Int) -> Font {
@@ -194,13 +194,13 @@ open class Label: View {
             return textLayout.baselineHeightForLine(atIndex: index)
         }
         
-        func strokeText(in renderer: Renderer, location: Vector2) {
+        func strokeText(in renderer: Renderer, location: Vector) {
             renderer.strokeTextLayout(self, at: location)
         }
-        func fillText(in renderer: Renderer, location: Vector2) {
+        func fillText(in renderer: Renderer, location: Vector) {
             renderer.fillTextLayout(self, at: location)
         }
-        func renderText(in renderer: Renderer, location: Vector2) {
+        func renderText(in renderer: Renderer, location: Vector) {
             renderer.drawTextLayout(self, at: location)
         }
     }

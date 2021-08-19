@@ -18,7 +18,7 @@ public protocol WindowDelegate: AnyObject {
 
 public class Window: RootView {
     /// Saves the location of the window before maximizing state
-    private var _normalStateLocation: Vector2 = .zero
+    private var _normalStateLocation: Vector = .zero
     
     /// List of temporary constraints applied during window resizing to mantain
     /// one or more of the boundaries of the window area fixed while the opposite
@@ -26,11 +26,11 @@ public class Window: RootView {
     private var _resizeConstraints: [LayoutConstraint] = []
     
     private var _targetSize: Size? = nil
-    private var _maxLocationDuringDrag: Vector2 = .zero
+    private var _maxLocationDuringDrag: Vector = .zero
     private var _resizeStartArea: Rectangle = .zero
     private var _resizeCorner: BorderResize?
     private var _mouseDown = false
-    private var _mouseDownPoint: Vector2 = .zero
+    private var _mouseDownPoint: Vector = .zero
     private let _titleLabel = Label()
     private let _buttons = WindowButtons()
     private let _titleBarHeight = 25.0
@@ -253,7 +253,7 @@ public class Window: RootView {
         case .left, .topLeft, .bottomLeft:
             // Limit range of left edge to avoid compressin the window too much
             let maximumLeft = area.right - optimalSize.x
-            _maxLocationDuringDrag = Vector2(x: maximumLeft, y: 0)
+            _maxLocationDuringDrag = Vector(x: maximumLeft, y: 0)
             
             _resizeConstraints.append(
                 LayoutConstraint.create(first: layout.left,
@@ -274,7 +274,7 @@ public class Window: RootView {
         case .top, .topLeft, .topRight:
             // Limit range of top edge to avoid compressin the window too much
             let maximumTop = area.bottom - optimalSize.y
-            _maxLocationDuringDrag = Vector2(x: _maxLocationDuringDrag.x, y: maximumTop)
+            _maxLocationDuringDrag = Vector(x: _maxLocationDuringDrag.x, y: maximumTop)
             
             _resizeConstraints.append(
                 LayoutConstraint.create(first: layout.top,
@@ -297,7 +297,7 @@ public class Window: RootView {
         case .maximized:
             setWindowState(.normal)
             performLayout()
-            _mouseDownPoint = Vector2(x: size.x / 2, y: _titleBarHeight / 2)
+            _mouseDownPoint = Vector(x: size.x / 2, y: _titleBarHeight / 2)
             
         case .normal, .minimized:
             break
@@ -312,7 +312,7 @@ public class Window: RootView {
             
             _targetSize?.y = newArea.height
             size = Size(x: size.x, y: newArea.height)
-            location = Vector2(x: location.x, y: newArea.y)
+            location = Vector(x: location.x, y: newArea.y)
 
         case .topLeft:
             let clippedX = min(mouseLocation.x - _mouseDownPoint.x, _maxLocationDuringDrag.x)
@@ -331,8 +331,8 @@ public class Window: RootView {
             let newArea = _resizeStartArea.stretchingLeft(to: clippedX)
             
             _targetSize?.x = newArea.width
-            size = Vector2(x: newArea.width, y: size.y)
-            location = Vector2(x: newArea.x, y: location.y)
+            size = Vector(x: newArea.width, y: size.y)
+            location = Vector(x: newArea.x, y: location.y)
             
         case .right:
             _targetSize?.x = event.location.x
@@ -341,9 +341,9 @@ public class Window: RootView {
         case .topRight:
             let newArea = _resizeStartArea.stretchingTop(to: mouseLocation.y - _mouseDownPoint.y)
             
-            _targetSize = Vector2(x: event.location.x, y: newArea.height)
-            size = Vector2(x: size.x, y: newArea.height)
-            location = Vector2(x: location.x, y: newArea.y)
+            _targetSize = Vector(x: event.location.x, y: newArea.height)
+            size = Vector(x: size.x, y: newArea.height)
+            location = Vector(x: location.x, y: newArea.y)
 
         case .bottomRight:
             _targetSize = event.location
@@ -357,9 +357,9 @@ public class Window: RootView {
             let clippedX = min(mouseLocation.x - _mouseDownPoint.x, _maxLocationDuringDrag.x)
             let newArea = _resizeStartArea.stretchingLeft(to: clippedX)
             
-            _targetSize = Vector2(x: newArea.width, y: event.location.y)
-            size = Vector2(x: newArea.width, y: size.y)
-            location = Vector2(x: newArea.x, y: location.y)
+            _targetSize = Vector(x: newArea.width, y: event.location.y)
+            size = Vector(x: newArea.width, y: size.y)
+            location = Vector(x: newArea.x, y: location.y)
             
         case .none:
             location = mouseLocation - _mouseDownPoint
@@ -400,7 +400,7 @@ public class Window: RootView {
         
         var gradient
             = Gradient.linear(start: titleBarArea.topLeft,
-                              end: titleBarArea.bottomLeft + Vector2(x: 0, y: 10))
+                              end: titleBarArea.bottomLeft + Vector(x: 0, y: 10))
         
         gradient.addStop(offset: 0, color: .dimGray)
         gradient.addStop(offset: 1, color: .gray)
@@ -413,7 +413,7 @@ public class Window: RootView {
         renderer.restoreClipping()
     }
     
-    private func updateMouseResizeCursor(_ point: Vector2) {
+    private func updateMouseResizeCursor(_ point: Vector) {
         let resize = resizeAtPoint(point)
         updateMouseResizeCursor(resize)
     }
@@ -431,12 +431,12 @@ public class Window: RootView {
         case .topLeft, .bottomRight:
             // TODO: Remove this hardcoded image paths
             cursor = .custom(imagePath: "/System/Library/Frameworks/WebKit.framework/Versions/Current/Frameworks/WebCore.framework/Resources/northWestSouthEastResizeCursor.png",
-                             hotspot: Vector2(x: 8, y: 8))
+                             hotspot: Vector(x: 8, y: 8))
         
         case .topRight, .bottomLeft:
             // TODO: Remove this hardcoded image paths
             cursor = .custom(imagePath: "/System/Library/Frameworks/WebKit.framework/Versions/Current/Frameworks/WebCore.framework/Resources/northEastSouthWestResizeCursor.png",
-                             hotspot: Vector2(x: 8, y: 8))
+                             hotspot: Vector(x: 8, y: 8))
             
         case .none:
             break
@@ -449,7 +449,7 @@ public class Window: RootView {
         }
     }
     
-    private func resizeAtPoint(_ point: Vector2) -> BorderResize? {
+    private func resizeAtPoint(_ point: Vector) -> BorderResize? {
         let topLength = 3.0
         let length = 7.0
         

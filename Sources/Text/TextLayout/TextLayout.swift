@@ -58,10 +58,10 @@ public class TextLayout: TextLayoutType {
         layoutLines()
     }
 
-    public func locationOfCharacter(index: Int) -> Vector2 {
+    public func locationOfCharacter(index: Int) -> Vector {
         func offsetFromLineSegment(line: TextLayoutLine,
                                    segment: TextLayoutLineSegment,
-                                   offset: Int) -> Vector2 {
+                                   offset: Int) -> Vector {
             
             let offsetIndex = offset - segment.startCharacterIndex
             
@@ -69,7 +69,7 @@ public class TextLayout: TextLayoutType {
             var iterator = segment.glyphBuffer.makeIterator()
             for _ in 0..<offsetIndex {
                 if let placement = iterator.advanceOffset {
-                    location += segment.font.matrix.transform(Vector2(placement.advance))
+                    location += segment.font.matrix.transform(Vector(placement.advance))
                 }
                 
                 iterator.advance()
@@ -124,7 +124,7 @@ public class TextLayout: TextLayoutType {
                 
                 let height = Double(segment.font.metrics.ascent + segment.font.metrics.descent)
                 
-                var advanceOffset: Vector2 = .zero
+                var advanceOffset: Vector = .zero
                 
                 var iterator = segment.glyphBuffer.makeIterator()
                 while !iterator.atEnd {
@@ -160,7 +160,7 @@ public class TextLayout: TextLayoutType {
         return boundsList
     }
     
-    public func hitTestPoint(_ point: Vector2) -> TextLayoutHitTestResult {
+    public func hitTestPoint(_ point: Vector) -> TextLayoutHitTestResult {
         guard let line = lineAtHeight(point.y) else {
             return TextLayoutHitTestResult(isInside: false,
                                            textPosition: 0,
@@ -415,7 +415,7 @@ private class LineCollector {
         prepareWorkingLineFromCurrentState(topLeft: line.bounds.bottomLeft)
     }
     
-    private func prepareWorkingSegmentFromCurrentState(topLeft: Vector2) {
+    private func prepareWorkingSegmentFromCurrentState(topLeft: Vector) {
         let segmentFontAttribute = currentSegment.textAttributes[.font] as? Font
         let segmentFont = segmentFontAttribute ?? font
         
@@ -426,7 +426,7 @@ private class LineCollector {
                            topLeft: topLeft)
     }
     
-    private func prepareWorkingLineFromCurrentState(topLeft: Vector2) {
+    private func prepareWorkingLineFromCurrentState(topLeft: Vector) {
         prepareWorkingSegmentFromCurrentState(topLeft: .zero)
         
         currentWorkingLine =
@@ -448,7 +448,7 @@ private class LineCollector {
         var font: Font
         var startIndex: String.Index
         var startCharIndex: Int
-        var topLeft: Vector2
+        var topLeft: Vector
         
         func makeLineSegment(endCharIndex: Int, endIndex: String.Index,
                              text: String,
@@ -473,7 +473,7 @@ private class LineCollector {
             
             let originalBounds = font.matrix.toMatrix2D().inverted().transform(bounds)
             
-            let offset = Vector2(x: 0, y: Double(font.metrics.ascent))
+            let offset = Vector(x: 0, y: Double(font.metrics.ascent))
             
             return TextLayoutLineSegment(
                 startCharacterIndex: startCharIndex,
@@ -495,7 +495,7 @@ private class LineCollector {
         var startIndex: String.Index
         var startCharIndex: Int
         var segments: [TextLayoutLineSegment]
-        var topLeft: Vector2
+        var topLeft: Vector
         
         func makeLine(text: String) -> TextLayoutLine {
             let startIndex = segments[0].startIndex

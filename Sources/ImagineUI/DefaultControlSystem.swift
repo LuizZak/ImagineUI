@@ -228,7 +228,7 @@ public class DefaultControlSystem: ControlSystem {
 private extension MouseEventArgs {
     func convertLocation(handler: EventHandler) -> MouseEventArgs {
         var mouseEvent = self
-        let point = Vector2(x: Double(mouseEvent.location.x), y: Double(mouseEvent.location.y))
+        let point = Vector(x: Double(mouseEvent.location.x), y: Double(mouseEvent.location.y))
         mouseEvent.location = handler.convertFromScreen(point)
 
         return mouseEvent
@@ -237,7 +237,7 @@ private extension MouseEventArgs {
 
 public protocol DefaultControlSystemDelegate: AnyObject {
     func bringRootViewToFront(_ rootView: RootView)
-    func controlViewUnder(point: Vector2, enabledOnly: Bool) -> ControlView?
+    func controlViewUnder(point: Vector, enabledOnly: Bool) -> ControlView?
     func setMouseCursor(_ cursor: MouseCursorKind)
     func setMouseHiddenUntilMouseMoves()
 }
@@ -261,15 +261,15 @@ private class InnerEventRequest<THandler> : EventRequest {
 }
 
 private class InnerMouseEventRequest: InnerEventRequest<MouseEventHandler>, MouseEventRequest {
-    var screenLocation: Vector2
+    var screenLocation: Vector
     var buttons: MouseButton
-    var delta: Vector2
+    var delta: Vector
     var clicks: Int
     var eventType: MouseEventType
 
-    init(screenLocation: Vector2,
+    init(screenLocation: Vector,
          buttons: MouseButton,
-         delta: Vector2,
+         delta: Vector,
          clicks: Int,
          eventType: MouseEventType,
          onAccept: @escaping (MouseEventHandler) -> Void) {

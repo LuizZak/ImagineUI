@@ -15,21 +15,21 @@ public protocol MouseEventHandler: EventHandler {
 /// Event requests for mouse input
 public protocol MouseEventRequest: EventRequest {
     var eventType: MouseEventType { get }
-    var screenLocation: Vector2 { get }
+    var screenLocation: Vector { get }
     var buttons: MouseButton { get }
-    var delta: Vector2 { get }
+    var delta: Vector { get }
     var clicks: Int { get }
 }
 
 public struct MouseEventArgs {
-    public var location: Vector2
+    public var location: Vector
     public var buttons: MouseButton
-    public var delta: Vector2
+    public var delta: Vector
     public var clicks: Int
     
-    public init(location: Vector2,
+    public init(location: Vector,
                 buttons: MouseButton,
-                delta: Vector2,
+                delta: Vector,
                 clicks: Int) {
         
         self.location = location

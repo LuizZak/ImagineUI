@@ -14,12 +14,12 @@ extension BLLine {
 }
 
 extension BLPoint {
-    var asVector2: Vector2 {
+    var asVector2: Vector {
         return Vector2(x: x, y: y)
     }
 }
 
-extension Vector2 {
+extension Vector {
     var asBLPoint: BLPoint {
         return BLPoint(x: x, y: y)
     }
@@ -99,7 +99,7 @@ extension Circle {
 
 extension BLEllipse {
     var asEllipse: Ellipse {
-        return Ellipse(center: Vector2(x: cx, y: cy), radiusX: rx, radiusY: ry)
+        return Ellipse(center: Vector(x: cx, y: cy), radiusX: rx, radiusY: ry)
     }
 }
 

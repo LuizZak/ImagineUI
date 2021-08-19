@@ -406,7 +406,7 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
     /// this `ControlView`
     /// - Parameter enabledOnly: Whether to only consider views that have
     /// interactivity enabled. See `interactionEnabled`
-    public func hitTestControl(_ point: Vector2, enabledOnly: Bool = true) -> ControlView? {
+    public func hitTestControl(_ point: Vector, enabledOnly: Bool = true) -> ControlView? {
         let controlView = viewUnder(point: point) { view -> Bool in
             guard let control = view as? ControlView else {
                 return false

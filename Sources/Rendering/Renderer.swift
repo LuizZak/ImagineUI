@@ -74,10 +74,10 @@ public protocol Renderer {
     
     /// Strokes a line formed by the given start and end vectors with the
     /// current stroke style
-    func strokeLine(start: Vector2, end: Vector2)
+    func strokeLine(start: Vector, end: Vector)
     
     /// Strokes a list of points as a contiguous line
-    func stroke(polyline: [Vector2])
+    func stroke(polyline: [Vector])
     
     // MARK: - Bitmap
     
@@ -85,18 +85,18 @@ public protocol Renderer {
     func drawImageScaled(_ image: Image, area: Rectangle)
     
     /// Draws a given image at a given point
-    func drawImage(_ image: Image, at point: Vector2)
+    func drawImage(_ image: Image, at point: Vector)
     
     // MARK: - Text
     
     /// Draws a text layout on a given point
-    func drawTextLayout(_ layout: TextLayoutType, at point: Vector2)
+    func drawTextLayout(_ layout: TextLayoutType, at point: Vector)
     
     /// Strokes a text layout on a given point
-    func strokeTextLayout(_ layout: TextLayoutType, at point: Vector2)
+    func strokeTextLayout(_ layout: TextLayoutType, at point: Vector)
     
     /// Fills a text layout on a given point
-    func fillTextLayout(_ layout: TextLayoutType, at point: Vector2)
+    func fillTextLayout(_ layout: TextLayoutType, at point: Vector)
     
     // MARK: - Transformation
     
@@ -111,13 +111,13 @@ public protocol Renderer {
     func translate(x: Double, y: Double)
     
     /// Applies a translation transform to the subsequent draw calls on this renderer
-    func translate(by vec: Vector2)
+    func translate(by vec: Vector)
     
     /// Applies a scale transform to the subsequent draw calls on this renderer
     func scale(x: Double, y: Double)
     
     /// Applies a scale transform to the subsequent draw calls on this renderer
-    func scale(by factor: Vector2)
+    func scale(by factor: Vector)
     
     /// Applies a rotation transform to the subsequent draw calls on this renderer
     ///
@@ -131,7 +131,7 @@ public protocol Renderer {
     /// - parameters:
     ///     - angle: The angle to rotate by, in radians
     ///     - center: The center point of the rotation transform
-    func rotate(by angle: Double, around center: Vector2)
+    func rotate(by angle: Double, around center: Vector)
     
     // MARK: - Clipping
     

@@ -18,7 +18,7 @@ open class TextField: ControlView {
     // the state clutter here
 
     private var _lastMouseDown: TimeInterval = 0
-    private var _lastMouseDownPoint: Vector2 = .zero
+    private var _lastMouseDownPoint: Vector = .zero
     private var _selectingWordSpan: Bool = false
     private var _wordSpanStartPosition: Int = 0
     private var _mouseDown = false
@@ -629,9 +629,9 @@ open class TextField: ControlView {
         
         if !_labelContainer.contains(point: locInContainer) {
             if locInContainer.x > _labelContainer.bounds.width {
-                labelOffset = labelOffset - Vector2(x: locInContainer.x - _labelContainer.bounds.width, y: 0)
+                labelOffset = labelOffset - Vector(x: locInContainer.x - _labelContainer.bounds.width, y: 0)
             } else {
-                labelOffset = labelOffset - Vector2(x: locInContainer.x, y: 0)
+                labelOffset = labelOffset - Vector(x: locInContainer.x, y: 0)
             }
         }
     }
@@ -650,7 +650,7 @@ open class TextField: ControlView {
         _labelContainer.bounds.size = insetBounds.size
         
         // Currently, setting location.y individually causes a runtime crash
-        _label.location = Vector2(x: _label.location.x, y: _labelContainer.bounds.height / 2 - _label.bounds.height / 2)
+        _label.location = Vector(x: _label.location.x, y: _labelContainer.bounds.height / 2 - _label.bounds.height / 2)
         
         _label.bounds.width = max(_label.bounds.width, _labelContainer.bounds.width)
         
@@ -715,7 +715,7 @@ open class TextField: ControlView {
     // MARK: - Text Location
 
     /// Returns string offset at a given point on this text field.
-    private func offsetUnder(point: Vector2) -> Int {
+    private func offsetUnder(point: Vector) -> Int {
         let converted = _label.convert(point: point, from: self)
         
         let result = _label.textLayout.hitTestPoint(converted)
@@ -726,7 +726,7 @@ open class TextField: ControlView {
 
     /// Returns the point for a given string offset, locally on this text
     /// field's coordinates.
-    private func locationForOffset(_ offset: Int) -> Vector2 {
+    private func locationForOffset(_ offset: Int) -> Vector {
         var position = _label.textLayout.locationOfCharacter(index: offset)
         
         position = _label.convert(point: position, to: self)

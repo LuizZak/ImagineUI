@@ -1,7 +1,7 @@
 import Geometry
 import SwiftBlend2D
 
-public extension Vector2 {
+public extension Vector {
     var asBLPoint: BLPoint {
         return BLPoint(x: x, y: y)
     }
@@ -20,13 +20,13 @@ public extension BLLine {
 }
 
 public extension BLPoint {
-    var asVector2: Vector2 {
+    var asVector2: Vector {
         return Vector2(x: x, y: y)
     }
 }
 
 public extension BLPointI {
-    var asVector2: Vector2 {
+    var asVector2: Vector {
         return Vector2(x: Double(x), y: Double(y))
     }
 }

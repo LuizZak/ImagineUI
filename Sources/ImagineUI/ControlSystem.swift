@@ -34,5 +34,5 @@ public enum MouseCursorKind {
     case iBeam
     case resizeUpDown
     case resizeLeftRight
-    case custom(imagePath: String, hotspot: Vector2)
+    case custom(imagePath: String, hotspot: Vector)
 }
