@@ -400,7 +400,9 @@ public struct AttributedText: Equatable {
     }
 }
 
-// MARK: -
+// TODO: Use typed system to define attribute name and attribute values so mis-typing attributes is not possible
+
+// MARK: - Attribute definitions
 
 /// Describes a type that can be used as a text attribute value in an
 /// `AttributedText`'s attributes dictionary
