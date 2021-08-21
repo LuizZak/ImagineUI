@@ -398,7 +398,7 @@ open class View {
     open func invalidate(bounds: Rectangle) {
         var bounds = bounds
         if clipToBounds {
-            bounds = bounds.intersection(self.boundsForRedraw())
+            bounds = bounds.intersection(self.boundsForRedraw()) ?? .zero
         }
         if bounds.width == 0 || bounds.height == 0 {
             return

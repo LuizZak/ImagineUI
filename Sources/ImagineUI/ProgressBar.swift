@@ -41,7 +41,7 @@ public class ProgressBar: ControlView {
     
     func progressBarRoundRect() -> RoundRectangle {
         let rect = progressBarBounds()
-        return RoundRectangle(bounds: rect, radius: Vector2(x: rect.height / 2, y: rect.height / 2))
+        return RoundRectangle(bounds: rect, radius: Vector(x: rect.height / 2, y: rect.height / 2))
     }
     
     func progressBarBounds() -> Rectangle {

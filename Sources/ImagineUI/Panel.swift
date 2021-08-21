@@ -28,7 +28,7 @@ public class Panel: ControlView {
     /// The upper bounds of the container is always connected to the bottom of
     /// the panel's label, if `!title.isEmpty`, otherwise, the top edge relates
     /// to the panel's own top edge.
-    public var containerInset: EdgeInsets = EdgeInsets(top: 4, left: 8, bottom: 8, right: 8) {
+    public var containerInset: EdgeInsets = EdgeInsets(left: 8, top: 4, right: 8, bottom: 8) {
         didSet {
             updateConstraints()
         }

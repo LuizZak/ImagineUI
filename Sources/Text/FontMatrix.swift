@@ -37,14 +37,6 @@ public struct FontMatrix {
     /// capable of containing all four mapped points.
     @inlinable
     public func transform(_ rect: Rectangle) -> Rectangle {
-        var minimum = min(transform(rect.topLeft), transform(rect.topRight))
-        minimum = min(minimum, transform(rect.bottomLeft))
-        minimum = min(minimum, transform(rect.bottomRight))
-
-        var maximum = max(transform(rect.topLeft), transform(rect.topRight))
-        maximum = max(maximum, transform(rect.bottomLeft))
-        maximum = max(maximum, transform(rect.bottomRight))
-
-        return Rectangle(left: minimum.x, top: minimum.y, right: maximum.x, bottom: maximum.y)
+        toMatrix2D().transform(rect)
     }
 }

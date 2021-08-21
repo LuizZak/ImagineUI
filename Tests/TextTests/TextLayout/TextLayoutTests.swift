@@ -29,7 +29,7 @@ class TextLayoutTests: XCTestCase {
         
         let location = sut.locationOfCharacter(index: 2)
         
-        XCTAssertEqual(location, Vector2(x: 17.978515625, y: 0.0))
+        XCTAssertEqual(location, Vector(x: 17.978515625, y: 0.0))
     }
     
     func testLocationOfCharacterOffBounds() {
@@ -43,7 +43,7 @@ class TextLayoutTests: XCTestCase {
     func testHitTestPoint() {
         let sut = makeSut(text: "A string")
         
-        let hitTest = sut.hitTestPoint(Vector2(x: 3, y: 2))
+        let hitTest = sut.hitTestPoint(Vector(x: 3, y: 2))
         
         XCTAssert(hitTest.isInside)
         XCTAssertEqual(hitTest.textPosition, 0)
@@ -57,7 +57,7 @@ class TextLayoutTests: XCTestCase {
         ])
         let sut = makeSut(attributedText: attributed)
         
-        let hitTest = sut.hitTestPoint(Vector2(x: 40, y: 2))
+        let hitTest = sut.hitTestPoint(Vector(x: 40, y: 2))
         
         XCTAssert(hitTest.isInside)
         XCTAssertEqual(hitTest.textPosition, 4)
@@ -67,7 +67,7 @@ class TextLayoutTests: XCTestCase {
     func testHitTestPointTrailing() {
         let sut = makeSut(text: "A string")
         
-        let hitTest = sut.hitTestPoint(Vector2(x: 12, y: 2))
+        let hitTest = sut.hitTestPoint(Vector(x: 12, y: 2))
         
         XCTAssert(hitTest.isInside)
         XCTAssertEqual(hitTest.textPosition, 0)
@@ -77,7 +77,7 @@ class TextLayoutTests: XCTestCase {
     func testHitTestPointOutsideBoxRight() {
         let sut = makeSut(text: "A string")
         
-        let hitTest = sut.hitTestPoint(Vector2(x: 200, y: 0))
+        let hitTest = sut.hitTestPoint(Vector(x: 200, y: 0))
         
         XCTAssertFalse(hitTest.isInside)
         XCTAssertEqual(hitTest.textPosition, 7)
@@ -86,7 +86,7 @@ class TextLayoutTests: XCTestCase {
     func testHitTestPointOutsideBoxBelow() {
         let sut = makeSut(text: "A string")
         
-        let hitTest = sut.hitTestPoint(Vector2(x: 14, y: 50))
+        let hitTest = sut.hitTestPoint(Vector(x: 14, y: 50))
         
         XCTAssertFalse(hitTest.isInside)
         XCTAssertEqual(hitTest.textPosition, 1)
@@ -95,7 +95,7 @@ class TextLayoutTests: XCTestCase {
     func testHitTestPointMultiline() {
         let sut = makeSut(text: "A string\nAnother line")
         
-        let hitTest = sut.hitTestPoint(Vector2(x: 14, y: 60))
+        let hitTest = sut.hitTestPoint(Vector(x: 14, y: 60))
         
         XCTAssertFalse(hitTest.isInside)
         XCTAssertEqual(hitTest.textPosition, 10)
@@ -106,7 +106,7 @@ class TextLayoutTests: XCTestCase {
         
         measure {
             for _ in 0..<100 {
-                _ = sut.hitTestPoint(Vector2(x: 300, y: 700))
+                _ = sut.hitTestPoint(Vector(x: 300, y: 700))
             }
         }
     }
@@ -116,7 +116,7 @@ class TextLayoutTests: XCTestCase {
         
         measure {
             for _ in 0..<100 {
-                _ = sut.hitTestPoint(Vector2(x: 4000, y: 70))
+                _ = sut.hitTestPoint(Vector(x: 4000, y: 70))
             }
         }
     }

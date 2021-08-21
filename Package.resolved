@@ -14,8 +14,8 @@
         "package": "Geometria",
         "repositoryURL": "https://github.com/LuizZak/Geometria.git",
         "state": {
-          "branch": "main",
-          "revision": "cc68c9e8f5c9aa463268e0bec524ff6ddcfb10eb",
+          "branch": "nosimd-vectortype",
+          "revision": "ea8254412440dd509397005763fbc299697f07a4",
           "version": null
         }
       },

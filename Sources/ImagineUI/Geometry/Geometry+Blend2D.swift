@@ -21,13 +21,13 @@ public extension BLLine {
 
 public extension BLPoint {
     var asVector2: Vector {
-        return Vector2(x: x, y: y)
+        return Vector(x: x, y: y)
     }
 }
 
 public extension BLPointI {
     var asVector2: Vector {
-        return Vector2(x: Double(x), y: Double(y))
+        return Vector(x: Double(x), y: Double(y))
     }
 }
 

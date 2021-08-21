@@ -402,6 +402,18 @@ public struct AttributedText: Equatable {
 
 // TODO: Use typed system to define attribute name and attribute values so mis-typing attributes is not possible
 
+struct Attribute<T> {
+    var name: String
+    
+    init(name: String) {
+        self.name = name
+    }
+    
+    func getValue(in attributes: AttributedText.Attributes) -> T? {
+        return attributes[AttributedText.AttributeName(rawValue: name)] as? T
+    }
+}
+
 // MARK: - Attribute definitions
 
 /// Describes a type that can be used as a text attribute value in an

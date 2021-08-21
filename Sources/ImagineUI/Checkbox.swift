@@ -60,7 +60,7 @@ open class Checkbox: ControlView {
 
         // Label constraints
         label.layout.makeConstraints { make in
-            make.edges.equalTo(self, inset: EdgeInsets(top: 0, left: 16, bottom: 0, right: 0))
+            make.edges.equalTo(self, inset: EdgeInsets(left: 16, top: 0, right: 0, bottom: 0))
         }
     }
     
@@ -150,8 +150,8 @@ open class Checkbox: ControlView {
             renderer.fill(rect)
 
             let points = [
-                Vector2(x: checkArea.left, y: checkAreaBottomLeft.top),
-                Vector2(x: checkAreaBottomLeft.right, y: checkArea.bottom),
+                Vector(x: checkArea.left, y: checkAreaBottomLeft.top),
+                Vector(x: checkAreaBottomLeft.right, y: checkArea.bottom),
                 checkArea.topRight
             ]
             

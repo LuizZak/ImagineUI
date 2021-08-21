@@ -1,12 +1,13 @@
 @_exported import Geometria
+import simd
 
-public typealias Vector = Vector2D
-public typealias Size = Vector2D
+public typealias Vector = Vector2<Double>
+public typealias Size = Vector
 public typealias IntPoint = Vector2i
-public typealias Rectangle = Rectangle2D
-public typealias EdgeInsets = EdgeInsets2D
-public typealias RoundRectangle = RoundRectangle2D
-public typealias Circle = Circle2D
-public typealias Ellipse = Ellipse2D
-public typealias Line = Line2D
-public typealias Polygon = Polygon2D
+public typealias Rectangle = Geometria.Rectangle<Vector>
+public typealias EdgeInsets = EdgeInsets2<Vector>
+public typealias RoundRectangle = RoundRectangle2<Vector>
+public typealias Circle = Geometria.NSphere<Vector>
+public typealias Ellipse = Ellipse2<Vector>
+public typealias Line = Geometria.Line<Vector>
+public typealias Polygon = Geometria.LinePolygon<Vector>

@@ -15,7 +15,7 @@ extension BLLine {
 
 extension BLPoint {
     var asVector2: Vector {
-        return Vector2(x: x, y: y)
+        return Vector(x: x, y: y)
     }
 }
 
