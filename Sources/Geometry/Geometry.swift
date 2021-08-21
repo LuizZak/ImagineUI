@@ -1,7 +1,7 @@
 @_exported import Geometria
 import simd
 
-public typealias Vector = Vector2<Double>
+public typealias Vector = SIMD2<Double>
 public typealias Size = Vector
 public typealias IntPoint = Vector2i
 public typealias Rectangle = Geometria.Rectangle<Vector>
