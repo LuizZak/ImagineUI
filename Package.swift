@@ -11,7 +11,7 @@ let package = Package(
             targets: ["ImagineUI"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/LuizZak/Geometria.git", .branch("nosimd-vectortype")),
+        .package(url: "https://github.com/LuizZak/Geometria.git", .branch("main")),
         .package(url: "https://github.com/LuizZak/CassowarySwift.git", .branch("master")),
         .package(url: "https://github.com/LuizZak/swift-blend2d.git", .branch("master")),
         .package(url: "https://github.com/LuizZak/swift-libpng.git", .branch("master"))
