@@ -145,12 +145,14 @@ open class Label: View {
     }
 
     private func recreateCachedTextLayout() -> TextLayoutType {
-        _cachedTextLayout = TextLayout(font: font, attributedText: attributedText,
-                                       availableSize: bounds.size,
-                                       horizontalAlignment: horizontalTextAlignment,
-                                       verticalAlignment: verticalTextAlignment)
+        let layout = TextLayout(font: font, attributedText: attributedText,
+                                availableSize: bounds.size,
+                                horizontalAlignment: horizontalTextAlignment,
+                                verticalAlignment: verticalTextAlignment)
+        
+        _cachedTextLayout = layout
 
-        return _cachedTextLayout!
+        return layout
     }
 
     private class InnerLabelTextLayout: TextLayoutType {
