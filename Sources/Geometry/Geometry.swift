@@ -9,5 +9,5 @@ public typealias EdgeInsets = EdgeInsets2<Vector>
 public typealias RoundRectangle = RoundRectangle2<Vector>
 public typealias Circle = Geometria.NSphere<Vector>
 public typealias Ellipse = Ellipsoid<Vector>
-public typealias Line = Geometria.Line<Vector>
+public typealias Line = Geometria.LineSegment<Vector>
 public typealias Polygon = Geometria.LinePolygon<Vector>

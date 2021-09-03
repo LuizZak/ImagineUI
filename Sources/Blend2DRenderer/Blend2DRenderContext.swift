@@ -1,12 +1,16 @@
 import SwiftBlend2D
 import Rendering
 
-class Blend2DRendererContext: RenderContext {
-    var fontManager: FontManager {
+public class Blend2DRendererContext: RenderContext {
+    public var fontManager: FontManager {
         return Blend2DFontManager()
     }
     
-    func createImage(width: Int, height: Int) -> Image {
+    public init() {
+        
+    }
+    
+    public func createImage(width: Int, height: Int) -> Image {
         let img = BLImage(width: width, height: height, format: .prgb32)
         
         let ctx = BLContext(image: img, options: nil)!
@@ -16,11 +20,11 @@ class Blend2DRendererContext: RenderContext {
         return Blend2DImage(image: img)
     }
     
-    func createImageRenderer(width: Int, height: Int) -> ImageRenderContext {
+    public func createImageRenderer(width: Int, height: Int) -> ImageRenderContext {
         return Blend2DImageRenderContext(width: width, height: height)
     }
     
-    func createRegion() -> Region {
+    public func createRegion() -> Region {
         return Blend2DRegion()
     }
 }

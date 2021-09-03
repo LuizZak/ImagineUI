@@ -15,7 +15,7 @@
         "repositoryURL": "https://github.com/LuizZak/Geometria.git",
         "state": {
           "branch": "main",
-          "revision": "516f145180b61af806b34a500377da1d5e833551",
+          "revision": "e6b594901c608d968cd5fc654a69e98295636b4a",
           "version": null
         }
       },
@@ -42,8 +42,8 @@
         "repositoryURL": "https://github.com/apple/swift-numerics",
         "state": {
           "branch": null,
-          "revision": "6583ac70c326c3ee080c1d42d9ca3361dca816cd",
-          "version": "0.1.0"
+          "revision": "0a23770641f65a4de61daf5425a37ae32a3fd00d",
+          "version": "1.0.1"
         }
       }
     ]

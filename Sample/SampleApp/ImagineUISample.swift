@@ -4,6 +4,7 @@ import SwiftBlend2D
 import ImagineUI
 import Cassowary
 import Cocoa
+import Blend2DRenderer
 
 class ImagineUI: Blend2DSample {
     private var lastFrame: TimeInterval = 0
@@ -11,17 +12,19 @@ class ImagineUI: Blend2DSample {
     var bounds: BLRect
     var width: Int
     var height: Int
-
+    
+    let rendererContext = Blend2DRendererContext()
+    
     var sampleRenderScale = BLPoint(x: 2, y: 2)
-
+    
     var controlSystem = DefaultControlSystem()
-
+    
     var rootViews: [RootView]
-
+    
     var currentRedrawRegion: Rectangle? = nil
     
     var debugDrawFlags: Set<DebugDraw.DebugDrawFlags> = []
-
+    
     init(size: BLSizeI) {
         width = Int(size.w)
         height = Int(size.h)
@@ -30,28 +33,31 @@ class ImagineUI: Blend2DSample {
         controlSystem.delegate = self
         UISettings.scale = sampleRenderScale.asVector2
         globalTextClipboard = MacOSTextClipboard()
-
+    
+        try! UISettings.initialize(.init(fontManager: Blend2DFontManager(),
+                                         defaultFontPath: Fonts.fontFilePath))
+        
         initWindows()
     }
-
+    
     func initWindows() {
         let window =
-            Window(area: Rectangle(x: 50, y: 120, width: 320, height: 330),
-                   title: "Window")
+        Window(area: Rectangle(x: 50, y: 120, width: 320, height: 330),
+               title: "Window")
         window.delegate = self
         window.areaIntoConstraintsMask = [.location]
         window.rootControlSystem = controlSystem
         window.invalidationDelegate = self
-
+        
         let panel = Panel(title: "A Panel")
         let panelContents = StackView(orientation: .vertical)
         panelContents.spacing = 5
         panelContents.clipToBounds = false
-
+        
         let radioButton = RadioButton(title: "Unselected")
         let radioButton2 = RadioButton(title: "Selected")
         radioButton2.isSelected = true
-
+        
         let checkBox1 = Checkbox(title: "Unselected")
         let checkBox2 = Checkbox(title: "Partial")
         checkBox2.checkboxState = .partial
@@ -59,7 +65,7 @@ class ImagineUI: Blend2DSample {
         let checkBox3 = Checkbox(title: "Checked")
         checkBox3.checkboxState = .checked
         checkBox3.isEnabled = false
-
+        
         let button = Button(title: "Button")
         
         var attributedText = AttributedText()
@@ -70,11 +76,11 @@ class ImagineUI: Blend2DSample {
         label.attributedText = attributedText
         label.horizontalTextAlignment = .center
         label.verticalTextAlignment = .center
-
+        
         let textField = TextField()
         textField.text = "Abc"
         textField.placeholderText = "Placeholder"
-
+        
         let progressBar = ProgressBar()
         progressBar.progress = 0.75
         
@@ -84,7 +90,7 @@ class ImagineUI: Blend2DSample {
         sliderView.value = 0.75
         sliderView.stepValue = 0.05
         sliderView.showLabels = true
-
+        
         let scrollView = ScrollView(scrollBarsMode: .vertical)
         scrollView.backColor = .white
         scrollView.contentSize = Size(x: 0, y: 300)
@@ -97,7 +103,7 @@ class ImagineUI: Blend2DSample {
         
         let imageView = ImageView(image: createSampleImage())
         let imageViewPanel = Panel(title: "Image View")
-
+        
         let firstColumn = StackView(orientation: .vertical)
         firstColumn.spacing = 5
         firstColumn.clipToBounds = false
@@ -184,7 +190,7 @@ class ImagineUI: Blend2DSample {
         scrollViewLabel.layout.makeConstraints { make in
             make.edges == scrollView.contentView
         }
-
+        
         button.mouseClicked.addListener(owner: self) { _ in
             label.isVisible.toggle()
         }
@@ -196,16 +202,16 @@ class ImagineUI: Blend2DSample {
         window.performLayout()
         
         createRenderSettingsWindow()
-
+        
         rootViews.append(window)
-
+        
         lastFrame = CACurrentMediaTime()
     }
-
+    
     func resize(width: Int, height: Int) {
         self.width = width
         self.height = height
-
+        
         bounds = BLRect(location: .zero, size: BLSize(w: Double(width), h: Double(height)))
         currentRedrawRegion = bounds.asRectangle
         
@@ -218,13 +224,13 @@ class ImagineUI: Blend2DSample {
         currentRedrawRegion = bounds.asRectangle
         delegate?.invalidate(bounds: bounds.asRectangle)
     }
-
+    
     func update(_ time: TimeInterval) {
         // Fixed-frame update
         let delta = time - lastFrame
         lastFrame = time
         Scheduler.instance.onFixedFrame(delta)
-
+        
         performLayout()
     }
     
@@ -234,7 +240,7 @@ class ImagineUI: Blend2DSample {
             rootView.performLayout()
         }
     }
-
+    
     func render(context ctx: BLContext) {
         guard let rect = currentRedrawRegion else {
             return
@@ -242,14 +248,16 @@ class ImagineUI: Blend2DSample {
         
         ctx.scale(by: sampleRenderScale)
         ctx.setFillStyle(BLRgba32.cornflowerBlue)
-
+        
         let redrawRegion = BLRegion(rectangle: BLRectI(rounding: rect.asBLRect))
-
+        
         ctx.fillRect(rect.asBLRect)
-
+        
+        let renderer = Blend2DRenderer(context: ctx)
+        
         // Redraw loop
         for rootView in rootViews {
-            rootView.renderRecursive(in: ctx, screenRegion: redrawRegion)
+            rootView.renderRecursive(in: renderer, screenRegion: Blend2DClipRegion(region: redrawRegion))
         }
         
         // Debug render
@@ -257,15 +265,15 @@ class ImagineUI: Blend2DSample {
             DebugDraw.debugDrawRecursive(rootView, flags: debugDrawFlags, to: ctx)
         }
     }
-
+    
     func mouseDown(event: MouseEventArgs) {
         controlSystem.onMouseDown(event)
     }
-
+    
     func mouseMoved(event: MouseEventArgs) {
         controlSystem.onMouseMove(event)
     }
-
+    
     func mouseUp(event: MouseEventArgs) {
         controlSystem.onMouseUp(event)
     }
@@ -273,11 +281,11 @@ class ImagineUI: Blend2DSample {
     func mouseScroll(event: MouseEventArgs) {
         controlSystem.onMouseWheel(event)
     }
-
+    
     func keyDown(event: KeyEventArgs) {
         controlSystem.onKeyDown(event)
     }
-
+    
     func keyUp(event: KeyEventArgs) {
         controlSystem.onKeyUp(event)
     }
@@ -341,32 +349,46 @@ class ImagineUI: Blend2DSample {
         rootViews.append(window)
     }
     
-    func createSampleImage() -> BLImage {
-        let img = BLImage(width: 64, height: 64, format: .prgb32)
-        let ctx = BLContext(image: img)!
+    func createSampleImage() -> Image {
+        let imgRenderer = rendererContext.createImageRenderer(width: 64, height: 64)
         
-        ctx.clearAll()
-        ctx.setFillStyle(BLRgba32.skyBlue)
-        ctx.fillRect(BLRect(x: 0, y: 0, w: 64, h: 64))
+        let ctx = imgRenderer.renderer
+        
+        ctx.clear()
+        ctx.setFill(Color.skyBlue)
+        ctx.fill(Rectangle(x: 0, y: 0, width: 64, height: 64))
         
         // Render two mountains
-        ctx.setFillStyle(BLRgba32.forestGreen)
+        ctx.setFill(Color.forestGreen)
         ctx.translate(x: 15, y: 40)
-        ctx.fillTriangle(BLTriangle.unitEquilateral.scaledBy(x: 35, y: 35))
+        let mount1 = BLTriangle.unitEquilateral.scaledBy(x: 35, y: 35)
+        let mount2 = BLTriangle.unitEquilateral.scaledBy(x: 30, y: 30)
+        
+        ctx.fill(
+            Polygon(vertices: [
+                mount1.p0.asVector2,
+                mount1.p1.asVector2,
+                mount1.p2.asVector2
+            ])
+        )
         ctx.translate(x: 15, y: 4)
-        ctx.fillTriangle(BLTriangle.unitEquilateral.scaledBy(x: 30, y: 30))
+        ctx.fill(
+            Polygon(vertices: [
+                mount2.p0.asVector2,
+                mount2.p1.asVector2,
+                mount2.p2.asVector2
+            ])
+        )
         
         // Render ground
-        ctx.resetMatrix()
-        ctx.fillRect(BLRect(x: 0, y: 45, w: 64, h: 64))
+        ctx.resetTransform()
+        ctx.fill(Rectangle(x: 0, y: 45, width: 64, height: 64))
         
         // Render sun
-        ctx.setFillStyle(BLRgba32.yellow)
-        ctx.fillCircle(x: 50, y: 20, radius: 10)
+        ctx.setFill(Color.yellow)
+        ctx.fill(Circle(x: 50, y: 20, radius: 10))
         
-        ctx.end()
-        
-        return img
+        return imgRenderer.renderedImage()
     }
 }
 
@@ -378,14 +400,14 @@ extension ImagineUI: DefaultControlSystemDelegate {
         rootView.invalidate()
     }
     
-    func controlViewUnder(point: Vector2, enabledOnly: Bool) -> ControlView? {
+    func controlViewUnder(point: Vector, enabledOnly: Bool) -> ControlView? {
         for window in rootViews.reversed() {
             let converted = window.convertFromScreen(point)
             if let view = window.hitTestControl(converted, enabledOnly: enabledOnly) {
                 return view
             }
         }
-
+        
         return nil
     }
     
@@ -414,14 +436,12 @@ extension ImagineUI: DefaultControlSystemDelegate {
 
 extension ImagineUI: RootViewRedrawInvalidationDelegate {
     func rootView(_ rootView: RootView, invalidateRect rect: Rectangle) {
-        let intersectedRect = rect.formIntersection(bounds.asRectangle)
-        
-        if intersectedRect.width == 0 || intersectedRect.height == 0 {
+        guard let intersectedRect = rect.intersection(bounds.asRectangle) else {
             return
         }
         
         if let current = currentRedrawRegion {
-            currentRedrawRegion = current.formUnion(intersectedRect)
+            currentRedrawRegion = current.union(intersectedRect)
         } else {
             currentRedrawRegion = intersectedRect
         }
@@ -461,12 +481,12 @@ class MacOSTextClipboard: TextClipboard {
     func getText() -> String? {
         NSPasteboard.general.string(forType: .string)
     }
-
+    
     func setText(_ text: String) {
         NSPasteboard.general.declareTypes([.string], owner: nil)
         NSPasteboard.general.setString(text, forType: .string)
     }
-
+    
     func containsText() -> Bool {
         return getText() != nil
     }

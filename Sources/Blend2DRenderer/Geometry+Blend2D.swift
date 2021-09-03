@@ -3,7 +3,7 @@ import SwiftBlend2D
 
 extension Line {
     var asBLLine: BLLine {
-        return BLLine(x0: start.x, y0: start.y, x1: end.x, y1: end.y)
+        return BLLine(start: start.asBLPoint, end: end.asBLPoint)
     }
 }
 
@@ -75,13 +75,13 @@ extension BLBoxI {
 
 extension BLRoundRect {
     var asRoundRectangle: RoundRectangle {
-        return RoundRectangle(bounds: Rectangle(x: x, y: y, width: w, height: h), radiusX: rx, radiusY: ry)
+        return RoundRectangle(rectangle: Rectangle(x: x, y: y, width: w, height: h), radiusX: rx, radiusY: ry)
     }
 }
 
 extension RoundRectangle {
     var asBLRoundRect: BLRoundRect {
-        return BLRoundRect(rect: bounds.asBLRect, radius: BLPoint(x: radius.x, y: radius.y))
+        return BLRoundRect(rect: rectangle.asBLRect, radius: BLPoint(x: radius.x, y: radius.y))
     }
 }
 
