@@ -10,12 +10,12 @@ public protocol TextLayoutType {
     var numberOfLines: Int { get }
     
     /// Total size of text layout area
-    var size: Vector { get }
+    var size: UIVector { get }
     
-    func locationOfCharacter(index: Int) -> Vector
-    func boundsForCharacters(startIndex: Int, length: Int) -> [Rectangle]
-    func boundsForCharacters(in range: TextRange) -> [Rectangle]
-    func hitTestPoint(_ point: Vector) -> TextLayoutHitTestResult
+    func locationOfCharacter(index: Int) -> UIVector
+    func boundsForCharacters(startIndex: Int, length: Int) -> [UIRectangle]
+    func boundsForCharacters(in range: TextRange) -> [UIRectangle]
+    func hitTestPoint(_ point: UIVector) -> TextLayoutHitTestResult
     func font(atLocation index: Int) -> Font
     func baselineHeightForLine(atIndex index: Int) -> Float
 }

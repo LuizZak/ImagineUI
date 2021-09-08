@@ -1,12 +1,13 @@
 import Foundation
 import Geometry
+import Geometria
 import Rendering
 
 open class View {
     /// Whether the layout variables produced by this container should have a
     /// forced intrinsic size of zero. Used by View's methods that calculate
     /// minimal content sizes
-    internal var _targetLayoutSize: Size? = nil
+    internal var _targetLayoutSize: UISize? = nil
     
     var horizontalCompressResistance: LayoutPriority = 750
     var verticalCompressResistance: LayoutPriority = 750
@@ -39,7 +40,7 @@ open class View {
         }
     }
     
-    open var scale: Vector = Vector(x: 1, y: 1) {
+    open var scale: UIVector = UIVector(x: 1, y: 1) {
         willSet {
             guard scale != newValue else { return }
             
@@ -60,13 +61,13 @@ open class View {
         }
     }
 
-    open var transform: Matrix2D {
-        return Matrix2D.transformation(xScale: scale.x, yScale: scale.y,
-                                       angle: rotation,
-                                       xOffset: location.x, yOffset: location.y)
+    open var transform: UIMatrix {
+        return UIMatrix.transformation(xScale: scale.x, yScale: scale.y,
+                                     angle: rotation,
+                                     xOffset: location.x, yOffset: location.y)
     }
 
-    public var location: Vector {
+    public var location: UIVector {
         willSet {
             if location != newValue {
                 invalidate()
@@ -85,14 +86,14 @@ open class View {
         }
     }
 
-    open var bounds: Rectangle {
+    open var bounds: UIRectangle {
         willSet {
             if bounds != newValue {
                 invalidate()
             }
         }
         didSet {
-            bounds = Rectangle(left: 0, top: 0, right: bounds.width, bottom: bounds.height)
+            bounds = UIRectangle(left: 0, top: 0, right: bounds.width, bottom: bounds.height)
             if bounds == oldValue {
                 return
             }
@@ -105,7 +106,7 @@ open class View {
         }
     }
     
-    open var size: Size {
+    open var size: UISize {
         get {
             return bounds.size
         }
@@ -114,9 +115,9 @@ open class View {
         }
     }
 
-    open var area: Rectangle {
+    open var area: UIRectangle {
         get {
-            return Rectangle(x: location.x, y: location.y, width: bounds.width, height: bounds.height)
+            return UIRectangle(x: location.x, y: location.y, width: bounds.width, height: bounds.height)
         }
         set {
             location = newValue.location
@@ -142,7 +143,7 @@ open class View {
     /// A list of constraints that are affecting this view.
     internal(set) public var constraints: [LayoutConstraint] = []
 
-    public var intrinsicSize: Size? {
+    public var intrinsicSize: UISize? {
         return nil
     }
 
@@ -282,7 +283,7 @@ open class View {
     /// Calculates the optimal size for this view, taking in consideration its
     /// active constraints, while approaching the target size as much as possible.
     /// The layout of the view is kept as-is, and no changes to its size are made.
-    open func layoutSizeFitting(size: Size) -> Size {
+    open func layoutSizeFitting(size: UISize) -> UISize {
         // Store state for later restoring
         let previousSuperview = superview
         let previousNeedsLayout = needsLayout
@@ -395,7 +396,7 @@ open class View {
         invalidate(bounds: boundsForRedraw())
     }
 
-    open func invalidate(bounds: Rectangle) {
+    open func invalidate(bounds: UIRectangle) {
         var bounds = bounds
         if clipToBounds {
             bounds = bounds.intersection(self.boundsForRedraw()) ?? .zero
@@ -407,27 +408,27 @@ open class View {
         invalidate(bounds: bounds, spatialReference: self)
     }
     
-    internal func invalidate(bounds: Rectangle, spatialReference: SpatialReferenceType) {
+    internal func invalidate(bounds: UIRectangle, spatialReference: SpatialReferenceType) {
         superview?.invalidate(bounds: bounds, spatialReference: spatialReference)
     }
 
-    func boundsForRedraw() -> Rectangle {
+    func boundsForRedraw() -> UIRectangle {
         return bounds
     }
 
     /// Returns the bounds for redrawing on the superview's coordinate system
-    func boundsForRedrawOnSuperview() -> Rectangle {
+    func boundsForRedrawOnSuperview() -> UIRectangle {
         return transform.transform(boundsForRedraw())
     }
 
     /// Returns the bounds for redrawing on the screen's coordinate system
-    func boundsForRedrawOnScreen() -> Rectangle {
+    func boundsForRedrawOnScreen() -> UIRectangle {
         return absoluteTransform().transform(boundsForRedraw())
     }
 
     // MARK: - Transformation and Conversion
 
-    open func absoluteTransform() -> Matrix2D {
+    open func absoluteTransform() -> UIMatrix {
         var transform = self.transform
         if let superview = superview {
             transform = transform * superview.absoluteTransform()
@@ -435,7 +436,7 @@ open class View {
         return transform
     }
 
-    open func convert(point: Vector, to other: SpatialReferenceType?) -> Vector {
+    open func convert(point: UIVector, to other: SpatialReferenceType?) -> UIVector {
         var point = point
         point *= absoluteTransform()
         if let other = other {
@@ -444,7 +445,7 @@ open class View {
         return point
     }
 
-    open func convert(point: Vector, from other: SpatialReferenceType?) -> Vector {
+    open func convert(point: UIVector, from other: SpatialReferenceType?) -> UIVector {
         var point = point
         if let other = other {
             point *= other.absoluteTransform()
@@ -454,7 +455,7 @@ open class View {
         return point
     }
 
-    open func convert(bounds: Rectangle, to other: SpatialReferenceType?) -> Rectangle {
+    open func convert(bounds: UIRectangle, to other: SpatialReferenceType?) -> UIRectangle {
         var bounds = bounds
         bounds = absoluteTransform().transform(bounds)
         if let other = other {
@@ -463,7 +464,7 @@ open class View {
         return bounds
     }
 
-    open func convert(bounds: Rectangle, from other: SpatialReferenceType?) -> Rectangle {
+    open func convert(bounds: UIRectangle, from other: SpatialReferenceType?) -> UIRectangle {
         var bounds = bounds
         if let other = other {
             bounds = other.absoluteTransform().transform(bounds)
@@ -472,7 +473,7 @@ open class View {
         return bounds
     }
 
-    open func convertFromScreen(_ point: Vector) -> Vector {
+    open func convertFromScreen(_ point: UIVector) -> UIVector {
         return convert(point: point, from: nil)
     }
 
@@ -485,7 +486,7 @@ open class View {
     ///
     /// The `inflatingArea` argument can be used to inflate the area of the
     /// views to perform less precise hit tests.
-    public func viewUnder(point: Vector, inflatingArea: Vector = .zero) -> View? {
+    public func viewUnder(point: UIVector, inflatingArea: UIVector = .zero) -> View? {
         guard contains(point: point, inflatingArea: inflatingArea) else {
             return nil
         }
@@ -509,7 +510,7 @@ open class View {
     ///
     /// The `inflatingArea` argument can be used to inflate the area of the views
     /// to perform less precise hit tests.
-    public func viewUnder(point: Vector, inflatingArea: Vector = .zero, predicate: (View) -> Bool) -> View? {
+    public func viewUnder(point: UIVector, inflatingArea: UIVector = .zero, predicate: (View) -> Bool) -> View? {
         guard contains(point: point, inflatingArea: inflatingArea) else {
             return nil
         }
@@ -540,7 +541,7 @@ open class View {
     /// - Parameter inflatingArea: Used to inflate the area of the views to
     /// perform less precise hit tests.
     /// - Returns: An array where each view returned crosses the given point.
-    public func viewsUnder(point: Vector, inflatingArea: Vector = .zero) -> [View] {
+    public func viewsUnder(point: UIVector, inflatingArea: UIVector = .zero) -> [View] {
         var views: [View] = []
 
         internalViewsUnder(point: point, inflatingArea, &views)
@@ -548,7 +549,7 @@ open class View {
         return views
     }
 
-    private func internalViewsUnder(point: Vector, _ inflatingArea: Vector, _ target: inout [View]) {
+    private func internalViewsUnder(point: UIVector, _ inflatingArea: UIVector, _ target: inout [View]) {
         guard contains(point: point, inflatingArea: inflatingArea) else {
             return
         }
@@ -580,7 +581,7 @@ open class View {
     /// less precise hit tests.
     /// - Returns: An enumerable where each view returned intersects the given
     /// `BLRect`
-    public func viewsUnder(area: Rectangle, inflatingArea: Vector = .zero) -> [View] {
+    public func viewsUnder(area: UIRectangle, inflatingArea: UIVector = .zero) -> [View] {
         var views: [View] = []
 
         internalViewsUnder(area: area, inflatingArea, &views)
@@ -588,7 +589,7 @@ open class View {
         return views
     }
 
-    private func internalViewsUnder(area: Rectangle, _ inflatingArea: Vector, _ target: inout [View]) {
+    private func internalViewsUnder(area: UIRectangle, _ inflatingArea: UIVector, _ target: inout [View]) {
         for view in subviews.reversed() {
             let transformed = view.transform.transform(area)
 
@@ -615,7 +616,7 @@ open class View {
     /// - Parameter point: Point to test
     /// - Parameter inflatingArea: Used to inflate the area of the view to
     /// perform less precise hit tests.
-    public func contains(point: Vector, inflatingArea: Vector = .zero) -> Bool {
+    public func contains(point: UIVector, inflatingArea: UIVector = .zero) -> Bool {
         if inflatingArea == .zero {
             return bounds.contains(point)
         }
@@ -632,7 +633,7 @@ open class View {
     /// - Parameter area: area to test
     /// - Parameter inflatingArea: Used to inflate the area of the view to
     /// perform less precise hit tests.
-    public func intersects(area: Rectangle, inflatingArea: Vector = .zero) -> Bool {
+    public func intersects(area: UIRectangle, inflatingArea: UIVector = .zero) -> Bool {
         return bounds.insetBy(x: -inflatingArea.x, y: -inflatingArea.y).intersects(area)
     }
     

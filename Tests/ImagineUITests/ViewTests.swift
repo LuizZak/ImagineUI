@@ -15,7 +15,7 @@ class ViewTests: XCTestCase {
         view.performLayout()
         
         XCTAssertEqual(view.location, .zero)
-        XCTAssertEqual(view.size, Size(x: 100, y: 20))
+        XCTAssertEqual(view.size, UISize(x: 100, y: 20))
     }
     
     // MARK: - addSubview / removeFromSuperview

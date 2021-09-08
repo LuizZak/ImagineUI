@@ -2,7 +2,7 @@ import Geometry
 import Text
 
 extension Color: TextAttributeType { }
-extension Vector: TextAttributeType { }
+extension UIVector: TextAttributeType { }
 extension Double: TextAttributeType { }
 
 /// Specifies which bounds are used when rendering a background color text

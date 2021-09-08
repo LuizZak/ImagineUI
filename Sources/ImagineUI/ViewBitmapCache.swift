@@ -5,7 +5,7 @@ import Rendering
 /// Used primarily by `ControlView`
 public class ViewBitmapCache {
     var bitmap: Image?
-    var rectangle: Rectangle = .zero
+    var rectangle: UIRectangle = .zero
 
     var bitmapWidth: Int {
         return Int((rectangle.width * scale.x).rounded(.up))
@@ -21,7 +21,7 @@ public class ViewBitmapCache {
             }
         }
     }
-    public var scale: Vector = UISettings.scale {
+    public var scale: UIVector = UISettings.scale {
         didSet {
             invalidateCache()
         }
@@ -31,7 +31,7 @@ public class ViewBitmapCache {
         self.isCachingEnabled = isCachingEnabled
     }
 
-    public func updateBitmapBounds(_ bounds: Rectangle) {
+    public func updateBitmapBounds(_ bounds: UIRectangle) {
         if self.rectangle != bounds {
             self.rectangle = bounds
             invalidateCache()
@@ -48,7 +48,7 @@ public class ViewBitmapCache {
             return
         }
 
-        let rect = Rectangle(x: rectangle.x, y: rectangle.y,
+        let rect = UIRectangle(x: rectangle.x, y: rectangle.y,
                              width: Double(bitmapWidth) / scale.x,
                              height: Double(bitmapHeight) / scale.y)
 
@@ -61,7 +61,7 @@ public class ViewBitmapCache {
         
         ctx.renderer.clear()
         
-        ctx.renderer.translate(by: ceil(-rectangle.location))
+        ctx.renderer.translate(by: (-rectangle.location).ceil())
         ctx.renderer.scale(by: scale)
         
         closure(ctx.renderer)

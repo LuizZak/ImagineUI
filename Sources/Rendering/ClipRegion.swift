@@ -4,5 +4,5 @@ import Geometry
 /// against rectangles
 public protocol ClipRegion {
     /// Performs a hit test of a rectangle against this clip region 
-    func hitTest(_ rect: Rectangle) -> HitTestResult
+    func hitTest(_ rect: UIRectangle) -> HitTestResult
 }

@@ -4,7 +4,7 @@ import Geometry
 /// can be later restored
 struct LayoutAreaSnapshot {
     var layoutContainer: LayoutVariablesContainer
-    var area: Rectangle
+    var area: UIRectangle
     
     func restore() {
         layoutContainer.area = area

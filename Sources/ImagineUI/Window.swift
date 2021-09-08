@@ -13,30 +13,30 @@ public protocol WindowDelegate: AnyObject {
     func windowWantsToMinimize(_ window: Window)
     
     /// Returns size for fullscreen
-    func windowSizeForFullscreen(_ window: Window) -> Size
+    func windowSizeForFullscreen(_ window: Window) -> UISize
 }
 
 public class Window: RootView {
     /// Saves the location of the window before maximizing state
-    private var _normalStateLocation: Vector = .zero
+    private var _normalStateLocation: UIVector = .zero
     
     /// List of temporary constraints applied during window resizing to mantain
     /// one or more of the boundaries of the window area fixed while the opposite
     /// sides are resized
     private var _resizeConstraints: [LayoutConstraint] = []
     
-    private var _targetSize: Size? = nil
-    private var _maxLocationDuringDrag: Vector = .zero
-    private var _resizeStartArea: Rectangle = .zero
+    private var _targetSize: UISize? = nil
+    private var _maxLocationDuringDrag: UIVector = .zero
+    private var _resizeStartArea: UIRectangle = .zero
     private var _resizeCorner: BorderResize?
     private var _mouseDown = false
-    private var _mouseDownPoint: Vector = .zero
+    private var _mouseDownPoint: UIVector = .zero
     private let _titleLabel = Label()
     private let _buttons = WindowButtons()
     private let _titleBarHeight = 25.0
     
-    private var titleBarArea: Rectangle {
-        return Rectangle(x: bounds.x, y: bounds.y, width: bounds.width, height: _titleBarHeight)
+    private var titleBarArea: UIRectangle {
+        return UIRectangle(x: bounds.x, y: bounds.y, width: bounds.width, height: _titleBarHeight)
     }
     
     public let contentsLayoutArea = LayoutGuide()
@@ -59,7 +59,7 @@ public class Window: RootView {
         return rootControlSystem
     }
     
-    public override var intrinsicSize: Size? {
+    public override var intrinsicSize: UISize? {
         switch windowState {
         case .maximized:
             return delegate?.windowSizeForFullscreen(self) ?? _targetSize
@@ -72,7 +72,7 @@ public class Window: RootView {
 
     public weak var delegate: WindowDelegate?
 
-    public init(area: Rectangle, title: String, titleFont: Font = Fonts.defaultFont(size: 12)) {
+    public init(area: UIRectangle, title: String, titleFont: Font = Fonts.defaultFont(size: 12)) {
         self.title = title
         self.titleFont = titleFont
 
@@ -115,7 +115,7 @@ public class Window: RootView {
         setNeedsLayout()
     }
     
-    public func setTargetSize(_ size: Size) {
+    public func setTargetSize(_ size: UISize) {
         _targetSize = size
         setNeedsLayout()
     }
@@ -196,7 +196,7 @@ public class Window: RootView {
         drawWindowBorders(context)
     }
     
-    public override func layoutSizeFitting(size: Size) -> Size {
+    public override func layoutSizeFitting(size: UISize) -> UISize {
         let previousInvalidationDelegate = invalidationDelegate
         
         let result = super.layoutSizeFitting(size: size)
@@ -253,7 +253,7 @@ public class Window: RootView {
         case .left, .topLeft, .bottomLeft:
             // Limit range of left edge to avoid compressin the window too much
             let maximumLeft = area.right - optimalSize.x
-            _maxLocationDuringDrag = Vector(x: maximumLeft, y: 0)
+            _maxLocationDuringDrag = UIVector(x: maximumLeft, y: 0)
             
             _resizeConstraints.append(
                 LayoutConstraint.create(first: layout.left,
@@ -274,7 +274,7 @@ public class Window: RootView {
         case .top, .topLeft, .topRight:
             // Limit range of top edge to avoid compressin the window too much
             let maximumTop = area.bottom - optimalSize.y
-            _maxLocationDuringDrag = Vector(x: _maxLocationDuringDrag.x, y: maximumTop)
+            _maxLocationDuringDrag = UIVector(x: _maxLocationDuringDrag.x, y: maximumTop)
             
             _resizeConstraints.append(
                 LayoutConstraint.create(first: layout.top,
@@ -297,7 +297,7 @@ public class Window: RootView {
         case .maximized:
             setWindowState(.normal)
             performLayout()
-            _mouseDownPoint = Vector(x: size.x / 2, y: _titleBarHeight / 2)
+            _mouseDownPoint = UIVector(x: size.x / 2, y: _titleBarHeight / 2)
             
         case .normal, .minimized:
             break
@@ -311,8 +311,8 @@ public class Window: RootView {
             let newArea = _resizeStartArea.stretchingTop(to: clippedY)
             
             _targetSize?.y = newArea.height
-            size = Size(x: size.x, y: newArea.height)
-            location = Vector(x: location.x, y: newArea.y)
+            size = UISize(x: size.x, y: newArea.height)
+            location = UIVector(x: location.x, y: newArea.y)
 
         case .topLeft:
             let clippedX = min(mouseLocation.x - _mouseDownPoint.x, _maxLocationDuringDrag.x)
@@ -331,8 +331,8 @@ public class Window: RootView {
             let newArea = _resizeStartArea.stretchingLeft(to: clippedX)
             
             _targetSize?.x = newArea.width
-            size = Vector(x: newArea.width, y: size.y)
-            location = Vector(x: newArea.x, y: location.y)
+            size = UIVector(x: newArea.width, y: size.y)
+            location = UIVector(x: newArea.x, y: location.y)
             
         case .right:
             _targetSize?.x = event.location.x
@@ -341,9 +341,9 @@ public class Window: RootView {
         case .topRight:
             let newArea = _resizeStartArea.stretchingTop(to: mouseLocation.y - _mouseDownPoint.y)
             
-            _targetSize = Vector(x: event.location.x, y: newArea.height)
-            size = Vector(x: size.x, y: newArea.height)
-            location = Vector(x: location.x, y: newArea.y)
+            _targetSize = UIVector(x: event.location.x, y: newArea.height)
+            size = UIVector(x: size.x, y: newArea.height)
+            location = UIVector(x: location.x, y: newArea.y)
 
         case .bottomRight:
             _targetSize = event.location
@@ -357,9 +357,9 @@ public class Window: RootView {
             let clippedX = min(mouseLocation.x - _mouseDownPoint.x, _maxLocationDuringDrag.x)
             let newArea = _resizeStartArea.stretchingLeft(to: clippedX)
             
-            _targetSize = Vector(x: newArea.width, y: event.location.y)
-            size = Vector(x: newArea.width, y: size.y)
-            location = Vector(x: newArea.x, y: location.y)
+            _targetSize = UIVector(x: newArea.width, y: event.location.y)
+            size = UIVector(x: newArea.width, y: size.y)
+            location = UIVector(x: newArea.x, y: location.y)
             
         case .none:
             location = mouseLocation - _mouseDownPoint
@@ -400,7 +400,7 @@ public class Window: RootView {
         
         var gradient
             = Gradient.linear(start: titleBarArea.topLeft,
-                              end: titleBarArea.bottomLeft + Vector(x: 0, y: 10))
+                              end: titleBarArea.bottomLeft + UIVector(x: 0, y: 10))
         
         gradient.addStop(offset: 0, color: .dimGray)
         gradient.addStop(offset: 1, color: .gray)
@@ -413,7 +413,7 @@ public class Window: RootView {
         renderer.restoreClipping()
     }
     
-    private func updateMouseResizeCursor(_ point: Vector) {
+    private func updateMouseResizeCursor(_ point: UIVector) {
         let resize = resizeAtPoint(point)
         updateMouseResizeCursor(resize)
     }
@@ -431,12 +431,12 @@ public class Window: RootView {
         case .topLeft, .bottomRight:
             // TODO: Remove this hardcoded image paths
             cursor = .custom(imagePath: "/System/Library/Frameworks/WebKit.framework/Versions/Current/Frameworks/WebCore.framework/Resources/northWestSouthEastResizeCursor.png",
-                             hotspot: Vector(x: 8, y: 8))
+                             hotspot: UIVector(x: 8, y: 8))
         
         case .topRight, .bottomLeft:
             // TODO: Remove this hardcoded image paths
             cursor = .custom(imagePath: "/System/Library/Frameworks/WebKit.framework/Versions/Current/Frameworks/WebCore.framework/Resources/northEastSouthWestResizeCursor.png",
-                             hotspot: Vector(x: 8, y: 8))
+                             hotspot: UIVector(x: 8, y: 8))
             
         case .none:
             break
@@ -449,7 +449,7 @@ public class Window: RootView {
         }
     }
     
-    private func resizeAtPoint(_ point: Vector) -> BorderResize? {
+    private func resizeAtPoint(_ point: UIVector) -> BorderResize? {
         let topLength = 3.0
         let length = 7.0
         
@@ -532,7 +532,7 @@ class WindowButtons: View {
         button.cornerRadius = 5
         button.strokeWidth = 0
         button.layout.makeConstraints { make in
-            make.size == Size(x: 10, y: 10)
+            make.size == UISize(x: 10, y: 10)
         }
     }
     

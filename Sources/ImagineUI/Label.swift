@@ -65,7 +65,7 @@ open class Label: View {
         }
     }
 
-    open override var bounds: Rectangle {
+    open override var bounds: UIRectangle {
         didSet {
             if bounds.size != oldValue.size {
                 clearCachedTextLayout()
@@ -73,7 +73,7 @@ open class Label: View {
         }
     }
 
-    open override var intrinsicSize: Size? {
+    open override var intrinsicSize: UISize? {
         return minimalTextLayout.size
     }
 
@@ -171,22 +171,22 @@ open class Label: View {
         var horizontalAlignment: HorizontalTextAlignment { textLayout.horizontalAlignment }
         var verticalAlignment: VerticalTextAlignment { textLayout.verticalAlignment }
         var numberOfLines: Int { textLayout.numberOfLines }
-        var size: Size { textLayout.size }
+        var size: UISize { textLayout.size }
         
         init(label: Label) {
             self.label = label
         }
         
-        func locationOfCharacter(index: Int) -> Vector {
+        func locationOfCharacter(index: Int) -> UIVector {
             return textLayout.locationOfCharacter(index: index)
         }
-        func boundsForCharacters(startIndex: Int, length: Int) -> [Rectangle] {
+        func boundsForCharacters(startIndex: Int, length: Int) -> [UIRectangle] {
             return textLayout.boundsForCharacters(startIndex: startIndex, length: length)
         }
-        func boundsForCharacters(in range: TextRange) -> [Rectangle] {
+        func boundsForCharacters(in range: TextRange) -> [UIRectangle] {
             return textLayout.boundsForCharacters(in: range)
         }
-        func hitTestPoint(_ point: Vector) -> TextLayoutHitTestResult {
+        func hitTestPoint(_ point: UIVector) -> TextLayoutHitTestResult {
             return textLayout.hitTestPoint(point)
         }
         func font(atLocation index: Int) -> Font {
@@ -196,13 +196,13 @@ open class Label: View {
             return textLayout.baselineHeightForLine(atIndex: index)
         }
         
-        func strokeText(in renderer: Renderer, location: Vector) {
+        func strokeText(in renderer: Renderer, location: UIVector) {
             renderer.strokeTextLayout(self, at: location)
         }
-        func fillText(in renderer: Renderer, location: Vector) {
+        func fillText(in renderer: Renderer, location: UIVector) {
             renderer.fillTextLayout(self, at: location)
         }
-        func renderText(in renderer: Renderer, location: Vector) {
+        func renderText(in renderer: Renderer, location: UIVector) {
             renderer.drawTextLayout(self, at: location)
         }
     }

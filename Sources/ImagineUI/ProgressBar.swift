@@ -9,8 +9,8 @@ public class ProgressBar: ControlView {
         }
     }
     
-    public override var intrinsicSize: Size? {
-        return Size(x: bounds.width, y: 5)
+    public override var intrinsicSize: UISize? {
+        return UISize(x: bounds.width, y: 5)
     }
     
     public override init() {
@@ -39,16 +39,16 @@ public class ProgressBar: ControlView {
         context.stroke(rect)
     }
     
-    func progressBarRoundRect() -> RoundRectangle {
+    func progressBarRoundRect() -> UIRoundRectangle {
         let rect = progressBarBounds()
-        return rect.rounded(radius: Vector(x: rect.height / 2, y: rect.height / 2))
+        return rect.rounded(radius: UIVector(x: rect.height / 2, y: rect.height / 2))
     }
     
-    func progressBarBounds() -> Rectangle {
+    func progressBarBounds() -> UIRectangle {
         return bounds
     }
     
-    func boundsForCurrentProgress() -> Rectangle {
+    func boundsForCurrentProgress() -> UIRectangle {
         let bounds = progressBarBounds()
         return bounds.withSize(width: bounds.width * progress,
                                height: bounds.height)

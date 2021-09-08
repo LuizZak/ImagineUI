@@ -16,7 +16,7 @@ open class Button: ControlView {
         }
     }
 
-    open var contentInset: EdgeInsets = EdgeInsets(left: 10, top: 4, right: 10, bottom: 4) {
+    open var contentInset: UIEdgeInsets = UIEdgeInsets(left: 10, top: 4, right: 10, bottom: 4) {
         didSet {
             updateLabelConstraints()
         }

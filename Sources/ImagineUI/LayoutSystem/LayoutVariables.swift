@@ -133,14 +133,14 @@ class LayoutVariables {
     }
 
     func applyVariables() {
-        let location: Vector
+        let location: UIVector
         if let parent = container.parent {
-            location = parent.convert(point: Vector(x: left.value, y: top.value), from: nil)
+            location = parent.convert(point: UIVector(x: left.value, y: top.value), from: nil)
         } else {
-            location = Vector(x: left.value, y: top.value)
+            location = UIVector(x: left.value, y: top.value)
         }
         
-        container.area = Rectangle(location: location, size: Size(x: width.value, y: height.value))
+        container.area = UIRectangle(location: location, size: UISize(x: width.value, y: height.value))
     }
     
     func viewForFirstBaseline() -> View? {

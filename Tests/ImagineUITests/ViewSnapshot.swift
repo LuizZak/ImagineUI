@@ -40,7 +40,7 @@ extension SnapshotTestCase {
     
     func produceSnapshot(_ view: View) throws -> BLImage {
         let bounds = view.boundsForRedraw()
-        if bounds.size <= .zero {
+        if bounds.size.x <= .zero && bounds.size.y <= .zero {
             throw SnapshotError.emptyViewBounds
         }
         

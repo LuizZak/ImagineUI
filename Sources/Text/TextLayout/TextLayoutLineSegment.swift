@@ -17,14 +17,14 @@ public struct TextLayoutLineSegment {
     public var textSegment: AttributedText.TextSegment
     
     /// Boundaries of this line segment, relative to the line's origin
-    public var bounds: Rectangle
+    public var bounds: UIRectangle
     
     /// Rendering offset to apply to this segment
-    public var offset: Vector
+    public var offset: UIVector
     
     /// `bounds` property's value, mapped to the original transformation
     /// space before being multiplied by the font's transform matrix
-    public var originalBounds: Rectangle
+    public var originalBounds: UIRectangle
     
     public init(startCharacterIndex: Int,
                 endCharacterIndex: Int,
@@ -35,9 +35,9 @@ public struct TextLayoutLineSegment {
                 glyphBufferMinusLineBreak: GlyphBuffer,
                 font: Font,
                 textSegment: AttributedText.TextSegment,
-                bounds: Rectangle,
-                offset: Vector,
-                originalBounds: Rectangle) {
+                bounds: UIRectangle,
+                offset: UIVector,
+                originalBounds: UIRectangle) {
         
         self.startCharacterIndex = startCharacterIndex
         self.endCharacterIndex = endCharacterIndex

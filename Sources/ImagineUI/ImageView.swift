@@ -13,9 +13,9 @@ public class ImageView: View {
         }
     }
     
-    public override var intrinsicSize: Size? {
+    public override var intrinsicSize: UISize? {
         if let image = image {
-            return Size(x: Double(image.width), y: Double(image.height))
+            return UISize(x: Double(image.width), y: Double(image.height))
         }
         
         return nil

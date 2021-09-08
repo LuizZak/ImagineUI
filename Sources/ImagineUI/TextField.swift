@@ -18,7 +18,7 @@ open class TextField: ControlView {
     // the state clutter here
 
     private var _lastMouseDown: TimeInterval = 0
-    private var _lastMouseDownPoint: Vector = .zero
+    private var _lastMouseDownPoint: UIVector = .zero
     private var _selectingWordSpan: Bool = false
     private var _wordSpanStartPosition: Int = 0
     private var _mouseDown = false
@@ -100,7 +100,7 @@ open class TextField: ControlView {
         set { _textEngine.setCaret(newValue) }
     }
 
-    open var contentInset: EdgeInsets = EdgeInsets(4) {
+    open var contentInset: UIEdgeInsets = UIEdgeInsets(4) {
         didSet {
             setNeedsLayout()
             invalidate()
@@ -190,7 +190,7 @@ open class TextField: ControlView {
         _caretChanged.publishEvent(sender: self, event)
     }
     
-    open override func onResize(_ event: ValueChangedEventArgs<Size>) {
+    open override func onResize(_ event: ValueChangedEventArgs<UISize>) {
         super.onResize(event)
         
         updateLabelAndPlaceholder()
@@ -501,7 +501,7 @@ open class TextField: ControlView {
         renderer.setFill(style.selectionColor)
 
         // TODO: Support selection backgrounds that span different lines
-        let charBounds = characterBounds.reduce(characterBounds[0], Rectangle.union)
+        let charBounds = characterBounds.reduce(characterBounds[0], UIRectangle.union)
         let transformed = _label.convert(bounds: charBounds, to: self)
 
         renderer.saveState()
@@ -527,13 +527,13 @@ open class TextField: ControlView {
         invalidateControlGraphics(bounds: getCaretBounds(at: offset))
     }
     
-    private func getCaretBounds() -> Rectangle {
+    private func getCaretBounds() -> UIRectangle {
         return getCaretBounds(at: caret.location)
     }
     
-    private func getCaretBounds(at offset: Int) -> Rectangle {
+    private func getCaretBounds(at offset: Int) -> UIRectangle {
         let font = _label.textLayout.font(atLocation: offset)
-        var caretLocation = Rectangle(x: 0, y: 0, width: 1, height: Double(font.metrics.ascent + font.metrics.descent))
+        var caretLocation = UIRectangle(x: 0, y: 0, width: 1, height: Double(font.metrics.ascent + font.metrics.descent))
 
         var location = _label.textLayout.locationOfCharacter(index: offset)
         location = _label.convert(point: location, to: self)
@@ -543,11 +543,11 @@ open class TextField: ControlView {
         return caretLocation
     }
     
-    private func getSelectionBounds() -> Rectangle {
+    private func getSelectionBounds() -> UIRectangle {
         return getSelectionBounds(caret: caret)
     }
 
-    private func getSelectionBounds(caret: Caret) -> Rectangle {
+    private func getSelectionBounds(caret: Caret) -> UIRectangle {
         if caret.length == 0 {
             return getCaretBounds(at: caret.location)
         }
@@ -557,7 +557,7 @@ open class TextField: ControlView {
             return .zero
         }
 
-        let charBounds = characterBounds.reduce(characterBounds[0], Rectangle.union)
+        let charBounds = characterBounds.reduce(characterBounds[0], UIRectangle.union)
         let transformed = _label.convert(bounds: charBounds, to: self)
 
         return transformed
@@ -629,9 +629,9 @@ open class TextField: ControlView {
         
         if !_labelContainer.contains(point: locInContainer) {
             if locInContainer.x > _labelContainer.bounds.width {
-                labelOffset = labelOffset - Vector(x: locInContainer.x - _labelContainer.bounds.width, y: 0)
+                labelOffset = labelOffset - UIVector(x: locInContainer.x - _labelContainer.bounds.width, y: 0)
             } else {
-                labelOffset = labelOffset - Vector(x: locInContainer.x, y: 0)
+                labelOffset = labelOffset - UIVector(x: locInContainer.x, y: 0)
             }
         }
     }
@@ -650,7 +650,7 @@ open class TextField: ControlView {
         _labelContainer.bounds.size = insetBounds.size
         
         // Currently, setting location.y individually causes a runtime crash
-        _label.location = Vector(x: _label.location.x, y: _labelContainer.bounds.height / 2 - _label.bounds.height / 2)
+        _label.location = UIVector(x: _label.location.x, y: _labelContainer.bounds.height / 2 - _label.bounds.height / 2)
         
         _label.bounds.width = max(_label.bounds.width, _labelContainer.bounds.width)
         
@@ -715,7 +715,7 @@ open class TextField: ControlView {
     // MARK: - Text Location
 
     /// Returns string offset at a given point on this text field.
-    private func offsetUnder(point: Vector) -> Int {
+    private func offsetUnder(point: UIVector) -> Int {
         let converted = _label.convert(point: point, from: self)
         
         let result = _label.textLayout.hitTestPoint(converted)
@@ -726,7 +726,7 @@ open class TextField: ControlView {
 
     /// Returns the point for a given string offset, locally on this text
     /// field's coordinates.
-    private func locationForOffset(_ offset: Int) -> Vector {
+    private func locationForOffset(_ offset: Int) -> UIVector {
         var position = _label.textLayout.locationOfCharacter(index: offset)
         
         position = _label.convert(point: position, to: self)

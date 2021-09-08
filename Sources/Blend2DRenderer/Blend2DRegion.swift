@@ -16,11 +16,11 @@ class Blend2DRegion: Region {
         _region.combine(other._region, operation: operation.asBLBooleanOp)
     }
     
-    func combine(_ rect: Rectangle, operation: RegionOperator) {
+    func combine(_ rect: UIRectangle, operation: RegionOperator) {
         _region.combine(box: BLBoxI(roundingRect: rect.asBLRect), operation: operation.asBLBooleanOp)
     }
     
-    func scans() -> [Rectangle] {
+    func scans() -> [UIRectangle] {
         return _region.regionScans.map(\.asRectangle)
     }
 }

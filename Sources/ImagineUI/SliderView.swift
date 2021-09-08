@@ -3,14 +3,14 @@ import Rendering
 
 public class SliderView: ControlView {
     private var isMouseDown = false
-    private var mouseDownOffset = Vector.zero
+    private var mouseDownOffset = UIVector.zero
     private var leftLabel = Label()
     private var rightLabel = Label()
     
-    private var knobSize = Size(x: 11, y: 19)
+    private var knobSize = UISize(x: 11, y: 19)
     private var knobTop = 2.0
     private var knobDip = 5.0
-    private var knobPoly = Polygon()
+    private var knobPoly = UIPolygon()
     
     public var minimumValue: Double = 0 {
         didSet {
@@ -96,8 +96,8 @@ public class SliderView: ControlView {
     /// Event fired whenever `value` is changed
     @Event public var valueChanged: ValueChangeEvent<SliderView, Double>
     
-    public override var intrinsicSize: Size? {
-        return Size(x: bounds.width, y: knobSize.y)
+    public override var intrinsicSize: UISize? {
+        return UISize(x: bounds.width, y: knobSize.y)
     }
     
     public override init() {
@@ -146,7 +146,7 @@ public class SliderView: ControlView {
         }
     }
     
-    override func boundsForRedraw() -> Rectangle {
+    override func boundsForRedraw() -> UIRectangle {
         return bounds.inflatedBy(x: 2, y: 0)
     }
     
@@ -241,10 +241,10 @@ public class SliderView: ControlView {
         renderer.setStroke(.lightGray)
         renderer.setStrokeWidth(2)
         renderer.stroke(line)
-        renderer.strokeLine(start: line.start - Vector(x: 0, y: endsHeight),
-                            end: line.start + Vector(x: 0, y: endsHeight))
-        renderer.strokeLine(start: line.end - Vector(x: 0, y: endsHeight),
-                            end: line.end + Vector(x: 0, y: endsHeight))
+        renderer.strokeLine(start: line.start - UIVector(x: 0, y: endsHeight),
+                            end: line.start + UIVector(x: 0, y: endsHeight))
+        renderer.strokeLine(start: line.end - UIVector(x: 0, y: endsHeight),
+                            end: line.end + UIVector(x: 0, y: endsHeight))
     }
     
     public override func renderForeground(in renderer: Renderer, screenRegion: ClipRegion) {
@@ -274,21 +274,21 @@ public class SliderView: ControlView {
         let dashH = knobSize.y / 3
         
         renderer.setStroke(.royalBlue.faded(towards: .white, factor: 0.5))
-        renderer.strokeLine(start: Vector(x: dash1x, y: dashY), end: Vector(x: dash1x, y: dashY + dashH))
-        renderer.strokeLine(start: Vector(x: dash2x, y: dashY), end: Vector(x: dash2x, y: dashY + dashH))
+        renderer.strokeLine(start: UIVector(x: dash1x, y: dashY), end: UIVector(x: dash1x, y: dashY + dashH))
+        renderer.strokeLine(start: UIVector(x: dash2x, y: dashY), end: UIVector(x: dash2x, y: dashY + dashH))
     }
     
-    private func knobArea() -> Rectangle {
+    private func knobArea() -> UIRectangle {
         let x = knobOffset()
         
-        return Rectangle(x: x, y: 0, width: knobSize.x, height: knobSize.y)
+        return UIRectangle(x: x, y: 0, width: knobSize.x, height: knobSize.y)
     }
     
-    private func sliderLine() -> Line {
-        let left = Vector(x: knobSize.x / 2, y: knobSize.y / 2)
-        let right = Vector(x: size.x - knobSize.x / 2, y: knobSize.y / 2)
+    private func sliderLine() -> UILine {
+        let left = UIVector(x: knobSize.x / 2, y: knobSize.y / 2)
+        let right = UIVector(x: size.x - knobSize.x / 2, y: knobSize.y / 2)
         
-        return Line(start: left, end: right)
+        return UILine(start: left, end: right)
     }
     
     private func knobOffset() -> Double {

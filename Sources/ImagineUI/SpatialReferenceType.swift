@@ -1,18 +1,19 @@
 import Geometry
+import Geometria
 
 /// A protocol that describes a type that has its own local spatial transformation
 /// information
 public protocol SpatialReferenceType {
-    func absoluteTransform() -> Matrix2D
+    func absoluteTransform() -> UIMatrix
     
-    func convert(point: Vector, to other: SpatialReferenceType?) -> Vector
-    func convert(point: Vector, from other: SpatialReferenceType?) -> Vector
-    func convert(bounds: Rectangle, to other: SpatialReferenceType?) -> Rectangle
-    func convert(bounds: Rectangle, from other: SpatialReferenceType?) -> Rectangle
+    func convert(point: UIVector, to other: SpatialReferenceType?) -> UIVector
+    func convert(point: UIVector, from other: SpatialReferenceType?) -> UIVector
+    func convert(bounds: UIRectangle, to other: SpatialReferenceType?) -> UIRectangle
+    func convert(bounds: UIRectangle, from other: SpatialReferenceType?) -> UIRectangle
 }
 
 public extension SpatialReferenceType {
-    func convert(point: Vector, to other: SpatialReferenceType?) -> Vector {
+    func convert(point: UIVector, to other: SpatialReferenceType?) -> UIVector {
         var point = point
         point *= absoluteTransform()
         if let other = other {
@@ -21,7 +22,7 @@ public extension SpatialReferenceType {
         return point
     }
 
-    func convert(point: Vector, from other: SpatialReferenceType?) -> Vector {
+    func convert(point: UIVector, from other: SpatialReferenceType?) -> UIVector {
         var point = point
         if let other = other {
             point *= other.absoluteTransform()
@@ -31,7 +32,7 @@ public extension SpatialReferenceType {
         return point
     }
 
-    func convert(bounds: Rectangle, to other: SpatialReferenceType?) -> Rectangle {
+    func convert(bounds: UIRectangle, to other: SpatialReferenceType?) -> UIRectangle {
         var bounds = bounds
         bounds = absoluteTransform().transform(bounds)
         if let other = other {
@@ -40,7 +41,7 @@ public extension SpatialReferenceType {
         return bounds
     }
 
-    func convert(bounds: Rectangle, from other: SpatialReferenceType?) -> Rectangle {
+    func convert(bounds: UIRectangle, from other: SpatialReferenceType?) -> UIRectangle {
         var bounds = bounds
         if let other = other {
             bounds = other.absoluteTransform().transform(bounds)

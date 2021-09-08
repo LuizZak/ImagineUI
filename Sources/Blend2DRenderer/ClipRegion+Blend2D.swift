@@ -9,7 +9,7 @@ public struct Blend2DClipRegion: ClipRegion {
         self.region = region
     }
     
-    public func hitTest(_ rect: Rectangle) -> HitTestResult {
+    public func hitTest(_ rect: UIRectangle) -> HitTestResult {
         switch region.hitTest(BLBoxI(roundingRect: rect.asBLRect)) {
         case .in:
             return .in

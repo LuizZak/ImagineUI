@@ -60,7 +60,7 @@ open class Checkbox: ControlView {
 
         // Label constraints
         label.layout.makeConstraints { make in
-            make.edges.equalTo(self, inset: EdgeInsets(left: 16, top: 0, right: 0, bottom: 0))
+            make.edges.equalTo(self, inset: UIEdgeInsets(left: 16, top: 0, right: 0, bottom: 0))
         }
     }
     
@@ -112,7 +112,7 @@ open class Checkbox: ControlView {
             return color
         }
 
-        var rect = Rectangle(x: 0, y: 0, width: 10, height: 10)
+        var rect = UIRectangle(x: 0, y: 0, width: 10, height: 10)
         rect.center.y = label.bounds.height / 2
 
         if state == .unchecked {
@@ -137,7 +137,7 @@ open class Checkbox: ControlView {
         } else if state == .checked {
             let checkArea = rect.insetBy(x: 3, y: 5)
             let checkAreaBottomLeftSize: Double = 3
-            let checkAreaBottomLeft = Rectangle(x: checkArea.x,
+            let checkAreaBottomLeft = UIRectangle(x: checkArea.x,
                                                 y: checkArea.bottom - checkAreaBottomLeftSize,
                                                 width: checkAreaBottomLeftSize,
                                                 height: checkAreaBottomLeftSize)
@@ -150,8 +150,8 @@ open class Checkbox: ControlView {
             renderer.fill(rect)
 
             let points = [
-                Vector(x: checkArea.left, y: checkAreaBottomLeft.top),
-                Vector(x: checkAreaBottomLeft.right, y: checkArea.bottom),
+                UIVector(x: checkArea.left, y: checkAreaBottomLeft.top),
+                UIVector(x: checkAreaBottomLeft.right, y: checkArea.bottom),
                 checkArea.topRight
             ]
             

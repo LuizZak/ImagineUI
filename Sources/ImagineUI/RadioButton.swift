@@ -48,7 +48,7 @@ open class RadioButton: ControlView {
 
         // Label constraints
         label.layout.makeConstraints { make in
-            make.edges.equalTo(self, inset: EdgeInsets(left: 16, top: 0, right: 0, bottom: 0))
+            make.edges.equalTo(self, inset: UIEdgeInsets(left: 16, top: 0, right: 0, bottom: 0))
         }
     }
     
@@ -88,7 +88,7 @@ open class RadioButton: ControlView {
     }
 
     func drawRadioButton(_ renderer: Renderer) {
-        var circle = Circle(center: Vector(x: 6, y: 6), radius: 6)
+        var circle = UICircle(center: UIVector(x: 6, y: 6), radius: 6)
         circle.center.y = label.bounds.height / 2
 
         if isSelected {

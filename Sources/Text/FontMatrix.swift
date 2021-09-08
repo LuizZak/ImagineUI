@@ -15,28 +15,28 @@ public struct FontMatrix {
         self.m22 = m22
     }
     
-    public func toMatrix2D() -> Matrix2D {
-        return Matrix2D(m11: m11, m12: m12,
-                        m21: m21, m22: m22,
-                        m31: 0.0, m32: 0.0)
+    public func toMatrix2D() -> UIMatrix {
+        return UIMatrix(m11: m11, m12: m12,
+                      m21: m21, m22: m22,
+                      m31: 0.0, m32: 0.0)
     }
     
     /// Transforms a given polygon by multiplying each coordinate by this matrix.
     @inlinable
-    public func transform(_ polygon: [Vector]) -> [Vector] {
+    public func transform(_ polygon: [UIVector]) -> [UIVector] {
         return polygon.map(transform(_:))
     }
     
     @inlinable
-    public func transform(_ point: Vector) -> Vector {
-        return Vector(x: point.x * m11 + point.y * m21,
+    public func transform(_ point: UIVector) -> UIVector {
+        return UIVector(x: point.x * m11 + point.y * m21,
                       y: point.x * m12 + point.y * m22)
     }
     
     /// Maps the corners of a given rectangle into a newer minimal rectangle
     /// capable of containing all four mapped points.
     @inlinable
-    public func transform(_ rect: Rectangle) -> Rectangle {
+    public func transform(_ rect: UIRectangle) -> UIRectangle {
         toMatrix2D().transform(rect)
     }
 }

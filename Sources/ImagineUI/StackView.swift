@@ -7,7 +7,7 @@ open class StackView: View {
     private var arrangedSubviews: [View] = []
     private var customSpacing: [View: Double] = [:]
     
-    public override var intrinsicSize: Size? {
+    public override var intrinsicSize: UISize? {
         return .zero
     }
     
@@ -30,7 +30,7 @@ open class StackView: View {
     }
     
     /// Insets between the edges of the stack view and its contents
-    open var contentInset: EdgeInsets = .zero {
+    open var contentInset: UIEdgeInsets = .zero {
         didSet {
             recreateConstraints()
         }

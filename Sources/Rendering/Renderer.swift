@@ -38,71 +38,71 @@ public protocol Renderer {
     // MARK: - Fill Operations
     
     /// Fills a given rectangle with the current fill style
-    func fill(_ rect: Rectangle)
+    func fill(_ rect: UIRectangle)
     
     /// Fills a given rounded rectangle with the current fill style
-    func fill(_ roundRect: RoundRectangle)
+    func fill(_ roundRect: UIRoundRectangle)
     
     /// Fills a given circle with the current fill style
-    func fill(_ circle: Circle)
+    func fill(_ circle: UICircle)
     
     /// Fills a given ellipse with the current fill style
-    func fill(_ ellipse: Ellipse)
+    func fill(_ ellipse: UIEllipse)
     
     /// Fills a given polygon with the current fill style
-    func fill(_ polygon: Polygon)
+    func fill(_ polygon: UIPolygon)
     
     // MARK: - Stroke Operations
     
     /// Strokes a given line with the current stroke style
-    func stroke(_ line: Line)
+    func stroke(_ line: UILine)
     
     /// Strokes a given rectangle with the current stroke style
-    func stroke(_ rect: Rectangle)
+    func stroke(_ rect: UIRectangle)
     
     /// Strokes a given rounded rectangle with the current stroke style
-    func stroke(_ roundRect: RoundRectangle)
+    func stroke(_ roundRect: UIRoundRectangle)
     
     /// Strokes a given circle with the current stroke style
-    func stroke(_ circle: Circle)
+    func stroke(_ circle: UICircle)
     
     /// Strokes a given ellipse with the current stroke style
-    func stroke(_ ellipse: Ellipse)
+    func stroke(_ ellipse: UIEllipse)
     
     /// Strokes a given polygon with the current stroke style
-    func stroke(_ polygon: Polygon)
+    func stroke(_ polygon: UIPolygon)
     
     /// Strokes a line formed by the given start and end vectors with the
     /// current stroke style
-    func strokeLine(start: Vector, end: Vector)
+    func strokeLine(start: UIVector, end: UIVector)
     
     /// Strokes a list of points as a contiguous line
-    func stroke(polyline: [Vector])
+    func stroke(polyline: [UIVector])
     
     // MARK: - Bitmap
     
     /// Draws a given image wth the given bounds, scaling the image as necessary
-    func drawImageScaled(_ image: Image, area: Rectangle)
+    func drawImageScaled(_ image: Image, area: UIRectangle)
     
     /// Draws a given image at a given point
-    func drawImage(_ image: Image, at point: Vector)
+    func drawImage(_ image: Image, at point: UIVector)
     
     // MARK: - Text
     
     /// Draws a text layout on a given point
-    func drawTextLayout(_ layout: TextLayoutType, at point: Vector)
+    func drawTextLayout(_ layout: TextLayoutType, at point: UIVector)
     
     /// Strokes a text layout on a given point
-    func strokeTextLayout(_ layout: TextLayoutType, at point: Vector)
+    func strokeTextLayout(_ layout: TextLayoutType, at point: UIVector)
     
     /// Fills a text layout on a given point
-    func fillTextLayout(_ layout: TextLayoutType, at point: Vector)
+    func fillTextLayout(_ layout: TextLayoutType, at point: UIVector)
     
     // MARK: - Transformation
     
     /// Applies the given matrix on top of the current transformation stack for
     /// subsequent draw calls on this renderer
-    func transform(_ matrix: Matrix2D)
+    func transform(_ matrix: UIMatrix)
     
     /// Resets the transformation back to its identity
     func resetTransform()
@@ -111,13 +111,13 @@ public protocol Renderer {
     func translate(x: Double, y: Double)
     
     /// Applies a translation transform to the subsequent draw calls on this renderer
-    func translate(by vec: Vector)
+    func translate(by vec: UIVector)
     
     /// Applies a scale transform to the subsequent draw calls on this renderer
     func scale(x: Double, y: Double)
     
     /// Applies a scale transform to the subsequent draw calls on this renderer
-    func scale(by factor: Vector)
+    func scale(by factor: UIVector)
     
     /// Applies a rotation transform to the subsequent draw calls on this renderer
     ///
@@ -131,13 +131,13 @@ public protocol Renderer {
     /// - parameters:
     ///     - angle: The angle to rotate by, in radians
     ///     - center: The center point of the rotation transform
-    func rotate(by angle: Double, around center: Vector)
+    func rotate(by angle: Double, around center: UIVector)
     
     // MARK: - Clipping
     
     /// Clips the draw region of the renderer to contain the given Rectangle.
     /// Any currently active clip is intersected with the new clipping rectangle.
-    func clip(_ rect: Rectangle)
+    func clip(_ rect: UIRectangle)
     
     /// Restores the clipping of this Renderer back
     func restoreClipping()

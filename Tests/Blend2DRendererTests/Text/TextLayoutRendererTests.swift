@@ -30,7 +30,7 @@ class TextLayoutRendererTests: SnapshotTestCase {
             .font: makeFont(size: 30),
             .backgroundColor: Color.green,
             .foregroundColor: Color.gray,
-            .cornerRadius: Vector(x: 4, y: 4)
+            .cornerRadius: UIVector(x: 4, y: 4)
         ])
         let sut = makeSut(attributedText: attributedText)
         let img = BLImage(width: Int(sut.textLayout.size.x),
@@ -66,7 +66,7 @@ class TextLayoutRendererTests: SnapshotTestCase {
             .font: makeFont(size: 30),
             .backgroundColor: Color.green,
             .foregroundColor: Color.gray,
-            .cornerRadius: Vector(x: 4, y: 4),
+            .cornerRadius: UIVector(x: 4, y: 4),
             .backgroundColorBounds: TextBackgroundBoundsAttribute.largestBaselineBounds
         ])
         let sut = makeSut(attributedText: attributedText)

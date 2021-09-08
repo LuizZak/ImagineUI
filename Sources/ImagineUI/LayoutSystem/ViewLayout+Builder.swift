@@ -111,7 +111,7 @@ public struct LayoutAnchorEdgesCreator {
 
     @discardableResult
     public func equalTo(_ other: LayoutAnchorsContainer,
-                        inset: EdgeInsets = .zero,
+                        inset: UIEdgeInsets = .zero,
                         multiplier: Double = 1,
                         priority: LayoutPriority = .required) -> [LayoutConstraint] {
         
@@ -169,7 +169,7 @@ public struct LayoutAnchorSizeCreator {
     }
     
     @discardableResult
-    public func equalTo(_ size: Size, priority: LayoutPriority = .required) -> [LayoutConstraint] {
+    public func equalTo(_ size: UISize, priority: LayoutPriority = .required) -> [LayoutConstraint] {
         
         return  [
             LayoutConstraint.create(first: layout.width,
@@ -192,7 +192,7 @@ public struct LayoutAnchorEdgesUpdater {
 
     @discardableResult
     public func equalTo(_ other: LayoutAnchorsContainer,
-                        inset: EdgeInsets = .zero,
+                        inset: UIEdgeInsets = .zero,
                         multiplier: Double = 1,
                         priority: LayoutPriority = .required) -> [LayoutConstraint] {
         
@@ -250,7 +250,7 @@ public struct LayoutAnchorSizeUpdater {
     }
     
     @discardableResult
-    public func equalTo(_ size: Size, priority: LayoutPriority = .required) -> [LayoutConstraint] {
+    public func equalTo(_ size: UISize, priority: LayoutPriority = .required) -> [LayoutConstraint] {
         return  [
             LayoutConstraint.update(first: layout.width,
                                     offset: size.x,

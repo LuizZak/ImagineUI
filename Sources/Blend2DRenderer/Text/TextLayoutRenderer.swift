@@ -64,7 +64,7 @@ class TextLayoutRenderer {
                 context.setFillStyle(backColor.asBLRgba32)
                 
                 // Background bounds attribute
-                let bounds: Rectangle
+                let bounds: UIRectangle
                 if let boundsType = segment.textSegment.attribute(named: .backgroundColorBounds,
                                                                   type: TextBackgroundBoundsAttribute.self) {
                     bounds = boundsForBackground(segment: segment,
@@ -78,7 +78,7 @@ class TextLayoutRenderer {
                 
                 // Corner radius attribute
                 if let radius = segment.textSegment.attribute(named: .cornerRadius,
-                                                              type: Vector.self) {
+                                                              type: UIVector.self) {
                     context.fillRoundRect(bounds.rounded(radius: radius).asBLRoundRect)
                 } else {
                     context.fillRect(bounds.asBLRect)
@@ -189,7 +189,7 @@ class TextLayoutRenderer {
     
     private func boundsForBackground(segment: LineSegment,
                                      line: Line,
-                                     type: TextBackgroundBoundsAttribute) -> Rectangle {
+                                     type: TextBackgroundBoundsAttribute) -> UIRectangle {
         switch type {
         case .segmentBounds:
             return segment.bounds

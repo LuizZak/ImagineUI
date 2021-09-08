@@ -1,13 +1,14 @@
 import Foundation
 import Geometry
+import Geometria
 import SwiftBlend2D
 import Rendering
 
 open class ScrollView: ControlView {
     private let scrollBarSize: Double = 10
 
-    internal var contentOffset: Vector = .zero
-    internal var targetContentOffset: Vector = .zero
+    internal var contentOffset: UIVector = .zero
+    internal var targetContentOffset: UIVector = .zero
     
     public let contentView = View()
     
@@ -27,17 +28,17 @@ open class ScrollView: ControlView {
         }
     }
 
-    open var contentSize: Size = .zero {
+    open var contentSize: UISize = .zero {
         didSet {
             layoutContentView()
         }
     }
 
-    open var contentBounds: Rectangle {
-        return Rectangle(location: contentOffset, size: effectiveContentSize())
+    open var contentBounds: UIRectangle {
+        return UIRectangle(location: contentOffset, size: effectiveContentSize())
     }
 
-    open override var bounds: Rectangle {
+    open override var bounds: UIRectangle {
         didSet {
             if bounds.size != oldValue.size {
                 layoutContentView()
@@ -50,13 +51,13 @@ open class ScrollView: ControlView {
     ///
     /// If no scroll bars are visible, `visibleContentBounds` is the same as
     /// `View.bounds`.
-    open var visibleContentBounds: Rectangle {
+    open var visibleContentBounds: UIRectangle {
         var final = bounds
         if scrollBarsMode.contains(.vertical) {
-            final = final.inset(EdgeInsets(left: 0, top: 0, right: scrollBarSize, bottom: 0))
+            final = final.inset(UIEdgeInsets(left: 0, top: 0, right: scrollBarSize, bottom: 0))
         }
         if scrollBarsMode.contains(.horizontal) {
-            final = final.inset(EdgeInsets(left: 0, top: 0, right: 0, bottom: scrollBarSize))
+            final = final.inset(UIEdgeInsets(left: 0, top: 0, right: 0, bottom: scrollBarSize))
         }
 
         return final
@@ -94,13 +95,13 @@ open class ScrollView: ControlView {
     }
     
     private func horizontalScrollChanged(_ scroll: Double) {
-        targetContentOffset = Vector(x: -horizontalBar.scroll, y: targetContentOffset.y)
-        contentOffset = Vector(x: -horizontalBar.scroll, y: contentOffset.y)
+        targetContentOffset = UIVector(x: -horizontalBar.scroll, y: targetContentOffset.y)
+        contentOffset = UIVector(x: -horizontalBar.scroll, y: contentOffset.y)
     }
     
     private func verticalScrollChanged(_ scroll: Double) {
-        targetContentOffset = Vector(x: targetContentOffset.x, y: -verticalBar.scroll)
-        contentOffset = Vector(x: contentOffset.x, y: -verticalBar.scroll)
+        targetContentOffset = UIVector(x: targetContentOffset.x, y: -verticalBar.scroll)
+        contentOffset = UIVector(x: contentOffset.x, y: -verticalBar.scroll)
     }
     
     open override func addSubview(_ view: View) {
@@ -128,7 +129,7 @@ open class ScrollView: ControlView {
         verticalBar.scroll = -contentOffset.y
     }
     
-    open override func onResize(_ event: ValueChangedEventArgs<Size>) {
+    open override func onResize(_ event: ValueChangedEventArgs<UISize>) {
         super.onResize(event)
         
         contentView.location = contentOffset
@@ -163,7 +164,7 @@ open class ScrollView: ControlView {
         incrementContentOffset(event.delta)
     }
 
-    private func incrementContentOffset(_ offset: Vector) {
+    private func incrementContentOffset(_ offset: UIVector) {
         if offset == .zero {
             return
         }
@@ -185,9 +186,9 @@ open class ScrollView: ControlView {
     
     /// Limits an offset vector (like `contentOffset` or `targetContentOffset`)
     /// to always be within the scrollable limits of this scroll view.
-    private func limitOffsetVector(_ offset: Vector) -> Vector {
+    private func limitOffsetVector(_ offset: UIVector) -> UIVector {
         // Limit content offset within a maximum visible bounds
-        var contentOffsetClip = Rectangle(minimum: -(effectiveContentSize() - bounds.size), maximum: .zero)
+        var contentOffsetClip = UIRectangle(minimum: -(effectiveContentSize() - bounds.size), maximum: .zero)
         
         if contentSize.x == 0 {
             contentOffsetClip.x = 0
@@ -260,13 +261,13 @@ open class ScrollView: ControlView {
         }
     }
 
-    func effectiveContentSize() -> Size {
+    func effectiveContentSize() -> UISize {
         let bounds = visibleContentBounds
 
         let width = contentSize.x == 0 ? bounds.width : contentSize.x
         let height = contentSize.y == 0 ? bounds.height : contentSize.y
 
-        return Size(x: width, y: height)
+        return UISize(x: width, y: height)
     }
 
     func layoutContentView() {
@@ -288,7 +289,7 @@ open class ScrollView: ControlView {
 
 public class ScrollBarControl: ControlView {
     private var isMouseDown = false
-    private var mouseDownPoint: Vector = .zero
+    private var mouseDownPoint: UIVector = .zero
     public let orientation: Orientation
     
     /// Size of content to scroll through
@@ -337,7 +338,7 @@ public class ScrollBarControl: ControlView {
         invalidateControlGraphics()
     }
     
-    open override func onResize(_ event: ValueChangedEventArgs<Size>) {
+    open override func onResize(_ event: ValueChangedEventArgs<UISize>) {
         super.onResize(event)
         
         let size = event.newValue
@@ -414,7 +415,7 @@ public class ScrollBarControl: ControlView {
         context.fill(roundRect)
     }
     
-    private func scrollBarMouseArea() -> Vector {
+    private func scrollBarMouseArea() -> UIVector {
         let barArea = bounds
         let ratio = visibleSize / contentSize
         
@@ -424,12 +425,12 @@ public class ScrollBarControl: ControlView {
         let barSizeY = barArea.height * ratio
         let y = barArea.top + barArea.height - barSizeY
         
-        return Vector(x: x, y: y)
+        return UIVector(x: x, y: y)
     }
     
-    private func scrollBarBounds() -> Rectangle {
+    private func scrollBarBounds() -> UIRectangle {
         var barArea = bounds
-        barArea = barArea.inset(EdgeInsets(left: 2, top: 2, right: 2, bottom: 2))
+        barArea = barArea.inset(UIEdgeInsets(left: 2, top: 2, right: 2, bottom: 2))
         
         let ratio = visibleSize / contentSize
         
@@ -446,7 +447,7 @@ public class ScrollBarControl: ControlView {
             start = max(barArea.top, min(barArea.bottom, start))
             end = max(barArea.top, min(barArea.bottom, end))
 
-            return Rectangle(x: barArea.x, y: start, width: barArea.width, height: end - start)
+            return UIRectangle(x: barArea.x, y: start, width: barArea.width, height: end - start)
         } else {
             if contentSize == 0 || ratio >= 1 {
                 return barArea
@@ -460,7 +461,7 @@ public class ScrollBarControl: ControlView {
             start = max(barArea.left, min(barArea.right, start))
             end = max(barArea.left, min(barArea.right, end))
 
-            return Rectangle(x: start, y: barArea.top, width: end - start, height: barArea.height)
+            return UIRectangle(x: start, y: barArea.top, width: end - start, height: barArea.height)
         }
     }
 

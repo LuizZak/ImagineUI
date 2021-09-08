@@ -2,7 +2,7 @@ import Geometry
 import SwiftBlend2D
 import Rendering
 
-extension Polygon {
+extension UIPolygon {
     func asBLPath() -> BLPath {
         let path = BLPath()
         

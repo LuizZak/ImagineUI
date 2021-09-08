@@ -1,7 +1,7 @@
 import Geometry
 
 public protocol RootViewRedrawInvalidationDelegate: AnyObject {
-    func rootView(_ rootView: RootView, invalidateRect rect: Rectangle)
+    func rootView(_ rootView: RootView, invalidateRect rect: UIRectangle)
 }
 
 
@@ -11,7 +11,7 @@ public class RootView: ControlView {
     
     public weak var invalidationDelegate: RootViewRedrawInvalidationDelegate?
     
-    override func invalidate(bounds: Rectangle, spatialReference: SpatialReferenceType) {
+    override func invalidate(bounds: UIRectangle, spatialReference: SpatialReferenceType) {
         let rect = spatialReference.convert(bounds: bounds, to: nil)
         invalidationDelegate?.rootView(self, invalidateRect: rect)
     }

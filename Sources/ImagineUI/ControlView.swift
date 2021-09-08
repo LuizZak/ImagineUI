@@ -40,7 +40,7 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
         return ControlView.closestParentViewOfType(self, type: ControlView.self)
     }
     
-    open override var bounds: Rectangle {
+    open override var bounds: UIRectangle {
         didSet {
             if bounds.size != oldValue.size {
                 _bitmapCache.updateBitmapBounds(boundsForRedraw())
@@ -135,7 +135,7 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
     
     /// Event raised whenever this control view's bounds have been updated to a
     /// different value
-    @Event public var resized: ValueChangeEvent<ControlView, Size>
+    @Event public var resized: ValueChangeEvent<ControlView, UISize>
     
     // MARK: Mouse events
     
@@ -195,7 +195,7 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
     }
     
     /// Raises the `resized` event
-    open func onResize(_ event: ValueChangedEventArgs<Size>) {
+    open func onResize(_ event: ValueChangedEventArgs<UISize>) {
         _resized.publishEvent(sender: self, event)
     }
 
@@ -253,7 +253,7 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
 
     }
 
-    override func boundsForRedraw() -> Rectangle {
+    override func boundsForRedraw() -> UIRectangle {
         return bounds.inflatedBy(x: strokeWidth, y: strokeWidth)
     }
 
@@ -263,7 +263,7 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
         _bitmapCache.invalidateCache()
     }
     
-    open func invalidateControlGraphics(bounds: Rectangle) {
+    open func invalidateControlGraphics(bounds: UIRectangle) {
         invalidate(bounds: bounds)
         
         _bitmapCache.invalidateCache()
@@ -406,7 +406,7 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
     /// this `ControlView`
     /// - Parameter enabledOnly: Whether to only consider views that have
     /// interactivity enabled. See `interactionEnabled`
-    public func hitTestControl(_ point: Vector, enabledOnly: Bool = true) -> ControlView? {
+    public func hitTestControl(_ point: UIVector, enabledOnly: Bool = true) -> ControlView? {
         let controlView = viewUnder(point: point) { view -> Bool in
             guard let control = view as? ControlView else {
                 return false

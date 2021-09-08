@@ -5,13 +5,13 @@ public class LayoutGuide {
     var layoutVariables: LayoutVariables!
     var constraints: [LayoutConstraint] = []
     
-    var transform: Matrix2D {
+    var transform: UIMatrix {
         return .translation(x: area.x, y: area.y)
     }
     
     internal(set) public weak var owningView: View?
     
-    internal(set) public var area: Rectangle = .zero
+    internal(set) public var area: UIRectangle = .zero
     
     public init() {
         layoutVariables = LayoutVariables(container: self)
@@ -35,16 +35,16 @@ extension LayoutGuide: LayoutVariablesContainer {
     }
     
     /// Returns the bounds for redrawing on the screen's coordinate system
-    func boundsForRedrawOnScreen() -> Rectangle {
+    func boundsForRedrawOnScreen() -> UIRectangle {
         return absoluteTransform().transform(area.withLocation(.zero))
     }
 }
 
 extension LayoutGuide: SpatialReferenceType {
-    public func absoluteTransform() -> Matrix2D {
+    public func absoluteTransform() -> UIMatrix {
         var transform = self.transform
         if let superview = owningView {
-            transform = transform * superview.absoluteTransform()
+            transform = UIMatrix.multiply(transform, superview.absoluteTransform())
         }
         return transform
     }

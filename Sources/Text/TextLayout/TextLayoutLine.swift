@@ -19,7 +19,7 @@ public struct TextLayoutLine {
     public var underlineOffset: Float
     
     /// Boundaries of line, in screen-space coordinates
-    public var bounds: Rectangle
+    public var bounds: UIRectangle
     
     public init(segments: [TextLayoutLineSegment],
                 startCharacterIndex: Int,
@@ -29,7 +29,7 @@ public struct TextLayoutLine {
                 text: Substring,
                 baselineHeight: Float,
                 underlineOffset: Float,
-                bounds: Rectangle) {
+                bounds: UIRectangle) {
         
         self.segments = segments
         self.startCharacterIndex = startCharacterIndex

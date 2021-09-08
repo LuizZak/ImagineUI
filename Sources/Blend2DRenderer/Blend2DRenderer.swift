@@ -60,69 +60,69 @@ public class Blend2DRenderer: Renderer {
     
     // MARK: - Fill
     
-    public func fill(_ rect: Rectangle) {
+    public func fill(_ rect: UIRectangle) {
         _context.fillRect(rect.asBLRect)
     }
     
-    public func fill(_ roundRect: RoundRectangle) {
+    public func fill(_ roundRect: UIRoundRectangle) {
         _context.fillRoundRect(roundRect.asBLRoundRect)
     }
     
-    public func fill(_ circle: Circle) {
+    public func fill(_ circle: UICircle) {
         _context.fillCircle(circle.asBLCircle)
     }
     
-    public func fill(_ ellipse: Ellipse) {
+    public func fill(_ ellipse: UIEllipse) {
         _context.fillEllipse(ellipse.asBLEllipse)
     }
     
-    public func fill(_ polygon: Polygon) {
+    public func fill(_ polygon: UIPolygon) {
         _context.fillPolygon(polygon.vertices.map(\.asBLPoint))
     }
     
     // MARK: - Stroke
     
-    public func stroke(_ line: Line) {
+    public func stroke(_ line: UILine) {
         _context.strokeLine(line.asBLLine)
     }
     
-    public func stroke(_ rect: Rectangle) {
+    public func stroke(_ rect: UIRectangle) {
         _context.strokeRect(rect.asBLRect)
     }
     
-    public func stroke(_ roundRect: RoundRectangle) {
+    public func stroke(_ roundRect: UIRoundRectangle) {
         _context.strokeRoundRect(roundRect.asBLRoundRect)
     }
     
-    public func stroke(_ circle: Circle) {
+    public func stroke(_ circle: UICircle) {
         _context.strokeCircle(circle.asBLCircle)
     }
     
-    public func stroke(_ ellipse: Ellipse) {
+    public func stroke(_ ellipse: UIEllipse) {
         _context.strokeEllipse(ellipse.asBLEllipse)
     }
     
-    public func stroke(_ polygon: Polygon) {
+    public func stroke(_ polygon: UIPolygon) {
         _context.strokePolygon(polygon.vertices.map(\.asBLPoint))
     }
     
-    public func strokeLine(start: Vector, end: Vector) {
+    public func strokeLine(start: UIVector, end: UIVector) {
         _context.strokeLine(p0: start.asBLPoint, p1: end.asBLPoint)
     }
     
-    public func stroke(polyline: [Vector]) {
+    public func stroke(polyline: [UIVector]) {
         _context.strokePolyline(polyline.map(\.asBLPoint))
     }
     
     // MARK: - Bitmap
     
-    public func drawImageScaled(_ image: Image, area: Rectangle) {
+    public func drawImageScaled(_ image: Image, area: UIRectangle) {
         let image = blImage(from: image)
         
         _context.blitScaledImage(image, rectangle: area.asBLRect)
     }
     
-    public func drawImage(_ image: Image, at point: Vector) {
+    public func drawImage(_ image: Image, at point: UIVector) {
         let image = blImage(from: image)
         
         _context.blitImage(image, at: point.asBLPoint)
@@ -130,24 +130,24 @@ public class Blend2DRenderer: Renderer {
     
     // MARK: - Text
     
-    public func drawTextLayout(_ layout: TextLayoutType, at point: Vector) {
+    public func drawTextLayout(_ layout: TextLayoutType, at point: UIVector) {
         let renderer = TextLayoutRenderer(textLayout: layout)
         renderer.render(in: _context, location: point.asBLPoint)
     }
     
-    public func strokeTextLayout(_ layout: TextLayoutType, at point: Vector) {
+    public func strokeTextLayout(_ layout: TextLayoutType, at point: UIVector) {
         let renderer = TextLayoutRenderer(textLayout: layout)
         renderer.strokeText(in: _context, location: point.asBLPoint)
     }
     
-    public func fillTextLayout(_ layout: TextLayoutType, at point: Vector) {
+    public func fillTextLayout(_ layout: TextLayoutType, at point: UIVector) {
         let renderer = TextLayoutRenderer(textLayout: layout)
         renderer.fillText(in: _context, location: point.asBLPoint)
     }
     
     // MARK: - Transform
     
-    public func transform(_ matrix: Matrix2D) {
+    public func transform(_ matrix: UIMatrix) {
         _context.transform(matrix.asBLMatrix2D)
     }
     
@@ -159,7 +159,7 @@ public class Blend2DRenderer: Renderer {
         _context.translate(x: x, y: y)
     }
     
-    public func translate(by vec: Vector) {
+    public func translate(by vec: UIVector) {
         _context.translate(x: vec.x, y: vec.y)
     }
     
@@ -167,7 +167,7 @@ public class Blend2DRenderer: Renderer {
         _context.scale(x: x, y: y)
     }
     
-    public func scale(by factor: Vector) {
+    public func scale(by factor: UIVector) {
         _context.scale(x: factor.x, y: factor.y)
     }
     
@@ -175,13 +175,13 @@ public class Blend2DRenderer: Renderer {
         _context.rotate(angle: angle)
     }
     
-    public func rotate(by angle: Double, around center: Vector) {
+    public func rotate(by angle: Double, around center: UIVector) {
         _context.rotate(angle: angle, x: center.x, y: center.y)
     }
     
     // MARK: - Clipping
     
-    public func clip(_ rect: Rectangle) {
+    public func clip(_ rect: UIRectangle) {
         _context.clipToRect(rect.asBLRect)
     }
     

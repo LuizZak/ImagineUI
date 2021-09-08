@@ -2,15 +2,15 @@ import Geometry
 
 /// Text metrics for a text segment.
 public struct TextMetrics {
-    var advance: Vector
-    var leadingBearing: Vector
-    var trailingBearing: Vector
-    var boundingBox: Rectangle
+    var advance: UIVector
+    var leadingBearing: UIVector
+    var trailingBearing: UIVector
+    var boundingBox: UIRectangle
     
-    public init(advance: Vector,
-                leadingBearing: Vector,
-                trailingBearing: Vector,
-                boundingBox: Rectangle) {
+    public init(advance: UIVector,
+                leadingBearing: UIVector,
+                trailingBearing: UIVector,
+                boundingBox: UIRectangle) {
         
         self.advance = advance
         self.leadingBearing = leadingBearing
