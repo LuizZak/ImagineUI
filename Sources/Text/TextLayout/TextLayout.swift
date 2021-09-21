@@ -172,6 +172,7 @@ public class TextLayout: TextLayoutType {
         
         var closestIndex = 0
         var closestRect = UIRectangle.zero
+        var closestRectDist: Double = .infinity
         
         var absoluteIndex = 0
         for segment in line.segments {
@@ -213,11 +214,17 @@ public class TextLayout: TextLayoutType {
                 }
                 
                 // TODO: Should do distance to corner of rect, not its center
-                if iterator.index == 0 {
-                    closestRect = rect
-                } else if closestRect.center.distanceSquared(to: point) > rect.center.distanceSquared(to: point) {
+                let dist = rect.center.distanceSquared(to: point)
+                if dist < closestRectDist {
                     closestIndex = absoluteIndex
                     closestRect = rect
+                    closestRectDist = dist
+                } else {
+                    // TODO: Check that this assumption holds true for all cases.
+                    //
+                    // If distance is increasing, we're now past the closest
+                    // character.
+                    break
                 }
                 
                 advanceOffset += UIVector(advance.advance)
@@ -328,6 +335,7 @@ public class TextLayout: TextLayoutType {
 }
 
 private class LineCollector {
+    private static let newlinesCharacterSet = CharacterSet.newlines
     private var currentWorkingSegment: WorkingSegment
     private var currentWorkingLine: WorkingLine
     private var currentSegment: AttributedText.TextSegment
@@ -441,7 +449,7 @@ private class LineCollector {
     }
     
     private static func isLineBreak(_ character: Character) -> Bool {
-        return character.unicodeScalars.contains(where: CharacterSet.newlines.contains)
+        return character.unicodeScalars.contains(where: newlinesCharacterSet.contains)
     }
     
     private struct WorkingSegment {

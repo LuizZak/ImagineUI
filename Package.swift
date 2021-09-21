@@ -34,7 +34,11 @@ let package = Package(
             dependencies: ["Geometry", "Rendering", "SwiftBlend2D", "Text", "Blend2DRenderer", "Cassowary"]),
         .target(
             name: "TestUtils",
-            dependencies: ["SwiftBlend2D", "Blend2DRenderer", "LibPNG"]),
+            dependencies: [
+                "SwiftBlend2D",
+                "Blend2DRenderer",
+                .byNameItem(name: "LibPNG", condition: .when(platforms: [.macOS, .linux]))
+            ]),
         .testTarget(
             name: "TextTests",
             dependencies: ["Geometry", "Text", "SwiftBlend2D", "Blend2DRenderer"]),

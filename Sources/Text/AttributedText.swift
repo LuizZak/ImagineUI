@@ -385,13 +385,15 @@ public struct AttributedText: Equatable {
                 return false
             }
             
-            for (key, lhsValue) in lhs.textAttributes {
-                guard let rhsAttribute = rhs.textAttributes[key] else {
-                    return false
-                }
-                
-                if !lhsValue.isEqual(to: rhsAttribute) {
-                    return false
+            if !lhs.textAttributes.isEmpty {
+                for (key, lhsValue) in lhs.textAttributes {
+                    guard let rhsAttribute = rhs.textAttributes[key] else {
+                        return false
+                    }
+                    
+                    if !lhsValue.isEqual(to: rhsAttribute) {
+                        return false
+                    }
                 }
             }
             

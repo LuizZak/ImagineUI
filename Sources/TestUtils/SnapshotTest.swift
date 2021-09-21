@@ -1,7 +1,10 @@
 import XCTest
 import blend2d
-import LibPNG
 import SwiftBlend2D
+
+#if canImport(LibPNG)
+
+import LibPNG
 
 open class SnapshotTestCase: XCTestCase {
     open var snapshotPath: String {
@@ -209,3 +212,40 @@ func copyFile(source: String, dest: String) throws {
     }
     try FileManager.default.copyItem(atPath: source, toPath: dest)
 }
+
+#else
+
+open class SnapshotTestCase: XCTestCase {
+    open var snapshotPath: String {
+        fatalError("Should be overriden by subclasses")
+    }
+    
+    open var snapshotFailuresPath: String {
+        fatalError("Should be overriden by subclasses")
+    }
+    
+    /// Forces all `assertImageMatch` invocations to record images instead of
+    /// testing against recorded images.
+    public var forceRecordMode = false
+    
+    public func recordImage(_ image: BLImage,
+                            _ testName: String = #function,
+                            file: StaticString = #file,
+                            line: UInt = #line) {
+        
+        XCTFail("Platform does not support LibPNG and cannot do snapshot testing.",
+                file: file, line: line)
+    }
+    
+    public func assertImageMatch(_ image: BLImage,
+                                 _ testName: String = #function,
+                                 record: Bool = false,
+                                 file: StaticString = #file,
+                                 line: UInt = #line) {
+        
+        XCTFail("Platform does not support LibPNG and cannot do snapshot testing.",
+                file: file, line: line)
+    }
+}
+
+#endif

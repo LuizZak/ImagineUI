@@ -1,7 +1,13 @@
 import Geometria
+
+#if canImport(simd)
 import simd
 
 public typealias UIVector = SIMD2<Double>
+#else
+public typealias UIVector = Vector2D
+#endif
+
 public typealias UIMatrix = Matrix2D
 public typealias UISize = UIVector
 public typealias UIIntPoint = Vector2i
