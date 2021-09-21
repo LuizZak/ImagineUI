@@ -3,6 +3,29 @@
 
 import PackageDescription
 
+var dependencies: [Package.Dependency] = [
+    .package(url: "https://github.com/LuizZak/Geometria.git", .branch("main")),
+    .package(url: "https://github.com/LuizZak/CassowarySwift.git", .branch("master")),
+    .package(url: "https://github.com/LuizZak/swift-blend2d.git", .branch("master"))
+]
+
+let testUtilsTarget: Target = .target(
+name: "TestUtils",
+dependencies: [
+    "SwiftBlend2D",
+    "Blend2DRenderer"
+])
+
+#if !os(Windows)
+
+dependencies.append(
+    .package(url: "https://github.com/LuizZak/swift-libpng.git", .branch("master"))
+)
+
+testUtilsTarget.dependencies.append("LibPNG")
+
+#endif
+
 let package = Package(
     name: "ImagineUI",
     products: [
@@ -10,12 +33,7 @@ let package = Package(
             name: "ImagineUI",
             targets: ["ImagineUI"]),
     ],
-    dependencies: [
-        .package(url: "https://github.com/LuizZak/Geometria.git", .branch("main")),
-        .package(url: "https://github.com/LuizZak/CassowarySwift.git", .branch("master")),
-        .package(url: "https://github.com/LuizZak/swift-blend2d.git", .branch("master")),
-        .package(url: "https://github.com/LuizZak/swift-libpng.git", .branch("master"))
-    ],
+    dependencies: dependencies,
     targets: [
         .target(
             name: "Geometry",
@@ -32,13 +50,7 @@ let package = Package(
         .target(
             name: "ImagineUI",
             dependencies: ["Geometry", "Rendering", "SwiftBlend2D", "Text", "Blend2DRenderer", "Cassowary"]),
-        .target(
-            name: "TestUtils",
-            dependencies: [
-                "SwiftBlend2D",
-                "Blend2DRenderer",
-                .byNameItem(name: "LibPNG", condition: .when(platforms: [.macOS, .linux]))
-            ]),
+        testUtilsTarget,
         .testTarget(
             name: "TextTests",
             dependencies: ["Geometry", "Text", "SwiftBlend2D", "Blend2DRenderer"]),

@@ -224,8 +224,6 @@ open class SnapshotTestCase: XCTestCase {
         fatalError("Should be overriden by subclasses")
     }
     
-    /// Forces all `assertImageMatch` invocations to record images instead of
-    /// testing against recorded images.
     public var forceRecordMode = false
     
     public func recordImage(_ image: BLImage,
