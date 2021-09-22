@@ -5,7 +5,7 @@ import PackageDescription
 
 var dependencies: [Package.Dependency] = [
     .package(url: "https://github.com/LuizZak/Geometria.git", .branch("main")),
-    .package(url: "https://github.com/LuizZak/CassowarySwift.git", .branch("master")),
+    .package(url: "https://github.com/LuizZak/CassowarySwift.git", .branch("cassowary-swift")),
     .package(url: "https://github.com/LuizZak/swift-blend2d.git", .branch("master"))
 ]
 
@@ -49,7 +49,7 @@ let package = Package(
             dependencies: ["SwiftBlend2D", "Geometry", "Rendering", "Text"]),
         .target(
             name: "ImagineUI",
-            dependencies: ["Geometry", "Rendering", "SwiftBlend2D", "Text", "Blend2DRenderer", "Cassowary"]),
+            dependencies: ["Geometry", "Rendering", "SwiftBlend2D", "Text", "Blend2DRenderer", "CassowarySwift"]),
         testUtilsTarget,
         .testTarget(
             name: "TextTests",

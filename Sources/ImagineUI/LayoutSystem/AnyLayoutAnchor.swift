@@ -1,4 +1,4 @@
-import Cassowary
+import CassowarySwift
 
 internal struct AnyLayoutAnchor: LayoutAnchorType, Equatable {
     weak var _owner: LayoutVariablesContainer?

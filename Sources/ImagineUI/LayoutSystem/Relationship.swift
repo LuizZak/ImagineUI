@@ -1,4 +1,4 @@
-import Cassowary
+import CassowarySwift
 
 public enum Relationship: CustomStringConvertible {
     case equal

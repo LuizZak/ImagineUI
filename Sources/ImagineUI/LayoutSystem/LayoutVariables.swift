@@ -1,5 +1,5 @@
 import Geometry
-import Cassowary
+import CassowarySwift
 
 class LayoutVariables {
     unowned let container: LayoutVariablesContainer

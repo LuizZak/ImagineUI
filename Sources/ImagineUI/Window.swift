@@ -1,5 +1,5 @@
 import Geometry
-import Cassowary
+import CassowarySwift
 import Rendering
 
 public protocol WindowDelegate: AnyObject {

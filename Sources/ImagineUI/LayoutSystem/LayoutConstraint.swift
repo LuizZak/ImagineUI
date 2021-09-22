@@ -1,4 +1,4 @@
-import Cassowary
+import CassowarySwift
 
 public class LayoutConstraint: Hashable {
     var cachedConstraint: Constraint?

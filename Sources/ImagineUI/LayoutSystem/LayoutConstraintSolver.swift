@@ -1,4 +1,4 @@
-import Cassowary
+import CassowarySwift
 
 public class LayoutConstraintSolver {
     public func solve(viewHierarchy: View, cache: LayoutConstraintSolverCache? = nil) {

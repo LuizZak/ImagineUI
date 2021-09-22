@@ -2,7 +2,7 @@ import Foundation
 import QuartzCore
 import SwiftBlend2D
 import ImagineUI
-import Cassowary
+import CassowarySwift
 import Cocoa
 import Blend2DRenderer
 

@@ -1,5 +1,5 @@
 import Geometry
-import Cassowary
+import CassowarySwift
 
 /// A view that lays out a set of its arranged subviews horizontally or
 /// vertically automatically

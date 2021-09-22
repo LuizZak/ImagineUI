@@ -1,6 +1,6 @@
 import Geometry
 import Rendering
-import Cassowary
+import CassowarySwift
 
 open class Button: ControlView {
     private var _backColor = StatedValueStore<Color>()

@@ -1,4 +1,4 @@
-import Cassowary
+import CassowarySwift
 
 /// Priority for layout constraints
 public struct LayoutPriority {
