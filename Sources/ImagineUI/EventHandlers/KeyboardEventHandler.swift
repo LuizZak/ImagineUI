@@ -52,27 +52,3 @@ public enum KeyboardEventType {
     case keyUp
     case previewKeyDown
 }
-
-public struct KeyboardModifier: OptionSet {
-    public var rawValue: Int
-
-    public init(rawValue: Int) {
-        self.rawValue = rawValue
-    }
-
-    public static let none = KeyboardModifier([])
-    public static let shift = KeyboardModifier(rawValue: 0b1)
-    public static let control = KeyboardModifier(rawValue: 0b10)
-    public static let alt = KeyboardModifier(rawValue: 0b100)
-
-    #if os(macOS)
-    /// Note: Only available on macOS
-    public static let command = KeyboardModifier(rawValue: 0b1000)
-
-    /// Note: Only available on macOS
-    public static let option = KeyboardModifier(rawValue: 0b10000)
-    
-    /// Note: Only available on macOS
-    public static let numericPad = KeyboardModifier(rawValue: 0b100000)
-    #endif
-}

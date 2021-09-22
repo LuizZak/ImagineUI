@@ -1,5 +1,9 @@
+import Foundation
 import Geometry
 import Rendering
+
+/// Type for UISettings.timeInSeconds
+public typealias TimeInSecondsFunction = () -> TimeInterval
 
 /// General UI settings that affects all views and controls
 public enum UISettings {
@@ -13,6 +17,13 @@ public enum UISettings {
     /// Rendering scale for UI.
     /// Affects scaling of caches of views in bitmap format.
     public static var scale: UIVector = UIVector(x: 2, y: 2)
+
+    /// OS-specific method that returns the current time in seconds.
+    /// Time's starting value is not defined, but it must increase in steps of
+    /// 1.0 per 1 second of execution time.
+    public static var timeInSeconds: TimeInSecondsFunction = {
+        fatalError("UISettings.initialize() must be called prior to using UISettings.timeInSeconds()")
+    }
     
     /// Attempts to get the global render context of the UI system.
     /// Throws a runtime error if `globalRenderContext` is `nil`
@@ -27,17 +38,24 @@ public enum UISettings {
     public static func initialize(_ config: Configuration) throws {
         self.configuration = config
         
-        try Fonts.configure(fontManager: config.fontManager,
-                            defaultFontPath: config.defaultFontPath)
+        try Fonts.configure(
+            fontManager: config.fontManager,
+            defaultFontPath: config.defaultFontPath
+        )
     }
     
     public struct Configuration {
         public var fontManager: FontManager
         public var defaultFontPath: String
+        public var timeInSecondsFunction: TimeInSecondsFunction
         
-        public init(fontManager: FontManager, defaultFontPath: String) {
+        public init(fontManager: FontManager, 
+                    defaultFontPath: String,
+                    timeInSecondsFunction: @escaping TimeInSecondsFunction) {
+            
             self.fontManager = fontManager
             self.defaultFontPath = defaultFontPath
+            self.timeInSecondsFunction = timeInSecondsFunction
         }
     }
 }

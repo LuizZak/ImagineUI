@@ -606,3 +606,21 @@ public extension Keys {
     static let command = Keys(rawValue: 283)
     #endif
 }
+
+public extension Keys {
+    #if os(macOS)
+
+    /// OS-equivalent to 'control', for keyboard.
+    /// On macOS, this property is the same as ``command``, and on windows and 
+    /// Linux, ``control``.
+    static let osControlKey = Keys.command
+
+    #else
+
+    /// OS-equivalent to 'control', for keyboard.
+    /// On macOS, this property is the same as ``command``, and on windows and 
+    /// Linux, ``control``.
+    static let osControlKey = Keys.control
+    
+    #endif
+}

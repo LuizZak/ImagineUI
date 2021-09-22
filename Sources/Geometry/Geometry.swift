@@ -1,4 +1,4 @@
-import Geometria
+@_exported import Geometria
 
 #if canImport(simd)
 import simd
@@ -8,7 +8,7 @@ public typealias UIVector = SIMD2<Double>
 public typealias UIVector = Vector2D
 #endif
 
-public typealias UIMatrix = Matrix2D
+public typealias UIMatrix = Matrix3x2D
 public typealias UISize = UIVector
 public typealias UIIntPoint = Vector2i
 public typealias UIRectangle = Rectangle2<UIVector>

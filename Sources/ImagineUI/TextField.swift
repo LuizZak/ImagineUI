@@ -1,9 +1,10 @@
 import Foundation
-import QuartzCore
 import Geometry
 import Text
 import SwiftBlend2D
 import Rendering
+
+// import QuartzCore
 
 open class TextField: ControlView {
     private let _blinker = CursorBlinker()
@@ -271,7 +272,7 @@ open class TextField: ControlView {
         let offset = offsetUnder(point: event.location)
         _textEngine.setCaret(offset)
 
-        if _lastMouseDownPoint.distance(to: event.location) < 10 && CACurrentMediaTime() - _lastMouseDown < 1 {
+        if _lastMouseDownPoint.distance(to: event.location) < 10 && UISettings.timeInSeconds() - _lastMouseDown < 1 {
             _wordSpanStartPosition = offset
 
             let segment = _textEngine.wordSegmentIn(position: _wordSpanStartPosition)
@@ -281,7 +282,7 @@ open class TextField: ControlView {
         }
         
         _lastMouseDownPoint = event.location
-        _lastMouseDown = CACurrentMediaTime()
+        _lastMouseDown = UISettings.timeInSeconds()
     }
 
     open override func onMouseEnter() {
@@ -340,7 +341,7 @@ open class TextField: ControlView {
         
         if event.handled { return }
 
-        if event.modifiers.contains(.command) {
+        if event.modifiers.contains(.osControlKey) {
             switch event.keyCode {
             case .c:
                 copy()
@@ -356,7 +357,7 @@ open class TextField: ControlView {
 
             case .z where editable:
                 // Ctrl+Shift+Z as alternative for Ctrl+Y (redo)
-                if event.modifiers == (KeyboardModifier.command.union(.shift)) {
+                if event.modifiers == (KeyboardModifier.osControlKey.union(.shift)) {
                     redo()
                     return
                 }
@@ -408,8 +409,15 @@ open class TextField: ControlView {
 
     @discardableResult
     private func handleCaretMoveEvent(_ keyCode: Keys, _ modifiers: KeyboardModifier) -> Bool {
-        if modifiers.contains(.shift) {
-            if modifiers.contains(.option) {
+        // TODO: Support wrapping calls to TextEngine.move- methods to do selection
+        // TODO: to allow reduction of copy-paste here.
+
+        #if os(macOS)
+
+        // macOS text navigation
+
+        if modifiers.contains(KeyMap.selectModifier) {
+            if modifiers.contains(KeyMap.wordMoveModifier) {
                 if keyCode == .left {
                     _textEngine.selectLeftWord()
                     return true
@@ -418,7 +426,7 @@ open class TextField: ControlView {
                     _textEngine.selectRightWord()
                     return true
                 }
-            } else if modifiers.contains(.command) {
+            } else if modifiers.contains(.osControlKey) {
                 if keyCode == .left {
                     _textEngine.selectToStart()
                     return true
@@ -438,7 +446,7 @@ open class TextField: ControlView {
                 }
             }
         } else {
-            if modifiers.contains(.option) {
+            if modifiers.contains(KeyMap.wordMoveModifier) {
                 if keyCode == .left {
                     _textEngine.moveLeftWord()
                     return true
@@ -447,7 +455,7 @@ open class TextField: ControlView {
                     _textEngine.moveRightWord()
                     return true
                 }
-            } else if modifiers.contains(.command) {
+            } else if modifiers.contains(.osControlKey) {
                 if keyCode == .left {
                     _textEngine.moveToStart()
                     return true
@@ -467,6 +475,72 @@ open class TextField: ControlView {
                 }
             }
         }
+
+        #else
+
+        // Windows-like text navigation
+
+        if modifiers.contains(KeyMap.selectModifier) {
+            if modifiers.contains(KeyMap.wordMoveModifier) {
+                if keyCode == .left {
+                    _textEngine.selectLeftWord()
+                    return true
+                }
+                if keyCode == .right {
+                    _textEngine.selectRightWord()
+                    return true
+                }
+            } else if modifiers.contains(.osControlKey) {
+                if keyCode == .left {
+                    _textEngine.selectToStart()
+                    return true
+                }
+                if keyCode == .right {
+                    _textEngine.selectToEnd()
+                    return true
+                }
+            } else {
+                if keyCode == .left {
+                    _textEngine.selectLeft()
+                    return true
+                }
+                if keyCode == .right {
+                    _textEngine.selectRight()
+                    return true
+                }
+            }
+        } else {
+            if modifiers.contains(KeyMap.wordMoveModifier) {
+                if keyCode == .left {
+                    _textEngine.moveLeftWord()
+                    return true
+                }
+                if keyCode == .right {
+                    _textEngine.moveRightWord()
+                    return true
+                }
+            } else if modifiers.contains(.osControlKey) {
+                if keyCode == .left {
+                    _textEngine.moveToStart()
+                    return true
+                }
+                if keyCode == .right {
+                    _textEngine.moveToEnd()
+                    return true
+                }
+            } else {
+                if keyCode == .left {
+                    _textEngine.moveLeft()
+                    return true
+                }
+                if keyCode == .right {
+                    _textEngine.moveRight()
+                    return true
+                }
+            }
+        }
+
+        #endif
 
         return false
     }
@@ -735,9 +809,13 @@ open class TextField: ControlView {
     }
     
     private func isValidInputCharacter(_ event: KeyEventArgs) -> Bool {
+        #if os(macOS)
+
         if event.modifiers.contains(.numericPad) {
             return false
         }
+
+        #endif
         
         return true
     }
@@ -763,12 +841,12 @@ private class CursorBlinker {
     public var blinkState: Double { getBlinkState() }
 
     public init() {
-        _blinkStart = CACurrentMediaTime()
+        _blinkStart = UISettings.timeInSeconds()
     }
 
     public func restart() {
         lastBlinkState = 0
-        _blinkStart = CACurrentMediaTime()
+        _blinkStart = UISettings.timeInSeconds()
     }
 
     /// Check that since the last time this method was invoked, that the blinker
@@ -779,7 +857,7 @@ private class CursorBlinker {
     }
 
     private func getBlinkState() -> Double {
-        let current = CACurrentMediaTime()
+        let current = UISettings.timeInSeconds()
         let elapsed = current - _blinkStart
         let state = elapsed.truncatingRemainder(dividingBy: blinkInterval)
         

@@ -1,6 +1,7 @@
 import Geometry
 import SwiftBlend2D
 import Blend2DRenderer
+import TestUtils
 
 @testable import Text
 
@@ -18,7 +19,7 @@ class TestFont: Font {
     }
     
     init(size: Float) {
-        let face = try! BLFontFace(fromFile: "\(pathToResources())/NotoSans-Regular.ttf")
+        let face = try! BLFontFace(fromFile: TestPaths.pathToTestFontFace())
         font = Blend2DFont(font: BLFont(fromFace: face, size: size))
     }
     

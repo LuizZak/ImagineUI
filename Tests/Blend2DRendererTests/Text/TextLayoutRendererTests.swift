@@ -9,11 +9,11 @@ import TestUtils
 
 class TextLayoutRendererTests: SnapshotTestCase {
     override var snapshotPath: String {
-        return pathToSnapshots()
+        return TestPaths.pathToSnapshots(testTarget: "Blend2DRendererTests")
     }
     
     override var snapshotFailuresPath: String {
-        return pathToSnapshotFailures()
+        return TestPaths.pathToSnapshotFailures(testTarget: "Blend2DRendererTests")
     }
     
     func testRenderAttributedTextBackgroundColor() {
@@ -264,7 +264,7 @@ class TextLayoutRendererTests: SnapshotTestCase {
     }
     
     func makeFont(size: Float) -> Font {
-        let face = try! BLFontFace(fromFile: "\(pathToResources())/NotoSans-Regular.ttf")
+        let face = try! BLFontFace(fromFile: TestPaths.pathToTestFontFace())
         return Blend2DFont(font: BLFont(fromFace: face, size: size))
     }
 }

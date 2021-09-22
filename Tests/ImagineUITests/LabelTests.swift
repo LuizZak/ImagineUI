@@ -5,17 +5,23 @@ import TestUtils
 
 class LabelTests: SnapshotTestCase {
     override var snapshotPath: String {
-        return pathToSnapshots()
+        return TestPaths.pathToSnapshots(testTarget: "ImagineUITests")
     }
     
     override var snapshotFailuresPath: String {
-        return pathToSnapshotFailures()
+        return TestPaths.pathToSnapshotFailures(testTarget: "ImagineUITests")
     }
     
     override func setUpWithError() throws {
         try super.setUpWithError()
         
-        try UISettings.initialize(.init(fontManager: Blend2DFontManager(), defaultFontPath: "\(pathToResources())/NotoSans-Regular.ttf"))
+        try UISettings.initialize(
+            .init(
+                fontManager: Blend2DFontManager(),
+                defaultFontPath: TestPaths.pathToTestFontFace(),
+                timeInSecondsFunction: { 0.0 }
+            )
+        )
     }
     
     func testSnapshot() {
