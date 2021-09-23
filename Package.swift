@@ -53,7 +53,7 @@ let package = Package(
         testUtilsTarget,
         .testTarget(
             name: "TextTests",
-            dependencies: ["Geometry", "Text", "SwiftBlend2D", "Blend2DRenderer"]),
+            dependencies: ["Geometry", "Text", "SwiftBlend2D", "Blend2DRenderer", "TestUtils"]),
         .testTarget(
             name: "Blend2DRendererTests",
             dependencies: ["Geometry", "Text", "Rendering", "SwiftBlend2D", "Blend2DRenderer", "TestUtils"]),
