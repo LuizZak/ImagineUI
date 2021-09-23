@@ -38,6 +38,8 @@ public enum UISettings {
     public static func initialize(_ config: Configuration) throws {
         self.configuration = config
         
+        self.timeInSeconds = config.timeInSecondsFunction
+        
         try Fonts.configure(
             fontManager: config.fontManager,
             defaultFontPath: config.defaultFontPath
