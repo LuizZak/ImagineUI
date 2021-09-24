@@ -53,6 +53,30 @@ public extension UISize {
     }
 }
 
+// MARK: Addition - UIPoint
+
+public extension UISize {
+    @_transparent
+    static func + (lhs: Self, rhs: UIPoint) -> Self {
+        .init(width: lhs.width + rhs.x, height: lhs.height + rhs.y)
+    }
+
+    @_transparent
+    static func - (lhs: Self, rhs: UIPoint) -> Self {
+        .init(width: lhs.width - rhs.x, height: lhs.height - rhs.y)
+    }
+
+    @_transparent
+    static func += (lhs: inout Self, rhs: UIPoint) {
+        lhs = lhs + rhs
+    }
+
+    @_transparent
+    static func -= (lhs: inout Self, rhs: UIPoint) {
+        lhs = lhs - rhs
+    }
+}
+
 // MARK: Addition - Scalars
 
 public extension UISize {
