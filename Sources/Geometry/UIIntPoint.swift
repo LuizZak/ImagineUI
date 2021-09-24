@@ -177,6 +177,30 @@ public extension UIIntPoint {
     }
 }
 
+// MARK: Comparison - UIIntSize
+
+public extension UIIntPoint {
+    @_transparent
+    static func > (lhs: Self, rhs: UIIntSize) -> Bool {
+        lhs > rhs.asUIIntPoint
+    }
+
+    @_transparent
+    static func < (lhs: Self, rhs: UIIntSize) -> Bool {
+        lhs < rhs.asUIIntPoint
+    }
+
+    @_transparent
+    static func >= (lhs: Self, rhs: UIIntSize) -> Bool {
+        lhs >= rhs.asUIIntPoint
+    }
+
+    @_transparent
+    static func <= (lhs: Self, rhs: UIIntSize) -> Bool {
+        lhs <= rhs.asUIIntPoint
+    }
+}
+
 public func min(_ lhs: UIIntPoint, _ rhs: UIIntPoint) -> UIIntPoint {
     .pointwiseMin(lhs, rhs)
 }

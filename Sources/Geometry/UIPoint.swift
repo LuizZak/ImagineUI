@@ -239,6 +239,30 @@ public extension UIPoint {
     }
 }
 
+// MARK: Comparison - UISize
+
+public extension UIPoint {
+    @_transparent
+    static func > (lhs: Self, rhs: UISize) -> Bool {
+        lhs > rhs.asUIPoint
+    }
+
+    @_transparent
+    static func < (lhs: Self, rhs: UISize) -> Bool {
+        lhs < rhs.asUIPoint
+    }
+
+    @_transparent
+    static func >= (lhs: Self, rhs: UISize) -> Bool {
+        lhs >= rhs.asUIPoint
+    }
+
+    @_transparent
+    static func <= (lhs: Self, rhs: UISize) -> Bool {
+        lhs <= rhs.asUIPoint
+    }
+}
+
 @_transparent
 public func min(_ lhs: UIPoint, _ rhs: UIPoint) -> UIPoint {
     .pointwiseMin(lhs, rhs)
