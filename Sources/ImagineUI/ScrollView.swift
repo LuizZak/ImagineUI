@@ -1,6 +1,5 @@
 import Foundation
 import Geometry
-import Geometria
 import SwiftBlend2D
 import Rendering
 
@@ -141,8 +140,8 @@ open class ScrollView: ControlView {
         updateScrollBarVisibility()
         limitTargetContentOffset()
 
-        horizontalBar.contentSize = contentSize.x
-        verticalBar.contentSize = contentSize.y
+        horizontalBar.contentSize = contentSize.width
+        verticalBar.contentSize = contentSize.height
     }
 
     open override func canHandle(_ eventRequest: EventRequest) -> Bool {
@@ -188,12 +187,12 @@ open class ScrollView: ControlView {
     /// to always be within the scrollable limits of this scroll view.
     private func limitOffsetVector(_ offset: UIVector) -> UIVector {
         // Limit content offset within a maximum visible bounds
-        var contentOffsetClip = UIRectangle(minimum: -(effectiveContentSize() - bounds.size), maximum: .zero)
+        var contentOffsetClip = UIRectangle(minimum: -(effectiveContentSize().asPoint - bounds.size.asPoint), maximum: .zero)
         
-        if contentSize.x == 0 {
+        if contentSize.width == 0 {
             contentOffsetClip.x = 0
         }
-        if contentSize.y == 0 {
+        if contentSize.height == 0 {
             contentOffsetClip.y = 0
         }
         
@@ -220,8 +219,8 @@ open class ScrollView: ControlView {
             return
         }
 
-        let horizontalBarVisible = contentSize.x > (bounds.width - verticalBar.bounds.width)
-        let verticalBarVisible = contentSize.y > (bounds.height - verticalBar.bounds.height)
+        let horizontalBarVisible = contentSize.width > (bounds.width - verticalBar.bounds.width)
+        let verticalBarVisible = contentSize.height > (bounds.height - verticalBar.bounds.height)
 
         horizontalBar.isVisible = horizontalBarVisible && scrollBarsMode.contains(.horizontal)
         verticalBar.isVisible = verticalBarVisible && scrollBarsMode.contains(.vertical)
@@ -264,10 +263,10 @@ open class ScrollView: ControlView {
     func effectiveContentSize() -> UISize {
         let bounds = visibleContentBounds
 
-        let width = contentSize.x == 0 ? bounds.width : contentSize.x
-        let height = contentSize.y == 0 ? bounds.height : contentSize.y
+        let width = contentSize.width == 0 ? bounds.width : contentSize.width
+        let height = contentSize.height == 0 ? bounds.height : contentSize.height
 
-        return UISize(x: width, y: height)
+        return UISize(width: width, height: height)
     }
 
     func layoutContentView() {
@@ -343,7 +342,7 @@ public class ScrollBarControl: ControlView {
         
         let size = event.newValue
         
-        cornerRadius = min(size.x, size.y) / 2
+        cornerRadius = min(size.width, size.height) / 2
     }
     
     public override func onMouseDown(_ event: MouseEventArgs) {

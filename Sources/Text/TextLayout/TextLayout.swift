@@ -300,9 +300,9 @@ public class TextLayout: TextLayoutType {
             case .leading:
                 rect = rect.movingLeft(to: 0)
             case .center:
-                rect = rect.movingCenter(toX: size.x / 2, y: line.bounds.center.y)
+                rect = rect.movingCenter(toX: size.width / 2, y: line.bounds.center.y)
             case .trailing:
-                rect = rect.movingRight(to: size.x)
+                rect = rect.movingRight(to: size.width)
             }
             
             // Vertical alignment
@@ -311,7 +311,7 @@ public class TextLayout: TextLayoutType {
                 rect = rect.movingTop(to: accumulatedHeight)
                 accumulatedHeight += line.bounds.height
             case .far:
-                rect = rect.movingTop(to: size.y - minimalSize.y + accumulatedHeight)
+                rect = rect.movingTop(to: size.height - minimalSize.height + accumulatedHeight)
                 accumulatedHeight += line.bounds.height
             }
             
@@ -321,7 +321,7 @@ public class TextLayout: TextLayoutType {
         // Vertical centered text
         if verticalAlignment == .center {
             let centerY: Double = lines.reduce(0) { $0 + $1.bounds.height } / 2
-            let offset = size.y / 2 - centerY
+            let offset = size.height / 2 - centerY
             
             for (i, line) in lines.enumerated() {
                 lines[i].bounds = line.bounds.offsetBy(x: 0, y: offset)
@@ -418,7 +418,7 @@ private class LineCollector {
         
         lines.append(line)
         
-        minimalSize = UIVector.pointwiseMax(minimalSize, line.bounds.bottomRight)
+        minimalSize = .pointwiseMax(minimalSize, line.bounds.bottomRight.asSize)
         
         prepareWorkingLineFromCurrentState(topLeft: line.bounds.bottomLeft)
     }
@@ -475,9 +475,9 @@ private class LineCollector {
             let metrics = font.getTextMetrics(glyphBufferMinusLineBreak)!
             
             let bounds = UIRectangle(x: topLeft.x,
-                                   y: topLeft.y,
-                                   width: metrics.advance.x,
-                                   height: max(minHeight, metrics.boundingBox.height))
+                                    y: topLeft.y,
+                                    width: metrics.advance.x,
+                                    height: max(minHeight, metrics.boundingBox.height))
             
             let originalBounds = font.matrix.toMatrix2D().inverted().transform(bounds)
             

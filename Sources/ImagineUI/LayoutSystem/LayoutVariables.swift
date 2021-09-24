@@ -103,10 +103,10 @@ class LayoutVariables {
         
         if let intrinsicSize = view._targetLayoutSize ?? view.intrinsicSize {
             constraintList.suggestValue(variable: intrinsicWidth,
-                                        value: intrinsicSize.x,
+                                        value: intrinsicSize.width,
                                         strength: Strength.WEAK)
             constraintList.suggestValue(variable: intrinsicHeight,
-                                        value: intrinsicSize.y,
+                                        value: intrinsicSize.height,
                                         strength: Strength.WEAK)
             
             // Content compression/hugging priority
@@ -140,7 +140,7 @@ class LayoutVariables {
             location = UIVector(x: left.value, y: top.value)
         }
         
-        container.area = UIRectangle(location: location, size: UISize(x: width.value, y: height.value))
+        container.area = UIRectangle(location: location, size: UISize(width: width.value, height: height.value))
     }
     
     func viewForFirstBaseline() -> View? {

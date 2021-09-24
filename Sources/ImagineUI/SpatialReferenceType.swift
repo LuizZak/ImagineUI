@@ -1,5 +1,4 @@
 import Geometry
-import Geometria
 
 /// A protocol that describes a type that has its own local spatial transformation
 /// information

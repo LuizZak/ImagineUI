@@ -173,11 +173,11 @@ public struct LayoutAnchorSizeCreator {
         
         return  [
             LayoutConstraint.create(first: layout.width,
-                                    offset: size.x,
+                                    offset: size.width,
                                     priority: priority),
             
             LayoutConstraint.create(first: layout.height,
-                                    offset: size.y,
+                                    offset: size.height,
                                     priority: priority)
         ]
     }
@@ -248,16 +248,16 @@ public struct LayoutAnchorSizeUpdater {
                                     priority: priority)
         ]
     }
-    
+
     @discardableResult
     public func equalTo(_ size: UISize, priority: LayoutPriority = .required) -> [LayoutConstraint] {
         return  [
             LayoutConstraint.update(first: layout.width,
-                                    offset: size.x,
+                                    offset: size.width,
                                     priority: priority),
             
             LayoutConstraint.update(first: layout.height,
-                                    offset: size.y,
+                                    offset: size.height,
                                     priority: priority)
         ]
     }

@@ -33,11 +33,9 @@ class TextLayoutRendererTests: SnapshotTestCase {
             .cornerRadius: UIVector(x: 4, y: 4)
         ])
         let sut = makeSut(attributedText: attributedText)
-        let img = BLImage(width: Int(sut.textLayout.size.x),
-                          height: Int(sut.textLayout.size.y),
-                          format: .prgb32)
         
-        let ctx = BLContext(image: img)!
+        let (img, ctx) = makeImageContext(for: sut.textLayout)
+
         ctx.compOp = .sourceCopy
         ctx.setFillStyle(BLRgba32.transparentBlack)
         ctx.fillAll()
@@ -70,11 +68,9 @@ class TextLayoutRendererTests: SnapshotTestCase {
             .backgroundColorBounds: TextBackgroundBoundsAttribute.largestBaselineBounds
         ])
         let sut = makeSut(attributedText: attributedText)
-        let img = BLImage(width: Int(sut.textLayout.size.x),
-                          height: Int(sut.textLayout.size.y),
-                          format: .prgb32)
-        
-        let ctx = BLContext(image: img)!
+
+        let (img, ctx) = makeImageContext(for: sut.textLayout)
+
         ctx.compOp = .sourceCopy
         ctx.setFillStyle(BLRgba32.transparentBlack)
         ctx.fillAll()
@@ -103,11 +99,9 @@ class TextLayoutRendererTests: SnapshotTestCase {
             .strokeWidth: 5.0
         ])
         let sut = makeSut(attributedText: attributedText)
-        let img = BLImage(width: Int(sut.textLayout.size.x),
-                          height: Int(sut.textLayout.size.y),
-                          format: .prgb32)
         
-        let ctx = BLContext(image: img)!
+        let (img, ctx) = makeImageContext(for: sut.textLayout)
+
         ctx.compOp = .sourceCopy
         ctx.setFillStyle(BLRgba32.transparentBlack)
         ctx.fillAll()
@@ -133,11 +127,9 @@ class TextLayoutRendererTests: SnapshotTestCase {
             .foregroundColor: Color.black
         ])
         let sut = makeSut(attributedText: attributedText)
-        let img = BLImage(width: Int(sut.textLayout.size.x),
-                          height: Int(sut.textLayout.size.y),
-                          format: .prgb32)
         
-        let ctx = BLContext(image: img)!
+        let (img, ctx) = makeImageContext(for: sut.textLayout)
+
         ctx.compOp = .sourceCopy
         ctx.setFillStyle(BLRgba32.transparentBlack)
         ctx.fillAll()
@@ -167,11 +159,9 @@ class TextLayoutRendererTests: SnapshotTestCase {
             .foregroundColor: Color.black
         ])
         let sut = makeSut(attributedText: attributedText)
-        let img = BLImage(width: Int(sut.textLayout.size.x),
-                          height: Int(sut.textLayout.size.y),
-                          format: .prgb32)
         
-        let ctx = BLContext(image: img)!
+        let (img, ctx) = makeImageContext(for: sut.textLayout)
+
         ctx.compOp = .sourceCopy
         ctx.setFillStyle(BLRgba32.transparentBlack)
         ctx.fillAll()
@@ -197,11 +187,9 @@ class TextLayoutRendererTests: SnapshotTestCase {
             .foregroundColor: Color.black
         ])
         let sut = makeSut(attributedText: attributedText)
-        let img = BLImage(width: Int(sut.textLayout.size.x),
-                          height: Int(sut.textLayout.size.y),
-                          format: .prgb32)
         
-        let ctx = BLContext(image: img)!
+        let (img, ctx) = makeImageContext(for: sut.textLayout)
+
         ctx.compOp = .sourceCopy
         ctx.setFillStyle(BLRgba32.transparentBlack)
         ctx.fillAll()
@@ -231,11 +219,9 @@ class TextLayoutRendererTests: SnapshotTestCase {
             .foregroundColor: Color.black
         ])
         let sut = makeSut(attributedText: attributedText)
-        let img = BLImage(width: Int(sut.textLayout.size.x),
-                          height: Int(sut.textLayout.size.y),
-                          format: .prgb32)
         
-        let ctx = BLContext(image: img)!
+        let (img, ctx) = makeImageContext(for: sut.textLayout)
+
         ctx.compOp = .sourceCopy
         ctx.setFillStyle(BLRgba32.transparentBlack)
         ctx.fillAll()
@@ -266,5 +252,17 @@ class TextLayoutRendererTests: SnapshotTestCase {
     func makeFont(size: Float) -> Font {
         let face = try! BLFontFace(fromFile: TestPaths.pathToTestFontFace())
         return Blend2DFont(font: BLFont(fromFace: face, size: size))
+    }
+
+    func makeImageContext(for textLayout: TextLayoutType) -> (BLImage, BLContext) {
+        makeImageContext(with: textLayout.size)
+    }
+
+    func makeImageContext(with size: UISize) -> (BLImage, BLContext) {
+        let img = BLImage(width: Int(size.width),
+                          height: Int(size.height),
+                          format: .prgb32)
+        
+        return (img, BLContext(image: img)!)
     }
 }

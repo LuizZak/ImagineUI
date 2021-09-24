@@ -7,7 +7,7 @@ public class SliderView: ControlView {
     private var leftLabel = Label()
     private var rightLabel = Label()
     
-    private var knobSize = UISize(x: 11, y: 19)
+    private var knobSize = UISize(width: 11, height: 19)
     private var knobTop = 2.0
     private var knobDip = 5.0
     private var knobPoly = UIPolygon()
@@ -97,7 +97,7 @@ public class SliderView: ControlView {
     @Event public var valueChanged: ValueChangeEvent<SliderView, Double>
     
     public override var intrinsicSize: UISize? {
-        return UISize(x: bounds.width, y: knobSize.y)
+        return UISize(width: bounds.width, height: knobSize.height)
     }
     
     public override init() {
@@ -114,10 +114,10 @@ public class SliderView: ControlView {
     
     private func createKnobPath() {
         knobPoly.addVertex(x: 0, y: knobTop)
-        knobPoly.addVertex(x: knobSize.x, y: knobTop)
-        knobPoly.addVertex(x: knobSize.x, y: knobSize.y - knobDip)
-        knobPoly.addVertex(x: knobSize.x / 2, y: knobSize.y)
-        knobPoly.addVertex(x: 0, y: knobSize.y - knobDip)
+        knobPoly.addVertex(x: knobSize.width, y: knobTop)
+        knobPoly.addVertex(x: knobSize.width, y: knobSize.height - knobDip)
+        knobPoly.addVertex(x: knobSize.width / 2, y: knobSize.height)
+        knobPoly.addVertex(x: 0, y: knobSize.height - knobDip)
     }
     
     public override func setupHierarchy() {
@@ -135,12 +135,12 @@ public class SliderView: ControlView {
     
     private func setupLabelConstraints() {
         leftLabel.layout.makeConstraints { make in
-            make.top == self + knobSize.y
+            make.top == self + knobSize.height
             make.left == self + 2
             make.bottom == self
         }
         rightLabel.layout.makeConstraints { make in
-            make.top == self + knobSize.y
+            make.top == self + knobSize.width
             make.right == self - 2
             make.bottom == self
         }
@@ -268,10 +268,10 @@ public class SliderView: ControlView {
         renderer.stroke(knobPoly)
         
         // Stroke two dashes within the knob's area
-        let dash1x = knobSize.x / 3
-        let dash2x = knobSize.x / 3 * 2
+        let dash1x = knobSize.width / 3
+        let dash2x = knobSize.width / 3 * 2
         let dashY = knobTop + 3
-        let dashH = knobSize.y / 3
+        let dashH = knobSize.height / 3
         
         renderer.setStroke(.royalBlue.faded(towards: .white, factor: 0.5))
         renderer.strokeLine(start: UIVector(x: dash1x, y: dashY), end: UIVector(x: dash1x, y: dashY + dashH))
@@ -281,25 +281,25 @@ public class SliderView: ControlView {
     private func knobArea() -> UIRectangle {
         let x = knobOffset()
         
-        return UIRectangle(x: x, y: 0, width: knobSize.x, height: knobSize.y)
+        return UIRectangle(x: x, y: 0, width: knobSize.width, height: knobSize.height)
     }
     
     private func sliderLine() -> UILine {
-        let left = UIVector(x: knobSize.x / 2, y: knobSize.y / 2)
-        let right = UIVector(x: size.x - knobSize.x / 2, y: knobSize.y / 2)
+        let left = knobSize.asPoint / 2
+        let right = UIVector(x: size.width - knobSize.width / 2, y: knobSize.height / 2)
         
         return UILine(start: left, end: right)
     }
     
     private func knobOffset() -> Double {
         let rate = (value - minimumValue) / (maximumValue - minimumValue)
-        return rate * (size.x - knobSize.x)
+        return rate * (size.width - knobSize.height)
     }
     
     private func valueAtOffset(x: Double) -> Double {
         let line = sliderLine()
         
-        let xOffset = (x - line.start.x) / (line.length)
+        let xOffset = (x - line.start.x) / line.length()
         return minimumValue + xOffset * (maximumValue - minimumValue)
     }
 }

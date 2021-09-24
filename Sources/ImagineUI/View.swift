@@ -1,6 +1,5 @@
 import Foundation
 import Geometry
-import Geometria
 import Rendering
 
 open class View {

@@ -17,8 +17,8 @@ public struct FontMatrix {
     
     public func toMatrix2D() -> UIMatrix {
         return UIMatrix(m11: m11, m12: m12,
-                      m21: m21, m22: m22,
-                      m31: 0.0, m32: 0.0)
+                        m21: m21, m22: m22,
+                        m31: 0.0, m32: 0.0)
     }
     
     /// Transforms a given polygon by multiplying each coordinate by this matrix.
@@ -30,7 +30,7 @@ public struct FontMatrix {
     @inlinable
     public func transform(_ point: UIVector) -> UIVector {
         return UIVector(x: point.x * m11 + point.y * m21,
-                      y: point.x * m12 + point.y * m22)
+                        y: point.x * m12 + point.y * m22)
     }
     
     /// Maps the corners of a given rectangle into a newer minimal rectangle

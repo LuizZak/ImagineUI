@@ -252,7 +252,7 @@ public class Window: RootView {
         switch resize {
         case .left, .topLeft, .bottomLeft:
             // Limit range of left edge to avoid compressin the window too much
-            let maximumLeft = area.right - optimalSize.x
+            let maximumLeft = area.right - optimalSize.width
             _maxLocationDuringDrag = UIVector(x: maximumLeft, y: 0)
             
             _resizeConstraints.append(
@@ -273,7 +273,7 @@ public class Window: RootView {
         switch resize {
         case .top, .topLeft, .topRight:
             // Limit range of top edge to avoid compressin the window too much
-            let maximumTop = area.bottom - optimalSize.y
+            let maximumTop = area.bottom - optimalSize.height
             _maxLocationDuringDrag = UIVector(x: _maxLocationDuringDrag.x, y: maximumTop)
             
             _resizeConstraints.append(
@@ -297,7 +297,7 @@ public class Window: RootView {
         case .maximized:
             setWindowState(.normal)
             performLayout()
-            _mouseDownPoint = UIVector(x: size.x / 2, y: _titleBarHeight / 2)
+            _mouseDownPoint = UIVector(x: size.width / 2, y: _titleBarHeight / 2)
             
         case .normal, .minimized:
             break
@@ -310,8 +310,8 @@ public class Window: RootView {
             let clippedY = min(mouseLocation.y - _mouseDownPoint.y, _maxLocationDuringDrag.y)
             let newArea = _resizeStartArea.stretchingTop(to: clippedY)
             
-            _targetSize?.y = newArea.height
-            size = UISize(x: size.x, y: newArea.height)
+            _targetSize?.height = newArea.height
+            size = UISize(width: size.width, height: newArea.height)
             location = UIVector(x: location.x, y: newArea.y)
 
         case .topLeft:
@@ -330,35 +330,35 @@ public class Window: RootView {
             let clippedX = min(mouseLocation.x - _mouseDownPoint.x, _maxLocationDuringDrag.x)
             let newArea = _resizeStartArea.stretchingLeft(to: clippedX)
             
-            _targetSize?.x = newArea.width
-            size = UIVector(x: newArea.width, y: size.y)
+            _targetSize?.width = newArea.width
+            size = UISize(width: newArea.width, height: size.height)
             location = UIVector(x: newArea.x, y: location.y)
             
         case .right:
-            _targetSize?.x = event.location.x
+            _targetSize?.width = event.location.x
             setNeedsLayout()
             
         case .topRight:
             let newArea = _resizeStartArea.stretchingTop(to: mouseLocation.y - _mouseDownPoint.y)
             
-            _targetSize = UIVector(x: event.location.x, y: newArea.height)
-            size = UIVector(x: size.x, y: newArea.height)
+            _targetSize = UISize(width: event.location.x, height: newArea.height)
+            size = UISize(width: size.width, height: newArea.height)
             location = UIVector(x: location.x, y: newArea.y)
 
         case .bottomRight:
-            _targetSize = event.location
+            _targetSize = event.location.asSize
             setNeedsLayout()
             
         case .bottom:
-            _targetSize?.y = event.location.y
+            _targetSize?.height = event.location.y
             setNeedsLayout()
             
         case .bottomLeft:
             let clippedX = min(mouseLocation.x - _mouseDownPoint.x, _maxLocationDuringDrag.x)
             let newArea = _resizeStartArea.stretchingLeft(to: clippedX)
             
-            _targetSize = UIVector(x: newArea.width, y: event.location.y)
-            size = UIVector(x: newArea.width, y: size.y)
+            _targetSize = UISize(width: newArea.width, height: event.location.y)
+            size = UISize(width: newArea.width, height: size.height)
             location = UIVector(x: newArea.x, y: location.y)
             
         case .none:
@@ -457,13 +457,13 @@ public class Window: RootView {
         if point.x < length && point.y < length {
             return .topLeft
         }
-        if point.x > size.x - length && point.y < length {
+        if point.x > size.width - length && point.y < length {
             return .topRight
         }
-        if point.x > size.x - length && point.y > size.y - length {
+        if point.x > size.height - length && point.y > size.height - length {
             return .bottomRight
         }
-        if point.x < length && point.y > size.y - length {
+        if point.x < length && point.y > size.height - length {
             return .bottomLeft
         }
         
@@ -474,10 +474,10 @@ public class Window: RootView {
         if point.y < topLength {
             return .top
         }
-        if point.x > size.x - length {
+        if point.x > size.width - length {
             return .right
         }
-        if point.y > size.y - length {
+        if point.y > size.height - length {
             return .bottom
         }
         
@@ -532,7 +532,7 @@ class WindowButtons: View {
         button.cornerRadius = 5
         button.strokeWidth = 0
         button.layout.makeConstraints { make in
-            make.size == UISize(x: 10, y: 10)
+            make.size == UISize(width: 10, height: 10)
         }
     }
     
