@@ -230,12 +230,12 @@ public extension UIPoint {
 
     @_transparent
     static func >= (lhs: Self, rhs: Self) -> Bool {
-        lhs == rhs || lhs > rhs
+        lhs.x >= rhs.x && lhs.y >= rhs.y
     }
 
     @_transparent
     static func <= (lhs: Self, rhs: Self) -> Bool {
-        lhs == rhs || lhs < rhs
+        lhs.x <= rhs.x && lhs.y <= rhs.y
     }
 }
 

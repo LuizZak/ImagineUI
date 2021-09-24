@@ -169,11 +169,11 @@ public extension UIIntPoint {
     }
 
     static func >= (lhs: Self, rhs: Self) -> Bool {
-        lhs == rhs || lhs > rhs
+        lhs.x >= rhs.x && lhs.y >= rhs.y
     }
 
     static func <= (lhs: Self, rhs: Self) -> Bool {
-        lhs == rhs || lhs < rhs
+        lhs.x <= rhs.x && lhs.y <= rhs.y
     }
 }
 

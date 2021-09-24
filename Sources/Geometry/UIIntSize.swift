@@ -155,11 +155,11 @@ public extension UIIntSize {
     }
 
     static func >= (lhs: Self, rhs: Self) -> Bool {
-        lhs == rhs || lhs > rhs
+        lhs.width >= rhs.width && lhs.height >= rhs.height
     }
 
     static func <= (lhs: Self, rhs: Self) -> Bool {
-        lhs == rhs || lhs < rhs
+        lhs.width <= rhs.width && lhs.height <= rhs.height
     }
 }
 
