@@ -9,7 +9,7 @@ public struct UISize: Hashable, Codable {
     public var width: Scalar
     public var height: Scalar
 
-    public var asPoint: UIPoint {
+    public var asUIPoint: UIPoint {
         .init(self)
     }
 

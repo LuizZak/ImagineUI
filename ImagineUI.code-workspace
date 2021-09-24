@@ -1,18 +1,33 @@
 {
 	"tasks": {
 		"version": "2.0.0",
-		"problemMatcher": {
-			"owner": "swift",
-			"fileLocation": "autoDetect",
-			"pattern": {
-				"regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
-				"file": 1,
-				"line": 2,
-				"column": 3,
-				"severity": 4,
-				"message": 5
+		"problemMatcher": [
+			// Compilation
+			{
+				"owner": "swift",
+				"fileLocation": "autoDetect",
+				"pattern": {
+					"regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+					"file": 1,
+					"line": 2,
+					"column": 3,
+					"severity": 4,
+					"message": 5
+				}
+			},
+			// Fix to detect unit test executions, which do not feature a column during reporting
+			{
+				"owner": "swift",
+				"fileLocation": "autoDetect",
+				"pattern": {
+					"regexp": "^(.*):(\\d+):\\s+(warning|error):\\s+(.*)$",
+					"file": 1,
+					"line": 2,
+					"severity": 3,
+					"message": 4
+				}
 			}
-		},
+		],
 		"tasks": [
 			{
 				"label": "Build (debug)",

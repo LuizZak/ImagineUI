@@ -1,11 +1,11 @@
-/// A 2D rectangle with double-precision floating-point coordinates and size 
-public struct UIRectangle: Hashable, Codable {
-    public typealias Scalar = Double
+/// A 2D rectangle with integer coordinates and size 
+public struct UIIntRectangle: Hashable, Codable {
+    public typealias Scalar = Int
 
     public static let zero: Self = .init()
 
-    public var location: UIPoint
-    public var size: UISize
+    public var location: UIIntPoint
+    public var size: UIIntSize
 
     public var x: Scalar {
         @_transparent
@@ -55,9 +55,9 @@ public struct UIRectangle: Hashable, Codable {
     /// When assigning the center of a rectangle, the size remains unchanged
     /// while the coordinates of the UIPoints change to position the rectangle's
     /// center on the provided coordinates.
-    public var center: UIPoint {
+    public var center: UIIntPoint {
         @_transparent
-        get { location + size.asUIPoint / 2 }
+        get { location + size.asUIIntPoint / 2 }
         @_transparent
         set { self = self.movingCenter(to: newValue) }
     }
@@ -91,7 +91,7 @@ public struct UIRectangle: Hashable, Codable {
     @_transparent public var right: Scalar { left + width }
     @_transparent public var bottom: Scalar { top + height }
 
-    public var minimum: UIPoint {
+    public var minimum: UIIntPoint {
         @_transparent
         get {
             location
@@ -101,38 +101,38 @@ public struct UIRectangle: Hashable, Codable {
             let diff = newValue - minimum
             
             location = newValue
-            size -= diff.asUISize
+            size -= diff.asUIIntSize
         }
     }
     
-    public var maximum: UIPoint {
+    public var maximum: UIIntPoint {
         @_transparent
         get {
-            location + size.asUIPoint
+            location + size.asUIIntPoint
         }
         @_transparent
         set {
-            size = (newValue - location).asUISize
+            size = (newValue - location).asUIIntSize
         }
     }
 
     @_transparent
-    public var topLeft: UIPoint {
+    public var topLeft: UIIntPoint {
         .init(x: left, y: top)
     }
 
     @_transparent
-    public var topRight: UIPoint {
+    public var topRight: UIIntPoint {
         .init(x: right, y: top)
     }
 
     @_transparent
-    public var bottomLeft: UIPoint {
+    public var bottomLeft: UIIntPoint {
         .init(x: left, y: bottom)
     }
 
     @_transparent
-    public var bottomRight: UIPoint {
+    public var bottomRight: UIIntPoint {
         .init(x: right, y: bottom)
     }
 
@@ -142,14 +142,14 @@ public struct UIRectangle: Hashable, Codable {
     }
     
     @_transparent
-    public init(location: UIPoint, size: UISize) {
+    public init(location: UIIntPoint, size: UIIntSize) {
         self.location = location
         self.size = size
     }
 
     @_transparent
-    public init(minimum: UIPoint, maximum: UIPoint) {
-        self.init(location: minimum, size: (maximum - minimum).asUISize)
+    public init(minimum: UIIntPoint, maximum: UIIntPoint) {
+        self.init(location: minimum, size: (maximum - minimum).asUIIntSize)
     }
 
     @_transparent
@@ -165,12 +165,12 @@ public struct UIRectangle: Hashable, Codable {
     }
 
     @_transparent
-    public func withLocation(_ point: UIPoint) -> Self {
+    public func withLocation(_ point: UIIntPoint) -> Self {
         .init(location: point, size: size)
     }
 
     @_transparent
-    public func withSize(_ size: UISize) -> Self {
+    public func withSize(_ size: UIIntSize) -> Self {
         .init(location: location, size: size)
     }
 
@@ -187,39 +187,29 @@ public struct UIRectangle: Hashable, Codable {
     public func withSize(width: Scalar, height: Scalar) -> Self {
         withSize(.init(width: width, height: height))
     }
-
-    @_transparent
-    public func rounded(radius: Scalar) -> UIRoundRectangle {
-        rounded(radius: .init(repeating: radius))
-    }
-
-    @_transparent
-    public func rounded(radius: UIVector) -> UIRoundRectangle {
-        .init(rectangle: self, radius: radius)
-    }
 }
 
 // MARK: Offset / Resize / Expansion
 
-public extension UIRectangle {
+public extension UIIntRectangle {
     @_transparent
     func offsetBy(x: Scalar, y: Scalar) -> Self {
         offsetBy(.init(x: x, y: y))
     }
 
     @_transparent
-    func offsetBy(_ point: UIPoint) -> Self {
+    func offsetBy(_ point: UIIntPoint) -> Self {
         .init(location: location + point, size: size)
     }
     
     @_transparent
-    func inflatedBy(_ size: UIVector) -> Self {
-        Self(location: location - size / 2, size: self.size + size.asUISize)
+    func inflatedBy(_ size: UIIntPoint) -> Self {
+        Self(location: location - size / 2, size: self.size + size.asUIIntSize)
     }
     
     @_transparent
-    func insetBy(_ size: UIVector) -> Self {
-        Self(location: location + size / 2, size: self.size - size.asUISize)
+    func insetBy(_ size: UIIntPoint) -> Self {
+        Self(location: location + size / 2, size: self.size - size.asUIIntSize)
     }
     
     @_transparent
@@ -233,13 +223,13 @@ public extension UIRectangle {
     }
 
     @_transparent
-    mutating func expand(toInclude point: UIPoint) {
-        minimum = UIPoint.pointwiseMin(minimum, point)
-        maximum = UIPoint.pointwiseMax(maximum, point)
+    mutating func expand(toInclude point: UIIntPoint) {
+        minimum = UIIntPoint.pointwiseMin(minimum, point)
+        maximum = UIIntPoint.pointwiseMax(maximum, point)
     }
     
     @inlinable
-    mutating func expand<S: Sequence>(toInclude points: S) where S.Element == UIPoint {
+    mutating func expand<S: Sequence>(toInclude points: S) where S.Element == UIIntPoint {
         for p in points {
             expand(toInclude: p)
         }
@@ -248,12 +238,12 @@ public extension UIRectangle {
 
 // MARK: Edge / Center Moving
 
-public extension UIRectangle {
+public extension UIIntRectangle {
     /// Returns a new rectangle with the same size as the current instance,
     /// where the center of the boundaries lay on `center`.
     @_transparent
-    func movingCenter(to center: UIPoint) -> Self {
-        Self(location: center - size.asUIPoint / 2, size: size)
+    func movingCenter(to center: UIIntPoint) -> Self {
+        Self(location: center - size.asUIIntPoint / 2, size: size)
     }
 
     @_transparent
@@ -315,32 +305,23 @@ public extension UIRectangle {
     func stretchingBottom(to value: Scalar) -> Self {
         Self(left: left, top: top, right: right, bottom: value)
     }
-    
-    /// Insets this Rectangle with a given set of edge inset values.
-    @inlinable
-    func inset(_ inset: UIEdgeInsets) -> Self {
-        Self(left: left + inset.left,
-             top: top + inset.top,
-             right: right - inset.right,
-             bottom: bottom - inset.bottom)
-    }
 }
 
 // MARK: Containment Checks
 
-public extension UIRectangle {
+public extension UIIntRectangle {
     @_transparent
     func contains(x: Scalar, y: Scalar) -> Bool {
         contains(.init(x: x, y: y))
     }
 
     @_transparent
-    func clamp(_ point: UIPoint) -> UIPoint {
-        UIPoint.pointwiseMax(minimum, UIPoint.pointwiseMin(maximum, point))
+    func clamp(_ point: UIIntPoint) -> UIIntPoint {
+        UIIntPoint.pointwiseMax(minimum, UIIntPoint.pointwiseMin(maximum, point))
     }
     
     @_transparent
-    func contains(_ point: UIPoint) -> Bool {
+    func contains(_ point: UIIntPoint) -> Bool {
         point >= minimum && point <= maximum
     }
     
@@ -357,7 +338,7 @@ public extension UIRectangle {
 
 // MARK: Operations
 
-public extension UIRectangle {
+public extension UIIntRectangle {
     @_transparent
     func union(_ other: Self) -> Self {
         Self.union(self, other)
@@ -370,8 +351,8 @@ public extension UIRectangle {
     
     @_transparent
     static func union(_ left: Self, _ right: Self) -> Self {
-        Self(minimum: UIPoint.pointwiseMin(left.minimum, right.minimum),
-             maximum: UIPoint.pointwiseMax(left.maximum, right.maximum))
+        Self(minimum: UIIntPoint.pointwiseMin(left.minimum, right.minimum),
+             maximum: UIIntPoint.pointwiseMax(left.maximum, right.maximum))
     }
 
     @inlinable
@@ -386,10 +367,5 @@ public extension UIRectangle {
         }
         
         return nil
-    }
-
-    @_transparent
-    func transformedBounds(_ matrix: UIMatrix) -> Self {
-        matrix.transform(self)
     }
 }

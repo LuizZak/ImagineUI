@@ -418,7 +418,7 @@ private class LineCollector {
         
         lines.append(line)
         
-        minimalSize = .pointwiseMax(minimalSize, line.bounds.bottomRight.asSize)
+        minimalSize = .pointwiseMax(minimalSize, line.bounds.bottomRight.asUISize)
         
         prepareWorkingLineFromCurrentState(topLeft: line.bounds.bottomLeft)
     }

@@ -10,7 +10,7 @@ public struct UIPoint: Hashable, Codable {
     public var y: Scalar
     
     @_transparent
-    public var asSize: UISize {
+    public var asUISize: UISize {
         .init(self)
     }
 

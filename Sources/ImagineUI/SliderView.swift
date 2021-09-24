@@ -285,7 +285,7 @@ public class SliderView: ControlView {
     }
     
     private func sliderLine() -> UILine {
-        let left = knobSize.asPoint / 2
+        let left = knobSize.asUIPoint / 2
         let right = UIVector(x: size.width - knobSize.width / 2, y: knobSize.height / 2)
         
         return UILine(start: left, end: right)

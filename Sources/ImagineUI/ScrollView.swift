@@ -187,7 +187,7 @@ open class ScrollView: ControlView {
     /// to always be within the scrollable limits of this scroll view.
     private func limitOffsetVector(_ offset: UIVector) -> UIVector {
         // Limit content offset within a maximum visible bounds
-        var contentOffsetClip = UIRectangle(minimum: -(effectiveContentSize().asPoint - bounds.size.asPoint), maximum: .zero)
+        var contentOffsetClip = UIRectangle(minimum: -(effectiveContentSize().asUIPoint - bounds.size.asUIPoint), maximum: .zero)
         
         if contentSize.width == 0 {
             contentOffsetClip.x = 0

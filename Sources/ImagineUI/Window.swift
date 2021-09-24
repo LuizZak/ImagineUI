@@ -346,7 +346,7 @@ public class Window: RootView {
             location = UIVector(x: location.x, y: newArea.y)
 
         case .bottomRight:
-            _targetSize = event.location.asSize
+            _targetSize = event.location.asUISize
             setNeedsLayout()
             
         case .bottom:

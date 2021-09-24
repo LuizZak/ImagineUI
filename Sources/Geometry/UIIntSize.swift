@@ -1,55 +1,45 @@
-import Foundation
-
-/// A 2D point with integer coordinates
-public struct UIIntPoint: Hashable, Codable {
+/// A 2D size with integer parameters
+public struct UIIntSize: Hashable, Codable {
     public typealias Scalar = Int
 
     public static let zero: Self = .init()
 
-    public var x: Scalar
-    public var y: Scalar
-    
-    @_transparent
-    public var asUIIntSize: UIIntSize {
+    public var width: Scalar
+    public var height: Scalar
+
+    public var asUIIntPoint: UIIntPoint {
         .init(self)
     }
 
     public init() {
-        self.x = 0
-        self.y = 0
+        self.width = 0
+        self.height = 0
     }
 
-    public init(x: Scalar, y: Scalar) {
-        self.x = x
-        self.y = y
+    public init(width: Scalar, height: Scalar) {
+        self.width = width
+        self.height = height
     }
 
     public init(repeating value: Scalar) {
-        self.init(x: value, y: value)
+        self.init(width: value, height: value)
     }
 
-    @_transparent
-    public init(_ size: UIIntSize) {
-        self.init(x: size.width, y: size.height)
-    }
-
-    public func distanceSquared(to other: Self) -> Scalar {
-        let dx = x - other.x
-        let dy = y - other.y
-
-        return dx * dx + dy * dy
+    public init(_ point: UIIntPoint) {
+        self.width = point.x
+        self.height = point.y
     }
 }
 
 // MARK: Addition
 
-public extension UIIntPoint {
+public extension UIIntSize {
     static func + (lhs: Self, rhs: Self) -> Self {
-        .init(x: lhs.x + rhs.x, y: lhs.y + rhs.y)
+        .init(width: lhs.width + rhs.width, height: lhs.height + rhs.height)
     }
 
     static func - (lhs: Self, rhs: Self) -> Self {
-        .init(x: lhs.x - rhs.x, y: lhs.y - rhs.y)
+        .init(width: lhs.width - rhs.width, height: lhs.height - rhs.height)
     }
 
     static func += (lhs: inout Self, rhs: Self) {
@@ -59,39 +49,35 @@ public extension UIIntPoint {
     static func -= (lhs: inout Self, rhs: Self) {
         lhs = lhs - rhs
     }
-
-    static prefix func - (lhs: Self) -> Self {
-        .zero - lhs
-    }
 }
 
-// MARK: Addition - UIIntSize
+// MARK: Addition - UIIntPoint
 
-public extension UIIntPoint {
+public extension UIIntSize {
     @_transparent
-    static func + (lhs: Self, rhs: UIIntSize) -> Self {
-        .init(x: lhs.x + rhs.width, y: lhs.y + rhs.height)
+    static func + (lhs: Self, rhs: UIIntPoint) -> Self {
+        .init(width: lhs.width + rhs.x, height: lhs.height + rhs.y)
     }
 
     @_transparent
-    static func - (lhs: Self, rhs: UIIntSize) -> Self {
-        .init(x: lhs.x - rhs.width, y: lhs.y - rhs.height)
+    static func - (lhs: Self, rhs: UIIntPoint) -> Self {
+        .init(width: lhs.width - rhs.x, height: lhs.height - rhs.y)
     }
 
     @_transparent
-    static func += (lhs: inout Self, rhs: UIIntSize) {
+    static func += (lhs: inout Self, rhs: UIIntPoint) {
         lhs = lhs + rhs
     }
 
     @_transparent
-    static func -= (lhs: inout Self, rhs: UIIntSize) {
+    static func -= (lhs: inout Self, rhs: UIIntPoint) {
         lhs = lhs - rhs
     }
 }
 
 // MARK: Addition - Scalars
 
-public extension UIIntPoint {
+public extension UIIntSize {
     static func + (lhs: Self, rhs: Scalar) -> Self {
         lhs + Self(repeating: rhs)
     }
@@ -111,13 +97,13 @@ public extension UIIntPoint {
 
 // MARK: Multiplication
 
-public extension UIIntPoint {
+public extension UIIntSize {
     static func * (lhs: Self, rhs: Self) -> Self {
-        .init(x: lhs.x * rhs.x, y: lhs.y * rhs.y)
+        .init(width: lhs.width * rhs.width, height: lhs.height * rhs.height)
     }
 
     static func / (lhs: Self, rhs: Self) -> Self {
-        .init(x: lhs.x / rhs.x, y: lhs.y / rhs.y)
+        .init(width: lhs.width / rhs.width, height: lhs.height / rhs.height)
     }
 
     static func *= (lhs: inout Self, rhs: Self) {
@@ -131,7 +117,7 @@ public extension UIIntPoint {
 
 // MARK: Multiplication - Scalars
 
-public extension UIIntPoint {
+public extension UIIntSize {
     static func * (lhs: Self, rhs: Scalar) -> Self {
         lhs * Self(repeating: rhs)
     }
@@ -151,21 +137,21 @@ public extension UIIntPoint {
 
 // MARK: Comparison
 
-public extension UIIntPoint {
+public extension UIIntSize {
     static func pointwiseMin(_ lhs: Self, _ rhs: Self) -> Self {
-        .init(x: min(lhs.x, rhs.x), y: min(lhs.y, rhs.y))
+        .init(width: min(lhs.width, rhs.width), height: min(lhs.height, rhs.height))
     }
 
     static func pointwiseMax(_ lhs: Self, _ rhs: Self) -> Self {
-        .init(x: max(lhs.x, rhs.x), y: max(lhs.y, rhs.y))
+        .init(width: max(lhs.width, rhs.width), height: max(lhs.height, rhs.height))
     }
 
     static func > (lhs: Self, rhs: Self) -> Bool {
-        lhs.x > rhs.x && lhs.y > rhs.y
+        lhs.width > rhs.width && lhs.height > rhs.height
     }
 
     static func < (lhs: Self, rhs: Self) -> Bool {
-        lhs.x < rhs.x && lhs.y < rhs.y
+        lhs.width < rhs.width && lhs.height < rhs.height
     }
 
     static func >= (lhs: Self, rhs: Self) -> Bool {
@@ -177,10 +163,10 @@ public extension UIIntPoint {
     }
 }
 
-public func min(_ lhs: UIIntPoint, _ rhs: UIIntPoint) -> UIIntPoint {
+public func min(_ lhs: UIIntSize, _ rhs: UIIntSize) -> UIIntSize {
     .pointwiseMin(lhs, rhs)
 }
 
-public func max(_ lhs: UIIntPoint, _ rhs: UIIntPoint) -> UIIntPoint {
+public func max(_ lhs: UIIntSize, _ rhs: UIIntSize) -> UIIntSize {
     .pointwiseMax(lhs, rhs)
 }
