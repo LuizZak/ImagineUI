@@ -3,11 +3,11 @@ import blend2d
 import SwiftBlend2D
 import ImagineUI
 
-protocol Blend2DSampleDelegate: class {
-    func invalidate(bounds: Rectangle)
+protocol Blend2DSampleDelegate: AnyObject {
+    func invalidate(bounds: UIRectangle)
 }
 
-protocol Blend2DSample: class {
+protocol Blend2DSample: AnyObject {
     var width: Int { get }
     var height: Int { get }
     var sampleRenderScale: BLPoint { get }

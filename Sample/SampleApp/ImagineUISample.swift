@@ -21,7 +21,7 @@ class ImagineUI: Blend2DSample {
     
     var rootViews: [RootView]
     
-    var currentRedrawRegion: Rectangle? = nil
+    var currentRedrawRegion: UIRectangle? = nil
     
     var debugDrawFlags: Set<DebugDraw.DebugDrawFlags> = []
     
@@ -35,14 +35,15 @@ class ImagineUI: Blend2DSample {
         globalTextClipboard = MacOSTextClipboard()
     
         try! UISettings.initialize(.init(fontManager: Blend2DFontManager(),
-                                         defaultFontPath: Fonts.fontFilePath))
+                                         defaultFontPath: Fonts.fontFilePath,
+                                         timeInSecondsFunction: { CACurrentMediaTime() }))
         
         initWindows()
     }
     
     func initWindows() {
         let window =
-        Window(area: Rectangle(x: 50, y: 120, width: 320, height: 330),
+        Window(area: UIRectangle(x: 50, y: 120, width: 320, height: 330),
                title: "Window")
         window.delegate = self
         window.areaIntoConstraintsMask = [.location]
@@ -93,7 +94,7 @@ class ImagineUI: Blend2DSample {
         
         let scrollView = ScrollView(scrollBarsMode: .vertical)
         scrollView.backColor = .white
-        scrollView.contentSize = Size(x: 0, y: 300)
+        scrollView.contentSize = UISize(width: 0, height: 300)
         
         let scrollViewLabel = Label()
         scrollViewLabel.text = "A\nScroll\nView"
@@ -356,7 +357,7 @@ class ImagineUI: Blend2DSample {
         
         ctx.clear()
         ctx.setFill(Color.skyBlue)
-        ctx.fill(Rectangle(x: 0, y: 0, width: 64, height: 64))
+        ctx.fill(UIRectangle(x: 0, y: 0, width: 64, height: 64))
         
         // Render two mountains
         ctx.setFill(Color.forestGreen)
@@ -365,7 +366,7 @@ class ImagineUI: Blend2DSample {
         let mount2 = BLTriangle.unitEquilateral.scaledBy(x: 30, y: 30)
         
         ctx.fill(
-            Polygon(vertices: [
+            UIPolygon(vertices: [
                 mount1.p0.asVector2,
                 mount1.p1.asVector2,
                 mount1.p2.asVector2
@@ -373,7 +374,7 @@ class ImagineUI: Blend2DSample {
         )
         ctx.translate(x: 15, y: 4)
         ctx.fill(
-            Polygon(vertices: [
+            UIPolygon(vertices: [
                 mount2.p0.asVector2,
                 mount2.p1.asVector2,
                 mount2.p2.asVector2
@@ -382,11 +383,11 @@ class ImagineUI: Blend2DSample {
         
         // Render ground
         ctx.resetTransform()
-        ctx.fill(Rectangle(x: 0, y: 45, width: 64, height: 64))
+        ctx.fill(UIRectangle(x: 0, y: 45, width: 64, height: 64))
         
         // Render sun
         ctx.setFill(Color.yellow)
-        ctx.fill(Circle(x: 50, y: 20, radius: 10))
+        ctx.fill(UICircle(x: 50, y: 20, radius: 10))
         
         return imgRenderer.renderedImage()
     }
@@ -400,7 +401,7 @@ extension ImagineUI: DefaultControlSystemDelegate {
         rootView.invalidate()
     }
     
-    func controlViewUnder(point: Vector, enabledOnly: Bool) -> ControlView? {
+    func controlViewUnder(point: UIVector, enabledOnly: Bool) -> ControlView? {
         for window in rootViews.reversed() {
             let converted = window.convertFromScreen(point)
             if let view = window.hitTestControl(converted, enabledOnly: enabledOnly) {
@@ -435,7 +436,7 @@ extension ImagineUI: DefaultControlSystemDelegate {
 }
 
 extension ImagineUI: RootViewRedrawInvalidationDelegate {
-    func rootView(_ rootView: RootView, invalidateRect rect: Rectangle) {
+    func rootView(_ rootView: RootView, invalidateRect rect: UIRectangle) {
         guard let intersectedRect = rect.intersection(bounds.asRectangle) else {
             return
         }
@@ -472,7 +473,7 @@ extension ImagineUI: WindowDelegate {
         window.setWindowState(.minimized)
     }
     
-    func windowSizeForFullscreen(_ window: Window) -> Size {
+    func windowSizeForFullscreen(_ window: Window) -> UISize {
         return bounds.asRectangle.size
     }
 }

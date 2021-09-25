@@ -2,20 +2,11 @@
   "object": {
     "pins": [
       {
-        "package": "Cassowary",
+        "package": "CassowarySwift",
         "repositoryURL": "https://github.com/LuizZak/CassowarySwift.git",
         "state": {
-          "branch": "master",
-          "revision": "0da17955a8e284340b1e0baeb1a41c9587a06171",
-          "version": null
-        }
-      },
-      {
-        "package": "Geometria",
-        "repositoryURL": "https://github.com/LuizZak/Geometria.git",
-        "state": {
-          "branch": "main",
-          "revision": "208b5f605603e1d3d5c92dc0cee15dded2d108af",
+          "branch": "cassowary-swift",
+          "revision": "8cd38ef939d15b1bde1a31105142eb8cfb290c3b",
           "version": null
         }
       },
@@ -24,7 +15,7 @@
         "repositoryURL": "https://github.com/LuizZak/swift-blend2d.git",
         "state": {
           "branch": "master",
-          "revision": "5a9aea80027666bdf17918920b8fe0d61074df4b",
+          "revision": "b5fe4ddffa1fe9328a282c44ab0780baf23f8ce3",
           "version": null
         }
       },
@@ -33,17 +24,8 @@
         "repositoryURL": "https://github.com/LuizZak/swift-libpng.git",
         "state": {
           "branch": "master",
-          "revision": "eab8386611c0e14d978c5bb52c09253441c8ebdd",
+          "revision": "1d5b94c822dde80c4c2d7d742cd50d1d83c5abb1",
           "version": null
-        }
-      },
-      {
-        "package": "swift-numerics",
-        "repositoryURL": "https://github.com/apple/swift-numerics",
-        "state": {
-          "branch": null,
-          "revision": "0a23770641f65a4de61daf5425a37ae32a3fd00d",
-          "version": "1.0.1"
         }
       }
     ]

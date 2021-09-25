@@ -16,6 +16,12 @@ public struct UICircle: Hashable, Codable {
         self.center = center
         self.radius = radius
     }
+    
+    @_transparent
+    public init(x: Scalar, y: Scalar, radius: Scalar) {
+        self.center = .init(x: x, y: y)
+        self.radius = radius
+    }
 }
 
 public extension UICircle {
