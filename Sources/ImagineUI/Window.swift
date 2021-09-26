@@ -25,7 +25,6 @@ public class Window: RootView {
     /// sides are resized
     private var _resizeConstraints: [LayoutConstraint] = []
     
-    private var _targetSize: UISize? = nil
     private var _maxLocationDuringDrag: UIVector = .zero
     private var _resizeStartArea: UIRectangle = .zero
     private var _resizeCorner: BorderResize?
@@ -39,6 +38,8 @@ public class Window: RootView {
         return UIRectangle(x: bounds.x, y: bounds.y, width: bounds.width, height: _titleBarHeight)
     }
     
+    internal var targetSize: UISize? = nil
+
     public let contentsLayoutArea = LayoutGuide()
     public let titleBarLayoutArea = LayoutGuide()
 
@@ -62,9 +63,9 @@ public class Window: RootView {
     public override var intrinsicSize: UISize? {
         switch windowState {
         case .maximized:
-            return delegate?.windowSizeForFullscreen(self) ?? _targetSize
+            return delegate?.windowSizeForFullscreen(self) ?? targetSize
         case .normal, .minimized:
-            return _targetSize
+            return targetSize
         }
     }
     
@@ -81,7 +82,7 @@ public class Window: RootView {
         initialize()
 
         self.area = area
-        self._targetSize = area.size
+        self.targetSize = area.size
         strokeWidth = 5
         
         setContentHuggingPriority(.horizontal, 100)
@@ -108,15 +109,15 @@ public class Window: RootView {
     
     public func setShouldCompress(_ isOn: Bool) {
         if isOn {
-            _targetSize = .zero
+            targetSize = .zero
         } else {
-            _targetSize = nil
+            targetSize = nil
         }
         setNeedsLayout()
     }
     
     public func setTargetSize(_ size: UISize) {
-        _targetSize = size
+        targetSize = size
         setNeedsLayout()
     }
     
@@ -310,7 +311,7 @@ public class Window: RootView {
             let clippedY = min(mouseLocation.y - _mouseDownPoint.y, _maxLocationDuringDrag.y)
             let newArea = _resizeStartArea.stretchingTop(to: clippedY)
             
-            _targetSize?.height = newArea.height
+            targetSize?.height = newArea.height
             size = UISize(width: size.width, height: newArea.height)
             location = UIVector(x: location.x, y: newArea.y)
 
@@ -322,7 +323,7 @@ public class Window: RootView {
                 .stretchingTop(to: clippedY)
                 .stretchingLeft(to: clippedX)
             
-            _targetSize = newArea.size
+            targetSize = newArea.size
             size = newArea.size
             location = newArea.location
             
@@ -330,34 +331,34 @@ public class Window: RootView {
             let clippedX = min(mouseLocation.x - _mouseDownPoint.x, _maxLocationDuringDrag.x)
             let newArea = _resizeStartArea.stretchingLeft(to: clippedX)
             
-            _targetSize?.width = newArea.width
+            targetSize?.width = newArea.width
             size = UISize(width: newArea.width, height: size.height)
             location = UIVector(x: newArea.x, y: location.y)
             
         case .right:
-            _targetSize?.width = event.location.x
+            targetSize?.width = event.location.x
             setNeedsLayout()
             
         case .topRight:
             let newArea = _resizeStartArea.stretchingTop(to: mouseLocation.y - _mouseDownPoint.y)
             
-            _targetSize = UISize(width: event.location.x, height: newArea.height)
+            targetSize = UISize(width: event.location.x, height: newArea.height)
             size = UISize(width: size.width, height: newArea.height)
             location = UIVector(x: location.x, y: newArea.y)
 
         case .bottomRight:
-            _targetSize = event.location.asUISize
+            targetSize = event.location.asUISize
             setNeedsLayout()
             
         case .bottom:
-            _targetSize?.height = event.location.y
+            targetSize?.height = event.location.y
             setNeedsLayout()
             
         case .bottomLeft:
             let clippedX = min(mouseLocation.x - _mouseDownPoint.x, _maxLocationDuringDrag.x)
             let newArea = _resizeStartArea.stretchingLeft(to: clippedX)
             
-            _targetSize = UISize(width: newArea.width, height: event.location.y)
+            targetSize = UISize(width: newArea.width, height: event.location.y)
             size = UISize(width: newArea.width, height: size.height)
             location = UIVector(x: newArea.x, y: location.y)
             

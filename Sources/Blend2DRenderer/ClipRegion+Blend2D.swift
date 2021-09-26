@@ -8,6 +8,10 @@ public struct Blend2DClipRegion: ClipRegion {
     public init(region: BLRegion) {
         self.region = region
     }
+
+    public func bounds() -> UIRectangle {
+        region.boundingBox.asRectangle
+    }
     
     public func hitTest(_ rect: UIRectangle) -> HitTestResult {
         switch region.hitTest(BLBoxI(roundingRect: rect.asBLRect)) {
