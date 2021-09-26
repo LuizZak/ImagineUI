@@ -4,7 +4,7 @@ import Rendering
 public enum DebugDraw {
     public static func debugDrawRecursive(_ view: View,
                                           flags: Set<DebugDrawFlags>,
-                                          to renderer: Renderer) {
+                                          in renderer: Renderer) {
         if flags.isEmpty {
             return
         }
@@ -23,7 +23,9 @@ public enum DebugDraw {
             to: renderer,
             state: state)
     }
-    
+}
+
+extension DebugDraw {
     private static func internalDebugDrawRecursive(_ view: View,
                                                    flags: Set<DebugDrawFlags>,
                                                    to renderer: Renderer,
