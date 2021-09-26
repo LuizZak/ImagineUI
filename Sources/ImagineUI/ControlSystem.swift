@@ -28,11 +28,3 @@ public protocol ControlSystem {
     /// Hides the mouse until it is moved by the user.
     func setMouseHiddenUntilMouseMoves()
 }
-
-public enum MouseCursorKind {
-    case arrow
-    case iBeam
-    case resizeUpDown
-    case resizeLeftRight
-    case custom(imagePath: String, hotspot: UIVector)
-}

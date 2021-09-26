@@ -1,5 +1,4 @@
 import Geometry
-import SwiftBlend2D
 import Rendering
 
 open class ControlView: View, MouseEventHandler, KeyboardEventHandler {

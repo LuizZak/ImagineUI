@@ -1,5 +1,4 @@
 import Geometry
-import SwiftBlend2D
 import Rendering
 
 /// A container control that places components within an outlined panel area

@@ -1,10 +1,10 @@
 import Geometry
-import SwiftBlend2D
+import Rendering
 
 public enum DebugDraw {
     public static func debugDrawRecursive(_ view: View,
                                           flags: Set<DebugDrawFlags>,
-                                          to context: BLContext) {
+                                          to renderer: Renderer) {
         if flags.isEmpty {
             return
         }
@@ -14,19 +14,19 @@ public enum DebugDraw {
         internalDebugDrawRecursive(
             view,
             flags: flags.intersection([.viewBounds, .layoutGuideBounds]),
-            to: context,
+            to: renderer,
             state: state)
         
         internalDebugDrawRecursive(
             view,
             flags: flags.intersection([.constraints]),
-            to: context,
+            to: renderer,
             state: state)
     }
     
     private static func internalDebugDrawRecursive(_ view: View,
                                                    flags: Set<DebugDrawFlags>,
-                                                   to context: BLContext,
+                                                   to renderer: Renderer,
                                                    state: State) {
         
         if flags.isEmpty {
@@ -34,7 +34,7 @@ public enum DebugDraw {
         }
         
         let visitor = ClosureViewVisitor<Void> { (_, view) in
-            debugDraw(view, flags: flags, to: context, state: state)
+            debugDraw(view, flags: flags, to: renderer, state: state)
         }
         let traveler = ViewTraveler(visitor: visitor)
         traveler.travelThrough(view: view)
@@ -42,71 +42,70 @@ public enum DebugDraw {
     
     private static func debugDraw(_ view: View,
                                   flags: Set<DebugDrawFlags>,
-                                  to context: BLContext,
+                                  to renderer: Renderer,
                                   state: State) {
         
         if flags.contains(.viewBounds) {
-            drawBounds(view, to: context)
+            drawBounds(view, to: renderer)
         }
         if flags.contains(.layoutGuideBounds) {
-            drawLayoutGuideBounds(view, to: context)
+            drawLayoutGuideBounds(view, to: renderer)
         }
         if flags.contains(.constraints) {
-            drawConstraints(view, to: context, state: state)
+            drawConstraints(view, to: renderer, state: state)
         }
     }
     
-    private static func drawBounds(_ view: View, to context: BLContext) {
+    private static func drawBounds(_ view: View, to renderer: Renderer) {
         let screenBounds = view.convert(bounds: view.bounds, to: nil)
         
-        context.setStrokeStyle(BLRgba32.red)
-        context.setStrokeWidth(1)
-        context.strokeRect(screenBounds.asBLRect)
-        context.setFillStyle(BLRgba32.red)
-        context.fillCircle(x: 0, y: 0, radius: 2)
+        renderer.setStroke(Color.red)
+        renderer.setStrokeWidth(1)
+        renderer.stroke(screenBounds)
+        renderer.setFill(Color.red)
+        renderer.fill(UICircle(x: 0, y: 0, radius: 2))
     }
     
-    private static func drawLayoutGuideBounds(_ view: View, to context: BLContext) {
+    private static func drawLayoutGuideBounds(_ view: View, to renderer: Renderer) {
         for layoutGuide in view.layoutGuides {
             let screenBounds = view.convert(bounds: layoutGuide.area, to: nil)
             
-            context.setStrokeStyle(BLRgba32.orange)
-            context.setStrokeWidth(1)
-            context.strokeRect(screenBounds.asBLRect)
-            context.setFillStyle(BLRgba32.red)
+            renderer.setStroke(Color.orange)
+            renderer.setStrokeWidth(1)
+            renderer.stroke(screenBounds)
+            renderer.setFill(Color.red)
         }
     }
     
-    private static func drawConstraints(_ view: View, to context: BLContext, state: State) {
-        let cookie = context.saveWithCookie()
-        context.restoreClipping()
-        context.resetMatrix()
-        context.scale(by: UISettings.scale.asBLPoint)
+    private static func drawConstraints(_ view: View, to renderer: Renderer, state: State) {
+        let cookie = renderer.saveState()
+        renderer.restoreClipping()
+        renderer.resetTransform()
         
         for constraint in view.containedConstraints {
-            drawConstraint(constraint, to: context, state: state)
+            drawConstraint(constraint, to: renderer, state: state)
         }
         
-        context.restore(from: cookie)
+        renderer.restoreState(cookie)
     }
     
     private static func drawConstraint(_ constraint: LayoutConstraint,
-                                       to context: BLContext,
+                                       to renderer: Renderer,
                                        state: State) {
         
         if let second = constraint.secondCast {
             drawDualAnchorConstraint(constraint,
                                      first: constraint.firstCast,
                                      second: second,
-                                     to: context,
+                                     to: renderer,
                                      state: state)
         } else {
-            drawSingleAnchorConstraint(constraint, to: context, state: state)
+            drawSingleAnchorConstraint(constraint, to: renderer, state: state)
         }
     }
     
     private static func drawSingleAnchorConstraint(_ constraint: LayoutConstraint,
-                                                   to context: BLContext,
+                                                   to renderer: Renderer,
                                                    state: State) {
         
         guard let view = constraint.firstCast._owner else { return }
@@ -117,15 +116,15 @@ public enum DebugDraw {
             let left = bounds.bottomLeft + UIVector(x: 0, y: 2)
             let right = bounds.bottomRight + UIVector(x: 0, y: 2)
             
-            drawLine(start: left, end: right, tangentLength: 3, to: context)
-            drawRelationship(relationship: constraint.relationship, at: (left + right) / 2, to: context)
+            drawLine(start: left, end: right, tangentLength: 3, to: renderer)
+            drawRelationship(relationship: constraint.relationship, at: (left + right) / 2, to: renderer)
             
         case .height:
             let top = bounds.topRight + UIVector(x: 2, y: 0)
             let bottom = bounds.bottomRight + UIVector(x: 2, y: 0)
             
-            drawLine(start: top, end: bottom, tangentLength: 3, to: context)
-            drawRelationship(relationship: constraint.relationship, at: (top + bottom) / 2, to: context)
+            drawLine(start: top, end: bottom, tangentLength: 3, to: renderer)
+            drawRelationship(relationship: constraint.relationship, at: (top + bottom) / 2, to: renderer)
             
         default:
             break
@@ -135,7 +134,7 @@ public enum DebugDraw {
     private static func drawDualAnchorConstraint(_ constraint: LayoutConstraint,
                                                  first: AnyLayoutAnchor,
                                                  second: AnyLayoutAnchor,
-                                                 to context: BLContext,
+                                                 to renderer: Renderer,
                                                  state: State) {
         
         guard let firstOwner = first._owner else { return }
@@ -154,12 +153,12 @@ public enum DebugDraw {
                 connectHorizontalEdges(edge1: (topLeft: firstEdge.topLeft, height: firstEdge.length),
                                        edge2: (topLeft: secondEdge.topLeft, height: secondEdge.length),
                                        relationship: constraint.relationship,
-                                       context: context)
+                                       renderer: renderer)
             } else {
                 connectHorizontalEdges(edge1: (topLeft: secondEdge.topLeft, height: secondEdge.length),
                                        edge2: (topLeft: firstEdge.topLeft, height: firstEdge.length),
                                        relationship: constraint.relationship,
-                                       context: context)
+                                       renderer: renderer)
             }
             
         // Vertical constraints
@@ -171,19 +170,19 @@ public enum DebugDraw {
                 connectVerticalEdges(edge1: (topLeft: firstEdge.topLeft, width: firstEdge.length),
                                      edge2: (topLeft: secondEdge.topLeft, width: secondEdge.length),
                                      relationship: constraint.relationship,
-                                     context: context)
+                                     renderer: renderer)
             } else {
                 connectVerticalEdges(edge1: (topLeft: secondEdge.topLeft, width: secondEdge.length),
                                      edge2: (topLeft: firstEdge.topLeft, width: firstEdge.length),
                                      relationship: constraint.relationship,
-                                     context: context)
+                                     renderer: renderer)
             }
             
         case (.centerX, .centerX):
-            connectCenterX(firstBounds, secondBounds, context: context)
+            connectCenterX(firstBounds, secondBounds, renderer: renderer)
             
         case (.centerY, .centerY):
-            connectCenterY(firstBounds, secondBounds, context: context)
+            connectCenterY(firstBounds, secondBounds, renderer: renderer)
             
         default:
             break
@@ -193,7 +192,7 @@ public enum DebugDraw {
     private static func connectHorizontalEdges(edge1: (topLeft: UIVector, height: Double),
                                                edge2: (topLeft: UIVector, height: Double),
                                                relationship: Relationship,
-                                               context: BLContext) {
+                                               renderer: Renderer) {
         
         let center2 = edge2.topLeft.y + edge2.height / 2
         
@@ -208,7 +207,7 @@ public enum DebugDraw {
             drawLine(start: UIVector(x: edge1.topLeft.x, y: edge1Top),
                      end: UIVector(x: edge1.topLeft.x, y: edge1Bottom),
                      tangentLength: 0,
-                     to: context)
+                     to: renderer)
         }
         
         let start = UIVector(x: edge1.topLeft.x, y: center2)
@@ -217,17 +216,17 @@ public enum DebugDraw {
         drawLine(start: start,
                  end: end,
                  tangentLength: 3,
-                 to: context)
+                 to: renderer)
         
         drawRelationship(relationship: relationship,
                          at: (start + end) / 2,
-                         to: context)
+                         to: renderer)
     }
     
     private static func connectVerticalEdges(edge1: (topLeft: UIVector, width: Double),
                                              edge2: (topLeft: UIVector, width: Double),
                                              relationship: Relationship,
-                                             context: BLContext) {
+                                             renderer: Renderer) {
         
         let center2 = edge2.topLeft.x + edge2.width / 2
         
@@ -242,7 +241,7 @@ public enum DebugDraw {
             drawLine(start: UIVector(x: edge1Left, y: edge1.topLeft.y),
                      end: UIVector(x: edge1Right, y: edge1.topLeft.y),
                      tangentLength: 0,
-                     to: context)
+                     to: renderer)
         }
         
         let start = UIVector(x: center2, y: edge1.topLeft.y)
@@ -251,95 +250,95 @@ public enum DebugDraw {
         drawLine(start: start,
                  end: end,
                  tangentLength: 3,
-                 to: context)
+                 to: renderer)
         
         drawRelationship(relationship: relationship,
                          at: (start + end) / 2,
-                         to: context)
+                         to: renderer)
     }
     
     private static func connectCenterX(_ rect1: UIRectangle,
                                        _ rect2: UIRectangle,
-                                       context: BLContext) {
+                                       renderer: Renderer) {
         
-        prepareStroke(in: context)
+        prepareStroke(in: renderer)
         
         let union = rect1.union(rect2)
         
-        let rect1Top: BLPoint
-        let rect1Bottom: BLPoint
-        let rect2Top: BLPoint
-        let rect2Bottom: BLPoint
-        let lineStart: BLPoint
-        let lineEnd: BLPoint
+        let rect1Top: UIPoint
+        let rect1Bottom: UIPoint
+        let rect2Top: UIPoint
+        let rect2Bottom: UIPoint
+        let lineStart: UIPoint
+        let lineEnd: UIPoint
         
         // Draw a horizontal line that centers on the largest of the rectangles,
         // with the vertical bounds matching the total vertical space occupied
         // by both rectangles
         
         if rect1.height > rect2.height {
-            rect1Top = BLPoint(x: rect1.center.x, y: union.top)
-            rect1Bottom = BLPoint(x: rect1.center.x, y: union.bottom)
-            rect2Top = BLPoint(x: rect2.center.x, y: rect2.top)
-            rect2Bottom = BLPoint(x: rect2.center.x, y: rect2.bottom)
+            rect1Top = UIPoint(x: rect1.center.x, y: union.top)
+            rect1Bottom = UIPoint(x: rect1.center.x, y: union.bottom)
+            rect2Top = UIPoint(x: rect2.center.x, y: rect2.top)
+            rect2Bottom = UIPoint(x: rect2.center.x, y: rect2.bottom)
             
-            lineStart = BLPoint(x: rect1.center.x, y: rect2.center.y)
-            lineEnd = BLPoint(x: rect2.center.x, y: rect2.center.y)
+            lineStart = UIPoint(x: rect1.center.x, y: rect2.center.y)
+            lineEnd = UIPoint(x: rect2.center.x, y: rect2.center.y)
         } else {
-            rect1Top = BLPoint(x: rect1.center.x, y: rect1.top)
-            rect1Bottom = BLPoint(x: rect1.center.x, y: rect1.bottom)
-            rect2Top = BLPoint(x: rect2.center.x, y: union.top)
-            rect2Bottom = BLPoint(x: rect2.center.x, y: union.bottom)
+            rect1Top = UIPoint(x: rect1.center.x, y: rect1.top)
+            rect1Bottom = UIPoint(x: rect1.center.x, y: rect1.bottom)
+            rect2Top = UIPoint(x: rect2.center.x, y: union.top)
+            rect2Bottom = UIPoint(x: rect2.center.x, y: union.bottom)
             
-            lineStart = BLPoint(x: rect2.center.x, y: rect1.center.y)
-            lineEnd = BLPoint(x: rect1.center.x, y: rect1.center.y)
+            lineStart = UIPoint(x: rect2.center.x, y: rect1.center.y)
+            lineEnd = UIPoint(x: rect1.center.x, y: rect1.center.y)
         }
         
-        context.strokeLine(p0: rect1Top, p1: rect1Bottom)
-        context.strokeLine(p0: rect2Top, p1: rect2Bottom)
-        context.strokeLine(p0: lineStart, p1: lineEnd)
+        renderer.strokeLine(start: rect1Top, end: rect1Bottom)
+        renderer.strokeLine(start: rect2Top, end: rect2Bottom)
+        renderer.strokeLine(start: lineStart, end: lineEnd)
     }
     
     private static func connectCenterY(_ rect1: UIRectangle,
                                        _ rect2: UIRectangle,
-                                       context: BLContext) {
+                                       renderer: Renderer) {
         
-        prepareStroke(in: context)
+        prepareStroke(in: renderer)
         
         let union = rect1.union(rect2)
         
-        let rect1Left: BLPoint
-        let rect1Right: BLPoint
-        let rect2Left: BLPoint
-        let rect2Right: BLPoint
-        let lineStart: BLPoint
-        let lineEnd: BLPoint
+        let rect1Left: UIPoint
+        let rect1Right: UIPoint
+        let rect2Left: UIPoint
+        let rect2Right: UIPoint
+        let lineStart: UIPoint
+        let lineEnd: UIPoint
         
         // Draw a horizontal line that centers on the largest of the rectangles,
         // with the vertical bounds matching the total vertical space occupied
         // by both rectangles
         
         if rect1.width > rect2.width {
-            rect1Left = BLPoint(x: union.left, y: rect1.center.y)
-            rect1Right = BLPoint(x: union.right, y: rect1.center.y)
-            rect2Left = BLPoint(x: rect1.left, y: rect2.center.y)
-            rect2Right = BLPoint(x: rect2.right, y: rect2.center.y)
+            rect1Left = UIPoint(x: union.left, y: rect1.center.y)
+            rect1Right = UIPoint(x: union.right, y: rect1.center.y)
+            rect2Left = UIPoint(x: rect1.left, y: rect2.center.y)
+            rect2Right = UIPoint(x: rect2.right, y: rect2.center.y)
             
-            lineStart = BLPoint(x: rect2.center.x, y: rect1.center.y)
-            lineEnd = BLPoint(x: rect2.center.x, y: rect2.center.y)
+            lineStart = UIPoint(x: rect2.center.x, y: rect1.center.y)
+            lineEnd = UIPoint(x: rect2.center.x, y: rect2.center.y)
         } else {
-            rect1Left = BLPoint(x: rect1.left, y: rect1.center.y)
-            rect1Right = BLPoint(x: rect1.right, y: rect1.center.y)
-            rect2Left = BLPoint(x: union.left, y: rect2.center.y)
-            rect2Right = BLPoint(x: union.right, y: rect2.center.y)
+            rect1Left = UIPoint(x: rect1.left, y: rect1.center.y)
+            rect1Right = UIPoint(x: rect1.right, y: rect1.center.y)
+            rect2Left = UIPoint(x: union.left, y: rect2.center.y)
+            rect2Right = UIPoint(x: union.right, y: rect2.center.y)
             
-            lineStart = BLPoint(x: rect1.center.x, y: rect2.center.y)
-            lineEnd = BLPoint(x: rect1.center.x, y: rect1.center.y)
+            lineStart = UIPoint(x: rect1.center.x, y: rect2.center.y)
+            lineEnd = UIPoint(x: rect1.center.x, y: rect1.center.y)
         }
         
-        context.strokeLine(p0: rect1Left, p1: rect1Right)
-        context.strokeLine(p0: rect2Left, p1: rect2Right)
-        context.strokeLine(p0: lineStart, p1: lineEnd)
+        renderer.strokeLine(start: rect1Left, end: rect1Right)
+        renderer.strokeLine(start: rect2Left, end: rect2Right)
+        renderer.strokeLine(start: lineStart, end: lineEnd)
     }
     
     private static func extractEdge(_ rectangle: UIRectangle, edge: AnchorKind) -> (topLeft: UIVector, length: Double) {
@@ -357,10 +356,10 @@ public enum DebugDraw {
         }
     }
     
-    private static func drawLine(start: UIVector, end: UIVector, tangentLength: Double, to context: BLContext) {
-        prepareStroke(in: context)
+    private static func drawLine(start: UIVector, end: UIVector, tangentLength: Double, to renderer: Renderer) {
+        prepareStroke(in: renderer)
         
-        context.strokeLine(p0: start.asBLPoint, p1: end.asBLPoint)
+        renderer.strokeLine(start: start, end: end)
         
         if tangentLength > 0 {
             let normal = (end - start).normalized()
@@ -368,25 +367,25 @@ public enum DebugDraw {
             let tangentLeft = normal.leftRotated() * tangentLength
             let tangentRight = normal.rightRotated() * tangentLength
             
-            context.strokeLine(p0: (start + tangentLeft).asBLPoint, p1: (start + tangentRight).asBLPoint)
-            context.strokeLine(p0: (end + tangentLeft).asBLPoint, p1: (end + tangentRight).asBLPoint)
+            renderer.strokeLine(start: start + tangentLeft, end: start + tangentRight)
+            renderer.strokeLine(start: end + tangentLeft, end: end + tangentRight)
         }
     }
     
     private static func drawRelationship(relationship: Relationship,
                                          at point: UIVector,
-                                         to context: BLContext) {
+                                         to renderer: Renderer) {
         
         guard relationship != .equal else { return }
         
-        let circle = BLCircle(center: point.asBLPoint, radius: 5)
-        prepareDarkStroke(in: context)
-        prepareFill(in: context)
-        context.fillCircle(circle)
-        context.strokeCircle(circle)
+        let circle = UICircle(center: point, radius: 5)
+        prepareDarkStroke(in: renderer)
+        prepareFill(in: renderer)
+        renderer.fill(circle)
+        renderer.stroke(circle)
         
         // Draw '<' or '>'
-        var triangle = BLTriangle.unitEquilateral.offsetBy(point.asBLPoint - BLPoint(x: 0, y: 1)).scaledBy(x: 3, y: 4)
+        var triangle = UITriangle.unitEquilateral.offsetBy(point - UIPoint(x: 0, y: 1)).scaledBy(x: 3, y: 4)
         
         switch relationship {
         case .equal:
@@ -399,8 +398,8 @@ public enum DebugDraw {
             triangle = triangle.rotated(by: .pi / 2)
         }
         
-        context.strokeLine(p0: triangle.p2, p1: triangle.p0)
-        context.strokeLine(p0: triangle.p0, p1: triangle.p1)
+        renderer.strokeLine(start: triangle.p2, end: triangle.p0)
+        renderer.strokeLine(start: triangle.p0, end: triangle.p1)
         
         // Draw second line under triangle to form greater-than or less-than
         // symbol
@@ -411,25 +410,25 @@ public enum DebugDraw {
             break
             
         case .lessThanOrEqual:
-            context.strokeLine(p0: triangle.p2, p1: triangle.p0)
+            renderer.strokeLine(start: triangle.p2, end: triangle.p0)
             
         case .greaterThanOrEqual:
-            context.strokeLine(p0: triangle.p0, p1: triangle.p1)
+            renderer.strokeLine(start: triangle.p0, end: triangle.p1)
         }
     }
     
-    private static func prepareStroke(in context: BLContext) {
-        context.setStrokeWidth(1)
-        context.setStrokeStyle(BLRgba32.lightBlue)
+    private static func prepareStroke(in renderer: Renderer) {
+        renderer.setStrokeWidth(1)
+        renderer.setStroke(Color.lightBlue)
     }
     
-    private static func prepareDarkStroke(in context: BLContext) {
-        context.setStrokeWidth(1)
-        context.setStrokeStyle(BLRgba32.blue)
+    private static func prepareDarkStroke(in renderer: Renderer) {
+        renderer.setStrokeWidth(1)
+        renderer.setStroke(Color.blue)
     }
     
-    private static func prepareFill(in context: BLContext) {
-        context.setFillStyle(BLRgba32.lightBlue.faded(towards: .white, factor: 0.5))
+    private static func prepareFill(in renderer: Renderer) {
+        renderer.setFill(Color.lightBlue.faded(towards: .white, factor: 0.5))
     }
     
     public enum DebugDrawFlags {

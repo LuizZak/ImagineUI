@@ -429,14 +429,10 @@ public class Window: RootView {
             cursor = .resizeLeftRight
         
         case .topLeft, .bottomRight:
-            // TODO: Remove this hardcoded image paths
-            cursor = .custom(imagePath: "/System/Library/Frameworks/WebKit.framework/Versions/Current/Frameworks/WebCore.framework/Resources/northWestSouthEastResizeCursor.png",
-                             hotspot: UIVector(x: 8, y: 8))
+            cursor = .resizeTopLeftBottomRight
         
         case .topRight, .bottomLeft:
-            // TODO: Remove this hardcoded image paths
-            cursor = .custom(imagePath: "/System/Library/Frameworks/WebKit.framework/Versions/Current/Frameworks/WebCore.framework/Resources/northEastSouthWestResizeCursor.png",
-                             hotspot: UIVector(x: 8, y: 8))
+            cursor = .resizeTopRightBottomLeft
             
         case .none:
             break

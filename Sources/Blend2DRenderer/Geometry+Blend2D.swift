@@ -117,3 +117,9 @@ extension UIEdgeInsets {
                       h: rectangle.h - top - bottom)
     }
 }
+
+extension UITriangle {
+    var asBLTriangle: BLTriangle {
+        .init(p0: p0.asBLPoint, p1: p1.asBLPoint, p2: p2.asBLPoint)
+    }
+}

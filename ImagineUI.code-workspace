@@ -41,7 +41,10 @@
 				"presentation": {
 					"reveal": "always"
 				},
-				"group": "build",
+				"group": {
+					"kind": "build",
+					"isDefault": true
+				},
 				"windows": {
 					"options": {
 						"shell": {
@@ -84,7 +87,10 @@
 				"presentation": {
 					"reveal": "always"
 				},
-				"group": "test",
+				"group": {
+					"kind": "test",
+					"isDefault": true
+				},
 				"windows": {
 					"options": {
 						"shell": {

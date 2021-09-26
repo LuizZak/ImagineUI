@@ -1,8 +1,6 @@
 import Geometry
 
 extension UIVector {
-    
-
     @_transparent
     public mutating func formPerpendicular() {
         self = perpendicular()

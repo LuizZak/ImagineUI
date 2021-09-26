@@ -16,7 +16,7 @@ class TextLayoutRendererTests: SnapshotTestCase {
         return TestPaths.pathToSnapshotFailures(testTarget: "Blend2DRendererTests")
     }
     
-    func testRenderAttributedTextBackgroundColor() {
+    func testRenderAttributedTextBackgroundColor() throws {
         var attributedText = AttributedText()
         attributedText.append("small", attributes: [
             .font: makeFont(size: 10),
@@ -45,10 +45,10 @@ class TextLayoutRendererTests: SnapshotTestCase {
         sut.render(in: ctx, location: .zero)
         
         ctx.end()
-        assertImageMatch(img)
+        try assertImageMatch(img)
     }
     
-    func testRenderBaselineBackgroundBounds() {
+    func testRenderBaselineBackgroundBounds() throws {
         var attributedText = AttributedText()
         attributedText.append("small", attributes: [
             .font: makeFont(size: 10),
@@ -80,10 +80,10 @@ class TextLayoutRendererTests: SnapshotTestCase {
         sut.render(in: ctx, location: .zero)
         
         ctx.end()
-        assertImageMatch(img)
+        try assertImageMatch(img)
     }
     
-    func testRenderStrokeColor() {
+    func testRenderStrokeColor() throws {
         var attributedText = AttributedText()
         attributedText.append("Test text", attributes: [
             .foregroundColor: Color.white,
@@ -110,10 +110,10 @@ class TextLayoutRendererTests: SnapshotTestCase {
         sut.render(in: ctx, location: .zero)
         
         ctx.end()
-        assertImageMatch(img)
+        try assertImageMatch(img)
     }
     
-    func testRenderUnderlinedText() {
+    func testRenderUnderlinedText() throws {
         var attributedText = AttributedText()
         attributedText.append("Test text")
         attributedText.append(" with underlined", attributes: [
@@ -138,10 +138,10 @@ class TextLayoutRendererTests: SnapshotTestCase {
         sut.render(in: ctx, location: .zero)
         
         ctx.end()
-        assertImageMatch(img)
+        try assertImageMatch(img)
     }
     
-    func testRenderUnderlinedTextWithDifferentFonts() {
+    func testRenderUnderlinedTextWithDifferentFonts() throws {
         var attributedText = AttributedText()
         attributedText.append("Test text with", attributes: [
             .font: makeFont(size: 20),
@@ -170,10 +170,10 @@ class TextLayoutRendererTests: SnapshotTestCase {
         sut.render(in: ctx, location: .zero)
         
         ctx.end()
-        assertImageMatch(img)
+        try assertImageMatch(img)
     }
     
-    func testRenderStrikethroughText() {
+    func testRenderStrikethroughText() throws {
         var attributedText = AttributedText()
         attributedText.append("Test text")
         attributedText.append(" with strikethrough", attributes: [
@@ -198,10 +198,10 @@ class TextLayoutRendererTests: SnapshotTestCase {
         sut.render(in: ctx, location: .zero)
         
         ctx.end()
-        assertImageMatch(img)
+        try assertImageMatch(img)
     }
     
-    func testRenderStrikethroughTextWithDifferentFonts() {
+    func testRenderStrikethroughTextWithDifferentFonts() throws {
         var attributedText = AttributedText()
         attributedText.append("Test text with", attributes: [
             .font: makeFont(size: 20),
@@ -230,7 +230,7 @@ class TextLayoutRendererTests: SnapshotTestCase {
         sut.render(in: ctx, location: .zero)
         
         ctx.end()
-        assertImageMatch(img)
+        try assertImageMatch(img)
     }
     
     func makeSut(text: String) -> TextLayoutRenderer {

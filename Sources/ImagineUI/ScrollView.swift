@@ -1,6 +1,5 @@
 import Foundation
 import Geometry
-import SwiftBlend2D
 import Rendering
 
 open class ScrollView: ControlView {

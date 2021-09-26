@@ -79,6 +79,10 @@ public class Blend2DRenderer: Renderer {
     public func fill(_ polygon: UIPolygon) {
         _context.fillPolygon(polygon.vertices.map(\.asBLPoint))
     }
+
+    public func fill(_ triangle: UITriangle) {
+        _context.fillTriangle(triangle.asBLTriangle)
+    }
     
     // MARK: - Stroke
     
@@ -104,6 +108,10 @@ public class Blend2DRenderer: Renderer {
     
     public func stroke(_ polygon: UIPolygon) {
         _context.strokePolygon(polygon.vertices.map(\.asBLPoint))
+    }
+
+    public func stroke(_ triangle: UITriangle) {
+        _context.strokeTriangle(triangle.asBLTriangle)
     }
     
     public func strokeLine(start: UIVector, end: UIVector) {

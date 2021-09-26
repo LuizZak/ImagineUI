@@ -39,7 +39,7 @@ open class SnapshotTestCase: XCTestCase {
     public func recordImage(_ image: BLImage,
                             _ testName: String = #function,
                             file: StaticString = #file,
-                            line: UInt = #line) {
+                            line: UInt = #line) throws {
         
         let formattedTestName = prepareTestName(testName)
         let folderName = "\(type(of: self))"
@@ -48,25 +48,21 @@ open class SnapshotTestCase: XCTestCase {
         
         let recordPath = snapshotPath + "/\(path).png"
         
-        do {
-            let pngFile = pngFileFromImage(image)
-            
-            try createDirectory(atPath: snapshotFolderPath)
-            try writePngFile(file: pngFile, filename: recordPath)
-            
-            attach(imageFile: recordPath, keepFile: true)
-            
-            XCTFail("Successfully recorded snapshot for \(formattedTestName)", file: file, line: line)
-        } catch {
-            XCTFail("Error attempting to save snapshot file at '\(recordPath)': \(error)", file: file, line: line)
-        }
+        let pngFile = pngFileFromImage(image)
+        
+        try createDirectory(atPath: snapshotFolderPath)
+        try writePngFile(file: pngFile, filename: recordPath)
+        
+        attach(imageFile: recordPath, keepFile: true)
+        
+        XCTFail("Successfully recorded snapshot for \(formattedTestName)", file: file, line: line)
     }
     
     public func assertImageMatch(_ image: BLImage,
                                  _ testName: String = #function,
                                  record: Bool = false,
                                  file: StaticString = #file,
-                                 line: UInt = #line) {
+                                 line: UInt = #line) throws {
         
         if record || forceRecordMode {
             recordImage(image, testName, file: file, line: line)
@@ -86,40 +82,31 @@ open class SnapshotTestCase: XCTestCase {
 
         var isDirectory: Bool = false
         if !pathExists(snapshotPath, isDirectory: &isDirectory) {
-            do {
-                try createDirectory(atPath: snapshotPath)
-            } catch {
-                XCTFail("Error attempting to create snapshots directory '\(snapshotPath)': \(error)")
-                return
-            }
+            try createDirectory(atPath: snapshotPath)
         } else if !isDirectory {
             XCTFail("Path to save snapshots to '\(snapshotPath)' exists but is a file, not a folder.")
             return
         }
 
-        do {
-            let recordedData = try readPngFile(recordPath)
-            let actualData = pngFileFromImage(image)
+        let recordedData = try readPngFile(recordPath)
+        let actualData = pngFileFromImage(image)
 
-            if recordedData != actualData {
-                XCTFail("Snapshot \(formattedTestName) did not match recorded data. Please inspect image at \(failurePath) for further information.", file: file, line: line)
+        if recordedData != actualData {
+            XCTFail("Snapshot \(formattedTestName) did not match recorded data. Please inspect image at \(failurePath) for further information.", file: file, line: line)
+            
+            try createDirectory(atPath: failureFolderPath)
+            
+            try copyFile(source: recordPath, dest: expectedPath)
+            try writePngFile(file: actualData, filename: failurePath)
+            
+            attach(imageFile: expectedPath, keepFile: false)
+            attach(imageFile: failurePath, keepFile: false)
+            
+            if let diffData = produceDiffImage(recordedData, actualData) {
+                try writePngFile(file: diffData, filename: diffPath)
                 
-                try createDirectory(atPath: failureFolderPath)
-                
-                try copyFile(source: recordPath, dest: expectedPath)
-                try writePngFile(file: actualData, filename: failurePath)
-                
-                attach(imageFile: expectedPath, keepFile: false)
-                attach(imageFile: failurePath, keepFile: false)
-                
-                if let diffData = produceDiffImage(recordedData, actualData) {
-                    try writePngFile(file: diffData, filename: diffPath)
-                    
-                    attach(imageFile: diffPath, keepFile: false)
-                }
+                attach(imageFile: diffPath, keepFile: false)
             }
-        } catch {
-            XCTFail("Error attempting to read and compare snapshot '\(formattedTestName)': \(error)")
         }
     }
     
@@ -229,21 +216,30 @@ open class SnapshotTestCase: XCTestCase {
     public func recordImage(_ image: BLImage,
                             _ testName: String = #function,
                             file: StaticString = #file,
-                            line: UInt = #line) {
+                            line: UInt = #line) throws {
         
-        XCTFail("Platform does not support LibPNG and cannot do snapshot testing.",
-                file: file, line: line)
+        throw SnapshotError.platformNotSupported
     }
     
     public func assertImageMatch(_ image: BLImage,
                                  _ testName: String = #function,
                                  record: Bool = false,
                                  file: StaticString = #file,
-                                 line: UInt = #line) {
+                                 line: UInt = #line) throws {
         
-        XCTFail("Platform does not support LibPNG and cannot do snapshot testing.",
-                file: file, line: line)
+        throw SnapshotError.platformNotSupported
     }
 }
 
 #endif
+
+enum SnapshotError: Error, CustomStringConvertible {
+    case platformNotSupported
+
+    var description: String {
+        switch self {
+        case .platformNotSupported:
+            return "Platform does not support LibPNG and cannot do snapshot testing."
+        }
+    }
+}

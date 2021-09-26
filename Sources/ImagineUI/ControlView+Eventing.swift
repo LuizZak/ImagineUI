@@ -1,4 +1,3 @@
-import SwiftBlend2D
 import Rendering
 
 // MARK: - Event typealiases

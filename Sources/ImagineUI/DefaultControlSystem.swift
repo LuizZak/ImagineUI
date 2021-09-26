@@ -1,6 +1,8 @@
 import Geometry
-import SwiftBlend2D
 
+// TODO: Consider making Window also a control system of its own, to enable
+// TODO: windiw-specific innterception of innputs to better support tasks like
+// TODO: resizing detection with the mouse within the client area.
 public class DefaultControlSystem: ControlSystem {
     /// When mouse is down on a control, this is the control that the mouse
     /// was pressed down on
@@ -233,13 +235,6 @@ private extension MouseEventArgs {
 
         return mouseEvent
     }
-}
-
-public protocol DefaultControlSystemDelegate: AnyObject {
-    func bringRootViewToFront(_ rootView: RootView)
-    func controlViewUnder(point: UIVector, enabledOnly: Bool) -> ControlView?
-    func setMouseCursor(_ cursor: MouseCursorKind)
-    func setMouseHiddenUntilMouseMoves()
 }
 
 private class InnerEventRequest<THandler> : EventRequest {

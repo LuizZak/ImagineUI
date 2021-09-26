@@ -51,6 +51,9 @@ public protocol Renderer {
     
     /// Fills a given polygon with the current fill style
     func fill(_ polygon: UIPolygon)
+
+    /// Fills a given triangle with the current fill style
+    func fill(_ triangle: UITriangle)
     
     // MARK: - Stroke Operations
     
@@ -71,6 +74,9 @@ public protocol Renderer {
     
     /// Strokes a given polygon with the current stroke style
     func stroke(_ polygon: UIPolygon)
+
+    /// Strokes a given triangle with the current stroke style
+    func stroke(_ triangle: UITriangle)
     
     /// Strokes a line formed by the given start and end vectors with the
     /// current stroke style

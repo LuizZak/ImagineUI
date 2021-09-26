@@ -1,5 +1,6 @@
+#if false
+
 import Geometry
-import SwiftBlend2D
 
 public extension UIVector {
     var asBLPoint: BLPoint {
@@ -57,3 +58,5 @@ public extension UIEdgeInsets {
                       h: rectangle.h - top - bottom)
     }
 }
+
+#endif

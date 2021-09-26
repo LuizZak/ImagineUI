@@ -24,12 +24,12 @@ class LabelTests: SnapshotTestCase {
         )
     }
     
-    func testSnapshot() {
+    func testSnapshot() throws {
         let label = Label()
         label.areaIntoConstraintsMask = [.location]
         label.text = "A Label"
         label.performLayout()
         
-        matchSnapshot(label)
+        try matchSnapshot(label)
     }
 }

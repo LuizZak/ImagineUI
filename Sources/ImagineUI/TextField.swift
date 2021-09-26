@@ -1,7 +1,6 @@
 import Foundation
 import Geometry
 import Text
-import SwiftBlend2D
 import Rendering
 
 // import QuartzCore
