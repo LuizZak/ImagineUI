@@ -21,10 +21,12 @@ public extension UIVector {
         return self / l
     }
 
+    @_transparent
     static func * (lhs: Self, rhs: UIMatrix) -> Self {
         rhs.transform(lhs)
     }
 
+    @_transparent
     static func *= (lhs: inout Self, rhs: UIMatrix) {
         lhs = lhs * rhs
     }

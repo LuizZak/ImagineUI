@@ -22,6 +22,7 @@ public struct UILine: Hashable, Codable {
         end = .init(x: x2, y: y2)
     }
 
+    @_transparent
     public func length() -> Scalar {
         start.distance(to: end)
     }
