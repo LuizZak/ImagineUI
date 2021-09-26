@@ -1,4 +1,4 @@
-import SwiftBlend2D
+@_exported import SwiftBlend2D
 import Text
 import Rendering
 
