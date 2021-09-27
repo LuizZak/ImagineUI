@@ -5,5 +5,5 @@ public protocol DefaultControlSystemDelegate: AnyObject {
     func controlViewUnder(point: UIVector, enabledOnly: Bool) -> ControlView?
     func setMouseCursor(_ cursor: MouseCursorKind)
     func setMouseHiddenUntilMouseMoves()
-    func firstResponderChanged(_ newFirstResponder: ControlView?)
+    func firstResponderChanged(_ newFirstResponder: KeyboardEventHandler?)
 }
