@@ -199,6 +199,7 @@ public class DefaultControlSystem: ControlSystem {
         }
 
         _firstResponder = firstResponder
+        delegate?.firstResponderChanged(_firstResponder)
 
         return true
     }
@@ -206,6 +207,7 @@ public class DefaultControlSystem: ControlSystem {
     public func removeAsFirstResponder(_ eventHandler: EventHandler) -> Bool {
         if isFirstResponder(eventHandler) {
             _firstResponder = nil
+            delegate?.firstResponderChanged(_firstResponder)
             return true
         }
 
