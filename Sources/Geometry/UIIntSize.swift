@@ -200,7 +200,7 @@ public extension UIIntSize {
 
     @_transparent
     static func != (lhs: Self, rhs: Scalar) -> Bool {
-        lhs == .init(repeating: rhs)
+        lhs != .init(repeating: rhs)
     }
 }
 
