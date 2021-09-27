@@ -13,10 +13,6 @@ public enum UISettings {
     
     /// The global render context for the UI system
     public static var globalRenderContext: RenderContext?
-    
-    /// Rendering scale for UI.
-    /// Affects scaling of caches of views in bitmap format.
-    public static var scale: UIVector = UIVector(x: 2, y: 2)
 
     /// OS-specific method that returns the current time in seconds.
     /// Time's starting value is not defined, but it must increase in steps of
