@@ -82,7 +82,6 @@ extension DebugDraw {
     private static func drawConstraints(_ view: View, to renderer: Renderer, state: State) {
         let cookie = renderer.saveState()
         renderer.restoreClipping()
-        renderer.resetTransform()
         
         for constraint in view.containedConstraints {
             drawConstraint(constraint, to: renderer, state: state)
