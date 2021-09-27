@@ -406,6 +406,63 @@ open class TextField: ControlView {
         }
     }
 
+    open override func onKeyPress(_ event: KeyPressEventArgs) {
+        super.onKeyPress(event)
+        
+        controlSystem?.setMouseHiddenUntilMouseMoves()
+        
+        if event.handled { return }
+
+        if event.modifiers.contains(.osControlKey) {
+            switch event.keyChar {
+            case "c", "C":
+                copy()
+                return
+
+            case "x" where editable, 
+                 "X" where editable:
+                cut()
+                return
+
+            case "v" where editable, 
+                 "V" where editable:
+                paste()
+                return
+
+            case "z" where editable, 
+                 "Z" where editable:
+                // Ctrl+Shift+Z as alternative for Ctrl+Y (redo)
+                if event.modifiers == (KeyboardModifier.osControlKey.union(.shift)) {
+                    redo()
+                    return
+                }
+                
+                undo()
+                return
+
+            case "y" where editable, 
+                 "Y" where editable:
+                redo()
+                return
+
+            case "a", "A":
+                selectAll()
+                return
+
+            default:
+                break
+            }
+        }
+
+        if !editable {
+            return
+        }
+
+        if isValidInputCharacter(event) {
+            _textEngine.insertText(event.keyChar.description)
+        }
+    }
+
     @discardableResult
     private func handleCaretMoveEvent(_ keyCode: Keys, _ modifiers: KeyboardModifier) -> Bool {
         // TODO: Support wrapping calls to TextEngine.move- methods to do selection
@@ -808,6 +865,18 @@ open class TextField: ControlView {
     }
     
     private func isValidInputCharacter(_ event: KeyEventArgs) -> Bool {
+        #if os(macOS)
+
+        if event.modifiers.contains(.numericPad) {
+            return false
+        }
+
+        #endif
+        
+        return true
+    }
+    
+    private func isValidInputCharacter(_ event: KeyPressEventArgs) -> Bool {
         #if os(macOS)
 
         if event.modifiers.contains(.numericPad) {
