@@ -190,6 +190,20 @@ public extension UIIntSize {
     }
 }
 
+// MARK: Comparison - Scalars
+
+public extension UIIntSize {
+    @_transparent
+    static func == (lhs: Self, rhs: Scalar) -> Bool {
+        lhs == .init(repeating: rhs)
+    }
+
+    @_transparent
+    static func != (lhs: Self, rhs: Scalar) -> Bool {
+        lhs == .init(repeating: rhs)
+    }
+}
+
 @_transparent
 public func min(_ lhs: UIIntSize, _ rhs: UIIntSize) -> UIIntSize {
     .pointwiseMin(lhs, rhs)

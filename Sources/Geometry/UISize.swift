@@ -202,6 +202,20 @@ public extension UISize {
     }
 }
 
+// MARK: Comparison - Scalars
+
+public extension UISize {
+    @_transparent
+    static func == (lhs: Self, rhs: Scalar) -> Bool {
+        lhs == .init(repeating: rhs)
+    }
+
+    @_transparent
+    static func != (lhs: Self, rhs: Scalar) -> Bool {
+        lhs == .init(repeating: rhs)
+    }
+}
+
 @_transparent
 public func min(_ lhs: UISize, _ rhs: UISize) -> UISize {
     .pointwiseMin(lhs, rhs)

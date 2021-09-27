@@ -228,6 +228,20 @@ public extension UIIntPoint {
     }
 }
 
+// MARK: Comparison - Scalars
+
+public extension UIIntPoint {
+    @_transparent
+    static func == (lhs: Self, rhs: Scalar) -> Bool {
+        lhs == .init(repeating: rhs)
+    }
+
+    @_transparent
+    static func != (lhs: Self, rhs: Scalar) -> Bool {
+        lhs == .init(repeating: rhs)
+    }
+}
+
 @_transparent
 public func min(_ lhs: UIIntPoint, _ rhs: UIIntPoint) -> UIIntPoint {
     .pointwiseMin(lhs, rhs)
