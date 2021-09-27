@@ -38,7 +38,21 @@ public class Window: RootView {
         return UIRectangle(x: bounds.x, y: bounds.y, width: bounds.width, height: _titleBarHeight)
     }
     
-    internal var targetSize: UISize? = nil
+    /// Specifies the desired target size for this window.
+    /// During layout, the constraint system attempts to target this size, and
+    /// if it conflicts with constraints, it sets it to the size closest to this
+    /// target size capable of satisfying all active constraints.
+    ///
+    /// If `nil`, no preferred size is specified.
+    ///
+    /// Changing this value triggers a `setNeedsLayout` call automatically.
+    public var targetSize: UISize? = nil {
+        didSet {
+            if targetSize != oldValue {
+                setNeedsLayout()
+            }
+        }
+    }
 
     public let contentsLayoutArea = LayoutGuide()
     public let titleBarLayoutArea = LayoutGuide()
@@ -113,11 +127,6 @@ public class Window: RootView {
         } else {
             targetSize = nil
         }
-        setNeedsLayout()
-    }
-    
-    public func setTargetSize(_ size: UISize) {
-        targetSize = size
         setNeedsLayout()
     }
     
@@ -337,7 +346,6 @@ public class Window: RootView {
             
         case .right:
             targetSize?.width = event.location.x
-            setNeedsLayout()
             
         case .topRight:
             let newArea = _resizeStartArea.stretchingTop(to: mouseLocation.y - _mouseDownPoint.y)
@@ -348,11 +356,9 @@ public class Window: RootView {
 
         case .bottomRight:
             targetSize = event.location.asUISize
-            setNeedsLayout()
             
         case .bottom:
             targetSize?.height = event.location.y
-            setNeedsLayout()
             
         case .bottomLeft:
             let clippedX = min(mouseLocation.x - _mouseDownPoint.x, _maxLocationDuringDrag.x)

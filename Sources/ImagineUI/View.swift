@@ -14,7 +14,10 @@ open class View {
     var verticalHuggingPriority: LayoutPriority = 150
     var layoutVariables: LayoutVariables!
     
-    var isLayoutSuspended = false
+    /// Whether the layout of this view is suspended.
+    /// When layout is suspended, the view does not propagates ``setNeedsLayout``
+    /// invocations to parent views.
+    public internal(set) var isLayoutSuspended = false
     
     var rootView: RootView? {
         if let rootView = self as? RootView {
