@@ -1,7 +1,7 @@
 public struct Keys: Hashable {
     public var rawValue: Int
 
-    init(rawValue: Int) {
+    public init(rawValue: Int) {
         self.rawValue = rawValue
     }
 
