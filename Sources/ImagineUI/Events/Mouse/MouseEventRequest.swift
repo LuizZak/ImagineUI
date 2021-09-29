@@ -7,4 +7,5 @@ public protocol MouseEventRequest: EventRequest {
     var buttons: MouseButton { get }
     var delta: UIVector { get }
     var clicks: Int { get }
+    var modifiers: KeyboardModifier { get }
 }

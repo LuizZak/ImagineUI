@@ -45,7 +45,7 @@ public class DefaultControlSystem: ControlSystem {
         }
 
         // Make request
-        let request = InnerMouseEventRequest(screenLocation: event.location, buttons: event.buttons, delta: event.delta, clicks: event.clicks, eventType: .mouseDown) { handler in
+        let request = InnerMouseEventRequest(event: event, eventType: .mouseDown) { handler in
             handler.onMouseDown(event.convertLocation(handler: handler))
 
             self._mouseDownTarget = handler
@@ -90,7 +90,7 @@ public class DefaultControlSystem: ControlSystem {
     public func onMouseWheel(_ event: MouseEventArgs) {
         if let control = delegate?.controlViewUnder(point: event.location, enabledOnly: true) {
             // Make request
-            let request = InnerMouseEventRequest(screenLocation: event.location, buttons: event.buttons, delta: event.delta, clicks: event.clicks, eventType: .mouseWheel) { handler in
+            let request = InnerMouseEventRequest(event: event, eventType: .mouseWheel) { handler in
                 if let mouse = self._mouseDownTarget {
                     mouse.onMouseWheel(event.convertLocation(handler: mouse))
                 } else {
@@ -162,7 +162,7 @@ public class DefaultControlSystem: ControlSystem {
         }
         
         // Make request
-        let request = InnerMouseEventRequest(screenLocation: event.location, buttons: event.buttons, delta: event.delta, clicks: event.clicks, eventType: eventType) { handler in
+        let request = InnerMouseEventRequest(event: event, eventType: eventType) { handler in
             if self._mouseHoverTarget !== handler {
                 self._mouseHoverTarget?.onMouseLeave()
                 handler.onMouseEnter()
@@ -263,11 +263,25 @@ private class InnerMouseEventRequest: InnerEventRequest<MouseEventHandler>, Mous
     var delta: UIVector
     var clicks: Int
     var eventType: MouseEventType
+    var modifiers: KeyboardModifier
+
+    convenience init(event: MouseEventArgs, eventType: MouseEventType, onAccept: @escaping (MouseEventHandler) -> Void) {
+        self.init(
+            screenLocation: event.location,
+            buttons: event.buttons,
+            delta: event.delta,
+            clicks: event.clicks,
+            modifiers: event.modifiers,
+            eventType: eventType,
+            onAccept: onAccept
+        )
+    }
 
     init(screenLocation: UIVector,
          buttons: MouseButton,
          delta: UIVector,
          clicks: Int,
+         modifiers: KeyboardModifier,
          eventType: MouseEventType,
          onAccept: @escaping (MouseEventHandler) -> Void) {
         
@@ -275,6 +289,7 @@ private class InnerMouseEventRequest: InnerEventRequest<MouseEventHandler>, Mous
         self.buttons = buttons
         self.delta = delta
         self.clicks = clicks
+        self.modifiers = modifiers
         self.eventType = eventType
         
         super.init(onAccept: onAccept)
