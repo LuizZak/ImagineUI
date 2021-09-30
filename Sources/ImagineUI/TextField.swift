@@ -12,7 +12,7 @@ open class TextField: ControlView {
     private var _placeholderLabel = Label()
     private var _textEngine: TextEngine
     private let _statesStyles = StatedValueStore<TextFieldVisualStyleParameters>()
-    private var _onFixedFrameSubscription: EventListenerKey?
+    private var _cursorBlinkTimer: SchedulerTimerType?
 
     // TODO: Collapse these into an external handler or into Combine to lower
     // the state clutter here
@@ -715,15 +715,12 @@ open class TextField: ControlView {
         if firstResponder {
             _blinker.restart()
         }
-        
-        if let old = _onFixedFrameSubscription {
-            Scheduler.instance.fixedFrameEvent.removeListener(withKey: old)
-        }
-        
-        _onFixedFrameSubscription = Scheduler.instance.fixedFrameEvent.addListener(owner: self) { [weak self] interval in
-            self?.onFixedFrame(interval: interval)
-        }
 
+        _cursorBlinkTimer?.invalidate()
+        _cursorBlinkTimer = Scheduler.instance.scheduleTimer(interval: 1.0, repeats: true) { [weak self] in
+            self?.onFixedFrame(interval: UISettings.timeInSeconds())
+        }
+        
         return firstResponder
     }
 
@@ -732,9 +729,9 @@ open class TextField: ControlView {
 
         invalidate()
         
-        if let old = _onFixedFrameSubscription {
-            Scheduler.instance.fixedFrameEvent.removeListener(withKey: old)
-            _onFixedFrameSubscription = nil
+        if let timer = _cursorBlinkTimer {
+            timer.invalidate()
+            _cursorBlinkTimer = nil
         }
     }
 
