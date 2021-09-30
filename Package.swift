@@ -27,6 +27,9 @@ testUtilsTarget.dependencies.append("LibPNG")
 
 let package = Package(
     name: "ImagineUI",
+    platforms: [
+        .macOS(.v10_12)
+    ],
     products: [
         .library(
             name: "ImagineUI",

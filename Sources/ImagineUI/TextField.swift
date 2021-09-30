@@ -163,8 +163,6 @@ open class TextField: ControlView {
         _placeholderLabel.textColor = style.placeholderTextColor
         _placeholderLabel.verticalTextAlignment = .center
 
-        _blinker.blinkInterval = 1
-
         addSubview(_labelContainer)
     }
 
@@ -202,12 +200,6 @@ open class TextField: ControlView {
 
         let style = getStyle(forState: event.newValue)
         applyStyle(style)
-    }
-
-    internal func onFixedFrame(interval: TimeInterval) {
-        if isFirstResponder && _blinker.checkBlinkerStateChange() {
-            invalidateControlGraphics(bounds: getCaretBounds())
-        }
     }
 
     // MARK: - Visual Style Settings
@@ -717,8 +709,11 @@ open class TextField: ControlView {
         }
 
         _cursorBlinkTimer?.invalidate()
-        _cursorBlinkTimer = Scheduler.instance.scheduleTimer(interval: 1.0, repeats: true) { [weak self] in
-            self?.onFixedFrame(interval: UISettings.timeInSeconds())
+        _cursorBlinkTimer = Scheduler.instance.scheduleTimer(interval: _blinker.blinkInterval, repeats: true) { [weak self] in
+            guard let self = self else { return }
+            
+            self._blinker.flipBlinkerState()
+            self.invalidateControlGraphics(bounds: self.getCaretBounds())
         }
         
         return firstResponder
@@ -892,45 +887,28 @@ public struct TextFieldTextChangedEventArgs {
 
 /// A small class to handle cursor blinker timer
 private class CursorBlinker {
-    private var _blinkStart: TimeInterval
-
-    public var lastBlinkState: Double = 0
-
-    /// Blink interval; time going from fully opaque to transparent, right up to
-    /// before the cursor goes fully opaque again.
-    public var blinkInterval: TimeInterval = 1
+    /// Blink interval; time going from fully opaque to transparent.
+    public var blinkInterval: TimeInterval = 0.5
 
     /// Cursor blink state, from 0 to 1.
     ///
     /// 0 is fully transparent, and 1 is fully opaque.
-    public var blinkState: Double { getBlinkState() }
+    public var blinkState: Double
 
     public init() {
-        _blinkStart = UISettings.timeInSeconds()
+        blinkState = 1
     }
 
     public func restart() {
-        lastBlinkState = 0
-        _blinkStart = UISettings.timeInSeconds()
+        blinkState = 1
     }
-
-    /// Check that since the last time this method was invoked, that the blinker
-    /// state has changed.
-    public func checkBlinkerStateChange() -> Bool {
-        defer { lastBlinkState = getBlinkState() }
-        return lastBlinkState != getBlinkState()
-    }
-
-    private func getBlinkState() -> Double {
-        let current = UISettings.timeInSeconds()
-        let elapsed = current - _blinkStart
-        let state = elapsed.truncatingRemainder(dividingBy: blinkInterval)
-        
-        if state < blinkInterval / 2 {
-            return 1.0
+    
+    public func flipBlinkerState() {
+        if blinkState == 0 {
+            blinkState = 1
+        } else {
+            blinkState = 0
         }
-
-        return 0
     }
 }
 
