@@ -18,6 +18,7 @@
 		5C3FCFDA23E2112D0045A350 /* Blend2DSample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C3FCFD923E2112D0045A350 /* Blend2DSample.swift */; };
 		5C3FCFDC23E211C80045A350 /* TestView+Keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C3FCFDB23E211C80045A350 /* TestView+Keyboard.swift */; };
 		5C3FCFDE23E212DE0045A350 /* NotoSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5C3FCFDD23E2122A0045A350 /* NotoSans-Regular.ttf */; };
+		A0ED6D3D2704157F00668B23 /* Blend2DRenderer in Frameworks */ = {isa = PBXBuildFile; productRef = A0ED6D3C2704157F00668B23 /* Blend2DRenderer */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,6 +65,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5C3FCFD623E210160045A350 /* ImagineUI in Frameworks */,
+				A0ED6D3D2704157F00668B23 /* Blend2DRenderer in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -166,6 +168,7 @@
 			name = SampleApp;
 			packageProductDependencies = (
 				5C3FCFD523E210160045A350 /* ImagineUI */,
+				A0ED6D3C2704157F00668B23 /* Blend2DRenderer */,
 			);
 			productName = SampleApp;
 			productReference = 5C3FCF9C23E20CCA0045A350 /* SampleApp.app */;
@@ -214,7 +217,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1110;
-				LastUpgradeCheck = 1130;
+				LastUpgradeCheck = 1300;
 				ORGANIZATIONNAME = luiz.fernando.silva;
 				TargetAttributes = {
 					5C3FCF9B23E20CCA0045A350 = {
@@ -361,6 +364,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -421,6 +425,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -611,6 +616,10 @@
 		5C3FCFD523E210160045A350 /* ImagineUI */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = ImagineUI;
+		};
+		A0ED6D3C2704157F00668B23 /* Blend2DRenderer */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Blend2DRenderer;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

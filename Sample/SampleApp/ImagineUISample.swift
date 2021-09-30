@@ -31,7 +31,6 @@ class ImagineUI: Blend2DSample {
         bounds = BLRect(location: .zero, size: BLSize(w: Double(size.w), h: Double(size.h)))
         rootViews = []
         controlSystem.delegate = self
-        UISettings.scale = sampleRenderScale.asVector2
         globalTextClipboard = MacOSTextClipboard()
     
         try! UISettings.initialize(.init(fontManager: Blend2DFontManager(),
@@ -263,7 +262,7 @@ class ImagineUI: Blend2DSample {
         
         // Debug render
         for rootView in rootViews {
-            DebugDraw.debugDrawRecursive(rootView, flags: debugDrawFlags, to: ctx)
+            DebugDraw.debugDrawRecursive(rootView, flags: debugDrawFlags, in: renderer)
         }
     }
     
@@ -394,6 +393,10 @@ class ImagineUI: Blend2DSample {
 }
 
 extension ImagineUI: DefaultControlSystemDelegate {
+    func firstResponderChanged(_ newFirstResponder: KeyboardEventHandler?) {
+        
+    }
+    
     func bringRootViewToFront(_ rootView: RootView) {
         rootViews.removeAll(where: { $0 == rootView })
         rootViews.append(rootView)
@@ -427,6 +430,15 @@ extension ImagineUI: DefaultControlSystemDelegate {
                                   hotSpot: NSPoint(x: hotspot.x, y: hotspot.y))
             
             cursor.set()
+        case .resizeTopLeftBottomRight:
+            // TODO: Add support to this cursor type.
+            break
+        case .resizeTopRightBottomLeft:
+            // TODO: Add support to this cursor type.
+            break
+        case .resizeAll:
+            // TODO: Add support to this cursor type.
+            break
         }
     }
     
@@ -436,6 +448,10 @@ extension ImagineUI: DefaultControlSystemDelegate {
 }
 
 extension ImagineUI: RootViewRedrawInvalidationDelegate {
+    func rootViewInvalidatedLayout(_ rootView: RootView) {
+        
+    }
+    
     func rootView(_ rootView: RootView, invalidateRect rect: UIRectangle) {
         guard let intersectedRect = rect.intersection(bounds.asRectangle) else {
             return

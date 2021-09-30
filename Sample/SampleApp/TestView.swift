@@ -167,8 +167,11 @@ class TestView: NSView {
     private func makeMouseEventArgs(_ event: NSEvent) -> MouseEventArgs {
         let windowPoint = event.locationInWindow
         let point = self.convert(windowPoint, from: nil)
-        
         let mouseButton: MouseButton
+        var scrollingDeltaX = 0.0
+        var scrollingDeltaY = 0.0
+        let clickCount: Int
+        var modifiers: KeyboardModifier = []
         
         switch event.type {
         case .leftMouseDown, .leftMouseUp, .leftMouseDragged:
@@ -181,24 +184,35 @@ class TestView: NSView {
             mouseButton = .none
         }
         
-        var scrollingDeltaX = 0.0
-        var scrollingDeltaY = 0.0
         if event.type == .scrollWheel {
             scrollingDeltaX = Double(event.scrollingDeltaX)
             scrollingDeltaY = Double(event.scrollingDeltaY)
         }
         
-        let clickCount: Int
         if event.type == .leftMouseDown || event.type == .rightMouseDown || event.type == .otherMouseDown {
             clickCount = event.clickCount
         } else {
             clickCount = 0
         }
         
+        if event.modifierFlags.contains(.shift) {
+            modifiers.insert(.shift)
+        }
+        if event.modifierFlags.contains(.command) {
+            modifiers.insert(.command)
+        }
+        if event.modifierFlags.contains(.control) {
+            modifiers.insert(.control)
+        }
+        if event.modifierFlags.contains(.option) {
+            modifiers.insert(.option)
+        }
+        
         return MouseEventArgs(location: UIVector(x: Double(point.x), y: Double(bounds.height - point.y)),
                               buttons: mouseButton,
                               delta: UIVector(x: scrollingDeltaX, y: scrollingDeltaY),
-                              clicks: clickCount)
+                              clicks: clickCount,
+                              modifiers: modifiers)
     }
     
     func update() {
