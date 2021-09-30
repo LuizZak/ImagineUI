@@ -79,7 +79,7 @@ class TextLayoutRenderer {
                 // Corner radius attribute
                 if let radius = segment.textSegment.attribute(named: .cornerRadius,
                                                               type: UIVector.self) {
-                    context.fillRoundRect(bounds.rounded(radius: radius).asBLRoundRect)
+                    context.fillRoundRect(bounds.makeRoundedRectangle(radius: radius).asBLRoundRect)
                 } else {
                     context.fillRect(bounds.asBLRect)
                 }

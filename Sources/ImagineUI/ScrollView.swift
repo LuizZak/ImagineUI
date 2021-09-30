@@ -397,7 +397,7 @@ public class ScrollBarControl: ControlView {
         
         let barArea = scrollBarBounds()
         let radius = min(barArea.width, barArea.height) / 2
-        let roundRect = barArea.rounded(radius: radius)
+        let roundRect = barArea.makeRoundedRectangle(radius: radius)
         
         let color: Color
         switch currentState {

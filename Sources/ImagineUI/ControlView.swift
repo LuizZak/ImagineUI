@@ -230,7 +230,7 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
             if cornerRadius <= 0 {
                 renderer.fill(bounds)
             } else {
-                renderer.fill(bounds.rounded(radius: cornerRadius))
+                renderer.fill(bounds.makeRoundedRectangle(radius: cornerRadius))
             }
         }
 
@@ -242,7 +242,7 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
             if cornerRadius <= 0 {
                 renderer.stroke(bounds)
             } else {
-                renderer.stroke(bounds.rounded(radius: cornerRadius))
+                renderer.stroke(bounds.makeRoundedRectangle(radius: cornerRadius))
             }
         }
     }

@@ -382,14 +382,14 @@ public class Window: RootView {
     }
 
     private func drawWindowBackground(_ renderer: Renderer) {
-        let windowRounded = bounds.rounded(radius: 4)
+        let windowRounded = bounds.makeRoundedRectangle(radius: 4)
 
         renderer.setFill(.gray)
         renderer.fill(windowRounded)
     }
 
     private func drawWindowBorders(_ renderer: Renderer) {
-        let windowRounded = bounds.rounded(radius: 4)
+        let windowRounded = bounds.makeRoundedRectangle(radius: 4)
 
         renderer.setStrokeWidth(1.5)
 
@@ -403,7 +403,7 @@ public class Window: RootView {
     }
 
     private func drawTitleBar(_ renderer: Renderer) {
-        let windowRounded = bounds.rounded(radius: 4)
+        let windowRounded = bounds.makeRoundedRectangle(radius: 4)
         
         var gradient
             = Gradient.linear(start: titleBarArea.topLeft,

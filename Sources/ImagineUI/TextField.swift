@@ -142,7 +142,7 @@ open class TextField: ControlView {
             self.invalidate(bounds: self.getSelectionBounds(caret: event.oldValue))
             self.invalidate(bounds: self.getSelectionBounds(caret: event.newValue))
 
-            self._blinker.restart()
+            self.restartBlinkerTimer()
 
             self.scrollLabel()
             
@@ -168,7 +168,7 @@ open class TextField: ControlView {
 
     // MARK: - Events
     private func textBufferOnChanged() {
-        _blinker.restart()
+        restartBlinkerTimer()
         
         onTextChanged()
         
@@ -258,7 +258,7 @@ open class TextField: ControlView {
         }
 
         _mouseDown = true
-        _blinker.restart()
+        restartBlinkerTimer()
 
         let offset = offsetUnder(point: event.location)
         _textEngine.setCaret(offset)
@@ -303,7 +303,7 @@ open class TextField: ControlView {
             return
         }
 
-        _blinker.restart()
+        restartBlinkerTimer()
 
         let offset = offsetUnder(point: event.location)
         if _selectingWordSpan {
@@ -639,7 +639,7 @@ open class TextField: ControlView {
             return
         }
         
-        let caretBounds = getCaretBounds()
+        let caretBounds = getCaretBounds().roundedToLargest()
         
         renderer.setFill(style.caretColor.withTransparency(Int(transparency * 255)))
         renderer.fill(caretBounds)
@@ -703,18 +703,7 @@ open class TextField: ControlView {
         }
 
         let firstResponder = super.becomeFirstResponder()
-
-        if firstResponder {
-            _blinker.restart()
-        }
-
-        _cursorBlinkTimer?.invalidate()
-        _cursorBlinkTimer = Scheduler.instance.scheduleTimer(interval: _blinker.blinkInterval, repeats: true) { [weak self] in
-            guard let self = self else { return }
-            
-            self._blinker.flipBlinkerState()
-            self.invalidateControlGraphics(bounds: self.getCaretBounds())
-        }
+        restartBlinkerTimer()
         
         return firstResponder
     }
@@ -727,6 +716,17 @@ open class TextField: ControlView {
         if let timer = _cursorBlinkTimer {
             timer.invalidate()
             _cursorBlinkTimer = nil
+        }
+    }
+    
+    private func restartBlinkerTimer() {
+        _blinker.restart()
+        _cursorBlinkTimer?.invalidate()
+        _cursorBlinkTimer = Scheduler.instance.scheduleTimer(interval: _blinker.blinkInterval, repeats: true) { [weak self] in
+            guard let self = self else { return }
+            
+            self._blinker.flipBlinkerState()
+            self.invalidateControlGraphics(bounds: self.getCaretBounds())
         }
     }
 

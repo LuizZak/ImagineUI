@@ -88,7 +88,7 @@ public class Panel: ControlView {
             borderBounds.minimum.y = labelBounds.center.y
         }
         
-        let roundRect = borderBounds.rounded(radius: 4)
+        let roundRect = borderBounds.makeRoundedRectangle(radius: 4)
         
         renderer.setStroke(.white)
         renderer.setStrokeWidth(strokeWidth)

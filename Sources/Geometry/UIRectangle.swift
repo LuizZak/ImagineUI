@@ -189,12 +189,12 @@ public struct UIRectangle: Hashable, Codable {
     }
 
     @_transparent
-    public func rounded(radius: Scalar) -> UIRoundRectangle {
-        rounded(radius: .init(repeating: radius))
+    public func makeRoundedRectangle(radius: Scalar) -> UIRoundRectangle {
+        makeRoundedRectangle(radius: .init(repeating: radius))
     }
 
     @_transparent
-    public func rounded(radius: UIVector) -> UIRoundRectangle {
+    public func makeRoundedRectangle(radius: UIVector) -> UIRoundRectangle {
         .init(rectangle: self, radius: radius)
     }
 }
@@ -230,6 +230,13 @@ public extension UIRectangle {
     @_transparent
     func insetBy(x: Scalar, y: Scalar) -> Self {
         insetBy(.init(x: x, y: y))
+    }
+    
+    /// Returns a rectangle where each coordinate is rounded such that the rectangle
+    /// with the maximal possible bounds is returned.
+    @_transparent
+    func roundedToLargest() -> Self {
+        .init(location: location.rounded(.down), size: size.rounded(.up))
     }
 
     @_transparent
