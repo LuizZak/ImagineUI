@@ -722,8 +722,14 @@ open class TextField: ControlView {
     private func restartBlinkerTimer() {
         _blinker.restart()
         _cursorBlinkTimer?.invalidate()
+        
+        // Store the current time before firing the blinker timer to avoid
+        // immediately firing the timer in platforms with flaky RunLoop
+        // implementations
+        let started = UISettings.timeInSeconds()
         _cursorBlinkTimer = Scheduler.instance.scheduleTimer(interval: _blinker.blinkInterval, repeats: true) { [weak self] in
             guard let self = self else { return }
+            guard UISettings.timeInSeconds() - started >= self._blinker.blinkInterval / 2 else { return }
             
             self._blinker.flipBlinkerState()
             self.invalidateControlGraphics(bounds: self.getCaretBounds())
