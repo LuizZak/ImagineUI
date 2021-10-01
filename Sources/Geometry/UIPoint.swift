@@ -8,7 +8,7 @@ public struct UIPoint: Hashable, Codable {
 
     public var x: Scalar
     public var y: Scalar
-    
+
     @_transparent
     public var asUISize: UISize {
         .init(self)
@@ -144,6 +144,16 @@ public extension UIPoint {
     @_transparent
     static func - (lhs: Self, rhs: Scalar) -> Self {
         lhs - Self(repeating: rhs)
+    }
+
+    @_transparent
+    static func + (lhs: Scalar, rhs: Self) -> Self {
+        Self(repeating: lhs) + rhs
+    }
+
+    @_transparent
+    static func - (lhs: Scalar, rhs: Self) -> Self {
+        Self(repeating: lhs) - rhs
     }
 
     @_transparent

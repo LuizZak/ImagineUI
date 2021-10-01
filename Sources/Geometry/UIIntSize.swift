@@ -98,6 +98,16 @@ public extension UIIntSize {
     }
 
     @_transparent
+    static func + (lhs: Scalar, rhs: Self) -> Self {
+        Self(repeating: lhs) + rhs
+    }
+
+    @_transparent
+    static func - (lhs: Scalar, rhs: Self) -> Self {
+        Self(repeating: lhs) - rhs
+    }
+
+    @_transparent
     static func += (lhs: inout Self, rhs: Scalar) {
         lhs = lhs + Self(repeating: rhs)
     }

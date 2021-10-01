@@ -36,7 +36,7 @@ public struct UISize: Hashable, Codable {
         self.width = point.x
         self.height = point.y
     }
-    
+
     @_transparent
     public func rounded(_ rule: FloatingPointRoundingRule) -> Self {
         .init(width: width.rounded(rule), height: height.rounded(rule))
@@ -117,6 +117,16 @@ public extension UISize {
     @_transparent
     static func - (lhs: Self, rhs: Scalar) -> Self {
         lhs - Self(repeating: rhs)
+    }
+
+    @_transparent
+    static func + (lhs: Scalar, rhs: Self) -> Self {
+        Self(repeating: lhs) + rhs
+    }
+
+    @_transparent
+    static func - (lhs: Scalar, rhs: Self) -> Self {
+        Self(repeating: lhs) - rhs
     }
 
     @_transparent
