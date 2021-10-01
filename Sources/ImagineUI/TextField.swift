@@ -639,14 +639,18 @@ open class TextField: ControlView {
             return
         }
         
-        let caretBounds = getCaretBounds().roundedToLargest()
+        let caretBounds = getCaretBounds()
         
         renderer.setFill(style.caretColor.withTransparency(Int(transparency * 255)))
         renderer.fill(caretBounds)
     }
 
+    private func invalidateCaret() {
+        invalidateControlGraphics(bounds: getCaretBounds().roundedToLargest())
+    }
+
     private func invalidateCaret(at offset: Int) {
-        invalidateControlGraphics(bounds: getCaretBounds(at: offset))
+        invalidateControlGraphics(bounds: getCaretBounds(at: offset).roundedToLargest())
     }
     
     private func getCaretBounds() -> UIRectangle {
@@ -732,7 +736,7 @@ open class TextField: ControlView {
             guard UISettings.timeInSeconds() - started >= self._blinker.blinkInterval / 2 else { return }
             
             self._blinker.flipBlinkerState()
-            self.invalidateControlGraphics(bounds: self.getCaretBounds())
+            self.invalidateCaret()
         }
     }
 
