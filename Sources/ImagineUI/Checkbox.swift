@@ -27,7 +27,7 @@ open class Checkbox: ControlView {
     ///
     /// Event listeners have a chance to cancel the event by switching `cancel`
     /// to `true` during the event dispatch round.
-    @Event public var checkboxStateWillChange: CancelablleValueChangeEvent<Checkbox, Checkbox.State>
+    @Event public var checkboxStateWillChange: CancellableValueChangeEvent<Checkbox, Checkbox.State>
 
     public init(title: String) {
         super.init()

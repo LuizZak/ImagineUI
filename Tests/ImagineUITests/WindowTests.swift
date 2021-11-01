@@ -48,10 +48,11 @@ class WindowTests: XCTestCase {
         sut.performLayout()
 
         // Change target layout size, flag for layout, and request new layout size
-        sut.targetSize = .init(width: 300, height: 300)
+        sut.targetSize = .init(width: 150, height: 150)
         sut.performLayout()
         dummyDelegate.rootViewInvalidateRectCalls.removeAll()
         dummyDelegate.rootViewInvalidatedLayoutCalls.removeAll()
+        sut.targetSize = .init(width: 300, height: 300)
 
         // MARK: Act
 
