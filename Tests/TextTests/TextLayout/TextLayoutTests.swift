@@ -4,6 +4,19 @@ import Geometry
 @testable import Text
 
 class TextLayoutTests: XCTestCase {
+    func testLineBreakPriorToEndOfString() {
+        let input = """
+        Input
+
+        """
+
+        let sut = makeSut(text: input)
+
+        XCTAssertEqual(sut.numberOfLines, 2)
+        XCTAssertEqual(sut.lines[0].text, "Input\n")
+        XCTAssertEqual(sut.lines[1].text, "")
+    }
+
     func testPerformance_noLineBreaks() {
         let font = makeFont(size: 20)
         

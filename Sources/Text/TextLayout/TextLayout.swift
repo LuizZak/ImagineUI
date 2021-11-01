@@ -392,6 +392,7 @@ private class LineCollector {
     }
     
     private func moveForward() {
+        guard index < text.endIndex else { return }
         text.formIndex(after: &index)
         intIndex += 1
     }
