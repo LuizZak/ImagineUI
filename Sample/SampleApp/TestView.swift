@@ -8,16 +8,23 @@
 
 import Cocoa
 import ImagineUI
-import SwiftBlend2D
-import Geometry
+import Blend2DRenderer
+import QuartzCore
 
 class TestView: NSView {
     var link: CVDisplayLink?
     
+    var workQueueLength: ConcurrentValue<Int> = .init(wrappedValue: 0)
+    
+    var imageContext: CGContext?
+    var image: CGImage?
+    
+    var usingCGImage = false
+    
     var sample: Blend2DSample!
     var blImage: BLImage!
-    var imageContext: CGContext?
     var redrawBounds: [NSRect] = []
+    var requestedLayout: Bool = false
     
     override var bounds: NSRect {
         get {
@@ -35,26 +42,41 @@ class TestView: NSView {
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
         initializeDisplayLink()
-        initializeSample()
+        initializeApp()
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         initializeDisplayLink()
-        initializeSample()
+        initializeApp()
     }
     
     private func initializeDisplayLink() {
         CVDisplayLinkCreateWithActiveCGDisplays(&link)
-        CVDisplayLinkSetOutputCallback(link!, displayLinkOutputCallback, UnsafeMutableRawPointer(Unmanaged.passUnretained(self).toOpaque()))
-        CVDisplayLinkStart(link!)
+        guard let link = link else {
+            return
+        }
+        
+        CVDisplayLinkSetOutputCallback(
+            link,
+            displayLinkOutputCallback,
+            Unmanaged.passUnretained(self).toOpaque()
+        )
+        CVDisplayLinkStart(link)
     }
     
-    private func initializeSample() {
-        let fileUrl = Bundle.main.path(forResource: "NotoSans-Regular", ofType: "ttf")
-        Fonts.fontFilePath = fileUrl!
+    private func initializeApp() {
+        globalTextClipboard = MacOSTextClipboard()
         
-        let sample = ImagineUI(size: BLSizeI(w: Int32(bounds.width), h: Int32(bounds.height)))
+        let fileUrl = Bundle.main.path(forResource: "NotoSans-Regular", ofType: "ttf")!
+        
+        try! UISettings.initialize(
+            .init(fontManager: Blend2DFontManager(),
+                  defaultFontPath: fileUrl,
+                  timeInSecondsFunction: { CACurrentMediaTime() })
+        )
+        
+        let sample = ImagineUISample(size: BLSizeI(w: Int32(bounds.width), h: Int32(bounds.height)))
         sample.delegate = self
         self.sample = sample
         
@@ -68,10 +90,22 @@ class TestView: NSView {
     override func layout() {
         super.layout()
         
-        resizeSample()
+        resizeApp()
     }
     
-    private func resizeSample() {
+    override func viewWillStartLiveResize() {
+        super.viewWillStartLiveResize()
+        
+        // sample.willStartLiveResize()
+    }
+    
+    override func viewDidEndLiveResize() {
+        super.viewDidEndLiveResize()
+        
+        // sample.didEndLiveResize()
+    }
+    
+    private func resizeApp() {
         sample.resize(width: Int(bounds.width), height: Int(bounds.height))
         
         blImage = BLImage(width: sample.width * Int(sample.sampleRenderScale.x),
@@ -82,21 +116,53 @@ class TestView: NSView {
         
         redrawBounds.append(bounds)
         
+        requestedLayout = true
         update()
     }
     
     private func recreateCgImageContext() {
-        
         let imageData = blImage.getImageData()
         
         let colorSpace = CGColorSpaceCreateDeviceRGB()
-        imageContext = CGContext(data: imageData.pixelData,
-                                 width: blImage.width,
-                                 height: blImage.height,
-                                 bitsPerComponent: 8,
-                                 bytesPerRow: imageData.stride,
-                                 space: colorSpace,
-                                 bitmapInfo: CGImageAlphaInfo.noneSkipFirst.rawValue | CGImageByteOrderInfo.order32Little.rawValue)
+        
+        if usingCGImage {
+            imageContext = nil
+            
+            var bitmapInfo: CGBitmapInfo = [.byteOrder32Little]
+            bitmapInfo.insert(CGBitmapInfo(rawValue: CGImageAlphaInfo.noneSkipFirst.rawValue))
+            
+            let length = imageData.stride * Int(imageData.size.h)
+            guard let provider = CGDataProvider(dataInfo: nil, data: imageData.pixelData, size: length, releaseData: { _, _, _ in }) else {
+                return
+            }
+            
+            image = CGImage(width: Int(imageData.size.w),
+                            height: Int(imageData.size.h),
+                            bitsPerComponent: 8,
+                            bitsPerPixel: 32,
+                            bytesPerRow: imageData.stride,
+                            space: colorSpace,
+                            bitmapInfo: bitmapInfo,
+                            provider: provider,
+                            decode: nil,
+                            shouldInterpolate: false,
+                            intent: .defaultIntent)
+        } else {
+            image = nil
+            
+            var bitmapInfo: UInt32 = 0
+            
+            bitmapInfo |= CGImageAlphaInfo.noneSkipFirst.rawValue
+            bitmapInfo |= CGImageByteOrderInfo.order32Little.rawValue
+            
+            imageContext = CGContext(data: imageData.pixelData,
+                                     width: blImage.width,
+                                     height: blImage.height,
+                                     bitsPerComponent: 8,
+                                     bytesPerRow: imageData.stride,
+                                     space: colorSpace,
+                                     bitmapInfo: bitmapInfo)
+        }
     }
     
     override func mouseDown(with event: NSEvent) {
@@ -167,11 +233,8 @@ class TestView: NSView {
     private func makeMouseEventArgs(_ event: NSEvent) -> MouseEventArgs {
         let windowPoint = event.locationInWindow
         let point = self.convert(windowPoint, from: nil)
+        
         let mouseButton: MouseButton
-        var scrollingDeltaX = 0.0
-        var scrollingDeltaY = 0.0
-        let clickCount: Int
-        var modifiers: KeyboardModifier = []
         
         switch event.type {
         case .leftMouseDown, .leftMouseUp, .leftMouseDragged:
@@ -184,39 +247,38 @@ class TestView: NSView {
             mouseButton = .none
         }
         
+        var scrollingDeltaX = 0.0
+        var scrollingDeltaY = 0.0
         if event.type == .scrollWheel {
             scrollingDeltaX = Double(event.scrollingDeltaX)
             scrollingDeltaY = Double(event.scrollingDeltaY)
         }
         
+        let clickCount: Int
         if event.type == .leftMouseDown || event.type == .rightMouseDown || event.type == .otherMouseDown {
             clickCount = event.clickCount
         } else {
             clickCount = 0
         }
         
-        if event.modifierFlags.contains(.shift) {
-            modifiers.insert(.shift)
-        }
-        if event.modifierFlags.contains(.command) {
-            modifiers.insert(.command)
-        }
-        if event.modifierFlags.contains(.control) {
-            modifiers.insert(.control)
-        }
-        if event.modifierFlags.contains(.option) {
-            modifiers.insert(.option)
-        }
-        
         return MouseEventArgs(location: UIVector(x: Double(point.x), y: Double(bounds.height - point.y)),
                               buttons: mouseButton,
                               delta: UIVector(x: scrollingDeltaX, y: scrollingDeltaY),
                               clicks: clickCount,
-                              modifiers: modifiers)
+                              modifiers: [])
+    }
+    
+    func incrementUpdateWorkQueue() {
+        workQueueLength.modifyingValue { $0 += 1 }
     }
     
     func update() {
         sample.update(CACurrentMediaTime())
+        
+        if requestedLayout {
+            requestedLayout = false
+            sample.performLayout()
+        }
         
         if let first = redrawBounds.first {
             let options = BLContext.CreateOptions(threadCount: 4)
@@ -233,26 +295,41 @@ class TestView: NSView {
             
             redrawBounds.removeAll()
         }
+        
+        workQueueLength.modifyingValue {
+            $0 = max(0, $0 - 1)
+        }
     }
     
     override func draw(_ dirtyRect: NSRect) {
         guard let context = NSGraphicsContext.current else {
             return
         }
-        
-        guard let cgImage = imageContext?.makeImage() else {
-            return
-        }
-        
         context.imageInterpolation = .none
         context.shouldAntialias = false
         context.compositingOperation = .copy
-        context.cgContext.draw(cgImage, in: bounds)
+        
+        if usingCGImage {
+            recreateCgImageContext()
+            
+            if let image = image {
+                context.cgContext.draw(image, in: bounds)
+            }
+        } else {
+            if let cgImage = imageContext?.makeImage() {
+                context.cgContext.draw(cgImage, in: bounds)
+            }
+        }
+        
         context.flushGraphics()
     }
 }
 
 extension TestView: Blend2DSampleDelegate {
+    func needsLayout(_ view: ImagineUI.View) {
+        requestedLayout = true
+    }
+    
     func invalidate(bounds: UIRectangle) {
         let rectBounds = NSRect(x: bounds.x,
                                 y: Double(self.bounds.height) - bounds.y - bounds.height,
@@ -262,6 +339,34 @@ extension TestView: Blend2DSampleDelegate {
         let intersectedBounds = rectBounds.intersection(self.bounds)
         
         redrawBounds.append(intersectedBounds)
+    }
+
+    func setMouseCursor(_ cursor: MouseCursorKind) {
+        switch cursor {
+        case .iBeam:
+            NSCursor.iBeam.set()
+        case .arrow:
+            NSCursor.arrow.set()
+        case .resizeLeftRight:
+            NSCursor.resizeLeftRight.set()
+        case .resizeUpDown:
+            NSCursor.resizeUpDown.set()
+        case .resizeTopLeftBottomRight:
+            break
+        case .resizeTopRightBottomLeft:
+            break
+        case .resizeAll:
+            break
+        case let .custom(imagePath, hotspot):
+            let cursor = NSCursor(image: NSImage(byReferencingFile: imagePath)!,
+                                  hotSpot: NSPoint(x: hotspot.x, y: hotspot.y))
+            
+            cursor.set()
+        }
+    }
+
+    func setMouseHiddenUntilMouseMoves() {
+        NSCursor.setHiddenUntilMouseMoves(true)
     }
 }
 
@@ -281,10 +386,15 @@ func displayLinkOutputCallback(displayLink: CVDisplayLink,
         .fromOpaque(context)
         .takeUnretainedValue()
     
+    if view.workQueueLength.wrappedValue > 0 {
+        return kCVReturnSuccess
+    }
+    
+    view.incrementUpdateWorkQueue()
+    
     DispatchQueue.main.async {
         view.update()
     }
     
-    //  We are going to assume that everything went well for this mock up, and pass success as the CVReturn
     return kCVReturnSuccess
 }

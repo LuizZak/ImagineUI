@@ -4,7 +4,10 @@ import SwiftBlend2D
 import ImagineUI
 
 protocol Blend2DSampleDelegate: AnyObject {
+    func needsLayout(_ view: View)
     func invalidate(bounds: UIRectangle)
+    func setMouseCursor(_ cursor: MouseCursorKind)
+    func setMouseHiddenUntilMouseMoves()
 }
 
 protocol Blend2DSample: AnyObject {

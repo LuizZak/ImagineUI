@@ -6,7 +6,7 @@ import CassowarySwift
 import Cocoa
 import Blend2DRenderer
 
-class ImagineUI: Blend2DSample {
+class ImagineUISample: Blend2DSample {
     private var lastFrame: TimeInterval = 0
     weak var delegate: Blend2DSampleDelegate?
     var bounds: BLRect
@@ -230,8 +230,6 @@ class ImagineUI: Blend2DSample {
         let delta = time - lastFrame
         lastFrame = time
         Scheduler.instance.onFixedFrame(delta)
-        
-        performLayout()
     }
     
     func performLayout() {
@@ -291,7 +289,7 @@ class ImagineUI: Blend2DSample {
     }
     
     func createRenderSettingsWindow() {
-        func toggleFlag(_ sample: ImagineUI,
+        func toggleFlag(_ sample: ImagineUISample,
                         _ flag: DebugDraw.DebugDrawFlags,
                         _ event: CancellableValueChangedEventArgs<Checkbox.State>) {
             
@@ -392,7 +390,7 @@ class ImagineUI: Blend2DSample {
     }
 }
 
-extension ImagineUI: DefaultControlSystemDelegate {
+extension ImagineUISample: DefaultControlSystemDelegate {
     func firstResponderChanged(_ newFirstResponder: KeyboardEventHandler?) {
         
     }
@@ -447,9 +445,9 @@ extension ImagineUI: DefaultControlSystemDelegate {
     }
 }
 
-extension ImagineUI: RootViewRedrawInvalidationDelegate {
+extension ImagineUISample: RootViewRedrawInvalidationDelegate {
     func rootViewInvalidatedLayout(_ rootView: RootView) {
-        
+        self.delegate?.needsLayout(rootView)
     }
     
     func rootView(_ rootView: RootView, invalidateRect rect: UIRectangle) {
@@ -467,7 +465,7 @@ extension ImagineUI: RootViewRedrawInvalidationDelegate {
     }
 }
 
-extension ImagineUI: WindowDelegate {
+extension ImagineUISample: WindowDelegate {
     func windowWantsToClose(_ window: Window) {
         if let index = rootViews.firstIndex(of: window) {
             rootViews.remove(at: index)
