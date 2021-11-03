@@ -13,12 +13,12 @@
 		5C3FCFB123E20CCC0045A350 /* SampleAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C3FCFB023E20CCC0045A350 /* SampleAppTests.swift */; };
 		5C3FCFBC23E20CCC0045A350 /* SampleAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C3FCFBB23E20CCC0045A350 /* SampleAppUITests.swift */; };
 		5C3FCFD323E20F370045A350 /* TestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C3FCFD223E20F370045A350 /* TestView.swift */; };
-		5C3FCFD623E210160045A350 /* ImagineUI in Frameworks */ = {isa = PBXBuildFile; productRef = 5C3FCFD523E210160045A350 /* ImagineUI */; };
 		5C3FCFD823E211100045A350 /* ImagineUISample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C3FCFD723E211100045A350 /* ImagineUISample.swift */; };
 		5C3FCFDA23E2112D0045A350 /* Blend2DSample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C3FCFD923E2112D0045A350 /* Blend2DSample.swift */; };
 		5C3FCFDC23E211C80045A350 /* TestView+Keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C3FCFDB23E211C80045A350 /* TestView+Keyboard.swift */; };
 		5C3FCFDE23E212DE0045A350 /* NotoSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5C3FCFDD23E2122A0045A350 /* NotoSans-Regular.ttf */; };
-		A0ED6D3D2704157F00668B23 /* Blend2DRenderer in Frameworks */ = {isa = PBXBuildFile; productRef = A0ED6D3C2704157F00668B23 /* Blend2DRenderer */; };
+		A01476FC2732EA5200A07C9C /* Blend2DRenderer in Frameworks */ = {isa = PBXBuildFile; productRef = A01476FB2732EA5200A07C9C /* Blend2DRenderer */; };
+		A01476FE2732EA5200A07C9C /* ImagineUI in Frameworks */ = {isa = PBXBuildFile; productRef = A01476FD2732EA5200A07C9C /* ImagineUI */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,12 +51,12 @@
 		5C3FCFB723E20CCC0045A350 /* SampleAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SampleAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C3FCFBB23E20CCC0045A350 /* SampleAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleAppUITests.swift; sourceTree = "<group>"; };
 		5C3FCFBD23E20CCC0045A350 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		5C3FCFCF23E20E9A0045A350 /* ImagineUI */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ImagineUI; path = ../; sourceTree = "<group>"; };
 		5C3FCFD223E20F370045A350 /* TestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestView.swift; sourceTree = "<group>"; };
 		5C3FCFD723E211100045A350 /* ImagineUISample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagineUISample.swift; sourceTree = "<group>"; };
 		5C3FCFD923E2112D0045A350 /* Blend2DSample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Blend2DSample.swift; sourceTree = "<group>"; };
 		5C3FCFDB23E211C80045A350 /* TestView+Keyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TestView+Keyboard.swift"; sourceTree = "<group>"; };
 		5C3FCFDD23E2122A0045A350 /* NotoSans-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NotoSans-Regular.ttf"; sourceTree = "<group>"; };
+		A01476FA2732EA2600A07C9C /* ImagineUI */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ImagineUI; path = ..; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,8 +64,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5C3FCFD623E210160045A350 /* ImagineUI in Frameworks */,
-				A0ED6D3D2704157F00668B23 /* Blend2DRenderer in Frameworks */,
+				A01476FC2732EA5200A07C9C /* Blend2DRenderer in Frameworks */,
+				A01476FE2732EA5200A07C9C /* ImagineUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -89,7 +89,7 @@
 		5C3FCF9323E20CCA0045A350 = {
 			isa = PBXGroup;
 			children = (
-				5C3FCFCF23E20E9A0045A350 /* ImagineUI */,
+				A01476F92732EA2600A07C9C /* Packages */,
 				5C3FCF9E23E20CCA0045A350 /* SampleApp */,
 				5C3FCFAF23E20CCC0045A350 /* SampleAppTests */,
 				5C3FCFBA23E20CCC0045A350 /* SampleAppUITests */,
@@ -150,6 +150,14 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		A01476F92732EA2600A07C9C /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				A01476FA2732EA2600A07C9C /* ImagineUI */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -167,8 +175,8 @@
 			);
 			name = SampleApp;
 			packageProductDependencies = (
-				5C3FCFD523E210160045A350 /* ImagineUI */,
-				A0ED6D3C2704157F00668B23 /* Blend2DRenderer */,
+				A01476FB2732EA5200A07C9C /* Blend2DRenderer */,
+				A01476FD2732EA5200A07C9C /* ImagineUI */,
 			);
 			productName = SampleApp;
 			productReference = 5C3FCF9C23E20CCA0045A350 /* SampleApp.app */;
@@ -392,7 +400,6 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
-				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -613,13 +620,13 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		5C3FCFD523E210160045A350 /* ImagineUI */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = ImagineUI;
-		};
-		A0ED6D3C2704157F00668B23 /* Blend2DRenderer */ = {
+		A01476FB2732EA5200A07C9C /* Blend2DRenderer */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Blend2DRenderer;
+		};
+		A01476FD2732EA5200A07C9C /* ImagineUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ImagineUI;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
