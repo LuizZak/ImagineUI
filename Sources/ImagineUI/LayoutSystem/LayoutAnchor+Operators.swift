@@ -21,7 +21,7 @@ public extension LayoutAnchorCreator {
     static func == (lhs: Self, rhs: LayoutAnchorWithOffset<T>) -> LayoutConstraint {
         lhs.equalTo(rhs.anchor, offset: rhs.offset)
     }
-    
+
     @discardableResult
     static func <= (lhs: Self, rhs: LayoutAnchor<T>) -> LayoutConstraint {
         lhs.lessThanOrEqualTo(rhs)
@@ -42,7 +42,7 @@ public extension LayoutAnchorCreator {
     static func <= (lhs: Self, rhs: LayoutAnchorWithOffset<T>) -> LayoutConstraint {
         lhs.lessThanOrEqualTo(rhs.anchor, offset: rhs.offset)
     }
-    
+
     @discardableResult
     static func >= (lhs: Self, rhs: LayoutAnchor<T>) -> LayoutConstraint {
         lhs.greaterThanOrEqualTo(rhs)
@@ -86,7 +86,7 @@ public extension LayoutAnchorUpdater {
     static func == (lhs: Self, rhs: LayoutAnchorWithOffset<T>) -> LayoutConstraint {
         lhs.equalTo(rhs.anchor, offset: rhs.offset)
     }
-    
+
     @discardableResult
     static func <= (lhs: Self, rhs: LayoutAnchor<T>) -> LayoutConstraint {
         lhs.lessThanOrEqualTo(rhs)
@@ -107,7 +107,7 @@ public extension LayoutAnchorUpdater {
     static func <= (lhs: Self, rhs: LayoutAnchorWithOffset<T>) -> LayoutConstraint {
         lhs.lessThanOrEqualTo(rhs.anchor, offset: rhs.offset)
     }
-    
+
     @discardableResult
     static func >= (lhs: Self, rhs: LayoutAnchor<T>) -> LayoutConstraint {
         lhs.greaterThanOrEqualTo(rhs)
@@ -135,6 +135,11 @@ public extension LayoutAnchorEdgesCreator {
     static func == (lhs: LayoutAnchorEdgesCreator, rhs: LayoutAnchorsContainer) -> [LayoutConstraint] {
         return lhs.equalTo(rhs)
     }
+
+    @discardableResult
+    static func == (lhs: LayoutAnchorEdgesCreator, rhs: LayoutAnchorsContainerWithOffset) -> [LayoutConstraint] {
+        return lhs.equalTo(rhs.container, inset: -UIEdgeInsets(rhs.offset))
+    }
 }
 
 public extension LayoutAnchorSizeCreator {
@@ -142,7 +147,7 @@ public extension LayoutAnchorSizeCreator {
     static func == (lhs: LayoutAnchorSizeCreator, rhs: LayoutAnchorsContainer) -> [LayoutConstraint] {
         return lhs.equalTo(rhs)
     }
-    
+
     @discardableResult
     static func == (lhs: LayoutAnchorSizeCreator, rhs: UISize) -> [LayoutConstraint] {
         return lhs.equalTo(rhs)
@@ -154,6 +159,11 @@ public extension LayoutAnchorEdgesUpdater {
     static func == (lhs: LayoutAnchorEdgesUpdater, rhs: LayoutAnchorsContainer) -> [LayoutConstraint] {
         return lhs.equalTo(rhs)
     }
+
+    @discardableResult
+    static func == (lhs: LayoutAnchorEdgesUpdater, rhs: LayoutAnchorsContainerWithOffset) -> [LayoutConstraint] {
+        return lhs.equalTo(rhs.container, inset: -UIEdgeInsets(rhs.offset))
+    }
 }
 
 public extension LayoutAnchorSizeUpdater {
@@ -161,7 +171,7 @@ public extension LayoutAnchorSizeUpdater {
     static func == (lhs: LayoutAnchorSizeUpdater, rhs: LayoutAnchorsContainer) -> [LayoutConstraint] {
         return lhs.equalTo(rhs)
     }
-    
+
     @discardableResult
     static func == (lhs: LayoutAnchorSizeUpdater, rhs: UIVector) -> [LayoutConstraint] {
         return lhs.equalTo(rhs.asUISize)
@@ -177,7 +187,7 @@ public extension LayoutAnchor {
     static func + (lhs: LayoutAnchor, rhs: Double) -> LayoutAnchorWithOffset<T> {
         return LayoutAnchorWithOffset(anchor: lhs, offset: rhs)
     }
-    
+
     static func - (lhs: LayoutAnchor, rhs: Double) -> LayoutAnchorWithOffset<T> {
         return LayoutAnchorWithOffset(anchor: lhs, offset: -rhs)
     }
@@ -187,7 +197,7 @@ public extension View {
     static func + (lhs: View, rhs: Double) -> LayoutAnchorsContainerWithOffset {
         return LayoutAnchorsContainerWithOffset(container: lhs, offset: rhs)
     }
-    
+
     static func - (lhs: View, rhs: Double) -> LayoutAnchorsContainerWithOffset {
         return LayoutAnchorsContainerWithOffset(container: lhs, offset: -rhs)
     }
@@ -197,7 +207,7 @@ public extension LayoutGuide {
     static func + (lhs: LayoutGuide, rhs: Double) -> LayoutAnchorsContainerWithOffset {
         return LayoutAnchorsContainerWithOffset(container: lhs, offset: rhs)
     }
-    
+
     static func - (lhs: LayoutGuide, rhs: Double) -> LayoutAnchorsContainerWithOffset {
         return LayoutAnchorsContainerWithOffset(container: lhs, offset: -rhs)
     }

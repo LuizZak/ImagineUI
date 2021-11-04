@@ -5,15 +5,15 @@ public extension LayoutAnchors {
         if let view = container as? View {
             view.areaIntoConstraintsMask = []
         }
-        
+
         builder(LayoutAnchorUpdateCreator(layout: self))
     }
-    
+
     func remakeConstraints(_ builder: (LayoutAnchorUpdateCreator) -> Void) {
         for constraint in container.constraints {
             constraint.removeConstraint()
         }
-        
+
         makeConstraints(builder)
     }
 
@@ -36,28 +36,28 @@ public struct LayoutAnchorUpdateCreator {
     public var firstBaseline: LayoutAnchorCreator<YLayoutAnchor> { .init(anchor: layout.firstBaseline) }
     public var edges: LayoutAnchorEdgesCreator { .init(layout: layout) }
     public var size: LayoutAnchorSizeCreator { .init(layout: layout) }
-    
+
     @discardableResult
     public func left(of other: LayoutAnchorsContainer,
                      offset: Double = 0,
                      priority: LayoutPriority = .required) -> LayoutConstraint {
-        
+
         return right.equalTo(other.layout.left, offset: offset, priority: priority)
     }
-    
+
     @discardableResult
     public func right(of other: LayoutAnchorsContainer,
                       offset: Double = 0,
                       priority: LayoutPriority = .required) -> LayoutConstraint {
-        
+
         return left.equalTo(other.layout.right, offset: offset, priority: priority)
     }
-    
+
     @discardableResult
     public func under(_ other: LayoutAnchorsContainer,
                       offset: Double = 0,
                       priority: LayoutPriority = .required) -> LayoutConstraint {
-        
+
         return top.equalTo(other.layout.bottom, offset: offset, priority: priority)
     }
 }
@@ -76,28 +76,28 @@ public struct LayoutAnchorUpdateBuilder {
     public var firstBaseline: LayoutAnchorUpdater<YLayoutAnchor> { .init(anchor: layout.firstBaseline) }
     public var edges: LayoutAnchorEdgesUpdater { .init(layout: layout) }
     public var size: LayoutAnchorSizeUpdater { .init(layout: layout) }
-    
+
     @discardableResult
     public func left(of other: LayoutAnchorsContainer,
                      offset: Double = 0,
                      priority: LayoutPriority = .required) -> LayoutConstraint {
-        
+
         return right.equalTo(other.layout.left, offset: offset, priority: priority)
     }
-    
+
     @discardableResult
     public func right(of other: LayoutAnchorsContainer,
                       offset: Double = 0,
                       priority: LayoutPriority = .required) -> LayoutConstraint {
-        
+
         return left.equalTo(other.layout.right, offset: offset, priority: priority)
     }
-    
+
     @discardableResult
     public func under(_ other: LayoutAnchorsContainer,
                       offset: Double = 0,
                       priority: LayoutPriority = .required) -> LayoutConstraint {
-        
+
         return top.equalTo(other.layout.bottom, offset: offset, priority: priority)
     }
 }
@@ -114,26 +114,26 @@ public struct LayoutAnchorEdgesCreator {
                         inset: UIEdgeInsets = .zero,
                         multiplier: Double = 1,
                         priority: LayoutPriority = .required) -> [LayoutConstraint] {
-        
+
         return [
             LayoutConstraint.create(first: layout.top,
                                     second: other.layout.top,
                                     offset: inset.top,
                                     multiplier: multiplier,
                                     priority: priority),
-            
+
             LayoutConstraint.create(first: layout.left,
                                     second: other.layout.left,
                                     offset: inset.left,
                                     multiplier: multiplier,
                                     priority: priority),
-            
+
             LayoutConstraint.create(first: layout.right,
                                     second: other.layout.right,
                                     offset: -inset.right,
                                     multiplier: multiplier,
                                     priority: priority),
-            
+
             LayoutConstraint.create(first: layout.bottom,
                                     second: other.layout.bottom,
                                     offset: -inset.bottom,
@@ -149,33 +149,33 @@ public struct LayoutAnchorSizeCreator {
     init(layout: LayoutAnchors) {
         self.layout = layout
     }
-    
+
     @discardableResult
     public func equalTo(_ other: LayoutAnchorsContainer,
                         multiplier: Double = 1,
                         priority: LayoutPriority = .required) -> [LayoutConstraint] {
-        
+
         return  [
             LayoutConstraint.create(first: layout.width,
                                     second: other.layout.width,
                                     multiplier: multiplier,
                                     priority: priority),
-            
+
             LayoutConstraint.create(first: layout.height,
                                     second: other.layout.height,
                                     multiplier: multiplier,
                                     priority: priority)
         ]
     }
-    
+
     @discardableResult
     public func equalTo(_ size: UISize, priority: LayoutPriority = .required) -> [LayoutConstraint] {
-        
+
         return  [
             LayoutConstraint.create(first: layout.width,
                                     offset: size.width,
                                     priority: priority),
-            
+
             LayoutConstraint.create(first: layout.height,
                                     offset: size.height,
                                     priority: priority)
@@ -195,26 +195,26 @@ public struct LayoutAnchorEdgesUpdater {
                         inset: UIEdgeInsets = .zero,
                         multiplier: Double = 1,
                         priority: LayoutPriority = .required) -> [LayoutConstraint] {
-        
+
         return [
             LayoutConstraint.update(first: layout.top,
                                     second: other.layout.top,
                                     offset: inset.top,
                                     multiplier: multiplier,
                                     priority: priority),
-            
+
             LayoutConstraint.update(first: layout.left,
                                     second: other.layout.left,
                                     offset: inset.left,
                                     multiplier: multiplier,
                                     priority: priority),
-            
+
             LayoutConstraint.update(first: layout.right,
                                     second: other.layout.right,
                                     offset: -inset.right,
                                     multiplier: multiplier,
                                     priority: priority),
-            
+
             LayoutConstraint.update(first: layout.bottom,
                                     second: other.layout.bottom,
                                     offset: -inset.bottom,
@@ -230,18 +230,18 @@ public struct LayoutAnchorSizeUpdater {
     init(layout: LayoutAnchors) {
         self.layout = layout
     }
-    
+
     @discardableResult
     public func equalTo(_ other: LayoutAnchorsContainer,
                         multiplier: Double = 1,
                         priority: LayoutPriority = .required) -> [LayoutConstraint] {
-        
+
         return  [
             LayoutConstraint.update(first: layout.width,
                                     second: other.layout.width,
                                     multiplier: multiplier,
                                     priority: priority),
-            
+
             LayoutConstraint.update(first: layout.height,
                                     second: other.layout.height,
                                     multiplier: multiplier,
@@ -255,7 +255,7 @@ public struct LayoutAnchorSizeUpdater {
             LayoutConstraint.update(first: layout.width,
                                     offset: size.width,
                                     priority: priority),
-            
+
             LayoutConstraint.update(first: layout.height,
                                     offset: size.height,
                                     priority: priority)
@@ -273,7 +273,7 @@ public struct LayoutAnchorCreator<T> {
     @discardableResult
     public func equalTo(_ value: Double,
                         priority: LayoutPriority = .required) -> LayoutConstraint {
-        
+
         LayoutConstraint.create(first: anchor, offset: value, priority: priority)
     }
 
@@ -282,7 +282,7 @@ public struct LayoutAnchorCreator<T> {
                         offset: Double = 0,
                         multiplier: Double = 1,
                         priority: LayoutPriority = .required) -> LayoutConstraint {
-        
+
         LayoutConstraint.create(first: anchor,
                                 second: other,
                                 offset: offset,
@@ -295,7 +295,7 @@ public struct LayoutAnchorCreator<T> {
                         offset: Double = 0,
                         multiplier: Double = 1,
                         priority: LayoutPriority = .required) -> LayoutConstraint {
-        
+
         LayoutConstraint._create(first: anchor.toInternalLayoutAnchor(),
                                  second: anchorOnOtherContainer(anchor.kind, other),
                                  offset: offset,
@@ -306,7 +306,7 @@ public struct LayoutAnchorCreator<T> {
     @discardableResult
     public func lessThanOrEqualTo(_ value: Double,
                                   priority: LayoutPriority = .required) -> LayoutConstraint {
-        
+
         LayoutConstraint.create(first: anchor, relationship: .lessThanOrEqual,
                                 offset: value, priority: priority)
     }
@@ -316,7 +316,7 @@ public struct LayoutAnchorCreator<T> {
                                   offset: Double = 0,
                                   multiplier: Double = 1,
                                   priority: LayoutPriority = .required) -> LayoutConstraint {
-        
+
         LayoutConstraint.create(first: anchor,
                                 second: other,
                                 relationship: .lessThanOrEqual,
@@ -330,7 +330,7 @@ public struct LayoutAnchorCreator<T> {
                                   offset: Double = 0,
                                   multiplier: Double = 1,
                                   priority: LayoutPriority = .required) -> LayoutConstraint {
-        
+
         LayoutConstraint._create(first: anchor.toInternalLayoutAnchor(),
                                  second: anchorOnOtherContainer(anchor.kind, other),
                                  relationship: .lessThanOrEqual,
@@ -342,7 +342,7 @@ public struct LayoutAnchorCreator<T> {
     @discardableResult
     public func greaterThanOrEqualTo(_ value: Double,
                                      priority: LayoutPriority = .required) -> LayoutConstraint {
-        
+
         LayoutConstraint.create(first: anchor,
                                 relationship: .greaterThanOrEqual,
                                 offset: value,
@@ -354,7 +354,7 @@ public struct LayoutAnchorCreator<T> {
                                      offset: Double = 0,
                                      multiplier: Double = 1,
                                      priority: LayoutPriority = .required) -> LayoutConstraint {
-        
+
         LayoutConstraint.create(first: anchor,
                                 second: other,
                                 relationship: .greaterThanOrEqual,
@@ -368,7 +368,7 @@ public struct LayoutAnchorCreator<T> {
                                      offset: Double = 0,
                                      multiplier: Double = 1,
                                      priority: LayoutPriority = .required) -> LayoutConstraint {
-        
+
         LayoutConstraint._create(first: anchor.toInternalLayoutAnchor(),
                                  second: anchorOnOtherContainer(anchor.kind, other),
                                  relationship: .greaterThanOrEqual,
@@ -388,7 +388,7 @@ public struct LayoutAnchorUpdater<T> {
     @discardableResult
     public func equalTo(_ value: Double,
                         priority: LayoutPriority = .required) -> LayoutConstraint {
-        
+
         LayoutConstraint.update(first: anchor, offset: value, priority: priority)
     }
 
@@ -397,7 +397,7 @@ public struct LayoutAnchorUpdater<T> {
                         offset: Double = 0,
                         multiplier: Double = 1,
                         priority: LayoutPriority = .required) -> LayoutConstraint {
-        
+
         LayoutConstraint.update(first: anchor,
                                 second: other,
                                 offset: offset,
@@ -410,7 +410,7 @@ public struct LayoutAnchorUpdater<T> {
                         offset: Double = 0,
                         multiplier: Double = 1,
                         priority: LayoutPriority = .required) -> LayoutConstraint {
-        
+
         LayoutConstraint._update(first: anchor.toInternalLayoutAnchor(),
                                  second: anchorOnOtherContainer(anchor.kind, other),
                                  offset: offset,
@@ -421,7 +421,7 @@ public struct LayoutAnchorUpdater<T> {
     @discardableResult
     public func lessThanOrEqualTo(_ value: Double,
                                   priority: LayoutPriority = .required) -> LayoutConstraint {
-        
+
         LayoutConstraint.update(first: anchor,
                                 relationship: .lessThanOrEqual,
                                 offset: value,
@@ -433,7 +433,7 @@ public struct LayoutAnchorUpdater<T> {
                                   offset: Double = 0,
                                   multiplier: Double = 1,
                                   priority: LayoutPriority = .required) -> LayoutConstraint {
-        
+
         LayoutConstraint.update(first: anchor,
                                 second: other,
                                 relationship: .lessThanOrEqual,
@@ -447,7 +447,7 @@ public struct LayoutAnchorUpdater<T> {
                                   offset: Double = 0,
                                   multiplier: Double = 1,
                                   priority: LayoutPriority = .required) -> LayoutConstraint {
-        
+
         LayoutConstraint._update(first: anchor.toInternalLayoutAnchor(),
                                  second: anchorOnOtherContainer(anchor.kind, other),
                                  relationship: .lessThanOrEqual,
@@ -459,7 +459,7 @@ public struct LayoutAnchorUpdater<T> {
     @discardableResult
     public func greaterThanOrEqualTo(_ value: Double,
                                      priority: LayoutPriority = .required) -> LayoutConstraint {
-        
+
         LayoutConstraint.update(first: anchor,
                                 relationship: .greaterThanOrEqual,
                                 offset: value,
@@ -471,7 +471,7 @@ public struct LayoutAnchorUpdater<T> {
                                      offset: Double = 0,
                                      multiplier: Double = 1,
                                      priority: LayoutPriority = .required) -> LayoutConstraint {
-        
+
         LayoutConstraint.update(first: anchor,
                                 second: other,
                                 relationship: .greaterThanOrEqual,
@@ -485,7 +485,7 @@ public struct LayoutAnchorUpdater<T> {
                                      offset: Double = 0,
                                      multiplier: Double = 1,
                                      priority: LayoutPriority = .required) -> LayoutConstraint {
-        
+
         LayoutConstraint._update(first: anchor.toInternalLayoutAnchor(),
                                  second: anchorOnOtherContainer(anchor.kind, other),
                                  relationship: .greaterThanOrEqual,
