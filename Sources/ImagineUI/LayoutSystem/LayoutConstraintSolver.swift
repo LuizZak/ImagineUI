@@ -191,6 +191,8 @@ public class LayoutConstraintSolverCache {
     }
     
     fileprivate func updateSolver(_ diff: StateDiff) throws {
+        try solver.setAutoSolve(false)
+
         for constDiff in diff.constraintDiffs {
             switch constDiff {
             case .added(_, let constraintDef):
@@ -239,6 +241,8 @@ public class LayoutConstraintSolverCache {
                 }
             }
         }
+
+        try solver.setAutoSolve(true)
     }
     
     fileprivate func addConstraints(_ constraints: [LayoutConstraint]) {

@@ -4,7 +4,7 @@
 import PackageDescription
 
 var dependencies: [Package.Dependency] = [
-    .package(url: "https://github.com/LuizZak/CassowarySwift.git", .branch("cassowary-swift")),
+    .package(url: "https://github.com/LuizZak/CassowarySwift.git", .branch("cassowary-swift-optimizations")),
     .package(url: "https://github.com/LuizZak/swift-blend2d.git", .branch("master"))
 ]
 

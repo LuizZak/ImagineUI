@@ -5,8 +5,8 @@
         "package": "CassowarySwift",
         "repositoryURL": "https://github.com/LuizZak/CassowarySwift.git",
         "state": {
-          "branch": "cassowary-swift",
-          "revision": "8cd38ef939d15b1bde1a31105142eb8cfb290c3b",
+          "branch": "cassowary-swift-optimizations",
+          "revision": "a7dc396ac8a1d79eb1c448fc515325ab7f9ecabf",
           "version": null
         }
       },
