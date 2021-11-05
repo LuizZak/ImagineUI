@@ -5,7 +5,7 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
     private let _stateManager = StateManager()
     private var _isMouseDown: Bool = false
     private var _bitmapCache = ViewBitmapCache(isCachingEnabled: true)
-    
+
     private var isRecursivelyVisible: Bool {
         var view: View? = self
         while let v = view {
@@ -14,31 +14,31 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
             }
             view = v.superview
         }
-        
+
         return true
     }
-    
+
     open var cacheAsBitmap: Bool {
         get { _bitmapCache.isCachingEnabled }
         set { _bitmapCache.isCachingEnabled = newValue }
     }
-    
+
     open var isFirstResponder: Bool {
         return controlSystem?.isFirstResponder(self) ?? false
     }
-    
+
     open var canBecomeFirstResponder: Bool {
         return false
     }
-    
+
     open var canResignFirstResponder: Bool {
         return true
     }
-    
+
     open var next: EventHandler? {
         return ControlView.closestParentViewOfType(self, type: ControlView.self)
     }
-    
+
     open override var bounds: UIRectangle {
         didSet {
             if bounds.size != oldValue.size {
@@ -82,14 +82,14 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
     /// This view's neutral background color
     open var backColor: Color = .transparentBlack { // TODO: Should be KnownColor.Control
         didSet {
-            invalidate()
+            invalidateControlGraphics()
         }
     }
 
     /// This view's foreground color
     open var foreColor: Color = .black {
         didSet {
-            invalidate()
+            invalidateControlGraphics()
         }
     }
 
@@ -97,14 +97,14 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
     /// (does not affect clipping region)
     open var cornerRadius: Double = 0 {
         didSet {
-            invalidate()
+            invalidateControlGraphics()
         }
     }
 
     /// Stroke color around the bounds of the control view
     open var strokeColor: Color = .transparentBlack {
         didSet {
-            invalidate()
+            invalidateControlGraphics()
         }
     }
 
@@ -112,87 +112,87 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
     open var strokeWidth: Double = 0 {
         willSet {
             if strokeWidth != newValue {
-                invalidate()
+                invalidateControlGraphics()
             }
         }
         didSet {
             if strokeWidth != oldValue {
-                invalidate()
+                invalidateControlGraphics()
             }
         }
     }
-    
+
     // MARK: - Events
-    
+
     /// Event raised whenever a client requests that this view redraw itself on
     /// screen or to a buffer.
     /// This event is raised after the view's contents have been painted.
     @Event public var painted: EventSourceWithSender<ControlView, PaintEventArgs>
-    
+
     /// Event raised whenever this control view's `currentState` value is changed
     @Event public var stateChanged: ValueChangeEvent<ControlView, ControlViewState>
-    
+
     /// Event raised whenever this control view's bounds have been updated to a
     /// different value
     @Event public var resized: ValueChangeEvent<ControlView, UISize>
-    
+
     // MARK: Mouse events
-    
+
     /// Event raised whenever the user clicks this control view while enabled
     @Event public var mouseClicked: EventSourceWithSender<ControlView, MouseEventArgs>
-    
+
     /// Event raised when the user scrolls the mouse wheel while on top of this
     /// control
     @Event public var mouseWheelScrolled: EventSourceWithSender<ControlView, MouseEventArgs>
-    
+
     /// Event raised whenever the user holds down on this control view with any
     /// mouse button
     @Event public var mouseDown: EventSourceWithSender<ControlView, MouseEventArgs>
-    
+
     /// Event raised whenever the user releases the mouse button they had held
     /// down previously on top of this control view
     @Event public var mouseUp: EventSourceWithSender<ControlView, MouseEventArgs>
-    
+
     /// Event raised whenever the user moves the mouse on top of this control view's
     /// area
     @Event public var mouseMoved: EventSourceWithSender<ControlView, MouseEventArgs>
-    
+
     /// Event raised whenever the user enters this control view's area with the
     /// mouse cursor
     @Event public var mouseEntered: EventSourceWithSender<ControlView, Void>
-    
+
     /// Event raised whenever the user leaves this control view's area with the
     /// mouse cursor
     @Event public var mouseExited: EventSourceWithSender<ControlView, Void>
-    
+
     // MARK: Keyboard events
-    
+
     /// Event raised whenever the user presses a keyboard key while this view is
     /// the currently active first responder
     @Event public var keyPressed: EventSourceWithSender<ControlView, KeyPressEventArgs>
-    
+
     /// Event raised whenever the user presses a keyboard key while this view is
     /// the currently active first responder
     @Event public var keyDown: EventSourceWithSender<ControlView, KeyEventArgs>
-    
+
     /// Event raised whenever the user depresses a keyboard key while this view
     /// is the currently active first responder
     @Event public var keyUp: EventSourceWithSender<ControlView, KeyEventArgs>
-    
+
     /// Event raised whenever the user presses a keyboard key while this view is
     /// the currently active first responder
     @Event public var previewKeyDown: EventSourceWithSender<ControlView, PreviewKeyDownEventArgs>
-    
+
     // MARK: -
 
     public override init() {
         super.init()
-        
+
         _stateManager.onStateChanged = { [weak self] old, new in
             self?.onStateChanged(ValueChangedEventArgs(oldValue: old, newValue: new))
         }
     }
-    
+
     /// Raises the `resized` event
     open func onResize(_ event: ValueChangedEventArgs<UISize>) {
         _resized.publishEvent(sender: self, event)
@@ -208,16 +208,16 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
     /// Paints this control view on a given render context
     public final override func render(in renderer: Renderer, screenRegion: ClipRegion) {
         super.render(in: renderer, screenRegion: screenRegion)
-        
+
         let state = renderer.saveState()
-        
+
         _bitmapCache.cachingOrRendering(renderer) { ctx in
             renderBackground(in: ctx, screenRegion: screenRegion)
             renderForeground(in: ctx, screenRegion: screenRegion)
         }
-        
+
         renderer.restoreState(state)
-        
+
         _painted.publishEvent(sender: self, renderer)
     }
 
@@ -226,7 +226,7 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
         // Fill
         if backColor.alpha > 0 {
             renderer.setFill(backColor)
-            
+
             if cornerRadius <= 0 {
                 renderer.fill(bounds)
             } else {
@@ -258,13 +258,13 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
 
     open func invalidateControlGraphics() {
         invalidate()
-        
+
         _bitmapCache.invalidateCache()
     }
-    
+
     open func invalidateControlGraphics(bounds: UIRectangle) {
         invalidate(bounds: bounds)
-        
+
         _bitmapCache.invalidateCache()
     }
 
@@ -315,30 +315,30 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
     }
 
     // MARK: - Mouse Event Handling
-    
+
     /// Raises the `mouseDown` event
     open func onMouseDown(_ event: MouseEventArgs) {
         _mouseDown.publishEvent(sender: self, event)
-        
+
         if mouseDownSelected {
             _isMouseDown = true
             isSelected = true
         }
     }
-    
+
     /// Raises the `mouseMoved` event
     open func onMouseMove(_ event: MouseEventArgs) {
         _mouseMoved.publishEvent(sender: self, event)
-        
+
         if _isMouseDown {
             isSelected = contains(point: event.location)
         }
     }
-    
+
     /// Raises the `mouseUp` event
     open func onMouseUp(_ event: MouseEventArgs) {
         _mouseUp.publishEvent(sender: self, event)
-        
+
         if _isMouseDown {
             isSelected = false
             _isMouseDown = false
@@ -348,7 +348,7 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
     /// Raises the `mouseEntered` event
     open func onMouseEnter() {
         _mouseEntered.publishEvent(sender: self)
-        
+
         if mouseOverHighlight {
             isHighlighted = true
         }
@@ -357,7 +357,7 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
     /// Raises the `mouseExited` event
     open func onMouseLeave() {
         _mouseExited.publishEvent(sender: self)
-        
+
         if mouseOverHighlight {
             isHighlighted = false
         }
@@ -367,29 +367,29 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
     open func onMouseClick(_ event: MouseEventArgs) {
         _mouseClicked.publishEvent(sender: self, event)
     }
-    
+
     /// Raises the `mouseWheelScrolled` event
     open func onMouseWheel(_ event: MouseEventArgs) {
         _mouseWheelScrolled.publishEvent(sender: self, event)
     }
-    
+
     // MARK: - Keyboard Event Handling
-    
+
     /// Raises the `keyPressed` event
     open func onKeyPress(_ event: KeyPressEventArgs) {
         _keyPressed.publishEvent(sender: self, event)
     }
-    
+
     /// Raises the `keyDown` event
     open func onKeyDown(_ event: KeyEventArgs) {
         _keyDown.publishEvent(sender: self, event)
     }
-    
+
     /// Raises the `keyUp` event
     open func onKeyUp(_ event: KeyEventArgs) {
         _keyUp.publishEvent(sender: self, event)
     }
-    
+
     /// Raises the `previewKeyDown` event
     open func onPreviewKeyDown(_ event: PreviewKeyDownEventArgs) {
         _previewKeyDown.publishEvent(sender: self, event)
@@ -489,7 +489,7 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
             if self.state == state {
                 return
             }
-            
+
             let oldState = state
 
             self.state = state

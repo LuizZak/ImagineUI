@@ -2,7 +2,7 @@
 public struct UITriangle: Hashable, Codable {
     private static let equilateralHeight = 0.866025404
     private static let equilateralOffset = 0.14433756733333333
-    
+
     /// An upright equilateral triangle where each side is unit-length.
     ///
     /// The centroid of the triangle is at (0, 0).
@@ -37,13 +37,13 @@ public struct UITriangle: Hashable, Codable {
     public var y2: Double {
         p2.y
     }
-    
+
     /// Computes the centroid of this triangle
     @inlinable
     public var centroid: UIPoint {
         return (p0 + p1 + p2) / 3
     }
-    
+
     public init(x0: Double, y0: Double, x1: Double, y1: Double, x2: Double, y2: Double) {
         self.init(
             p0: UIPoint(x: x0, y: y0),
@@ -80,7 +80,7 @@ public struct UITriangle: Hashable, Codable {
     public func contains(_ point: UIPoint) -> Bool {
         return contains(x: point.x, y: point.y)
     }
-    
+
     /// Returns a new triangle represented by the coordinates of this triangle,
     /// scaled by a given factor around the centroid.
     ///
@@ -90,7 +90,7 @@ public struct UITriangle: Hashable, Codable {
     public func scaledBy(x: Double, y: Double) -> UITriangle {
         return scaledBy(UIVector(x: x, y: y))
     }
-    
+
     /// Returns a new triangle represented by the coordinates of this triangle,
     /// scaled by a given factor around the centroid.
     ///
@@ -99,12 +99,12 @@ public struct UITriangle: Hashable, Codable {
     @inlinable
     public func scaledBy(_ scale: UIVector) -> UITriangle {
         let center = centroid
-        
+
         return UITriangle(p0: center + (p0 - center) * scale,
                           p1: center + (p1 - center) * scale,
                           p2: center + (p2 - center) * scale)
     }
-    
+
     /// Returns a new copy of this triangle with the vertices offset by a given
     /// pair of coordinates.
     @inlinable
@@ -116,32 +116,32 @@ public struct UITriangle: Hashable, Codable {
                           x2: x2 + x,
                           y2: y2 + y)
     }
-    
+
     /// Returns a new copy of this triangle with the vertices offset by a given
     /// point.
     @inlinable
     public func offsetBy(_ vector: UIVector) -> UITriangle {
         return offsetBy(x: vector.x, y: vector.y)
     }
-    
+
     /// Returns a new copy of this triangle with the vertices rotated along the
     /// centroid by a given radian amount
     @inlinable
     public func rotated(by angleInRadians: Double) -> UITriangle {
-        return rotated(around: centroid, by: angleInRadians)
+        return rotated(by: angleInRadians, around: centroid)
     }
-    
+
     /// Returns a new copy of this triangle with the vertices rotated along the
     /// given point by a given radian amount
     @inlinable
-    public func rotated(around center: UIPoint, by angleInRadians: Double) -> UITriangle {
-        let newP0 = p0.rotated(around: center, by: angleInRadians)
-        let newP1 = p1.rotated(around: center, by: angleInRadians)
-        let newP2 = p2.rotated(around: center, by: angleInRadians)
-        
+    public func rotated(by angleInRadians: Double, around center: UIPoint) -> UITriangle {
+        let newP0 = p0.rotated(by: angleInRadians, around: center)
+        let newP1 = p1.rotated(by: angleInRadians, around: center)
+        let newP2 = p2.rotated(by: angleInRadians, around: center)
+
         return UITriangle(p0: newP0, p1: newP1, p2: newP2)
     }
-    
+
     /// Returns a new copy of this triangle with the vertices transformed around
     /// by a given matrix
     public func transformed(by matrix: UIMatrix) -> UITriangle {

@@ -6,16 +6,17 @@ public struct LayoutPriority {
     public static let high = LayoutPriority(750)
     public static let medium = LayoutPriority(500)
     public static let low = LayoutPriority(250)
-    
+    public static let veryLow = LayoutPriority(150)
+
     var value: Int
-    
+
     public init(_ value: Int) {
         self.value = min(1000, max(0, value))
     }
 }
 
 extension LayoutPriority: Hashable {
-    
+
 }
 
 extension LayoutPriority: ExpressibleByIntegerLiteral {
@@ -35,6 +36,8 @@ extension LayoutPriority: CustomStringConvertible {
             return "medium (\(value))"
         case .low:
             return "low (\(value))"
+        case .veryLow:
+            return "very low (\(value))"
         default:
             return value.description
         }
@@ -50,6 +53,16 @@ extension LayoutPriority {
     /// Values in between return priorities in between, accordingly, growing in
     /// linear fashion.
     var cassowaryStrength: Double {
+        func _toStrength(_ value: Int) -> Double {
+            let doublePriority = Double(value)
+
+            let upper = min(1.0, max(0.0, (doublePriority - 500.0) / 250.0))
+            let mid = min(1.0, max(0.0, ((doublePriority - 250.0) / 250.0).truncatingRemainder(dividingBy: 1)))
+            let lower = min(1.0, max(0.0, (doublePriority / 250.0).truncatingRemainder(dividingBy: 1)))
+
+            return Strength.create(upper, mid, lower)
+        }
+
         switch self {
         case .required:
             return Strength.REQUIRED
@@ -59,14 +72,10 @@ extension LayoutPriority {
             return Strength.MEDIUM
         case .low:
             return Strength.WEAK
+        case .veryLow:
+            return _toStrength(150)
         default:
-            let doublePriority = Double(value)
-
-            let upper = min(1.0, max(0.0, (doublePriority - 500.0) / 250.0))
-            let mid = min(1.0, max(0.0, ((doublePriority - 250.0) / 250.0).truncatingRemainder(dividingBy: 1)))
-            let lower = min(1.0, max(0.0, (doublePriority / 250.0).truncatingRemainder(dividingBy: 1)))
-
-            return Strength.create(upper, mid, lower)
+            return _toStrength(value)
         }
     }
 }

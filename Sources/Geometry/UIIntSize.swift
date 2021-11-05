@@ -3,6 +3,7 @@ public struct UIIntSize: Hashable, Codable {
     public typealias Scalar = Int
 
     public static let zero: Self = .init()
+    public static let one: Self = .init(width: 1, height: 1)
 
     public var width: Scalar
     public var height: Scalar

@@ -22,17 +22,17 @@ public extension UIVector {
 
         return self / l
     }
-    
+
     @inlinable
     func rotated(by angleInRadians: Double) -> Self {
         let c = cos(angleInRadians)
         let s = sin(angleInRadians)
-        
+
         return Self(x: (c * x) - (s * y), y: (s * x) + (c * y))
     }
-    
+
     @inlinable
-    func rotated(around center: UIPoint, by angleInRadians: Double) -> Self {
+    func rotated(by angleInRadians: Double, around center: UIPoint) -> Self {
         return (self - center).rotated(by: angleInRadians) + center
     }
 

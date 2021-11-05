@@ -5,6 +5,7 @@ public struct UISize: Hashable, Codable {
     public typealias Scalar = Double
 
     public static let zero: Self = .init()
+    public static let one: Self = .init(width: 1, height: 1)
 
     public var width: Scalar
     public var height: Scalar

@@ -7,23 +7,23 @@ open class View {
     /// forced intrinsic size of zero. Used by View's methods that calculate
     /// minimal content sizes
     internal var _targetLayoutSize: UISize? = nil
-    
+
     var horizontalCompressResistance: LayoutPriority = 750
     var verticalCompressResistance: LayoutPriority = 750
     var horizontalHuggingPriority: LayoutPriority = 150
     var verticalHuggingPriority: LayoutPriority = 150
     var layoutVariables: LayoutVariables!
-    
+
     /// Whether the layout of this view is suspended.
     /// When layout is suspended, the view does not propagates ``setNeedsLayout``
     /// invocations to parent views.
     public internal(set) var isLayoutSuspended = false
-    
+
     var rootView: RootView? {
         if let rootView = self as? RootView {
             return rootView
         }
-        
+
         return superview?.rootView
     }
 
@@ -32,41 +32,45 @@ open class View {
     open var rotation: Double = 0 {
         willSet {
             guard rotation != newValue else { return }
-            
+
             invalidate()
         }
         didSet {
             guard rotation != oldValue else { return }
-            
+
             invalidate()
         }
     }
-    
+
     open var scale: UIVector = UIVector(x: 1, y: 1) {
         willSet {
             guard scale != newValue else { return }
-            
+
             invalidate()
         }
         didSet {
             guard scale != oldValue else { return }
-            
+
             invalidate()
         }
     }
-    
+
     open var clipToBounds: Bool = true {
         didSet {
             guard clipToBounds != oldValue else { return }
-            
+
             invalidate()
         }
     }
 
     open var transform: UIMatrix {
-        return UIMatrix.transformation(xScale: scale.x, yScale: scale.y,
-                                     angle: rotation,
-                                     xOffset: location.x, yOffset: location.y)
+        return .transformation(
+            xScale: scale.x,
+            yScale: scale.y,
+            angle: rotation,
+            xOffset: location.x,
+            yOffset: location.y
+        )
     }
 
     public var location: UIVector {
@@ -99,7 +103,7 @@ open class View {
             if bounds == oldValue {
                 return
             }
-            
+
             invalidate()
 
             if areaIntoConstraintsMask.contains(.size) {
@@ -107,7 +111,7 @@ open class View {
             }
         }
     }
-    
+
     open var size: UISize {
         get {
             return bounds.size
@@ -130,7 +134,7 @@ open class View {
     open var isVisible: Bool = true {
         didSet {
             if isVisible == oldValue { return }
-            
+
             invalidate()
         }
     }
@@ -201,10 +205,8 @@ open class View {
         if screenRegion.hitTest(boundsForRedrawOnScreen()) == .out {
             return
         }
-        
-        let token = renderer.saveState()
 
-        let state = renderer.saveState()
+        let token = renderer.saveState()
 
         renderer.transform(transform)
         if clipToBounds {
@@ -216,10 +218,8 @@ open class View {
         for view in subviews {
             view.renderRecursive(in: renderer, screenRegion: screenRegion)
         }
-        
-        renderer.restoreState(token)
 
-        renderer.restoreState(state)
+        renderer.restoreState(token)
     }
 
     open func render(in context: Renderer, screenRegion: ClipRegion) {
@@ -235,11 +235,18 @@ open class View {
 
     }
 
+    /// Removes all constraints that currently affects this view.
+    open func removeAffectingConstraints() {
+        for constraint in constraints {
+            constraint.removeConstraint()
+        }
+    }
+
     open func performLayout() {
         if !needsLayout {
             return
         }
-        
+
         /// If no superview is available, perform constraint layout locally,
         /// instead
         if superview == nil {
@@ -252,22 +259,22 @@ open class View {
             subview.performLayout()
         }
     }
-    
+
     internal func performConstraintsLayout() {
         let solver = LayoutConstraintSolver()
         solver.solve(viewHierarchy: self, cache: nil)
     }
-    
+
     /// Suspends setNeedsLayout() from affecting this view and its parent
     /// hierarchy
     open func suspendLayout() {
         isLayoutSuspended = true
     }
-    
+
     /// Resumes layout, optionally dispatching a message to layout the view
     open func resumeLayout(setNeedsLayout: Bool) {
         isLayoutSuspended = false
-        
+
         if setNeedsLayout {
             self.setNeedsLayout()
         }
@@ -277,11 +284,11 @@ open class View {
         if isLayoutSuspended {
             return
         }
-        
+
         superview?.setNeedsLayout()
         needsLayout = true
     }
-    
+
     /// Calculates the optimal size for this view, taking in consideration its
     /// active constraints, while approaching the target size as much as possible.
     /// The layout of the view is kept as-is, and no changes to its size are made.
@@ -290,21 +297,21 @@ open class View {
         let previousSuperview = superview
         let previousNeedsLayout = needsLayout
         let snapshot = LayoutAreaSnapshot.snapshotHierarchy(self)
-        
+
         // Remove view from hierarchy to avoid propagating invalidations
         superview = nil
-        
+
         _targetLayoutSize = size
         performConstraintsLayout()
-        
+
         let optimalSize = self.size
-        
+
         // Restore views back to previous state
         snapshot.restore()
         _targetLayoutSize = nil
         needsLayout = previousNeedsLayout
         superview = previousSuperview
-        
+
         return optimalSize
     }
 
@@ -315,29 +322,28 @@ open class View {
             view.removeFromSuperview()
         }
 
-        setNeedsLayout()
         view.superview = self
         subviews.append(view)
 
-        superview?.setNeedsLayout()
+        setNeedsLayout()
         view.invalidate()
-        
+
         didAddSubview(view)
     }
-    
+
     /// Function called after a view has been added as a subview of this view
     open func didAddSubview(_ view: View) {
-        
+
     }
-    
+
     /// Function called before a view is removed as a subview of this view instance
     open func willRemoveSubview(_ view: View) {
-        
+
     }
 
     open func removeFromSuperview() {
         invalidate()
-        
+
         if let superview = superview {
             superview.willRemoveSubview(self)
         }
@@ -357,11 +363,11 @@ open class View {
                 }
             }
         }
-        
+
         superview?.subviews.removeAll(where: { $0 === self })
         superview = nil
     }
-    
+
     /// A method that should return the subview from this view hierarchy to which
     /// firstBaseline constraints should be attached to.
     ///
@@ -369,23 +375,23 @@ open class View {
     open func viewForFirstBaseline() -> View? {
         return nil
     }
-    
+
     // MARK: - Layout Guides
-    
+
     open func addLayoutGuide(_ guide: LayoutGuide) {
         if let previous = guide.owningView {
             previous.removeLayoutGuide(guide)
         }
-        
+
         guide.owningView = self
         layoutGuides.append(guide)
     }
-    
+
     open func removeLayoutGuide(_ guide: LayoutGuide) {
         if let index = layoutGuides.firstIndex(where: { $0 === guide }) {
             guide.owningView = nil
             layoutGuides.remove(at: index)
-            
+
             for constraint in guide.constraints {
                 constraint.removeConstraint()
             }
@@ -406,10 +412,10 @@ open class View {
         if bounds.width == 0 || bounds.height == 0 {
             return
         }
-        
+
         invalidate(bounds: bounds, spatialReference: self)
     }
-    
+
     internal func invalidate(bounds: UIRectangle, spatialReference: SpatialReferenceType) {
         superview?.invalidate(bounds: bounds, spatialReference: spatialReference)
     }
@@ -427,8 +433,6 @@ open class View {
     func boundsForRedrawOnScreen() -> UIRectangle {
         return absoluteTransform().transform(boundsForRedraw())
     }
-
-    // MARK: - Transformation and Conversion
 
     open func absoluteTransform() -> UIMatrix {
         var transform = self.transform
@@ -492,7 +496,7 @@ open class View {
         guard contains(point: point, inflatingArea: inflatingArea) else {
             return nil
         }
-        
+
         // Search children first
         for baseView in subviews.reversed() {
             if let ht = baseView.viewUnder(point: baseView.transform.inverted().transform(point),
@@ -516,7 +520,7 @@ open class View {
         guard contains(point: point, inflatingArea: inflatingArea) else {
             return nil
         }
-        
+
         // Search children first
         for baseView in subviews.reversed() {
             if let ht = baseView.viewUnder(point: baseView.transform.inverted().transform(point),
@@ -525,7 +529,7 @@ open class View {
                 return ht
             }
         }
-        
+
         // Test this instance now
         if predicate(self) {
             return self
@@ -555,7 +559,7 @@ open class View {
         guard contains(point: point, inflatingArea: inflatingArea) else {
             return
         }
-        
+
         for view in subviews.reversed() {
             let transformedPoint = view.transform.inverted().transform(point)
             // Early out this view
@@ -622,7 +626,7 @@ open class View {
         if inflatingArea == .zero {
             return bounds.contains(point)
         }
-        
+
         return bounds.insetBy(x: -inflatingArea.x, y: -inflatingArea.y).contains(point)
     }
 
@@ -638,36 +642,36 @@ open class View {
     public func intersects(area: UIRectangle, inflatingArea: UIVector = .zero) -> Bool {
         return bounds.insetBy(x: -inflatingArea.x, y: -inflatingArea.y).intersects(area)
     }
-    
+
     // MARK: - Content Compression/Hugging configuration
-    
+
     public func setContentCompressionResistance(_ orientation: LayoutAnchorOrientation,
                                                 _ priority: LayoutPriority) {
         setNeedsLayout()
-        
+
         switch orientation {
         case .horizontal: horizontalCompressResistance = priority
         case .vertical: verticalCompressResistance = priority
         }
     }
-    
+
     public func contentCompressionResistance(_ orientation: LayoutAnchorOrientation) -> LayoutPriority {
         switch orientation {
         case .horizontal: return horizontalCompressResistance
         case .vertical: return verticalCompressResistance
         }
     }
-    
+
     public func setContentHuggingPriority(_ orientation: LayoutAnchorOrientation,
                                           _ priority: LayoutPriority) {
         setNeedsLayout()
-        
+
         switch orientation {
         case .horizontal: horizontalHuggingPriority = priority
         case .vertical: verticalHuggingPriority = priority
         }
     }
-    
+
     public func contentHuggingPriority(_ orientation: LayoutAnchorOrientation) -> LayoutPriority {
         switch orientation {
         case .horizontal: return horizontalHuggingPriority
@@ -720,7 +724,7 @@ open class View {
 }
 
 extension View: SpatialReferenceType {
-    
+
 }
 
 extension View: LayoutVariablesContainer {

@@ -3,11 +3,16 @@ import Rendering
 public class TreeView: ControlView {
     /// Set of items that are currently in an expanded state.
     private var expanded: Set<ItemIndex> = []
+    private var selected: Set<ItemIndex> = []
+    private var visibleItems: [ItemView] = []
 
     private let scrollView: ScrollView = ScrollView(scrollBarsMode: .both)
     private let stackView: StackView = StackView(orientation: .vertical)
 
     public weak var dataSource: TreeViewDataSource?
+
+    @Event public var willExpand: CancellableActionEvent<TreeView, ItemIndex>
+    @Event public var willCollapse: CancellableActionEvent<TreeView, ItemIndex>
 
     public override init() {
         super.init()
@@ -31,6 +36,8 @@ public class TreeView: ControlView {
         }
 
         stackView.contentInset = 4
+        stackView.alignment = .fill
+        stackView.setContentCompressionResistance(.horizontal, .required)
         stackView.setContentCompressionResistance(.vertical, .required)
         stackView.layout.makeConstraints { make in
             make.left == scrollView.contentView
@@ -45,10 +52,47 @@ public class TreeView: ControlView {
         populateItems()
     }
 
+    public override func onMouseDown(_ event: MouseEventArgs) {
+        super.onMouseDown(event)
+
+        if let item = itemUnderPoint(event.location) {
+            selectItem(item)
+        }
+    }
+
+    private func selectItem(_ itemView: ItemView) {
+        for index in selected {
+            if let view = visibleItem(withIndex: index) {
+                view.isSelected = false
+            }
+        }
+
+        selected.remove(itemView.itemIndex)
+        selected = [itemView.itemIndex]
+
+        itemView.isSelected = true
+    }
+
+    private func itemUnderPoint(_ point: UIPoint) -> ItemView? {
+        return scrollView.viewUnder(point: point) { view in
+            view is ItemView
+        } as? ItemView
+    }
+
+    private func visibleItem(withIndex index: ItemIndex) -> ItemView? {
+        return visibleItems.first(where: { $0.itemIndex == index })
+    }
+
     private func populateItems() {
+        suspendLayout()
+        defer {
+            resumeLayout(setNeedsLayout: true)
+        }
+
         for subview in stackView.subviews {
             subview.removeFromSuperview()
         }
+        visibleItems.removeAll()
 
         guard let dataSource = self.dataSource else {
             return
@@ -57,44 +101,217 @@ public class TreeView: ControlView {
         for index in 0..<dataSource.numberOfItems(self, at: .root) {
             let view = _makeViewForItem(at: ItemIndex(parent: .root, index: index),
                                         dataSource: dataSource)
-            stackView.addArrangedSubview(view)
+
+            visibleItems.append(view)
         }
+
+        stackView.addArrangedSubviews(visibleItems)
     }
 
-    private func _makeViewForItem(at index: ItemIndex, dataSource: TreeViewDataSource) -> View {
-        let item = ItemView()
-        item.label.text = dataSource.titleForItem(at: index)
+    private func _makeViewForItem(at index: ItemIndex, dataSource: TreeViewDataSource) -> ItemView {
+        let isExpanded = self.expanded.contains(index)
+
+        let item = ItemView(itemIndex: index, isExpanded: isExpanded)
+        item.label = dataSource.titleForItem(at: index)
+        item.isChevronVisible = dataSource.hasItems(self, at: index.asHierarchyIndex)
+        item.mouseDown.addListener(owner: self) { [weak self] (sender, _) in
+            if let sender = sender as? ItemView {
+                self?.selectItem(sender)
+            }
+        }
+        item.willExpand.addListener(owner: self) { [weak self] (sender, event) in
+            guard let self = self else { return }
+
+            event.cancel = self.raiseExpandEvent(sender.itemIndex)
+        }
+        item.willCollapse.addListener(owner: self) { [weak self] (sender, event) in
+            guard let self = self else { return }
+
+            event.cancel = self.raiseCollapseEvent(sender.itemIndex)
+        }
 
         return item
     }
 
-    private class ItemView: ControlView {
-        let icon: ImageView = ImageView(image: nil)
-        let label: Label = Label()
+    private func raiseExpandEvent(_ index: ItemIndex) -> Bool {
+        let cancel = _willExpand.publishCancellableChangeEvent(sender: self, value: index)
+        if !cancel {
+            _expand(index)
+        }
 
-        override init() {
+        return cancel
+    }
+
+    private func raiseCollapseEvent(_ index: ItemIndex) -> Bool {
+        let cancel = _willCollapse.publishCancellableChangeEvent(sender: self, value: index)
+        if !cancel {
+            _collapse(index)
+        }
+
+        return cancel
+    }
+
+    private func _expand(_ index: ItemIndex) {
+        expanded.insert(index)
+
+        reloadData()
+    }
+
+    private func _collapse(_ index: ItemIndex) {
+        expanded.remove(index)
+
+        reloadData()
+    }
+
+    private class ItemView: ControlView {
+        private let _chevronView: ChevronView = ChevronView()
+        private let _iconView: ImageView = ImageView(image: nil)
+        private let _labelView: Label = Label()
+
+        private let _container = StackView(orientation: .horizontal)
+
+        @Event var willExpand: CancellableActionEvent<ItemView, Void>
+        @Event var willCollapse: CancellableActionEvent<ItemView, Void>
+
+        var itemIndex: ItemIndex
+
+        var isExpanded: Bool {
+            didSet {
+                _chevronView.isExpanded = isExpanded
+            }
+        }
+
+        var isChevronVisible: Bool = false {
+            didSet {
+                _chevronView.isVisible = isChevronVisible
+            }
+        }
+
+        var label: String {
+            get {
+                return _labelView.text
+            }
+            set {
+                _labelView.text = newValue
+            }
+        }
+
+        init(itemIndex: ItemIndex, isExpanded: Bool) {
+            self.itemIndex = itemIndex
+            self.isExpanded = isExpanded
+
             super.init()
 
-            label.textColor = .black
+            _labelView.textColor = .black
+            _container.alignment = .centered
+            _container.spacing = 5
+
+            _chevronView.isExpanded = isExpanded
+            _chevronView.mouseClicked.addListener(owner: self) { [weak self] (sender, _) in
+                self?.raiseToggleEvent()
+            }
         }
 
         override func setupHierarchy() {
             super.setupHierarchy()
 
-            addSubview(label)
+            addSubview(_container)
+            _container.addArrangedSubview(_chevronView)
+            _container.addArrangedSubview(_labelView)
         }
 
         override func setupConstraints() {
             super.setupConstraints()
 
-            setContentCompressionResistance(.vertical, .required)
-            label.setContentCompressionResistance(.vertical, .required)
+            _labelView.setContentHuggingPriority(.horizontal, 0)
+            _labelView.setContentCompressionResistance(.horizontal, .required)
+            _labelView.setContentCompressionResistance(.vertical, .required)
 
-            label.layout.makeConstraints { make in
-                make.left == self + 10
+            _container.setContentHuggingPriority(.horizontal, 0)
+            _container.setContentCompressionResistance(.horizontal, .required)
+            _container.layout.makeConstraints { make in
+                make.left == self + 5
                 make.top == self
                 make.right == self
                 make.bottom == self
+            }
+        }
+
+        override func onStateChanged(_ event: ValueChangedEventArgs<ControlViewState>) {
+            super.onStateChanged(event)
+
+            if event.newValue == .selected {
+                backColor = .cornflowerBlue
+                _labelView.textColor = .white
+                _chevronView.foreColor = .white
+            } else {
+                backColor = .transparentBlack
+                _labelView.textColor = .black
+                _chevronView.foreColor = .gray
+            }
+        }
+
+        private func raiseToggleEvent() {
+            if isExpanded {
+                raiseCollapseEvent()
+            } else {
+                raiseExpandEvent()
+            }
+        }
+
+        private func raiseExpandEvent() {
+            if !_willExpand.publishCancellableChangeEvent(sender: self) {
+                isExpanded = true
+            }
+        }
+
+        private func raiseCollapseEvent() {
+            if !_willCollapse.publishCancellableChangeEvent(sender: self) {
+                isExpanded = false
+            }
+        }
+
+        private class ChevronView: ControlView {
+            var isExpanded: Bool = false {
+                didSet {
+                    if isExpanded != oldValue {
+                        setNeedsLayout()
+                        invalidateControlGraphics()
+                    }
+                }
+            }
+
+            override var intrinsicSize: UISize? {
+                return UISize(width: 10, height: 10)
+            }
+
+            override init() {
+                super.init()
+
+                foreColor = .gray
+                cacheAsBitmap = false
+            }
+
+            override func renderForeground(in renderer: Renderer, screenRegion: ClipRegion) {
+                let stroke = StrokeStyle(
+                    color: foreColor,
+                    width: 2,
+                    startCap: .round,
+                    endCap: .round
+                )
+                renderer.setStroke(stroke)
+
+                let strokePoints: UIPolygon = UIPolygon(vertices: [
+                    UIVector(x: 0, y: 0),
+                    UIVector(x: 5, y: 5),
+                    UIVector(x: 0, y: 10),
+                ]).withCenter(on: bounds.center)
+
+                if isExpanded {
+                    renderer.stroke(polyline: strokePoints.rotatedAroundCenter(by: .pi / 2).vertices)
+                } else {
+                    renderer.stroke(polyline: strokePoints.vertices)
+                }
             }
         }
     }
@@ -130,6 +347,12 @@ extension TreeView {
 
         /// The index of the item.
         public var index: Int
+
+        /// Gets this item index as a hierarchy index.
+        @_transparent
+        public var asHierarchyIndex: HierarchyIndex {
+            return HierarchyIndex(indices: parent.indices + [index])
+        }
     }
 }
 

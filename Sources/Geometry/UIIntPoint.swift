@@ -5,6 +5,7 @@ public struct UIIntPoint: Hashable, Codable {
     public typealias Scalar = Int
 
     public static let zero: Self = .init()
+    public static let one: Self = .init(x: 1, y: 1)
 
     public var x: Scalar
     public var y: Scalar

@@ -7,6 +7,9 @@ open class ScrollView: ControlView {
     private var _contentWidthConstraint: LayoutConstraint?
     private var _contentHeightConstraint: LayoutConstraint?
 
+    private let _widthView: View = View()
+    private let _heightView: View = View()
+
     private let scrollBarSize: Double = 10
 
     internal var contentOffset: UIVector = .zero
@@ -42,28 +45,7 @@ open class ScrollView: ControlView {
     public var contentSize: UISize? {
         didSet {
             if contentSize != oldValue {
-                _contentWidthConstraint?.removeConstraint()
-                _contentHeightConstraint?.removeConstraint()
-
-                _contentWidthConstraint = nil
-                _contentHeightConstraint = nil
-            }
-
-            guard let contentSize = contentSize else {
-                return
-            }
-
-            if contentSize.width > 0 {
-                _contentWidthConstraint =
-                LayoutConstraint.create(first: _contentView.layout.width,
-                                        relationship: .equal,
-                                        offset: contentSize.width)
-            }
-            if contentSize.height > 0 {
-                _contentHeightConstraint =
-                LayoutConstraint.create(first: _contentView.layout.height,
-                                        relationship: .equal,
-                                        offset: contentSize.height)
+                didUpdateContentSize(oldValue: oldValue)
             }
         }
     }
@@ -78,15 +60,18 @@ open class ScrollView: ControlView {
     /// If no scroll bars are visible, `visibleContentBounds` is the same as
     /// `View.bounds`.
     open var visibleContentBounds: UIRectangle {
-        var final = bounds
+        var size = bounds
         if scrollBarsMode.contains(.vertical) {
-            final = final.inset(UIEdgeInsets(left: 0, top: 0, right: scrollBarSize, bottom: 0))
+            size = size.inset(UIEdgeInsets(left: 0, top: 0, right: scrollBarSize, bottom: 0))
         }
         if scrollBarsMode.contains(.horizontal) {
-            final = final.inset(UIEdgeInsets(left: 0, top: 0, right: 0, bottom: scrollBarSize))
+            size = size.inset(UIEdgeInsets(left: 0, top: 0, right: 0, bottom: scrollBarSize))
         }
 
-        return final
+        size.width = max(1, size.width)
+        size.height = max(1, size.height)
+
+        return size
     }
 
     public let horizontalBar = ScrollBarControl(orientation: .horizontal)
@@ -105,10 +90,6 @@ open class ScrollView: ControlView {
             self?.updateScrollBarVisibility()
         }
 
-        super.addSubview(contentView)
-        super.addSubview(horizontalBar)
-        super.addSubview(verticalBar)
-
         updateScrollBarVisibility()
 
         horizontalBar.scrollChanged.addListener(owner: self) { [weak self] (_, scroll) in
@@ -120,10 +101,38 @@ open class ScrollView: ControlView {
         }
 
         updateScrollBarConstraints()
+        didUpdateContentSize(oldValue: nil)
 
         Scheduler.instance.fixedFrameEvent.addListener(owner: self) { [weak self] interval in
             self?.onFixedFrame(interval: interval)
         }
+    }
+
+    open override func setupHierarchy() {
+        super.setupHierarchy()
+
+        super.addSubview(_widthView)
+        super.addSubview(_heightView)
+        super.addSubview(contentView)
+        super.addSubview(horizontalBar)
+        super.addSubview(verticalBar)
+    }
+
+    open override func setupConstraints() {
+        super.setupConstraints()
+
+        _widthView.layout.makeConstraints { make in
+            make.left == self
+            make.top == self
+            make.height == 1
+        }
+        _heightView.layout.makeConstraints { make in
+            make.left == self
+            make.top == self
+            make.width == 1
+        }
+
+        //recreateSizeViewConstraints()
     }
 
     private func horizontalScrollChanged(_ scroll: Double) {
@@ -190,6 +199,45 @@ open class ScrollView: ControlView {
         incrementContentOffset(event.delta)
     }
 
+    private func didUpdateContentSize(oldValue: UISize?) {
+        // TODO: Avoid removing constraints when content size remains the same
+        // TODO: across value changes.
+
+        // Width
+        _contentWidthConstraint?.removeConstraint()
+        _contentWidthConstraint = nil
+
+        if let width = contentSize?.width, width > 0 {
+            _contentWidthConstraint =
+            LayoutConstraint.create(first: _contentView.layout.width,
+                                    relationship: .equal,
+                                    offset: width)
+        } else {
+            _contentWidthConstraint =
+            LayoutConstraint.create(first: _contentView.layout.width,
+                                    second: _widthView.layout.width,
+                                    relationship: .greaterThanOrEqual,
+                                    priority: .high)
+        }
+
+        // Height
+        _contentHeightConstraint?.removeConstraint()
+        _contentHeightConstraint = nil
+
+        if let height = contentSize?.height, height > 0 {
+            _contentHeightConstraint =
+            LayoutConstraint.create(first: _contentView.layout.height,
+                                    relationship: .equal,
+                                    offset: height)
+        } else {
+            _contentHeightConstraint =
+            LayoutConstraint.create(first: _contentView.layout.height,
+                                    second: _heightView.layout.height,
+                                    relationship: .greaterThanOrEqual,
+                                    priority: .high)
+        }
+    }
+
     private func incrementContentOffset(_ offset: UIVector) {
         if offset == .zero {
             return
@@ -213,35 +261,40 @@ open class ScrollView: ControlView {
     /// Limits an offset vector (like `contentOffset` or `targetContentOffset`)
     /// to always be within the scrollable limits of this scroll view.
     private func limitOffsetVector(_ offset: UIVector) -> UIVector {
-        let contentOffsetClip = UIRectangle(minimum: -(contentView.bounds.size.asUIPoint - effectiveContentSize().asUIPoint), maximum: .zero)
+        let contentOffsetClip = UIRectangle(minimum: -(effectiveContentSize().asUIPoint - visibleContentBounds.size.asUIPoint), maximum: .zero)
 
         return min(contentOffsetClip.maximum, max(contentOffsetClip.minimum, offset))
     }
 
     func updateScrollBarVisibility() {
+        updateScrollBarSizes()
+
         if scrollBarsAlwaysVisible {
             horizontalBar.isVisible = scrollBarsMode.contains(.horizontal)
             verticalBar.isVisible = scrollBarsMode.contains(.vertical)
             return
         }
 
-        let horizontalBarVisible = contentView.bounds.width > effectiveContentSize().width
-        let verticalBarVisible = contentView.bounds.height > effectiveContentSize().height
+        let horizontalBarVisible = horizontalBar.contentSize >= horizontalBar.visibleSize
+        let verticalBarVisible = verticalBar.contentSize >= verticalBar.visibleSize
 
         horizontalBar.isVisible = horizontalBarVisible && scrollBarsMode.contains(.horizontal)
         verticalBar.isVisible = verticalBarVisible && scrollBarsMode.contains(.vertical)
     }
 
     func updateScrollBarConstraints() {
+        verticalBar.removeAffectingConstraints()
+        horizontalBar.removeAffectingConstraints()
+
         if scrollBarsMode.contains(.horizontal) {
-            verticalBar.layout.remakeConstraints { make in
+            verticalBar.layout.makeConstraints { make in
                 make.top == self
                 make.right == self
                 make.bottom == horizontalBar.layout.top
                 make.width == scrollBarSize
             }
         } else {
-            verticalBar.layout.remakeConstraints { make in
+            verticalBar.layout.makeConstraints { make in
                 make.top == self
                 make.right == self
                 make.bottom == self
@@ -264,21 +317,42 @@ open class ScrollView: ControlView {
                 make.height == scrollBarSize
             }
         }
+
+        recreateSizeViewConstraints()
+    }
+
+    private func recreateSizeViewConstraints() {
+        _widthView.layout.makeConstraints { make in
+            make.left(of: verticalBar, offset: -1)
+        }
+        _heightView.layout.makeConstraints { make in
+            make.over(horizontalBar, offset: -1)
+        }
     }
 
     func updateScrollBarSizes() {
+        let visibleSize = visibleContentBounds.size
         let contentSize = effectiveContentSize()
 
-        horizontalBar.visibleSize = contentSize.width
-        verticalBar.visibleSize = contentSize.height
+        horizontalBar.visibleSize = visibleSize.width
+        verticalBar.visibleSize = visibleSize.height
 
-        horizontalBar.contentSize = contentView.bounds.width
-        verticalBar.contentSize = contentView.bounds.height
+        horizontalBar.contentSize = contentSize.width
+        verticalBar.contentSize = contentSize.height
     }
 
-    /// Content size with size of scroll bars subtracted.
+    /// Gets the effective content size.
+    /// Takes in consideration the size of the `contentView` but prioritizes any
+    /// non-nil, greater than zero value assigned to `contentSize``.
     func effectiveContentSize() -> UISize {
-        return visibleContentBounds.size
+        var size = contentView.bounds.size
+
+        if let contentSize = contentSize {
+            size.width  = contentSize.width  > 0 ? contentSize.width  : size.width
+            size.height = contentSize.height > 0 ? contentSize.height : size.height
+        }
+
+        return max(.one, size)
     }
 
     public struct ScrollBarsVisibility: OptionSet {
@@ -311,9 +385,14 @@ public class ScrollBarControl: ControlView {
     private var mouseDownPoint: UIVector = .zero
     public let orientation: Orientation
 
-    /// Size of content to scroll through
-    public var contentSize: Double = 0 {
+    /// Size of content to scroll through.
+    ///
+    /// Should always be greater than zero.
+    public var contentSize: Double = 1 {
         didSet {
+            assert(!contentSize.isNaN)
+            assert(contentSize > 0)
+
             guard contentSize != oldValue else { return }
 
             invalidateControlGraphics()
@@ -321,8 +400,10 @@ public class ScrollBarControl: ControlView {
     }
 
     /// The size of the content which is visible when scrolled
-    public var visibleSize: Double = 0 {
+    public var visibleSize: Double = 1 {
         didSet {
+            assert(!visibleSize.isNaN)
+
             guard visibleSize != oldValue else { return }
 
             invalidateControlGraphics()
@@ -334,6 +415,8 @@ public class ScrollBarControl: ControlView {
     /// Scroll value must be between 0 and `contentSize - visibleSize`.
     public var scroll: Double = 0 {
         didSet {
+            assert(!scroll.isNaN)
+
             guard scroll != oldValue else { return }
 
             invalidateControlGraphics()
@@ -368,10 +451,16 @@ public class ScrollBarControl: ControlView {
     public override func onMouseDown(_ event: MouseEventArgs) {
         super.onMouseDown(event)
 
-        if scrollBarBounds().contains(event.location) {
+        let barBounds = scrollBarBounds()
+        assert(!barBounds.x.isNaN)
+        assert(!barBounds.y.isNaN)
+        assert(!barBounds.width.isNaN)
+        assert(!barBounds.height.isNaN)
+
+        if barBounds.contains(event.location) {
             isMouseDown = true
             isSelected = true
-            mouseDownPoint = event.location - scrollBarBounds().location
+            mouseDownPoint = event.location - barBounds.location
         }
     }
 
@@ -379,19 +468,24 @@ public class ScrollBarControl: ControlView {
         super.onMouseMove(event)
 
         isHighlighted = scrollBarBounds().contains(event.location)
+
         if isMouseDown {
             let mouse = event.location - mouseDownPoint
-            let total = contentSize - visibleSize
+            var total = contentSize - visibleSize
+            if total == 0 {
+                total = 0.1
+            }
+
             let scrollBarArea = scrollBarMouseArea()
-            let clippedMouse = max(.zero, min(scrollBarArea, mouse))
+            let clippedMouse = max(.zero, min(scrollBarArea.asUIPoint, mouse))
 
             let previousScroll = scroll
             switch orientation {
             case .horizontal:
-                scroll = clippedMouse.x / scrollBarArea.x * total
+                scroll = clippedMouse.x / scrollBarArea.width * total
 
             case .vertical:
-                scroll = clippedMouse.y / scrollBarArea.y * total
+                scroll = clippedMouse.y / scrollBarArea.height * total
             }
 
             if previousScroll != scroll {
@@ -434,17 +528,20 @@ public class ScrollBarControl: ControlView {
         context.fill(roundRect)
     }
 
-    private func scrollBarMouseArea() -> UIVector {
+    private func scrollBarMouseArea() -> UISize {
+        assert(!bounds.width.isNaN)
+        assert(!bounds.height.isNaN)
+
         let barArea = bounds
         let ratio = visibleSize / contentSize
 
         let barSizeX = barArea.width * ratio
-        let x = barArea.left + barArea.width - barSizeX
+        let w = barArea.left + barArea.width - barSizeX
 
         let barSizeY = barArea.height * ratio
-        let y = barArea.top + barArea.height - barSizeY
+        let h = barArea.top + barArea.height - barSizeY
 
-        return UIVector(x: x, y: y)
+        return max(.one, UISize(width: w, height: h))
     }
 
     private func scrollBarBounds() -> UIRectangle {
@@ -454,7 +551,7 @@ public class ScrollBarControl: ControlView {
         let ratio = visibleSize / contentSize
 
         if orientation == .vertical {
-            if contentSize == 0 || ratio >= 1 {
+            if contentSize <= 1 || ratio >= 1 {
                 return barArea
             }
 
@@ -468,7 +565,7 @@ public class ScrollBarControl: ControlView {
 
             return UIRectangle(x: barArea.x, y: start, width: barArea.width, height: end - start)
         } else {
-            if contentSize == 0 || ratio >= 1 {
+            if contentSize <= 1 || ratio >= 1 {
                 return barArea
             }
 
