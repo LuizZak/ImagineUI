@@ -50,6 +50,30 @@ public struct LayoutConstraintDefinition {
         )
     }
 
+    /// Attempts to remove a constraint whose anchors and relationships
+    /// match the current constraint definition.
+    ///
+    /// If the operation succeeds, the layout constraint that was just removed
+    /// is returned.
+    ///
+    /// If more than one constraint with the current relationship and anchors
+    /// is present, only the first instance found is removed.
+    @discardableResult
+    public func remove() -> LayoutConstraint? {
+        guard let constraints = firstCast._owner?.constraintsOnAnchorKind(firstCast.kind) else {
+            return nil
+        }
+
+        for constraint in constraints {
+            if constraint.secondCast == self.secondCast && constraint.relationship == relationship {
+                constraint.removeConstraint()
+                return constraint
+            }
+        }
+
+        return nil
+    }
+
     public static func create<T>(first: LayoutAnchor<T>,
                                  second: LayoutAnchor<T>,
                                  relationship: Relationship = .equal,

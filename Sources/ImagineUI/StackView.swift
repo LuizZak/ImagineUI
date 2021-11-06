@@ -50,6 +50,8 @@ open class StackView: View {
     }
 
     private func recreateConstraints() {
+        suspendLayout()
+
         for layoutGuide in contentGuides {
             removeLayoutGuide(layoutGuide)
         }
@@ -63,6 +65,8 @@ open class StackView: View {
         for (i, view) in arrangedSubviews.enumerated() {
             _makeConstraints(view: view, guide: contentGuides[i], index: i)
         }
+
+        resumeLayout(setNeedsLayout: true)
     }
 
     @discardableResult
@@ -88,7 +92,6 @@ open class StackView: View {
         guide.layout.makeConstraints { make in
             _makeLayoutGuideConstraints(
                 make,
-                parentGuide: parentGuide,
                 previousGuide: previousGuide,
                 isLastView: isLastView,
                 viewSpacing: previousSpacing
@@ -148,13 +151,15 @@ open class StackView: View {
     }
 
     @LayoutResultBuilder
-    private func _makeLayoutGuideConstraints(_ make: LayoutAnchors, parentGuide: LayoutGuide, previousGuide: LayoutGuide?, isLastView: Bool, viewSpacing: Double) -> LayoutConstraintDefinitions {
+    private func _makeLayoutGuideConstraints(_ make: LayoutAnchors, previousGuide: LayoutGuide?, isLastView: Bool, viewSpacing: Double) -> LayoutConstraintDefinitions {
         switch orientation {
         case .horizontal:
             make.top == parentGuide
             make.bottom == parentGuide
 
             if let previous = previousGuide {
+                let _=(previous.layout.right == parentGuide).remove()
+
                 make.right(of: previous, offset: viewSpacing)
             } else {
                 make.left == parentGuide
@@ -167,6 +172,8 @@ open class StackView: View {
             make.right == parentGuide
 
             if let previous = previousGuide {
+                let _=(previous.layout.bottom == parentGuide).remove()
+
                 make.under(previous, offset: viewSpacing)
             } else {
                 make.top == parentGuide
@@ -196,20 +203,19 @@ open class StackView: View {
         arrangedSubviews.append(view)
         addSubview(view)
 
-        recreateConstraints()
+        let guide = _addContentGuide()
+
+        _makeConstraints(view: view, guide: guide, index: contentGuides.count - 1)
     }
 
     open func addArrangedSubviews(_ views: [View]) {
-        for view in views {
-            if arrangedSubviews.contains(view) {
-                continue
-            }
+        suspendLayout()
 
-            arrangedSubviews.append(view)
-            addSubview(view)
+        for view in views {
+            addArrangedSubview(view)
         }
 
-        recreateConstraints()
+        resumeLayout(setNeedsLayout: true)
     }
 
     open override func willRemoveSubview(_ view: View) {

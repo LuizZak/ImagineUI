@@ -1,5 +1,9 @@
 @resultBuilder
 public struct LayoutResultBuilder {
+    public static func buildExpression(_ expression: Void) -> LayoutConstraintDefinitions {
+        return .init(definitions: [])
+    }
+
     public static func buildExpression(_ expression: LayoutConstraintDefinition) -> LayoutConstraintDefinitions {
         return .init(definitions: [expression])
     }
