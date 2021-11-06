@@ -6,7 +6,7 @@
         "repositoryURL": "https://github.com/LuizZak/CassowarySwift.git",
         "state": {
           "branch": "cassowary-swift-optimizations",
-          "revision": "a7dc396ac8a1d79eb1c448fc515325ab7f9ecabf",
+          "revision": "6a1dad82044300fea41888946ebc312f59906247",
           "version": null
         }
       },
@@ -15,7 +15,7 @@
         "repositoryURL": "https://github.com/LuizZak/swift-blend2d.git",
         "state": {
           "branch": "master",
-          "revision": "db24cfacb93ccfc5032bf05d3555cb942b45c79c",
+          "revision": "3154016c34741c308850cb523778d9a4918ba86b",
           "version": null
         }
       }
