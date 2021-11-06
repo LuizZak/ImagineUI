@@ -7,6 +7,7 @@ public struct LayoutConstraintDefinition {
     var multiplier: Double
     var priority: LayoutPriority?
 
+    @discardableResult
     public func create() -> LayoutConstraint {
         if let secondCast = secondCast {
             return LayoutConstraint._create(
@@ -27,6 +28,7 @@ public struct LayoutConstraintDefinition {
         )
     }
 
+    @discardableResult
     public func update() -> LayoutConstraint {
         if let secondCast = secondCast {
             return LayoutConstraint._update(

@@ -20,6 +20,10 @@ public struct LayoutResultBuilder {
         return component
     }
 
+    public static func buildLimitedAvailability(_ component: LayoutConstraintDefinitions) -> LayoutConstraintDefinitions {
+        return component
+    }
+
     public static func buildOptional(_ component: LayoutConstraintDefinitions?) -> LayoutConstraintDefinitions {
         if let component = component {
             return component

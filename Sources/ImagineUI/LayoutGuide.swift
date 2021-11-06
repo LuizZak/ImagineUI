@@ -42,6 +42,10 @@ extension LayoutGuide: LayoutVariablesContainer {
     func hasConstraintsOnAnchorKind(_ anchorKind: AnchorKind) -> Bool {
         constraints.contains { $0.firstCast.kind == anchorKind || $0.secondCast?.kind == anchorKind }
     }
+
+    func constraintsOnAnchorKind(_ anchorKind: AnchorKind) -> [LayoutConstraint] {
+        constraints.filter { $0.firstCast.kind == anchorKind || $0.secondCast?.kind == anchorKind }
+    }
 }
 
 extension LayoutGuide: SpatialReferenceType {

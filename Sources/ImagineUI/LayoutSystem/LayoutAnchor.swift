@@ -12,7 +12,7 @@ public struct LayoutAnchor<T>: LayoutAnchorType, Equatable, CustomStringConverti
         switch kind {
         case .left, .width, .right, .centerX:
             return .horizontal
-            
+
         case .top, .height, .bottom, .centerY, .firstBaseline:
             return .vertical
         }
@@ -21,7 +21,14 @@ public struct LayoutAnchor<T>: LayoutAnchorType, Equatable, CustomStringConverti
     public var description: String {
         return toInternalLayoutAnchor().getVariable()?.name ?? "<unowned anchor>"
     }
-    
+
+    /// Removes all constraints attached to this layout anchor.
+    public func removeConstraints() {
+        _owner?.constraintsOnAnchorKind(self.kind).forEach {
+            $0.removeConstraint()
+        }
+    }
+
     public static func == (lhs: LayoutAnchor, rhs: LayoutAnchor) -> Bool {
         return lhs._owner === rhs._owner && lhs.kind == rhs.kind
     }

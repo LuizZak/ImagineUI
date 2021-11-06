@@ -12,4 +12,5 @@ protocol LayoutVariablesContainer: AnyObject, SpatialReferenceType {
     func setNeedsLayout()
     func boundsForRedrawOnScreen() -> UIRectangle
     func hasConstraintsOnAnchorKind(_ anchorKind: AnchorKind) -> Bool
+    func constraintsOnAnchorKind(_ anchorKind: AnchorKind) -> [LayoutConstraint]
 }

@@ -44,36 +44,36 @@ class LayoutVariables {
                                      width >= 0,
                                      strength: Strength.REQUIRED)
 
-        //if container.hasConstraintsOnAnchorKind(.right) {
+        if container.hasConstraintsOnAnchorKind(.right) {
             constraintList.addConstraint(name: "right == width + left",
                                          right == width + left,
                                          strength: Strength.REQUIRED)
-        //}
+        }
 
         constraintList.addConstraint(name: "height >= 0",
                                      height >= 0,
                                      strength: Strength.REQUIRED)
 
 
-        //if container.hasConstraintsOnAnchorKind(.bottom) {
+        if container.hasConstraintsOnAnchorKind(.bottom) {
             constraintList.addConstraint(name: "bottom == top + height",
                                          bottom == top + height,
                                          strength: Strength.REQUIRED)
-        //}
+        }
 
-        //if container.hasConstraintsOnAnchorKind(.centerX) {
+        if container.hasConstraintsOnAnchorKind(.centerX) {
             constraintList.addConstraint(name: "centerX",
                                          centerX == left + width / 2,
                                          strength: Strength.REQUIRED)
-        //}
+        }
 
-        //if container.hasConstraintsOnAnchorKind(.centerY) {
+        if container.hasConstraintsOnAnchorKind(.centerY) {
             constraintList.addConstraint(name: "centerY",
                                          centerY == top + height / 2,
                                          strength: Strength.REQUIRED)
-        //}
+        }
 
-        //if container.hasConstraintsOnAnchorKind(.firstBaseline) {
+        if container.hasConstraintsOnAnchorKind(.firstBaseline) {
             if let label = viewForFirstBaseline() as? Label {
                 constraintList.suggestValue(variable: baselineHeight,
                                             value: label.baselineHeight,
@@ -87,7 +87,7 @@ class LayoutVariables {
                                             firstBaseline == top + height,
                                             strength: Strength.REQUIRED)
             }
-        //}
+        }
     }
 
     func deriveViewConstraints(_ view: View, _ constraintList: ViewConstraintList) {
