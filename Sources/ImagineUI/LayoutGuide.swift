@@ -40,11 +40,11 @@ extension LayoutGuide: LayoutVariablesContainer {
     }
 
     func hasConstraintsOnAnchorKind(_ anchorKind: AnchorKind) -> Bool {
-        constraints.contains { $0.firstCast.kind == anchorKind || $0.secondCast?.kind == anchorKind }
+        constraints.contains { ($0.firstCast._owner === self && $0.firstCast.kind == anchorKind) || ($0.secondCast?._owner === self && $0.secondCast?.kind == anchorKind) }
     }
 
     func constraintsOnAnchorKind(_ anchorKind: AnchorKind) -> [LayoutConstraint] {
-        constraints.filter { $0.firstCast.kind == anchorKind || $0.secondCast?.kind == anchorKind }
+        constraints.filter { ($0.firstCast._owner === self && $0.firstCast.kind == anchorKind) || ($0.secondCast?._owner === self && $0.secondCast?.kind == anchorKind) }
     }
 }
 
