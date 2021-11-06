@@ -39,54 +39,65 @@ class LayoutVariables {
         if let view = container as? View {
             deriveViewConstraints(view, constraintList)
         }
-        
+
         constraintList.addConstraint(name: "width >= 0",
                                      width >= 0,
                                      strength: Strength.REQUIRED)
-        
-        constraintList.addConstraint(name: "right == width + left",
-                                     right == width + left,
-                                     strength: Strength.REQUIRED)
-        
+
+        //if container.hasConstraintsOnAnchorKind(.right) {
+            constraintList.addConstraint(name: "right == width + left",
+                                         right == width + left,
+                                         strength: Strength.REQUIRED)
+        //}
+
         constraintList.addConstraint(name: "height >= 0",
                                      height >= 0,
                                      strength: Strength.REQUIRED)
-        
-        constraintList.addConstraint(name: "bottom == top + height",
-                                     bottom == top + height,
-                                     strength: Strength.REQUIRED)
-        
-        constraintList.addConstraint(name: "centerX",
-                                     centerX == left + width / 2,
-                                     strength: Strength.REQUIRED)
-        
-        constraintList.addConstraint(name: "centerY",
-                                     centerY == top + height / 2,
-                                     strength: Strength.REQUIRED)
-        
-        if let label = viewForFirstBaseline() as? Label {
-            constraintList.suggestValue(variable: baselineHeight,
-                                        value: label.baselineHeight,
-                                        strength: Strength.STRONG)
-            
-            constraintList.addConstraint(name: "firstBaseline=baselineHeight",
-                                         firstBaseline == top + baselineHeight,
+
+
+        //if container.hasConstraintsOnAnchorKind(.bottom) {
+            constraintList.addConstraint(name: "bottom == top + height",
+                                         bottom == top + height,
                                          strength: Strength.REQUIRED)
-        } else {
-            constraintList.addConstraint(name: "firstBaseline=height",
-                                         firstBaseline == top + height,
+        //}
+
+        //if container.hasConstraintsOnAnchorKind(.centerX) {
+            constraintList.addConstraint(name: "centerX",
+                                         centerX == left + width / 2,
                                          strength: Strength.REQUIRED)
-        }
+        //}
+
+        //if container.hasConstraintsOnAnchorKind(.centerY) {
+            constraintList.addConstraint(name: "centerY",
+                                         centerY == top + height / 2,
+                                         strength: Strength.REQUIRED)
+        //}
+
+        //if container.hasConstraintsOnAnchorKind(.firstBaseline) {
+            if let label = viewForFirstBaseline() as? Label {
+                constraintList.suggestValue(variable: baselineHeight,
+                                            value: label.baselineHeight,
+                                            strength: Strength.STRONG)
+
+                constraintList.addConstraint(name: "firstBaseline=baselineHeight",
+                                            firstBaseline == top + baselineHeight,
+                                            strength: Strength.REQUIRED)
+            } else {
+                constraintList.addConstraint(name: "firstBaseline=height",
+                                            firstBaseline == top + height,
+                                            strength: Strength.REQUIRED)
+            }
+        //}
     }
-    
+
     func deriveViewConstraints(_ view: View, _ constraintList: ViewConstraintList) {
         if view.areaIntoConstraintsMask.contains(.location) {
             let location = view.convert(point: .zero, to: nil)
-            
+
             constraintList.suggestValue(variable: left,
                                         value: location.x,
                                         strength: Strength.STRONG)
-            
+
             constraintList.suggestValue(variable: top,
                                         value: location.y,
                                         strength: Strength.STRONG)
@@ -95,36 +106,36 @@ class LayoutVariables {
             constraintList.suggestValue(variable: width,
                                         value: view.bounds.width,
                                         strength: Strength.STRONG)
-            
+
             constraintList.suggestValue(variable: height,
                                         value: view.bounds.height,
                                         strength: Strength.STRONG)
         }
-        
+
         if let intrinsicSize = view._targetLayoutSize ?? view.intrinsicSize {
             constraintList.suggestValue(variable: intrinsicWidth,
                                         value: intrinsicSize.width,
-                                        strength: Strength.WEAK)
+                                        strength: Strength.STRONG)
             constraintList.suggestValue(variable: intrinsicHeight,
                                         value: intrinsicSize.height,
-                                        strength: Strength.WEAK)
-            
+                                        strength: Strength.STRONG)
+
             // Content compression/hugging priority
             constraintList.addConstraint(
                 name: "width >= intrinsicWidth",
                 width >= intrinsicWidth,
                 strength: view.horizontalCompressResistance.cassowaryStrength)
-            
+
             constraintList.addConstraint(
                 name: "width <= intrinsicWidth",
                 width <= intrinsicWidth,
                 strength: view.horizontalHuggingPriority.cassowaryStrength)
-            
+
             constraintList.addConstraint(
                 name: "height >= intrinsicHeight",
                 height >= intrinsicHeight,
                 strength: view.verticalCompressResistance.cassowaryStrength)
-            
+
             constraintList.addConstraint(
                 name: "height <= intrinsicHeight",
                 height <= intrinsicHeight,
@@ -139,22 +150,22 @@ class LayoutVariables {
         } else {
             location = UIVector(x: left.value, y: top.value)
         }
-        
+
         container.area = UIRectangle(location: location, size: UISize(width: width.value, height: height.value))
     }
-    
+
     func viewForFirstBaseline() -> View? {
         if let view = container as? View {
             if let viewForBaseline = container.viewForFirstBaseline() {
                 return viewForBaseline
             }
-            
+
             return view
         }
-        
+
         return nil
     }
-    
+
     private static func deriveName(_ container: LayoutVariablesContainer) -> String {
         if let view = container as? View {
             return deriveName(view)
@@ -162,7 +173,7 @@ class LayoutVariables {
         if let guide = container as? LayoutGuide {
             return deriveName(guide)
         }
-        
+
         return "\(type(of: container))"
     }
 
@@ -171,7 +182,7 @@ class LayoutVariables {
 
         return "\(type(of: view))_\(pointer)"
     }
-    
+
     private static func deriveName(_ guide: LayoutGuide) -> String {
         let pointer = Unmanaged.passUnretained(guide).toOpaque()
 

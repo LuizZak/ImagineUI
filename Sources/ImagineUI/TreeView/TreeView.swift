@@ -223,12 +223,12 @@ public class TreeView: ControlView {
         override func setupConstraints() {
             super.setupConstraints()
 
-            _labelView.setContentHuggingPriority(.horizontal, 0)
+            _labelView.setContentHuggingPriority(.horizontal, .lowest)
             _labelView.setContentCompressionResistance(.horizontal, .required)
             _labelView.setContentCompressionResistance(.vertical, .required)
 
-            _container.setContentHuggingPriority(.horizontal, 0)
             _container.setContentCompressionResistance(.horizontal, .required)
+            _container.setContentCompressionResistance(.vertical, .required)
             _container.layout.makeConstraints { make in
                 make.left == self + 5
                 make.top == self

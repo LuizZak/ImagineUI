@@ -38,10 +38,8 @@ open class StackView: View {
 
     public init(orientation: Orientation) {
         self.orientation = orientation
-        super.init()
 
-        setContentHuggingPriority(.vertical, 50)
-        setContentHuggingPriority(.horizontal, 50)
+        super.init()
     }
 
     private func recreateConstraints() {

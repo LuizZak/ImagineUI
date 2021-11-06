@@ -4,15 +4,15 @@ import Geometry
 public class LayoutGuide {
     var layoutVariables: LayoutVariables!
     var constraints: [LayoutConstraint] = []
-    
+
     var transform: UIMatrix {
         return .translation(x: area.x, y: area.y)
     }
-    
+
     internal(set) public weak var owningView: View?
-    
+
     internal(set) public var area: UIRectangle = .zero
-    
+
     public init() {
         layoutVariables = LayoutVariables(container: self)
     }
@@ -25,18 +25,22 @@ extension LayoutGuide: LayoutVariablesContainer {
     var viewInHierarchy: View? {
         return owningView
     }
-    
+
     func viewForFirstBaseline() -> View? {
         return nil
     }
-    
+
     func setNeedsLayout() {
         owningView?.setNeedsLayout()
     }
-    
+
     /// Returns the bounds for redrawing on the screen's coordinate system
     func boundsForRedrawOnScreen() -> UIRectangle {
         return absoluteTransform().transform(area.withLocation(.zero))
+    }
+
+    func hasConstraintsOnAnchorKind(_ anchorKind: AnchorKind) -> Bool {
+        constraints.contains { $0.firstCast.kind == anchorKind || $0.secondCast?.kind == anchorKind }
     }
 }
 

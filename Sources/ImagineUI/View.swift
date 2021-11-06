@@ -8,10 +8,10 @@ open class View {
     /// minimal content sizes
     internal var _targetLayoutSize: UISize? = nil
 
-    var horizontalCompressResistance: LayoutPriority = 750
-    var verticalCompressResistance: LayoutPriority = 750
-    var horizontalHuggingPriority: LayoutPriority = 150
-    var verticalHuggingPriority: LayoutPriority = 150
+    var horizontalCompressResistance: LayoutPriority = .high
+    var verticalCompressResistance: LayoutPriority = .high
+    var horizontalHuggingPriority: LayoutPriority = .veryLow
+    var verticalHuggingPriority: LayoutPriority = .veryLow
     var layoutVariables: LayoutVariables!
 
     /// Whether the layout of this view is suspended.
@@ -733,6 +733,10 @@ extension View: LayoutVariablesContainer {
     }
     var viewInHierarchy: View? {
         return self
+    }
+
+    func hasConstraintsOnAnchorKind(_ anchorKind: AnchorKind) -> Bool {
+        constraints.contains { $0.firstCast.kind == anchorKind || $0.secondCast?.kind == anchorKind }
     }
 }
 
