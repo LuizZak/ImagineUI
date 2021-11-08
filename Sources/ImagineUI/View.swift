@@ -8,10 +8,36 @@ open class View {
     /// minimal content sizes
     internal var _targetLayoutSize: UISize? = nil
 
-    var horizontalCompressResistance: LayoutPriority = .high
-    var verticalCompressResistance: LayoutPriority = .high
-    var horizontalHuggingPriority: LayoutPriority = .veryLow
-    var verticalHuggingPriority: LayoutPriority = .veryLow
+    var horizontalCompressResistance: LayoutPriority = .high {
+        didSet {
+            if oldValue != horizontalCompressResistance {
+                setNeedsLayout()
+            }
+        }
+    }
+    var verticalCompressResistance: LayoutPriority = .high {
+        didSet {
+            if oldValue != verticalCompressResistance {
+                setNeedsLayout()
+            }
+        }
+    }
+
+    var horizontalHuggingPriority: LayoutPriority = .veryLow {
+        didSet {
+            if oldValue != horizontalHuggingPriority {
+                setNeedsLayout()
+            }
+        }
+    }
+    var verticalHuggingPriority: LayoutPriority = .veryLow {
+        didSet {
+            if oldValue != verticalHuggingPriority {
+                setNeedsLayout()
+            }
+        }
+    }
+
     var layoutVariables: LayoutVariables!
 
     /// Whether the layout of this view is suspended.
@@ -643,8 +669,6 @@ open class View {
 
     public func setContentCompressionResistance(_ orientation: LayoutAnchorOrientation,
                                                 _ priority: LayoutPriority) {
-        setNeedsLayout()
-
         switch orientation {
         case .horizontal: horizontalCompressResistance = priority
         case .vertical: verticalCompressResistance = priority
@@ -660,8 +684,6 @@ open class View {
 
     public func setContentHuggingPriority(_ orientation: LayoutAnchorOrientation,
                                           _ priority: LayoutPriority) {
-        setNeedsLayout()
-
         switch orientation {
         case .horizontal: horizontalHuggingPriority = priority
         case .vertical: verticalHuggingPriority = priority
