@@ -123,11 +123,8 @@ class ViewConstraintList {
 public class LayoutConstraintSolverCache {
     let solver: Solver
 
-    //private var constraintSet: Set<ConstraintDefinition> = []
-    //private var previousConstraintSet: Set<ConstraintDefinition> = []
-
-    private var constraintSet: [ConstraintDefinition: Constraint] = [:]
-    private var previousConstraintSet: [ConstraintDefinition: Constraint] = [:]
+    private var constraintSet: [LayoutConstraint.Definition: Constraint] = [:]
+    private var previousConstraintSet: [LayoutConstraint.Definition: Constraint] = [:]
 
     private var viewConstraintList: [ObjectIdentifier: ViewConstraintList] = [:]
     private var previousViewConstraintList: [ObjectIdentifier: ViewConstraintList] = [:]
@@ -319,52 +316,16 @@ public class LayoutConstraintSolverCache {
         constraintSet[definition] = layoutConstraint.createConstraint()
     }
 
-    typealias ConstraintDefinition = LayoutConstraint.Definition
-
-    /*
-    struct ConstraintDefinition: Hashable {
-        var definition: LayoutConstraint.Definition
-
-        internal init(definition: LayoutConstraint.Definition) {
-            self.definition = definition
-        }
-
-        internal init(layoutConstraint: LayoutConstraint) {
-            self.definition = layoutConstraint.definition
-        }
-
-        func hash(into hasher: inout Hasher) {
-            hasher.combine(definition)
-        }
-
-        static func == (lhs: Self, rhs: Self) -> Bool {
-            return lhs.definition == rhs.definition
-        }
-    }
-    */
-
     fileprivate struct CacheStateDiff {
-        var constraintDiffs: [KeyedDifference<ConstraintDefinition, Constraint>]
+        var constraintDiffs: [KeyedDifference<LayoutConstraint.Definition, Constraint>]
         var viewStateDiffs: [ViewConstraintList.StateDiff]
     }
-}
-
-private enum UnkeyedDifference<Value> {
-    case removed(Value)
-    case added(Value)
 }
 
 private enum KeyedDifference<Key, Value> {
     case removed(Key, Value)
     case added(Key, Value)
     case updated(Key, old: Value, new: Value)
-}
-
-private extension Set {
-    func makeDifference(withPrevious previous: Set) -> [UnkeyedDifference<Element>] {
-        return previous.subtracting(self).map(UnkeyedDifference.removed)
-             + self.subtracting(previous).map(UnkeyedDifference.added)
-    }
 }
 
 private extension Dictionary {
