@@ -457,6 +457,21 @@ extension TreeView {
         public init(indices: [Int]) {
             self.indices = indices
         }
+        
+        /// Returns `true` if this hierarchy is contained within another
+        /// hierarchy.
+        ///
+        /// Returns `true` for `self.isSubHierarchy(of: self)`.
+        public func isSubHierarchy(of other: HierarchyIndex) -> Bool {
+            if other.isRoot {
+                return true
+            }
+            if other.indices.count > indices.count {
+                return false
+            }
+            
+            return indices[0..<other.indices.count] == other.indices[...]
+        }
     }
 
     public struct ItemIndex: Hashable {
@@ -470,6 +485,11 @@ extension TreeView {
         @_transparent
         public var asHierarchyIndex: HierarchyIndex {
             return HierarchyIndex(indices: parent.indices + [index])
+        }
+        
+        /// Returns `true` if this item belongs to a given hierarchy index.
+        public func isChild(of hierarchy: HierarchyIndex) -> Bool {
+            return parent.isSubHierarchy(of: hierarchy)
         }
     }
 }
