@@ -27,6 +27,10 @@ private class DataSource: TreeViewDataSource {
     }
 
     func titleForItem(at index: TreeView.ItemIndex) -> String {
+        if !index.parent.isRoot {
+            return "Item \(index.parent.indices.map(\.description).joined(separator: " -> ")) -> \(index.index)"
+        }
+        
         return "Item \(index.index)"
     }
 }
