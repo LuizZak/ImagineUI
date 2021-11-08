@@ -16,6 +16,23 @@ class LayoutVariables {
     let intrinsicHeight: Variable
     let baselineHeight: Variable
 
+    var allVariables: [Variable] {
+        [
+            left,
+            right,
+            top,
+            bottom,
+            width,
+            height,
+            centerX,
+            centerY,
+            firstBaseline,
+            intrinsicWidth,
+            intrinsicHeight,
+            baselineHeight,
+        ]
+    }
+
     init(container: LayoutVariablesContainer) {
         let name = LayoutVariables.deriveName(container)
 

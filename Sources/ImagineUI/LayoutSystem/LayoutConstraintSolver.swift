@@ -1,4 +1,5 @@
 import CassowarySwift
+import Foundation
 
 public class LayoutConstraintSolver {
     public func solve(viewHierarchy: View, cache: LayoutConstraintSolverCache? = nil) {
@@ -225,16 +226,16 @@ public class LayoutConstraintSolverCache {
             for varDiff in viewDiff.suggestedValues {
                 switch varDiff {
                 case let .added(variable, (value, strength)):
-                    transaction.addEditVariable(variable: variable, strength: strength)
-                    transaction.suggestValue(variable: variable, value: value)
+                    transaction.addEditVariable(variable, strength: strength)
+                    transaction.suggestValue(variable, value: value)
 
                 case let .updated(variable, old, new):
                     if old.strength != new.strength {
                         transaction.removeEditVariable(variable)
-                        transaction.addEditVariable(variable: variable, strength: new.strength)
+                        transaction.addEditVariable(variable, strength: new.strength)
                     }
 
-                    transaction.suggestValue(variable: variable, value: new.value)
+                    transaction.suggestValue(variable, value: new.value)
 
                 case .removed(let variable, _):
                     transaction.removeEditVariable(variable)
@@ -242,7 +243,55 @@ public class LayoutConstraintSolverCache {
             }
         }
 
+        // For debugging purposes
+        #if DUMP_CONSTRAINTS_TO_DESKTOP
+
+        do {
+            let data = try SolverSerializer.serialize(transaction: transaction)
+            let pathTransactions = FileManager.default.homeDirectoryForCurrentUser
+                .appendingPathComponent("Desktop")
+                .appendingPathComponent("ImagineUI_constraint_transactions")
+                .appendingPathExtension("json")
+
+            if let existing = FileManager.default.contents(atPath: pathTransactions.path) {
+                let newFile = existing + ",".data(using: .utf8)! + data
+                try FileManager.default.removeItem(at: pathTransactions)
+                FileManager.default.createFile(atPath: pathTransactions.path, contents: newFile)
+            } else {
+                let newFile = "[".data(using: .utf8)! + data
+                FileManager.default.createFile(atPath: pathTransactions.path, contents: newFile)
+            }
+        }
+
+        #endif // DUMP_CONSTRAINTS_TO_DESKTOP
+
         try transaction.apply()
+
+        #if DUMP_CONSTRAINTS_TO_DESKTOP
+
+        do {
+            var variables: [Variable] = []
+            for viewConstraint in viewConstraintList.values {
+                variables.append(contentsOf: viewConstraint.container.layoutVariables.allVariables)
+            }
+
+            let dataVariables = try JSONEncoder().encode(variables)
+            let pathVariables = FileManager.default.homeDirectoryForCurrentUser
+                .appendingPathComponent("Desktop")
+                .appendingPathComponent("ImagineUI_constraint_variables")
+                .appendingPathExtension("json")
+
+            if let existing = FileManager.default.contents(atPath: pathVariables.path) {
+                let newFile = existing + ",".data(using: .utf8)! + dataVariables
+                try FileManager.default.removeItem(at: pathVariables)
+                FileManager.default.createFile(atPath: pathVariables.path, contents: newFile)
+            } else {
+                let newFile = "[".data(using: .utf8)! + dataVariables
+                FileManager.default.createFile(atPath: pathVariables.path, contents: newFile)
+            }
+        }
+
+        #endif // DUMP_CONSTRAINTS_TO_DESKTOP
     }
 
     fileprivate func addConstraints(_ constraints: [LayoutConstraint]) {
