@@ -9,7 +9,8 @@ public class TreeView: ControlView {
     private var visibleItems: [ItemView] = []
 
     private let scrollView: ScrollView = ScrollView(scrollBarsMode: .both)
-    private let stackView: StackView = StackView(orientation: .vertical)
+
+    private let rootStackView: StackView = StackView(orientation: .vertical)
 
     public weak var dataSource: TreeViewDataSource?
 
@@ -27,7 +28,7 @@ public class TreeView: ControlView {
         super.setupHierarchy()
 
         addSubview(scrollView)
-        scrollView.addSubview(stackView)
+        scrollView.addSubview(rootStackView)
     }
 
     public override func setupConstraints() {
@@ -37,15 +38,14 @@ public class TreeView: ControlView {
             make.edges == self
         }
 
-        stackView.contentInset = 4
-        stackView.alignment = .fill
-        stackView.setContentCompressionResistance(.horizontal, .required)
-        stackView.setContentCompressionResistance(.vertical, .required)
-        stackView.layout.makeConstraints { make in
+        rootStackView.contentInset = 4
+        rootStackView.alignment = .fill
+        rootStackView.setContentCompressionResistance(.horizontal, .required)
+        rootStackView.setContentCompressionResistance(.vertical, .required)
+        rootStackView.layout.makeConstraints { make in
             make.left == scrollView.contentView
             make.top == scrollView.contentView
             make.right == scrollView.contentView
-
             make.bottom <= scrollView.contentView
         }
     }
@@ -102,26 +102,46 @@ public class TreeView: ControlView {
             return
         }
 
-        _recursiveInsert(.root, dataSource: dataSource)
-
-        stackView.addArrangedSubviews(visibleItems)
+        _recursiveCreateViews(.root, into: rootStackView, dataSource: dataSource)
     }
 
-    private func _recursiveInsert(_ hierarchy: HierarchyIndex, dataSource: TreeViewDataSource) {
+    private func _recursiveCreateViews(_ hierarchy: HierarchyIndex, into stackView: StackView, dataSource: TreeViewDataSource) {
         for index in 0..<dataSource.numberOfItems(self, at: hierarchy) {
             let itemIndex = ItemIndex(parent: hierarchy, index: index)
             let view = _makeViewForItem(at: itemIndex, dataSource: dataSource)
 
+            stackView.addArrangedSubview(view)
             visibleItems.append(view)
 
             if _isExpanded(index: itemIndex) {
-                _recursiveInsert(itemIndex.asHierarchyIndex, dataSource: dataSource)
+                _recursiveCreateViews(itemIndex.asHierarchyIndex, into: view.itemsStackView, dataSource: dataSource)
             }
         }
     }
 
+    private func _visibleItem(withIndex index: ItemIndex) -> ItemView? {
+        for visible in visibleItems {
+            if visible.itemIndex == index {
+                return visible
+            }
+        }
+
+        return nil
+    }
+
     private func _isExpanded(index: ItemIndex) -> Bool {
         return expanded.contains(index)
+    }
+
+    private func _makeStackView() -> StackView {
+        let stackView = StackView(orientation: .vertical)
+
+        stackView.contentInset = 4
+        stackView.alignment = .fill
+        stackView.setContentCompressionResistance(.horizontal, .required)
+        stackView.setContentCompressionResistance(.vertical, .required)
+
+        return stackView
     }
 
     private func _makeViewForItem(at index: ItemIndex, dataSource: TreeViewDataSource) -> ItemView {
@@ -145,9 +165,9 @@ public class TreeView: ControlView {
             }
         }
 
-        item.leftInset = 10.0 * Double(index.parent.depth)
         item.label = dataSource.titleForItem(at: index)
         item.isChevronVisible = dataSource.hasItems(self, at: index.asHierarchyIndex)
+        item.removeSubItems()
 
         return item
     }
@@ -177,13 +197,31 @@ public class TreeView: ControlView {
     private func _expand(_ index: ItemIndex) {
         expanded.insert(index)
 
-        reloadData()
+        guard let dataSource = dataSource else {
+            return
+        }
+
+        let hierarchyIndex = index.asHierarchyIndex
+
+        guard dataSource.hasItems(self, at: hierarchyIndex) else {
+            return
+        }
+
+        if let visible = _visibleItem(withIndex: index) {
+            _recursiveCreateViews(hierarchyIndex, into: visible.itemsStackView, dataSource: dataSource)
+        } else {
+            reloadData()
+        }
     }
 
     private func _collapse(_ index: ItemIndex) {
         expanded.remove(index)
 
-        reloadData()
+        if let visible = _visibleItem(withIndex: index) {
+            visible.removeSubItems()
+        } else {
+            reloadData()
+        }
     }
 
     private class ItemView: ControlView {
@@ -191,18 +229,18 @@ public class TreeView: ControlView {
         private let _iconView: ImageView = ImageView(image: nil)
         private let _labelView: Label = Label()
 
-        private let _container = StackView(orientation: .horizontal)
+        private let _container: StackView = StackView(orientation: .vertical)
+        private let _horizontalContainer: StackView = StackView(orientation: .horizontal)
+        private let _subItemsContainer: StackView = StackView(orientation: .vertical)
 
         @Event var willExpand: CancellableActionEvent<ItemView, Void>
         @Event var willCollapse: CancellableActionEvent<ItemView, Void>
 
-        var itemIndex: ItemIndex
-
-        var leftInset: Double = 0.0 {
-            didSet {
-                _container.contentInset.left = leftInset
-            }
+        var itemsStackView: StackView {
+            return _subItemsContainer
         }
+
+        var itemIndex: ItemIndex
 
         var isExpanded: Bool {
             didSet {
@@ -232,8 +270,8 @@ public class TreeView: ControlView {
             super.init()
 
             _labelView.textColor = .black
-            _container.alignment = .centered
-            _container.spacing = 5
+            _horizontalContainer.alignment = .centered
+            _horizontalContainer.spacing = 5
 
             _chevronView.isExpanded = isExpanded
             _chevronView.mouseClicked.addListener(owner: self) { [weak self] (sender, _) in
@@ -245,8 +283,11 @@ public class TreeView: ControlView {
             super.setupHierarchy()
 
             addSubview(_container)
-            _container.addArrangedSubview(_chevronView)
-            _container.addArrangedSubview(_labelView)
+            _container.addArrangedSubview(_horizontalContainer)
+            _container.addArrangedSubview(_subItemsContainer)
+
+            _horizontalContainer.addArrangedSubview(_chevronView)
+            _horizontalContainer.addArrangedSubview(_labelView)
         }
 
         override func setupConstraints() {
@@ -264,6 +305,12 @@ public class TreeView: ControlView {
                 make.right == self
                 make.bottom == self
             }
+
+            _horizontalContainer.setContentCompressionResistance(.horizontal, .required)
+            _horizontalContainer.setContentCompressionResistance(.vertical, .required)
+
+            _subItemsContainer.setContentCompressionResistance(.horizontal, .required)
+            _subItemsContainer.setContentCompressionResistance(.vertical, .required)
         }
 
         override func onStateChanged(_ event: ValueChangedEventArgs<ControlViewState>) {
@@ -277,6 +324,12 @@ public class TreeView: ControlView {
                 backColor = .transparentBlack
                 _labelView.textColor = .black
                 _chevronView.foreColor = .gray
+            }
+        }
+
+        func removeSubItems() {
+            for view in _subItemsContainer.arrangedSubviews {
+                view.removeFromSuperview()
             }
         }
 

@@ -7,9 +7,10 @@ open class StackView: View {
     private let layoutGuideCache = LayoutGuideCache()
 
     private let parentGuide = LayoutGuide()
-    private var arrangedSubviews: [View] = []
     private var customSpacing: [View: Double] = [:]
     private var contentGuides: [LayoutGuide] = []
+
+    private(set) public var arrangedSubviews: [View] = []
 
     public override var intrinsicSize: UISize? {
         return .zero
@@ -228,6 +229,12 @@ open class StackView: View {
         }
 
         resumeLayout(setNeedsLayout: true)
+    }
+
+    open func removeArrangedSubview(atIndex index: Int) {
+        assert(index < arrangedSubviews.count)
+
+        arrangedSubviews[index].removeFromSuperview()
     }
 
     open override func willRemoveSubview(_ view: View) {

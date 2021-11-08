@@ -319,6 +319,10 @@ open class View {
     // MARK: - Subviews
 
     open func addSubview(_ view: View) {
+        if isDescendant(of: view) {
+            fatalError("Attempted to add a view as a subview of its own hierarchy: \(self).addSubview(\(view)).")
+        }
+
         view.removeFromSuperview()
 
         view.superview = self
