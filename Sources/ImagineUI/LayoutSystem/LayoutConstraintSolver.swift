@@ -239,7 +239,7 @@ public class LayoutConstraintSolverCache {
         }
 
         // For debugging purposes
-        #if !DUMP_CONSTRAINTS_TO_DESKTOP
+        #if DUMP_CONSTRAINTS_TO_DESKTOP
 
         do {
             let data = try SolverSerializer.serialize(transaction: transaction)
@@ -262,7 +262,7 @@ public class LayoutConstraintSolverCache {
 
         try transaction.apply()
 
-        #if !DUMP_CONSTRAINTS_TO_DESKTOP
+        #if DUMP_CONSTRAINTS_TO_DESKTOP
 
         do {
             var variables: [Variable] = []
