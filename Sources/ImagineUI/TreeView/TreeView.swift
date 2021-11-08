@@ -176,24 +176,6 @@ public class TreeView: ControlView {
         viewCache.reclaim(view: view)
     }
 
-    private func raiseExpandEvent(_ index: ItemIndex) -> Bool {
-        let cancel = _willExpand.publishCancellableChangeEvent(sender: self, value: index)
-        if !cancel {
-            _expand(index)
-        }
-
-        return cancel
-    }
-
-    private func raiseCollapseEvent(_ index: ItemIndex) -> Bool {
-        let cancel = _willCollapse.publishCancellableChangeEvent(sender: self, value: index)
-        if !cancel {
-            _collapse(index)
-        }
-
-        return cancel
-    }
-
     private func _expand(_ index: ItemIndex) {
         expanded.insert(index)
 
@@ -218,10 +200,32 @@ public class TreeView: ControlView {
         expanded.remove(index)
 
         if let visible = _visibleItem(withIndex: index) {
+            visibleItems = visibleItems.filter {
+                !$0.itemIndex.isChild(of: index.asHierarchyIndex)
+            }
+            
             visible.removeSubItems()
         } else {
             reloadData()
         }
+    }
+
+    private func raiseExpandEvent(_ index: ItemIndex) -> Bool {
+        let cancel = _willExpand.publishCancellableChangeEvent(sender: self, value: index)
+        if !cancel {
+            _expand(index)
+        }
+
+        return cancel
+    }
+
+    private func raiseCollapseEvent(_ index: ItemIndex) -> Bool {
+        let cancel = _willCollapse.publishCancellableChangeEvent(sender: self, value: index)
+        if !cancel {
+            _collapse(index)
+        }
+
+        return cancel
     }
 
     private class ItemView: ControlView {
