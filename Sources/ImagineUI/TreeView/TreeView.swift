@@ -195,6 +195,9 @@ public class TreeView: ControlView {
             visibleItems = visibleItems.filter {
                 !$0.itemIndex.isChild(of: index.asHierarchyIndex)
             }
+            selected = selected.filter {
+                !$0.isChild(of: index.asHierarchyIndex)
+            }
 
             visible.removeSubItems()
         } else {
