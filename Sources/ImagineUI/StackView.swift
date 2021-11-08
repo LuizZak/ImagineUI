@@ -54,6 +54,10 @@ open class StackView: View {
     private func recreateConstraints() {
         suspendLayout()
 
+        parentGuide.layout.remakeConstraints { make in
+            make.edges.equalTo(self, inset: contentInset)
+        }
+
         // Reversed to allow later dequeuing in the same order
         // which enables reusal of constraints in the layout system.
         for layoutGuide in contentGuides.reversed() {

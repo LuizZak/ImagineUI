@@ -102,14 +102,26 @@ public class TreeView: ControlView {
             return
         }
 
-        for index in 0..<dataSource.numberOfItems(self, at: .root) {
-            let view = _makeViewForItem(at: ItemIndex(parent: .root, index: index),
-                                        dataSource: dataSource)
-
-            visibleItems.append(view)
-        }
+        _recursiveInsert(.root, dataSource: dataSource)
 
         stackView.addArrangedSubviews(visibleItems)
+    }
+
+    private func _recursiveInsert(_ hierarchy: HierarchyIndex, dataSource: TreeViewDataSource) {
+        for index in 0..<dataSource.numberOfItems(self, at: hierarchy) {
+            let itemIndex = ItemIndex(parent: hierarchy, index: index)
+            let view = _makeViewForItem(at: itemIndex, dataSource: dataSource)
+
+            visibleItems.append(view)
+
+            if _isExpanded(index: itemIndex) {
+                _recursiveInsert(itemIndex.asHierarchyIndex, dataSource: dataSource)
+            }
+        }
+    }
+
+    private func _isExpanded(index: ItemIndex) -> Bool {
+        return expanded.contains(index)
     }
 
     private func _makeViewForItem(at index: ItemIndex, dataSource: TreeViewDataSource) -> ItemView {
@@ -133,6 +145,7 @@ public class TreeView: ControlView {
             }
         }
 
+        item.leftInset = 10.0 * Double(index.parent.depth)
         item.label = dataSource.titleForItem(at: index)
         item.isChevronVisible = dataSource.hasItems(self, at: index.asHierarchyIndex)
 
@@ -184,6 +197,12 @@ public class TreeView: ControlView {
         @Event var willCollapse: CancellableActionEvent<ItemView, Void>
 
         var itemIndex: ItemIndex
+
+        var leftInset: Double = 0.0 {
+            didSet {
+                _container.contentInset.left = leftInset
+            }
+        }
 
         var isExpanded: Bool {
             didSet {
@@ -375,6 +394,11 @@ extension TreeView {
         /// Convenience for `indices.isEmpty`.
         public var isRoot: Bool {
             return indices.isEmpty
+        }
+
+        /// Returns the depth of this hierarchy index.
+        public var depth: Int {
+            return indices.count
         }
 
         public init(indices: [Int]) {

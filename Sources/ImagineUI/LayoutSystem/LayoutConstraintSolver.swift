@@ -123,8 +123,11 @@ class ViewConstraintList {
 public class LayoutConstraintSolverCache {
     let solver: Solver
 
-    private var constraintSet: Set<ConstraintDefinition> = []
-    private var previousConstraintSet: Set<ConstraintDefinition> = []
+    //private var constraintSet: Set<ConstraintDefinition> = []
+    //private var previousConstraintSet: Set<ConstraintDefinition> = []
+
+    private var constraintSet: [ConstraintDefinition: Constraint] = [:]
+    private var previousConstraintSet: [ConstraintDefinition: Constraint] = [:]
 
     private var viewConstraintList: [ObjectIdentifier: ViewConstraintList] = [:]
     private var previousViewConstraintList: [ObjectIdentifier: ViewConstraintList] = [:]
@@ -142,7 +145,9 @@ public class LayoutConstraintSolverCache {
     }
 
     fileprivate func compareState() -> CacheStateDiff {
-        let constDiff = constraintSet.makeDifference(withPrevious: previousConstraintSet)
+        let constDiff = constraintSet.makeDifference(withPrevious: previousConstraintSet) { (_, old, new) in
+            return !old.hasSameEffects(as: new)
+        }
 
         var viewDiff: [ViewConstraintList.StateDiff] = []
 
@@ -195,11 +200,15 @@ public class LayoutConstraintSolverCache {
 
         for constDiff in diff.constraintDiffs {
             switch constDiff {
-            case .added(let constraintDef):
-                transaction.addConstraint(constraintDef.constraint)
+            case .added(_, let constraint):
+                transaction.addConstraint(constraint)
 
-            case .removed(let constraintDef):
-                transaction.removeConstraint(constraintDef.constraint)
+            case .removed(_, let constraint):
+                transaction.removeConstraint(constraint)
+
+            case .updated(_, let old, let new):
+                transaction.removeConstraint(old)
+                transaction.addConstraint(new)
             }
         }
 
@@ -295,31 +304,32 @@ public class LayoutConstraintSolverCache {
         }
     }
 
-    private func inspectConstraint(_ constraint: LayoutConstraint) {
-        if !constraint.isEnabled {
+    private func inspectConstraint(_ layoutConstraint: LayoutConstraint) {
+        if !layoutConstraint.isEnabled {
             return
         }
 
-        if let definition = ConstraintDefinition(layoutConstraint: constraint) {
-            constraintSet.insert(definition)
+        let definition = layoutConstraint.definition
+
+        if let previous = previousConstraintSet[definition] {
+            constraintSet[definition] = previous
+            return
         }
+
+        constraintSet[definition] = layoutConstraint.createConstraint()
     }
 
+    typealias ConstraintDefinition = LayoutConstraint.Definition
+
+    /*
     struct ConstraintDefinition: Hashable {
-        var constraint: Constraint
         var definition: LayoutConstraint.Definition
 
-        internal init(constraint: Constraint, definition: LayoutConstraint.Definition) {
-            self.constraint = constraint
+        internal init(definition: LayoutConstraint.Definition) {
             self.definition = definition
         }
 
-        internal init?(layoutConstraint: LayoutConstraint) {
-            guard let constraint = layoutConstraint.createConstraint() else {
-                return nil
-            }
-
-            self.constraint = constraint
+        internal init(layoutConstraint: LayoutConstraint) {
             self.definition = layoutConstraint.definition
         }
 
@@ -328,12 +338,13 @@ public class LayoutConstraintSolverCache {
         }
 
         static func == (lhs: Self, rhs: Self) -> Bool {
-            return lhs.definition == rhs.definition && lhs.constraint.hasSameEffects(as: rhs.constraint)
+            return lhs.definition == rhs.definition
         }
     }
+    */
 
     fileprivate struct CacheStateDiff {
-        var constraintDiffs: [UnkeyedDifference<ConstraintDefinition>]
+        var constraintDiffs: [KeyedDifference<ConstraintDefinition, Constraint>]
         var viewStateDiffs: [ViewConstraintList.StateDiff]
     }
 }
