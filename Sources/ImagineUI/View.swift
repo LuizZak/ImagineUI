@@ -154,9 +154,10 @@ open class View {
     }
 
     private(set) public weak var superview: View?
-
     private(set) public var subviews: [View] = []
-    private(set) public var layoutGuides: [LayoutGuide] = []
+
+    internal(set) public var layoutGuides: [LayoutGuide] = []
+
     public var areaIntoConstraintsMask: Set<BoundsConstraintMask> = [.location, .size] {
         didSet {
             setNeedsLayout()
@@ -318,9 +319,7 @@ open class View {
     // MARK: - Subviews
 
     open func addSubview(_ view: View) {
-        if view.superview != nil {
-            view.removeFromSuperview()
-        }
+        view.removeFromSuperview()
 
         view.superview = self
         subviews.append(view)
@@ -342,18 +341,20 @@ open class View {
     }
 
     open func removeFromSuperview() {
+        guard let superview = superview else {
+            return
+        }
+
         invalidate()
 
-        if let superview = superview {
-            superview.willRemoveSubview(self)
-        }
+        superview.willRemoveSubview(self)
 
         // Remove all constraints that involve this view, or one of its subviews.
         // We check parent views only because the way containedConstraints are
         // stored, each constraint is guaranteed to only affect the view itself
         // or one of its subviews, thus we check the parent hierarchy for
         // constraints involving this view tree, but not the children hierarchy.
-        superview?.visitingSuperviews { view in
+        superview.visitingSuperviews { view in
             for constraint in view.containedConstraints {
                 if constraint.firstCast._owner?.viewInHierarchy?.isDescendant(of: self) == true {
                     constraint.removeConstraint()
@@ -364,8 +365,8 @@ open class View {
             }
         }
 
-        superview?.subviews.removeAll(where: { $0 === self })
-        superview = nil
+        superview.subviews.removeAll(where: { $0 === self })
+        self.superview = nil
     }
 
     /// A method that should return the subview from this view hierarchy to which
@@ -379,23 +380,14 @@ open class View {
     // MARK: - Layout Guides
 
     open func addLayoutGuide(_ guide: LayoutGuide) {
-        if let previous = guide.owningView {
-            previous.removeLayoutGuide(guide)
-        }
+        guide.removeFromSuperview()
 
         guide.owningView = self
         layoutGuides.append(guide)
     }
 
-    open func removeLayoutGuide(_ guide: LayoutGuide) {
-        if let index = layoutGuides.firstIndex(where: { $0 === guide }) {
-            guide.owningView = nil
-            layoutGuides.remove(at: index)
+    open func willRemoveLayoutGuide(_ guide: LayoutGuide) {
 
-            for constraint in guide.constraints {
-                constraint.removeConstraint()
-            }
-        }
     }
 
     // MARK: - Redraw Invalidation

@@ -45,7 +45,7 @@ public class LayoutConstraintSolver {
             affectedView.deriveConstraints(cache.constraintList(for: affectedView.container))
         }
 
-        cache.addConstraints(result.constraints)
+        cache.inspectConstraints(result.constraints)
     }
 }
 
@@ -111,8 +111,8 @@ class ViewConstraintList {
     }
 
     fileprivate struct StateDiff {
-        var constraints: [Difference<String, (Constraint, strength: Double)>]
-        var suggestedValues: [Difference<Variable, (value: Double, strength: Double)>]
+        var constraints: [KeyedDifference<String, (Constraint, strength: Double)>]
+        var suggestedValues: [KeyedDifference<Variable, (value: Double, strength: Double)>]
 
         var isEmpty: Bool {
             return constraints.isEmpty && suggestedValues.isEmpty
@@ -123,8 +123,8 @@ class ViewConstraintList {
 public class LayoutConstraintSolverCache {
     let solver: Solver
 
-    private var constraintDefinitionsMap: [LayoutConstraint: ConstraintDefinition] = [:]
-    private var previousConstraintDefinitionsMap: [LayoutConstraint: ConstraintDefinition] = [:]
+    private var constraintSet: Set<ConstraintDefinition> = []
+    private var previousConstraintSet: Set<ConstraintDefinition> = []
 
     private var viewConstraintList: [ObjectIdentifier: ViewConstraintList] = [:]
     private var previousViewConstraintList: [ObjectIdentifier: ViewConstraintList] = [:]
@@ -134,18 +134,17 @@ public class LayoutConstraintSolverCache {
     }
 
     fileprivate func saveState() {
-        previousConstraintDefinitionsMap = constraintDefinitionsMap
+        previousConstraintSet = constraintSet
         previousViewConstraintList = viewConstraintList.mapValues { $0.clone() }
 
-        constraintDefinitionsMap = Dictionary(minimumCapacity: previousConstraintDefinitionsMap.count)
-        viewConstraintList = Dictionary(minimumCapacity: previousViewConstraintList.count)
+        constraintSet.removeAll(keepingCapacity: true)
+        viewConstraintList.removeAll(keepingCapacity: true)
     }
 
-    fileprivate func compareState() -> StateDiff {
-        var constDiff: [Difference<LayoutConstraint, ConstraintDefinition>] = []
-        var viewDiff: [ViewConstraintList.StateDiff] = []
+    fileprivate func compareState() -> CacheStateDiff {
+        let constDiff = constraintSet.makeDifference(withPrevious: previousConstraintSet)
 
-        constDiff = constraintDefinitionsMap.makeDifference(withPrevious: previousConstraintDefinitionsMap)
+        var viewDiff: [ViewConstraintList.StateDiff] = []
 
         for (key, value) in viewConstraintList {
             let diff: ViewConstraintList.StateDiff
@@ -167,7 +166,7 @@ public class LayoutConstraintSolverCache {
             }
         }
 
-        return StateDiff(constraintDiffs: constDiff, viewStateDiffs: viewDiff)
+        return CacheStateDiff(constraintDiffs: constDiff, viewStateDiffs: viewDiff)
     }
 
     internal func constraintList(for container: LayoutVariablesContainer) -> ViewConstraintList {
@@ -191,20 +190,16 @@ public class LayoutConstraintSolverCache {
         return list
     }
 
-    fileprivate func updateSolver(_ diff: StateDiff) throws {
+    fileprivate func updateSolver(_ diff: CacheStateDiff) throws {
         let transaction = solver.startTransaction()
 
         for constDiff in diff.constraintDiffs {
             switch constDiff {
-            case .added(_, let constraintDef):
+            case .added(let constraintDef):
                 transaction.addConstraint(constraintDef.constraint)
 
-            case .removed(_, let constraintDef):
+            case .removed(let constraintDef):
                 transaction.removeConstraint(constraintDef.constraint)
-
-            case let .updated(_, old, new):
-                transaction.removeConstraint(old.constraint)
-                transaction.addConstraint(new.constraint)
             }
         }
 
@@ -244,7 +239,7 @@ public class LayoutConstraintSolverCache {
         }
 
         // For debugging purposes
-        #if DUMP_CONSTRAINTS_TO_DESKTOP
+        #if !DUMP_CONSTRAINTS_TO_DESKTOP
 
         do {
             let data = try SolverSerializer.serialize(transaction: transaction)
@@ -267,7 +262,7 @@ public class LayoutConstraintSolverCache {
 
         try transaction.apply()
 
-        #if DUMP_CONSTRAINTS_TO_DESKTOP
+        #if !DUMP_CONSTRAINTS_TO_DESKTOP
 
         do {
             var variables: [Variable] = []
@@ -294,97 +289,83 @@ public class LayoutConstraintSolverCache {
         #endif // DUMP_CONSTRAINTS_TO_DESKTOP
     }
 
-    fileprivate func addConstraints(_ constraints: [LayoutConstraint]) {
+    fileprivate func inspectConstraints(_ constraints: [LayoutConstraint]) {
         for constraint in constraints {
-            addConstraint(constraint)
+            inspectConstraint(constraint)
         }
     }
 
-    private func addConstraint(_ constraint: LayoutConstraint) {
+    private func inspectConstraint(_ constraint: LayoutConstraint) {
         if !constraint.isEnabled {
             return
         }
-        if let previous = previousConstraintDefinitionsMap[constraint] {
-            if previous.matches(constraint) {
-                constraintDefinitionsMap[constraint] = previous
-                return
+
+        if let definition = ConstraintDefinition(layoutConstraint: constraint) {
+            constraintSet.insert(definition)
+        }
+    }
+
+    struct ConstraintDefinition: Hashable {
+        var constraint: Constraint
+        var definition: LayoutConstraint.Definition
+
+        internal init(constraint: Constraint, definition: LayoutConstraint.Definition) {
+            self.constraint = constraint
+            self.definition = definition
+        }
+
+        internal init?(layoutConstraint: LayoutConstraint) {
+            guard let constraint = layoutConstraint.createConstraint() else {
+                return nil
             }
-        }
-
-        let definition = toDefinition(constraint)
-        constraintDefinitionsMap[constraint] = definition
-    }
-
-    private func toDefinition(_ layoutConstraint: LayoutConstraint) -> ConstraintDefinition? {
-        guard let constraint = layoutConstraint.getOrCreateCachedConstraint() else {
-            return nil
-        }
-
-        return
-            ConstraintDefinition(constraint: constraint,
-                                 container: layoutConstraint.container,
-                                 relationship: layoutConstraint.relationship,
-                                 offset: layoutConstraint.offset,
-                                 multiplier: layoutConstraint.multiplier,
-                                 priority: layoutConstraint.priority)
-    }
-
-    fileprivate class ConstraintDefinition: Equatable {
-        internal init(constraint: Constraint, container: LayoutVariablesContainer?,
-                      relationship: Relationship, offset: Double,
-                      multiplier: Double, priority: LayoutPriority) {
 
             self.constraint = constraint
-            self.container = container
-            self.relationship = relationship
-            self.offset = offset
-            self.multiplier = multiplier
-            self.priority = priority
+            self.definition = layoutConstraint.definition
         }
 
-        var constraint: Constraint
-        var container: LayoutVariablesContainer?
-        var relationship: Relationship
-        var offset: Double
-        var multiplier: Double
-        var priority: LayoutPriority
-
-        func matches(_ constraint: LayoutConstraint) -> Bool {
-            return container === constraint.container
-                && relationship == constraint.relationship
-                && offset == constraint.offset
-                && multiplier == constraint.multiplier
-                && priority == constraint.priority
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(definition)
         }
 
-        static func == (lhs: LayoutConstraintSolverCache.ConstraintDefinition,
-                        rhs: LayoutConstraintSolverCache.ConstraintDefinition) -> Bool {
-
-            return lhs.container === rhs.container
-                && lhs.relationship == rhs.relationship
-                && lhs.offset == rhs.offset
-                && lhs.multiplier == rhs.multiplier
-                && lhs.priority == rhs.priority
+        static func == (lhs: Self, rhs: Self) -> Bool {
+            return lhs.definition == rhs.definition && lhs.constraint.hasSameEffects(as: rhs.constraint)
         }
     }
 
-    fileprivate struct StateDiff {
-        var constraintDiffs: [Difference<LayoutConstraint, ConstraintDefinition>]
+    fileprivate struct CacheStateDiff {
+        var constraintDiffs: [UnkeyedDifference<ConstraintDefinition>]
         var viewStateDiffs: [ViewConstraintList.StateDiff]
     }
 }
 
-private enum Difference<Key, Value> {
+private enum UnkeyedDifference<Value> {
+    case removed(Value)
+    case added(Value)
+}
+
+private enum KeyedDifference<Key, Value> {
     case removed(Key, Value)
     case added(Key, Value)
     case updated(Key, old: Value, new: Value)
 }
 
+private extension Set {
+    func makeDifference(withPrevious previous: Set) -> [UnkeyedDifference<Element>] {
+        return previous.subtracting(self).map(UnkeyedDifference.removed)
+             + self.subtracting(previous).map(UnkeyedDifference.added)
+    }
+}
+
 private extension Dictionary {
     func makeDifference(withPrevious previous: Dictionary,
-                        didUpdate: (Key, _ old: Value, _ new: Value) -> Bool) -> [Difference<Key, Value>] {
+                        didUpdate: (Key, _ old: Value, _ new: Value) -> Bool) -> [KeyedDifference<Key, Value>] {
 
-        var result: [Difference<Key, Value>] = []
+        var result: [KeyedDifference<Key, Value>] = []
+
+        for (key, value) in previous where self[key] == nil {
+            result.append(.removed(key, value))
+        }
+
         for (key, value) in self {
             if let older = previous[key] {
                 if didUpdate(key, older, value) {
@@ -395,16 +376,12 @@ private extension Dictionary {
             }
         }
 
-        for (key, value) in previous where self[key] == nil {
-            result.append(.removed(key, value))
-        }
-
         return result
     }
 }
 
 private extension Dictionary where Value: Equatable {
-    func makeDifference(withPrevious previous: Dictionary) -> [Difference<Key, Value>] {
+    func makeDifference(withPrevious previous: Dictionary) -> [KeyedDifference<Key, Value>] {
         return makeDifference(withPrevious: previous, didUpdate: { $1 != $2 })
     }
 }

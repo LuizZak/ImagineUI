@@ -1,6 +1,6 @@
 import CassowarySwift
 
-internal struct AnyLayoutAnchor: LayoutAnchorType, Equatable {
+internal struct AnyLayoutAnchor: LayoutAnchorType, Hashable {
     weak var _owner: LayoutVariablesContainer?
     var kind: AnchorKind
 
@@ -55,6 +55,11 @@ internal struct AnyLayoutAnchor: LayoutAnchorType, Equatable {
 
     func isEqual(to other: AnyLayoutAnchor) -> Bool {
         return other._owner === _owner && other.kind == kind
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(_owner.map(ObjectIdentifier.init))
+        hasher.combine(kind)
     }
 
     static func == (lhs: AnyLayoutAnchor, rhs: AnyLayoutAnchor) -> Bool {

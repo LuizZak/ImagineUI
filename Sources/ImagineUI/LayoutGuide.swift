@@ -1,7 +1,7 @@
 import Geometry
 
 /// A rectangular area that can interact with the layout constraint system
-public class LayoutGuide {
+public final class LayoutGuide {
     var layoutVariables: LayoutVariables!
     var constraints: [LayoutConstraint] = []
 
@@ -15,6 +15,24 @@ public class LayoutGuide {
 
     public init() {
         layoutVariables = LayoutVariables(container: self)
+    }
+
+    public func removeFromSuperview() {
+        guard let superview = owningView else {
+            return
+        }
+
+        if let index = superview.layoutGuides.firstIndex(where: { $0 === self }) {
+            superview.layoutGuides.remove(at: index)
+
+            for constraint in constraints {
+                constraint.removeConstraint()
+            }
+        } else {
+            assertionFailure("Layout guide with owningView is not referenced in its layout guide collection: View: \(superview) LayoutGuide: \(self)")
+        }
+
+        owningView = nil
     }
 }
 

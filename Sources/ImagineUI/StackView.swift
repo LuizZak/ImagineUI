@@ -4,6 +4,8 @@ import CassowarySwift
 /// A view that lays out a set of its arranged subviews horizontally or
 /// vertically automatically
 open class StackView: View {
+    private let layoutGuideCache = LayoutGuideCache()
+
     private let parentGuide = LayoutGuide()
     private var arrangedSubviews: [View] = []
     private var customSpacing: [View: Double] = [:]
@@ -52,14 +54,15 @@ open class StackView: View {
     private func recreateConstraints() {
         suspendLayout()
 
-        for layoutGuide in contentGuides {
-            removeLayoutGuide(layoutGuide)
+        // Reversed to allow later dequeuing in the same order
+        // which enables reusal of constraints in the layout system.
+        for layoutGuide in contentGuides.reversed() {
+            layoutGuide.removeFromSuperview()
+            _reclaim(layoutGuide: layoutGuide)
         }
 
-        contentGuides.removeAll()
-
         for _ in arrangedSubviews {
-            _addContentGuide()
+            _dequeueContentGuide()
         }
 
         for (i, view) in arrangedSubviews.enumerated() {
@@ -70,13 +73,18 @@ open class StackView: View {
     }
 
     @discardableResult
-    private func _addContentGuide() -> LayoutGuide {
-        let guide = LayoutGuide()
+    private func _dequeueContentGuide() -> LayoutGuide {
+        let guide = layoutGuideCache.dequeueLayoutGuide()
         contentGuides.append(guide)
 
         addLayoutGuide(guide)
 
         return guide
+    }
+
+    private func _reclaim(layoutGuide: LayoutGuide) {
+        contentGuides.removeAll(where: { $0 === layoutGuide })
+        layoutGuideCache.reclaim(layoutGuide: layoutGuide)
     }
 
     private func _makeConstraints(view: View, guide: LayoutGuide, index: Int) {
@@ -203,7 +211,7 @@ open class StackView: View {
         arrangedSubviews.append(view)
         addSubview(view)
 
-        let guide = _addContentGuide()
+        let guide = _dequeueContentGuide()
 
         _makeConstraints(view: view, guide: guide, index: contentGuides.count - 1)
     }
@@ -263,5 +271,21 @@ open class StackView: View {
         /// or vertically along the available space, perpendicular to the stack
         /// view's orientation
         case centered
+    }
+
+    private class LayoutGuideCache {
+        var reclaimed: [LayoutGuide] = []
+
+        func dequeueLayoutGuide() -> LayoutGuide {
+            if let next = reclaimed.popLast() {
+                return next
+            }
+
+            return LayoutGuide()
+        }
+
+        func reclaim(layoutGuide: LayoutGuide) {
+            reclaimed.append(layoutGuide)
+        }
     }
 }

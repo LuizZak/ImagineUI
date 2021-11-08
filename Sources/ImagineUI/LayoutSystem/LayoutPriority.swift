@@ -1,7 +1,7 @@
 import CassowarySwift
 
 /// Priority for layout constraints
-public struct LayoutPriority {
+public struct LayoutPriority: Hashable {
     public static let required = LayoutPriority(1000)
     public static let high = LayoutPriority(750)
     public static let medium = LayoutPriority(500)
@@ -14,10 +14,6 @@ public struct LayoutPriority {
     public init(_ value: Int) {
         self.value = min(1000, max(1, value))
     }
-}
-
-extension LayoutPriority: Hashable {
-
 }
 
 extension LayoutPriority: ExpressibleByIntegerLiteral {

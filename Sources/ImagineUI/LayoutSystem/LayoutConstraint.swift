@@ -1,58 +1,61 @@
 import CassowarySwift
 
 public class LayoutConstraint: Hashable {
-    var cachedConstraint: Constraint?
-    
-    /// The container that effectively contains this constraint
-    weak var container: LayoutVariablesContainer?
+    var definition: Definition {
+        didSet {
+            if definition == oldValue { return }
 
-    internal let firstCast: AnyLayoutAnchor
-    internal let secondCast: AnyLayoutAnchor?
-    
+            container?.setNeedsLayout()
+        }
+    }
+
+    /// The container that effectively contains this constraint
+    var container: LayoutVariablesContainer? {
+        definition.container
+    }
+
+    var firstCast: AnyLayoutAnchor {
+        definition.firstCast
+    }
+    var secondCast: AnyLayoutAnchor? {
+        definition.secondCast
+    }
+
     public var first: LayoutAnchorType {
         return firstCast
     }
     public var second: LayoutAnchorType? {
         return secondCast
     }
-    
-    public let relationship: Relationship
-    
+
+    public var relationship: Relationship {
+        definition.relationship
+    }
+
     public var offset: Double {
-        didSet {
-            if offset == oldValue { return }
-            
-            cachedConstraint = nil
-            container?.setNeedsLayout()
-        }
+        get { definition.offset }
+        set { definition.offset = newValue }
     }
-    
+
     public var multiplier: Double {
-        didSet {
-            if multiplier == oldValue { return }
-            
-            cachedConstraint = nil
-            container?.setNeedsLayout()
-        }
+        get { definition.multiplier }
+        set { definition.multiplier = newValue }
     }
-    
+
     public var priority: LayoutPriority {
-        didSet {
-            assert(oldValue != .required,
+        get { definition.priority }
+        set {
+            assert(priority != .required,
                    "Cannot change priority of required constraints")
-            
-            if priority == oldValue { return }
-            
-            cachedConstraint = nil
-            container?.setNeedsLayout()
+
+            definition.priority = newValue
         }
     }
-    
+
     public var isEnabled: Bool = true {
         didSet {
             if isEnabled == oldValue { return }
-            
-            cachedConstraint = nil
+
             container?.setNeedsLayout()
         }
     }
@@ -65,45 +68,46 @@ public class LayoutConstraint: Hashable {
                  multiplier: Double,
                  priority: LayoutPriority) {
 
-        self.container = container
-        self.firstCast = first
-        self.secondCast = second
-        self.relationship = relationship
-        self.offset = offset
-        self.multiplier = multiplier
-        self.priority = priority
+        definition = Definition(
+            container: container,
+            firstCast: first,
+            secondCast: second,
+            relationship: relationship,
+            offset: offset,
+            multiplier: multiplier,
+            priority: priority
+        )
     }
-    
+
     private init(container: LayoutVariablesContainer,
                  first: AnyLayoutAnchor,
                  relationship: Relationship,
                  offset: Double,
                  priority: LayoutPriority) {
 
-        self.container = container
-        self.firstCast = first
-        self.secondCast = nil
-        self.relationship = relationship
-        self.offset = offset
-        self.multiplier = 1
-        self.priority = priority
+        definition = Definition(
+            container: container,
+            firstCast: first,
+            secondCast: nil,
+            relationship: relationship,
+            offset: offset,
+            multiplier: 1,
+            priority: priority
+        )
     }
-    
-    func getOrCreateCachedConstraint() -> Constraint? {
-        if let cached = cachedConstraint {
-            return cached
-        }
+
+    func createConstraint() -> Constraint? {
         guard let firstVariable = firstCast.getVariable() else {
             return nil
         }
-        
+
         let strength = priority.cassowaryStrength
-        
+
         let constraint: Constraint?
         if let secondCast = secondCast,
             let secondVariable = secondCast.getVariable(),
             let container = container {
-            
+
             // Create an expression of the form:
             //
             // first [ == | <= | >= ] (second - containerLocation) * multiplier + containerLocation + offset
@@ -137,9 +141,9 @@ public class LayoutConstraint: Hashable {
             } else {
                 let secondExpr = secondCast.makeExpression(variable: secondVariable,
                                                            relative: container)
-                
+
                 let adjustedOffset = secondCast.makeRelativeExpression(relative: container) + offset
-                
+
                 constraint =
                     relationship
                         .makeConstraint(left: firstVariable,
@@ -154,9 +158,7 @@ public class LayoutConstraint: Hashable {
                     .makeConstraint(left: firstVariable, offset: offset)
                     .setStrength(strength)
         }
-        
-        cachedConstraint = constraint
-        
+
         return constraint
     }
 
@@ -220,7 +222,7 @@ public class LayoutConstraint: Hashable {
                 fatalError("No view in hierarchy found for input type \(type(of: second))")
             }
         }
-        
+
         guard let ancestor = View.firstCommonAncestor(between: view1, view2) else {
             fatalError("Cannot add constraint between two views in two different hierarchies")
         }
@@ -255,7 +257,7 @@ public class LayoutConstraint: Hashable {
         guard let container = first._owner else {
             fatalError("Attempting to create constraint with reference to an anchor of a view or layout guide that was already deallocated")
         }
-        
+
         let constraint =
             LayoutConstraint(container: container,
                              first: first,
@@ -318,7 +320,7 @@ public class LayoutConstraint: Hashable {
         if let constraint = constraint {
             constraint.offset = offset
             constraint.multiplier = multiplier
-            
+
             if let priority = priority {
                 constraint.priority = priority
             }
@@ -345,7 +347,7 @@ public class LayoutConstraint: Hashable {
         if let constraint = constraint {
             constraint.offset = offset
             constraint.multiplier = multiplier
-            
+
             if let priority = priority {
                 constraint.priority = priority
             }
@@ -355,13 +357,44 @@ public class LayoutConstraint: Hashable {
             fatalError("Could not find constraint anchoring \(first) to update")
         }
     }
-    
+
     public static func == (lhs: LayoutConstraint, rhs: LayoutConstraint) -> Bool {
         return lhs === rhs
     }
-    
+
     public func hash(into hasher: inout Hasher) {
         hasher.combine(ObjectIdentifier(self))
+    }
+
+    struct Definition: Hashable {
+        /// The container that effectively contains a constraint
+        weak var container: LayoutVariablesContainer?
+
+        let firstCast: AnyLayoutAnchor
+        let secondCast: AnyLayoutAnchor?
+        let relationship: Relationship
+
+        var offset: Double
+        var multiplier: Double
+        var priority: LayoutPriority
+
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(firstCast)
+            hasher.combine(secondCast)
+            hasher.combine(relationship)
+            hasher.combine(offset)
+            hasher.combine(multiplier)
+            hasher.combine(priority)
+        }
+
+        static func == (lhs: Self, rhs: Self) -> Bool {
+            return lhs.relationship == rhs.relationship
+                && lhs.firstCast == rhs.firstCast
+                && lhs.secondCast == rhs.secondCast
+                && lhs.offset == rhs.offset
+                && lhs.multiplier == rhs.multiplier
+                && lhs.priority == rhs.priority
+        }
     }
 }
 
@@ -381,11 +414,11 @@ extension LayoutConstraint: CustomStringConvertible {
         if priority != .required {
             trailing += " @ \(priority)"
         }
-        
+
         if let second = second {
             return "<\(first) \(relationship) \(second)\(trailing)>"
         }
-        
+
         return "<\(first) \(relationship)\(trailing)>"
     }
 }

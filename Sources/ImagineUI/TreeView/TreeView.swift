@@ -1,6 +1,8 @@
 import Rendering
 
 public class TreeView: ControlView {
+    private let viewCache: TreeViewCache = TreeViewCache()
+
     /// Set of items that are currently in an expanded state.
     private var expanded: Set<ItemIndex> = []
     private var selected: Set<ItemIndex> = []
@@ -89,10 +91,12 @@ public class TreeView: ControlView {
             resumeLayout(setNeedsLayout: true)
         }
 
-        for subview in stackView.subviews {
-            subview.removeFromSuperview()
+        for view in visibleItems {
+            view.removeFromSuperview()
+            _reclaim(view: view)
         }
-        visibleItems.removeAll()
+
+        visibleItems.removeAll(keepingCapacity: true)
 
         guard let dataSource = self.dataSource else {
             return
@@ -111,26 +115,32 @@ public class TreeView: ControlView {
     private func _makeViewForItem(at index: ItemIndex, dataSource: TreeViewDataSource) -> ItemView {
         let isExpanded = self.expanded.contains(index)
 
-        let item = ItemView(itemIndex: index, isExpanded: isExpanded)
-        item.label = dataSource.titleForItem(at: index)
-        item.isChevronVisible = dataSource.hasItems(self, at: index.asHierarchyIndex)
-        item.mouseDown.addListener(owner: self) { [weak self] (sender, _) in
-            if let sender = sender as? ItemView {
-                self?.selectItem(sender)
+        let item = viewCache.dequeue(itemIndex: index, isExpanded: isExpanded) { item in
+            item.mouseDown.addListener(owner: self) { [weak self] (sender, _) in
+                if let sender = sender as? ItemView {
+                    self?.selectItem(sender)
+                }
+            }
+            item.willExpand.addListener(owner: self) { [weak self] (sender, event) in
+                guard let self = self else { return }
+
+                event.cancel = self.raiseExpandEvent(sender.itemIndex)
+            }
+            item.willCollapse.addListener(owner: self) { [weak self] (sender, event) in
+                guard let self = self else { return }
+
+                event.cancel = self.raiseCollapseEvent(sender.itemIndex)
             }
         }
-        item.willExpand.addListener(owner: self) { [weak self] (sender, event) in
-            guard let self = self else { return }
 
-            event.cancel = self.raiseExpandEvent(sender.itemIndex)
-        }
-        item.willCollapse.addListener(owner: self) { [weak self] (sender, event) in
-            guard let self = self else { return }
-
-            event.cancel = self.raiseCollapseEvent(sender.itemIndex)
-        }
+        item.label = dataSource.titleForItem(at: index)
+        item.isChevronVisible = dataSource.hasItems(self, at: index.asHierarchyIndex)
 
         return item
+    }
+
+    private func _reclaim(view: ItemView) {
+        viewCache.reclaim(view: view)
     }
 
     private func raiseExpandEvent(_ index: ItemIndex) -> Bool {
@@ -313,6 +323,37 @@ public class TreeView: ControlView {
                     renderer.stroke(polyline: strokePoints.vertices)
                 }
             }
+        }
+    }
+
+    private class TreeViewCache {
+        var reclaimed: [ItemView] = []
+
+        func dequeue(itemIndex: TreeView.ItemIndex, isExpanded: Bool, initializer: (ItemView) -> Void) -> ItemView {
+            // Search for a matching item index
+            for (i, view) in reclaimed.enumerated() where view.itemIndex == itemIndex {
+                reclaimed.remove(at: i)
+                view.isExpanded = isExpanded
+                return view
+            }
+
+            // Pop any item
+            if let next = reclaimed.popLast() {
+                next.itemIndex = itemIndex
+                next.isExpanded = isExpanded
+                return next
+            }
+
+            // Create a new view as a last resort.
+            let view = ItemView(itemIndex: itemIndex, isExpanded: isExpanded)
+
+            initializer(view)
+
+            return view
+        }
+
+        func reclaim(view: ItemView) {
+            reclaimed.append(view)
         }
     }
 }
