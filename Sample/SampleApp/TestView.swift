@@ -76,7 +76,7 @@ class TestView: NSView {
                   timeInSecondsFunction: { CACurrentMediaTime() })
         )
         
-        let sample = ImagineUISample(size: BLSizeI(w: Int32(bounds.width), h: Int32(bounds.height)))
+        let sample = TreeSampleWindow(size: BLSizeI(w: Int32(bounds.width), h: Int32(bounds.height)))
         sample.delegate = self
         self.sample = sample
         

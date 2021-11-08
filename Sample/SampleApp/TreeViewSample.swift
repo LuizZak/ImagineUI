@@ -1,9 +1,10 @@
 import Foundation
-import CassowarySwift
+import QuartzCore
 import SwiftBlend2D
+import ImagineUI
+import CassowarySwift
+import Cocoa
 import Blend2DRenderer
-import MinWin32
-import ImagineUI_Win
 
 private class DataSource: TreeViewDataSource {
     func hasItems(_ treeView: TreeView, at hierarchyIndex: TreeView.HierarchyIndex) -> Bool {
@@ -30,41 +31,35 @@ private class DataSource: TreeViewDataSource {
     }
 }
 
-class TreeSampleWindow: Blend2DWindowContentType {
+class TreeSampleWindow: Blend2DSample {
     private var lastFrame: TimeInterval = 0
-    private var timer: Timer?
     private let data: DataSource = DataSource()
 
-    weak var delegate: Blend2DWindowContentDelegate?
+    weak var delegate: Blend2DSampleDelegate?
     var bounds: BLRect
-
-    var size: UIIntSize
-
-    var width: Int { size.width }
-    var height: Int { size.height }
+    var width: Int
+    var height: Int
 
     let rendererContext = Blend2DRendererContext()
 
-    var preferredRenderScale: UIVector = UIVector(repeating: 1)
+    var sampleRenderScale = BLPoint(x: 2, y: 2)
 
     var controlSystem = DefaultControlSystem()
 
     var rootViews: [RootView]
+    
+    var currentRedrawRegion: UIRectangle? = nil
 
     var debugDrawFlags: Set<DebugDraw.DebugDrawFlags> = []
-
-    init(size: UIIntSize = .init(width: 600, height: 500)) {
-        self.size = size
-        bounds = BLRect(location: .zero, size: BLSize(w: Double(size.width), h: Double(size.height)))
+    
+    init(size: BLSizeI) {
+        width = Int(size.w)
+        height = Int(size.h)
+        bounds = BLRect(location: .zero, size: BLSize(w: Double(size.w), h: Double(size.h)))
         rootViews = []
         controlSystem.delegate = self
 
         initializeWindows()
-        initializeTimer()
-    }
-
-    deinit {
-        timer?.invalidate()
     }
 
     func initializeWindows() {
@@ -95,108 +90,86 @@ class TreeSampleWindow: Blend2DWindowContentType {
         createRenderSettingsWindow()
 
         rootViews.append(window)
-
-        lastFrame = Stopwatch.global.timeIntervalSinceStart()
     }
-
-    private func initializeTimer() {
-        let timer = Timer(timeInterval: 1 / 60.0, repeats: true) { [weak self] _ in
-            self?.update(Stopwatch.global.timeIntervalSinceStart())
-        }
-
-        RunLoop.main.add(timer, forMode: .default)
-
-        self.timer = timer
-    }
-
-    func willStartLiveResize() {
-
-    }
-
-    func didEndLiveResize() {
-
-    }
-
-    func didClose() {
-        WinLogger.info("\(self): Closed")
-        app.requestQuit()
-    }
-
-    func resize(_ newSize: UIIntSize) {
-        self.size = newSize
-
+    
+    func resize(width: Int, height: Int) {
+        self.width = width
+        self.height = height
+        
         bounds = BLRect(location: .zero, size: BLSize(w: Double(width), h: Double(height)))
-
-        for view in rootViews {
-            view.setNeedsLayout()
+        currentRedrawRegion = bounds.asRectangle
+        
+        for case let window as Window in rootViews where window.windowState == .maximized {
+            window.setNeedsLayout()
         }
     }
-
+    
     func invalidateScreen() {
+        currentRedrawRegion = bounds.asRectangle
         delegate?.invalidate(bounds: bounds.asRectangle)
     }
-
+    
     func update(_ time: TimeInterval) {
         // Fixed-frame update
         let delta = time - lastFrame
         lastFrame = time
-
         Scheduler.instance.onFixedFrame(delta)
     }
-
+    
     func performLayout() {
         // Layout loop
         for rootView in rootViews {
             rootView.performLayout()
         }
     }
-
-    func render(context ctx: BLContext, renderScale: UIVector, clipRegion: ClipRegion) {
+    
+    func render(context ctx: BLContext) {
+        guard let rect = currentRedrawRegion else {
+            return
+        }
+        
+        ctx.scale(by: sampleRenderScale)
+        ctx.setFillStyle(BLRgba32.cornflowerBlue)
+        
+        let redrawRegion = BLRegion(rectangle: BLRectI(rounding: rect.asBLRect))
+        
+        ctx.fillRect(rect.asBLRect)
+        
         let renderer = Blend2DRenderer(context: ctx)
-        renderer.scale(by: renderScale)
-
-        renderer.setFill(.cornflowerBlue)
-        renderer.fill(clipRegion.bounds())
-
-        ctx.clipToRect(clipRegion.bounds().asBLRect)
-
+        
         // Redraw loop
         for rootView in rootViews {
-            rootView.renderRecursive(in: renderer, screenRegion: clipRegion)
+            rootView.renderRecursive(in: renderer, screenRegion: Blend2DClipRegion(region: redrawRegion))
         }
-
+        
         // Debug render
         for rootView in rootViews {
             DebugDraw.debugDrawRecursive(rootView, flags: debugDrawFlags, in: renderer)
         }
     }
-
+    
     func mouseDown(event: MouseEventArgs) {
         controlSystem.onMouseDown(event)
     }
-
+    
     func mouseMoved(event: MouseEventArgs) {
         controlSystem.onMouseMove(event)
     }
-
+    
     func mouseUp(event: MouseEventArgs) {
         controlSystem.onMouseUp(event)
     }
-
+    
     func mouseScroll(event: MouseEventArgs) {
         controlSystem.onMouseWheel(event)
     }
-
+    
     func keyDown(event: KeyEventArgs) {
         controlSystem.onKeyDown(event)
     }
-
+    
     func keyUp(event: KeyEventArgs) {
         controlSystem.onKeyUp(event)
-    }
-
-    func keyPress(event: KeyPressEventArgs) {
-        controlSystem.onKeyPress(event)
     }
 
     func createRenderSettingsWindow() {
@@ -302,13 +275,17 @@ class TreeSampleWindow: Blend2DWindowContentType {
 }
 
 extension TreeSampleWindow: DefaultControlSystemDelegate {
+    func firstResponderChanged(_ newFirstResponder: KeyboardEventHandler?) {
+        
+    }
+    
     func bringRootViewToFront(_ rootView: RootView) {
         rootViews.removeAll(where: { $0 == rootView })
         rootViews.append(rootView)
-
+        
         rootView.invalidate()
     }
-
+    
     func controlViewUnder(point: UIVector, enabledOnly: Bool) -> ControlView? {
         for window in rootViews.reversed() {
             let converted = window.convertFromScreen(point)
@@ -316,20 +293,39 @@ extension TreeSampleWindow: DefaultControlSystemDelegate {
                 return view
             }
         }
-
+        
         return nil
     }
-
+    
     func setMouseCursor(_ cursor: MouseCursorKind) {
-        delegate?.setMouseCursor(cursor)
+        switch cursor {
+        case .iBeam:
+            NSCursor.iBeam.set()
+        case .arrow:
+            NSCursor.arrow.set()
+        case .resizeLeftRight:
+            NSCursor.resizeLeftRight.set()
+        case .resizeUpDown:
+            NSCursor.resizeUpDown.set()
+        case let .custom(imagePath, hotspot):
+            let cursor = NSCursor(image: NSImage(byReferencingFile: imagePath)!,
+                                  hotSpot: NSPoint(x: hotspot.x, y: hotspot.y))
+            
+            cursor.set()
+        case .resizeTopLeftBottomRight:
+            // TODO: Add support to this cursor type.
+            break
+        case .resizeTopRightBottomLeft:
+            // TODO: Add support to this cursor type.
+            break
+        case .resizeAll:
+            // TODO: Add support to this cursor type.
+            break
+        }
     }
-
+    
     func setMouseHiddenUntilMouseMoves() {
-        delegate?.setMouseHiddenUntilMouseMoves()
-    }
-
-    func firstResponderChanged(_ newFirstResponder: KeyboardEventHandler?) {
-        delegate?.firstResponderChanged(newFirstResponder)
+        NSCursor.setHiddenUntilMouseMoves(true)
     }
 }
 
