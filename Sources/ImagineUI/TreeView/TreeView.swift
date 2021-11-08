@@ -472,7 +472,7 @@ public class TreeView: ControlView {
 
 extension TreeView {
     /// Specifies the hierarchical index for a sub-tree.
-    public struct HierarchyIndex: Hashable {
+    public struct HierarchyIndex: Hashable, Comparable {
         /// The hierarchical reference for the root item of a tree.
         public static let root: HierarchyIndex = HierarchyIndex(indices: [])
 
@@ -512,9 +512,27 @@ extension TreeView {
 
             return indices[0..<other.indices.count] == other.indices[...]
         }
+
+        /// Returns `true` if `lhs` comes before in a hierarchy compared to
+        /// `rhs`.
+        ///
+        /// A hierarchy item comes before another if every index in `indices`
+        /// compares lower to another hierarchy item.
+        ///
+        /// In case all indices are the same between the two parameters, `true`
+        /// is returned if `rhs` is of a deeper hierarchy (`rhs.indices.count > lhs.indices.count`).
+        public static func < (lhs: Self, rhs: Self) -> Bool {
+            for (l, r) in zip(lhs.indices, rhs.indices) {
+                if l > r {
+                    return false
+                }
+            }
+
+            return lhs.depth < rhs.depth
+        }
     }
 
-    public struct ItemIndex: Hashable {
+    public struct ItemIndex: Hashable, Comparable {
         /// The hierarchy index for the parent of this index reference.
         public var parent: HierarchyIndex
 
@@ -530,6 +548,16 @@ extension TreeView {
         /// Returns `true` if this item belongs to a given hierarchy index.
         public func isChild(of hierarchy: HierarchyIndex) -> Bool {
             return parent.isSubHierarchy(of: hierarchy)
+        }
+
+        /// Returns `true` if `lhs` comes before in a hierarchy compared to
+        /// `rhs`.
+        ///
+        /// An item index comes before another if its hierarchical parent compares
+        /// lower to the other item's, or if the hierarchical parent is the same,
+        /// if the `index` compares lower.
+        public static func < (lhs: Self, rhs: Self) -> Bool {
+            return lhs.parent < rhs.parent || lhs.index < rhs.index
         }
     }
 }
