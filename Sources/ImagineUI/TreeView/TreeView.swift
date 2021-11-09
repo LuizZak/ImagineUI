@@ -17,6 +17,10 @@ public class TreeView: ControlView {
     @Event public var willExpand: CancellableActionEvent<TreeView, ItemIndex>
     @Event public var willCollapse: CancellableActionEvent<TreeView, ItemIndex>
 
+    open override var canBecomeFirstResponder: Bool {
+        return true
+    }
+
     public override init() {
         super.init()
 
@@ -54,9 +58,71 @@ public class TreeView: ControlView {
         populateItems()
     }
 
-    private func selectItem(_ itemView: ItemView) {
+    open override func canHandle(_ eventRequest: EventRequest) -> Bool {
+        if eventRequest is KeyboardEventRequest {
+            return true
+        }
+
+        return super.canHandle(eventRequest)
+    }
+
+    open override func onKeyDown(_ event: KeyEventArgs) {
+        super.onKeyDown(event)
+
+        guard !event.handled else { return }
+
+        if _handleKeyDown(event.keyCode, event.modifiers) {
+            event.handled = true
+        }
+    }
+
+    private func _handleKeyDown(_ keyCode: Keys, _ modifiers: KeyboardModifier) -> Bool {
+        switch keyCode {
+        case .right:
+            guard selected.count == 1, let index = selected.first else {
+                return true
+            }
+
+            if _isExpanded(index: index) {
+                let next = index.asHierarchyIndex.subItem(index: 0)
+
+                if let visible = _visibleItem(withIndex: next) {
+                    selectItemView(visible)
+                    return true
+                }
+            } else {
+                return self.raiseExpandEvent(index)
+            }
+
+        case .left:
+            guard selected.count == 1, let index = selected.first else {
+                return true
+            }
+
+            if !_isExpanded(index: index) {
+                let parent = index.parent
+
+                if let visible = _visibleItem(forHierarchyIndex: parent) {
+                    selectItemView(visible)
+                    return true
+                }
+            } else {
+                return self.raiseCollapseEvent(index)
+            }
+        default:
+            break
+        }
+
+        return false
+    }
+
+    private func selectItemView(_ itemView: ItemView) {
+        if !becomeFirstResponder() {
+            return
+        }
+
         for index in selected {
-            if let view = visibleItem(withIndex: index) {
+            if let view = _visibleItem(withIndex: index) {
                 view.isSelected = false
             }
         }
@@ -71,10 +137,6 @@ public class TreeView: ControlView {
         return scrollView.viewUnder(point: point) { view in
             view is ItemView
         } as? ItemView
-    }
-
-    private func visibleItem(withIndex index: ItemIndex) -> ItemView? {
-        return visibleItems.first(where: { $0.itemIndex == index })
     }
 
     private func populateItems() {
@@ -99,7 +161,7 @@ public class TreeView: ControlView {
         // column.
         var reserveChevronSpace = false
         for index in 0..<dataSource.numberOfItems(self, at: hierarchy) {
-            let itemIndex = ItemIndex(parent: hierarchy, index: index)
+            let itemIndex = hierarchy.subItem(index: index)
             if dataSource.hasItems(self, at: itemIndex.asHierarchyIndex) {
                 reserveChevronSpace = true
                 break
@@ -107,7 +169,7 @@ public class TreeView: ControlView {
         }
 
         for index in 0..<dataSource.numberOfItems(self, at: hierarchy) {
-            let itemIndex = ItemIndex(parent: hierarchy, index: index)
+            let itemIndex = hierarchy.subItem(index: index)
             let view = _makeViewForItem(at: itemIndex, dataSource: dataSource)
             view.reserveChevronSpace = reserveChevronSpace
 
@@ -118,6 +180,16 @@ public class TreeView: ControlView {
                 _recursiveCreateViews(itemIndex.asHierarchyIndex, into: view.itemsStackView, dataSource: dataSource)
             }
         }
+    }
+
+    private func _visibleItem(forHierarchyIndex index: HierarchyIndex) -> ItemView? {
+        for visible in visibleItems {
+            if visible.itemIndex.asHierarchyIndex == index {
+                return visible
+            }
+        }
+
+        return nil
     }
 
     private func _visibleItem(withIndex index: ItemIndex) -> ItemView? {
@@ -139,17 +211,16 @@ public class TreeView: ControlView {
 
         let item = viewCache.dequeue(itemIndex: index, isExpanded: isExpanded) { item in
             item.mouseSelected.addListener(owner: self) { [weak self] (sender, _) in
-                self?.selectItem(sender)
+                self?.selectItemView(sender)
             }
-            item.willExpand.addListener(owner: self) { [weak self] (sender, event) in
+            item.mouseDownChevron.addListener(owner: self) { [weak self] (sender, _) in
                 guard let self = self else { return }
 
-                event.cancel = self.raiseExpandEvent(sender.itemIndex)
-            }
-            item.willCollapse.addListener(owner: self) { [weak self] (sender, event) in
-                guard let self = self else { return }
-
-                event.cancel = self.raiseCollapseEvent(sender.itemIndex)
+                if self._isExpanded(index: sender.itemIndex) {
+                    self.raiseCollapseEvent(sender.itemIndex)
+                } else {
+                    self.raiseExpandEvent(sender.itemIndex)
+                }
             }
         }
 
@@ -166,6 +237,10 @@ public class TreeView: ControlView {
     }
 
     private func _expand(_ index: ItemIndex) {
+        guard !_isExpanded(index: index) else {
+            return
+        }
+
         expanded.insert(index)
 
         guard let dataSource = dataSource else {
@@ -179,6 +254,7 @@ public class TreeView: ControlView {
         }
 
         if let visible = _visibleItem(withIndex: index) {
+            visible.isExpanded = true
             _recursiveCreateViews(hierarchyIndex, into: visible.itemsStackView, dataSource: dataSource)
         } else {
             reloadData()
@@ -186,9 +262,14 @@ public class TreeView: ControlView {
     }
 
     private func _collapse(_ index: ItemIndex) {
+        guard _isExpanded(index: index) else {
+            return
+        }
+
         expanded.remove(index)
 
         if let visible = _visibleItem(withIndex: index) {
+            visible.isExpanded = false
             visibleItems = visibleItems.filter {
                 !$0.itemIndex.isChild(of: index.asHierarchyIndex)
             }
@@ -202,7 +283,18 @@ public class TreeView: ControlView {
         }
     }
 
+    @discardableResult
     private func raiseExpandEvent(_ index: ItemIndex) -> Bool {
+        guard !_isExpanded(index: index) else {
+            return true
+        }
+        guard let dataSource = dataSource else {
+            return true
+        }
+        guard dataSource.hasItems(self, at: index.asHierarchyIndex) else {
+            return true
+        }
+
         let cancel = _willExpand.publishCancellableChangeEvent(sender: self, value: index)
         if !cancel {
             _expand(index)
@@ -211,7 +303,12 @@ public class TreeView: ControlView {
         return cancel
     }
 
+    @discardableResult
     private func raiseCollapseEvent(_ index: ItemIndex) -> Bool {
+        guard _isExpanded(index: index) else {
+            return true
+        }
+
         let cancel = _willCollapse.publishCancellableChangeEvent(sender: self, value: index)
         if !cancel {
             _collapse(index)
@@ -221,22 +318,21 @@ public class TreeView: ControlView {
     }
 
     private class ItemView: ControlView {
+        private let _titleView: TitleView = TitleView()
+        private let _subItemsContainer: StackView = StackView(orientation: .vertical)
+
         private let _chevronView: ChevronView = ChevronView()
         private let _iconView: ImageView = ImageView(image: nil)
         private let _labelView: Label = Label()
 
-        private let _horizontalContainer: StackView = StackView(orientation: .horizontal)
-        private let _subItemsContainer: StackView = StackView(orientation: .vertical)
-
-        private let _titleHolder: ControlView = ControlView()
-
         private var viewToHighlight: ControlView {
-            return _titleHolder
+            return _titleView
         }
 
         @Event var mouseSelected: EventSourceWithSender<ItemView, Void>
-        @Event var willExpand: CancellableActionEvent<ItemView, Void>
-        @Event var willCollapse: CancellableActionEvent<ItemView, Void>
+        @Event var mouseDownChevron: EventSourceWithSender<ItemView, Void>
+
+        @Event var selectRight: EventSourceWithSender<ItemView, Void>
 
         var itemsStackView: StackView {
             return _subItemsContainer
@@ -284,60 +380,64 @@ public class TreeView: ControlView {
 
             _chevronView.isVisible = false
             _labelView.textColor = .black
-            _horizontalContainer.alignment = .centered
-            _horizontalContainer.spacing = 5
 
             _chevronView.isExpanded = isExpanded
             _chevronView.mouseClicked.addListener(owner: self) { [weak self] (_, _) in
-                self?.raiseToggleEvent()
+                self?.onMouseDownChevron()
             }
 
-            _titleHolder.mouseDown.addListener(owner: self) { [weak self] (_, _) in
-                self?.raiseMouseDownEvent()
+            _titleView.mouseDown.addListener(owner: self) { [weak self] (_, _) in
+                self?.onMouseSelected()
             }
         }
 
         override func setupHierarchy() {
             super.setupHierarchy()
 
+            addSubview(_titleView)
             addSubview(_subItemsContainer)
-            addSubview(_titleHolder)
 
-            _titleHolder.addSubview(_horizontalContainer)
-            _horizontalContainer.addArrangedSubview(_chevronView)
-            _horizontalContainer.addArrangedSubview(_labelView)
+            _titleView.addSubview(_chevronView)
+            _titleView.addSubview(_labelView)
         }
 
         override func setupConstraints() {
             super.setupConstraints()
 
+            _chevronView.setContentCompressionResistance(.horizontal, .required)
+            _chevronView.setContentCompressionResistance(.vertical, .required)
+
             _labelView.setContentHuggingPriority(.horizontal, .lowest)
             _labelView.setContentCompressionResistance(.horizontal, .required)
             _labelView.setContentCompressionResistance(.vertical, .required)
 
-            _titleHolder.layout.makeConstraints { make in
+            _titleView.setContentCompressionResistance(.horizontal, .required)
+            _titleView.setContentCompressionResistance(.vertical, .required)
+            _titleView.layout.makeConstraints { make in
                 make.left == self
                 make.top == self
                 make.right == self
             }
+
+            StackView.makeStackViewConstraints(
+                views: _titleView.subviews,
+                parent: _titleView,
+                orientation: .horizontal,
+                alignment: .centered,
+                spacing: 5,
+                inset: .init(left: 4, top: 0, right: 0, bottom: 0),
+                customSpacing: [:]
+            )
+
             _subItemsContainer.alignment = .fill
             _subItemsContainer.setContentHuggingPriority(.vertical, .veryLow)
             _subItemsContainer.setContentCompressionResistance(.horizontal, .required)
             _subItemsContainer.setContentCompressionResistance(.vertical, .required)
             _subItemsContainer.layout.makeConstraints { make in
-                make.under(_horizontalContainer)
+                make.under(_titleView)
                 make.left == self + 10
                 make.right == self
                 make.bottom == self
-            }
-
-            _horizontalContainer.setContentCompressionResistance(.horizontal, .required)
-            _horizontalContainer.setContentCompressionResistance(.vertical, .required)
-            _horizontalContainer.layout.makeConstraints { make in
-                make.top == _titleHolder
-                make.left == _titleHolder + 4
-                make.right == _titleHolder
-                make.bottom == _titleHolder
             }
         }
 
@@ -356,9 +456,7 @@ public class TreeView: ControlView {
         }
 
         func removeSubItems() {
-            for view in _subItemsContainer.arrangedSubviews {
-                view.removeFromSuperview()
-            }
+            _subItemsContainer.removeArrangedSubviews()
         }
 
         private func _updateChevronConstraints() {
@@ -369,28 +467,16 @@ public class TreeView: ControlView {
             }
         }
 
-        private func raiseToggleEvent() {
-            if isExpanded {
-                raiseCollapseEvent()
-            } else {
-                raiseExpandEvent()
-            }
+        private func onMouseDownChevron() {
+            _mouseDownChevron.publishEvent(sender: self)
         }
 
-        private func raiseMouseDownEvent() {
+        private func onMouseSelected() {
             _mouseSelected.publishEvent(sender: self)
         }
 
-        private func raiseExpandEvent() {
-            if !_willExpand.publishCancellableChangeEvent(sender: self) {
-                isExpanded = true
-            }
-        }
+        private class TitleView: ControlView {
 
-        private func raiseCollapseEvent() {
-            if !_willCollapse.publishCancellableChangeEvent(sender: self) {
-                isExpanded = false
-            }
         }
 
         private class ChevronView: ControlView {
@@ -481,6 +567,17 @@ extension TreeView {
         /// Is an empty list for items at the root of the tree view.
         public var indices: [Int]
 
+        /// The hierarchy index for the parent of this index.
+        ///
+        /// If this hierarchy index is the root hierarchy, `nil` is returned.
+        public var parent: HierarchyIndex? {
+            if indices.count == 0 {
+                return nil
+            }
+
+            return HierarchyIndex(indices: indices.dropLast())
+        }
+
         /// Returns `true` if this hierarchy index points to the root of the
         /// tree.
         ///
@@ -496,6 +593,12 @@ extension TreeView {
 
         public init(indices: [Int]) {
             self.indices = indices
+        }
+
+        /// Creates an item index with a given index with this hierarchy index
+        /// as a parent.
+        public func subItem(index: Int) -> ItemIndex {
+            return .init(parent: self, index: index)
         }
 
         /// Returns `true` if this hierarchy is contained within another

@@ -53,16 +53,12 @@ internal struct AnyLayoutAnchor: LayoutAnchorType, Hashable {
         return variable - makeRelativeExpression(relative: relative)
     }
 
-    func isEqual(to other: AnyLayoutAnchor) -> Bool {
-        return other._owner === _owner && other.kind == kind
-    }
-
     func hash(into hasher: inout Hasher) {
         hasher.combine(_owner.map(ObjectIdentifier.init))
         hasher.combine(kind)
     }
 
     static func == (lhs: AnyLayoutAnchor, rhs: AnyLayoutAnchor) -> Bool {
-        return lhs._owner === rhs._owner && lhs.kind == rhs.kind
+        return lhs.kind == rhs.kind && lhs._owner === rhs._owner
     }
 }

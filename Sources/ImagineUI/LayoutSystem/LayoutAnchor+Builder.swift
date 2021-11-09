@@ -1,3 +1,5 @@
+import Geometry
+
 extension LayoutAnchor {
     @discardableResult
     public func equalTo(_ value: Double,

@@ -292,6 +292,7 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
         return false
     }
 
+    @discardableResult
     open func becomeFirstResponder() -> Bool {
         if isFirstResponder {
             return true

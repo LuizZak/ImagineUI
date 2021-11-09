@@ -1,8 +1,8 @@
 public var globalTextClipboard: TextClipboard? {
+    @_transparent
     willSet {
-        if newValue is GlobalTextClipboard {
-            fatalError("Cannot set a GlobalTextClipboard as the global text clipboard instance as that would lead into an infinite recursion")
-        }
+        precondition(!(newValue is GlobalTextClipboard),
+                     "Cannot set a GlobalTextClipboard as the global text clipboard instance as that would lead into an infinite recursion")
     }
 }
 
@@ -22,11 +22,11 @@ class GlobalTextClipboard: TextClipboard {
     func getText() -> String? {
         return globalTextClipboard?.getText()
     }
-    
+
     func setText(_ text: String) {
         globalTextClipboard?.setText(text)
     }
-    
+
     func containsText() -> Bool {
         return globalTextClipboard?.containsText() ?? false
     }
