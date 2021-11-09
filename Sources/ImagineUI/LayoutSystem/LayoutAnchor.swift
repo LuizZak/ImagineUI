@@ -34,8 +34,3 @@ extension LayoutAnchor {
         return AnyLayoutAnchor(_owner: _owner, kind: kind)
     }
 }
-
-public enum LayoutAnchorOrientation {
-    case horizontal
-    case vertical
-}

@@ -16,32 +16,16 @@ public class LayoutConstraintSolver {
 
         let locCache = cache ?? LayoutConstraintSolverCache()
 
-        locCache.saveState()
-
-        register(result: result, cache: locCache)
-
-        let diff = locCache.compareState()
-
         do {
-            try locCache.updateSolver(diff)
+            try locCache.update(result: result)
         } catch {
             print("Error solving layout constraints: \(error)")
         }
 
-        locCache.solver.updateVariables()
+        locCache.updateVariables()
 
         for view in result.affectedLayoutVariables {
             view.applyVariables()
         }
-    }
-
-    private func register(result: ConstraintCollection,
-                          cache: LayoutConstraintSolverCache) {
-
-        for affectedView in result.affectedLayoutVariables {
-            affectedView.deriveConstraints(cache.constraintList(for: affectedView.container))
-        }
-
-        cache.inspectConstraints(result.constraints)
     }
 }

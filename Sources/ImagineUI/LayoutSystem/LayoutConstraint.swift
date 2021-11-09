@@ -21,6 +21,23 @@ public class LayoutConstraint: Hashable {
         definition.secondCast
     }
 
+    var constraintOrientation: LayoutConstraintOrientation {
+        guard let secondCast = secondCast else {
+            return firstCast.orientation.asLayoutConstraintOrientation
+        }
+
+        switch (firstCast.orientation, secondCast.orientation) {
+        case (.horizontal, .horizontal):
+            return .horizontal
+
+        case (.vertical, .vertical):
+            return .vertical
+
+        default:
+            return .mixed
+        }
+    }
+
     public var first: LayoutAnchorType {
         return firstCast
     }

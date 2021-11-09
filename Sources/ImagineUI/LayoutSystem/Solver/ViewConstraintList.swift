@@ -2,26 +2,33 @@ import CassowarySwift
 
 class ViewConstraintList {
     let container: LayoutVariablesContainer
+    var orientations: Set<LayoutConstraintOrientation>
     var state: State = State()
 
-    init(container: LayoutVariablesContainer) {
+    init(container: LayoutVariablesContainer, orientations: Set<LayoutConstraintOrientation>) {
         self.container = container
+        self.orientations = orientations
     }
 
-    fileprivate init(container: LayoutVariablesContainer, state: State) {
+    fileprivate init(container: LayoutVariablesContainer, state: State, orientations: Set<LayoutConstraintOrientation>) {
         self.container = container
         self.state = state
+        self.orientations = orientations
     }
 
     func clone() -> ViewConstraintList {
-        return ViewConstraintList(container: container, state: state)
+        return ViewConstraintList(container: container, state: state, orientations: orientations)
     }
 
     /// Adds a constraint with a given name and strength.
     func addConstraint(name: String,
-                       orientation: ConstraintOrientation,
+                       orientation: LayoutConstraintOrientation,
                        _ constraint: @autoclosure () -> Constraint,
                        strength: Double) {
+
+        if !orientations.contains(orientation) {
+            return
+        }
 
         let current = state.constraints[name]
 
@@ -31,9 +38,13 @@ class ViewConstraintList {
     }
 
     func suggestValue(variable: Variable,
-                      orientation: ConstraintOrientation,
+                      orientation: LayoutConstraintOrientation,
                       value: Double,
                       strength: Double) {
+
+        if !orientations.contains(orientation) {
+            return
+        }
 
         state.suggestedValue[variable] = (value, strength)
     }
@@ -71,9 +82,4 @@ extension ViewConstraintList {
             return constraints.isEmpty && suggestedValues.isEmpty
         }
     }
-}
-
-enum ConstraintOrientation {
-    case horizontal
-    case vertical
 }

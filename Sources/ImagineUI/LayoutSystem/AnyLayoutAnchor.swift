@@ -6,7 +6,17 @@ internal struct AnyLayoutAnchor: LayoutAnchorType, Hashable {
 
     var owner: AnyObject? { return _owner }
 
-    public var description: String {
+    var orientation: LayoutAnchorOrientation {
+        switch kind {
+        case .left, .width, .right, .centerX:
+            return .horizontal
+
+        case .top, .height, .bottom, .centerY, .firstBaseline:
+            return .vertical
+        }
+    }
+
+    var description: String {
         return getVariable()?.name ?? "<unowned anchor>"
     }
 
