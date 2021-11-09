@@ -22,6 +22,17 @@ public struct LayoutAnchors {
         self.container = container
     }
 
+    /// Removes all constraints that are connecting this layout anchor list to
+    /// another layout anchor list.
+    public func removeConstraintsConnecting(to other: LayoutAnchors) {
+        for constraint in container.constraints {
+            if (constraint.first.owner === container && constraint.second?.owner === other.container) ||
+                (constraint.second?.owner === container && constraint.first.owner === other.container) {
+                constraint.removeConstraint()
+            }
+        }
+    }
+
     private func make<T>(_ anchorKind: AnchorKind) -> LayoutAnchor<T> {
         return LayoutAnchor(_owner: container, kind: anchorKind)
     }

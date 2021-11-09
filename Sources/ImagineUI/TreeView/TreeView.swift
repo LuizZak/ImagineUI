@@ -78,23 +78,20 @@ public class TreeView: ControlView {
     }
 
     private func populateItems() {
-        suspendLayout()
-        defer {
-            resumeLayout(setNeedsLayout: true)
+        withSuspendedLayout(setNeedsLayout: true) {
+            for view in visibleItems {
+                view.removeFromSuperview()
+                _reclaim(view: view)
+            }
+
+            visibleItems.removeAll(keepingCapacity: true)
+
+            guard let dataSource = self.dataSource else {
+                return
+            }
+
+            _recursiveCreateViews(.root, into: rootStackView, dataSource: dataSource)
         }
-
-        for view in visibleItems {
-            view.removeFromSuperview()
-            _reclaim(view: view)
-        }
-
-        visibleItems.removeAll(keepingCapacity: true)
-
-        guard let dataSource = self.dataSource else {
-            return
-        }
-
-        _recursiveCreateViews(.root, into: rootStackView, dataSource: dataSource)
     }
 
     private func _recursiveCreateViews(_ hierarchy: HierarchyIndex, into stackView: StackView, dataSource: TreeViewDataSource) {

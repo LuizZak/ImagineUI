@@ -4,11 +4,8 @@ import CassowarySwift
 /// A view that lays out a set of its arranged subviews horizontally or
 /// vertically automatically
 open class StackView: View {
-    private let layoutGuideCache = LayoutGuideCache()
-
     private let parentGuide = LayoutGuide()
     private var customSpacing: [View: Double] = [:]
-    private var contentGuides: [LayoutGuide] = []
 
     private(set) public var arrangedSubviews: [View] = []
 
@@ -37,7 +34,9 @@ open class StackView: View {
     /// Insets between the edges of the stack view and its contents
     open var contentInset: UIEdgeInsets = .zero {
         didSet {
-            recreateConstraints()
+            parentGuide.layout.updateConstraints { make in
+                make.edges.equalTo(self, inset: contentInset)
+            }
         }
     }
 
@@ -53,146 +52,95 @@ open class StackView: View {
     }
 
     private func recreateConstraints() {
-        suspendLayout()
+        withSuspendedLayout(setNeedsLayout: true) {
+            // Re-add the views back to allow constraints between views and the
+            // parent layout guide to reset
+            let views = arrangedSubviews
+            for view in arrangedSubviews {
+                view.removeFromSuperview()
+                addSubview(view)
+            }
 
-        parentGuide.layout.remakeConstraints { make in
-            make.edges.equalTo(self, inset: contentInset)
+            arrangedSubviews = views
+
+            for (i, view) in arrangedSubviews.enumerated() {
+                _makeConstraints(view: view, index: i)
+            }
         }
-
-        // Reversed to allow later dequeuing in the same order
-        // which enables reusal of constraints in the layout system.
-        for layoutGuide in contentGuides.reversed() {
-            layoutGuide.removeFromSuperview()
-            _reclaim(layoutGuide: layoutGuide)
-        }
-
-        for _ in arrangedSubviews {
-            _dequeueContentGuide()
-        }
-
-        for (i, view) in arrangedSubviews.enumerated() {
-            _makeConstraints(view: view, guide: contentGuides[i], index: i)
-        }
-
-        resumeLayout(setNeedsLayout: true)
     }
 
-    @discardableResult
-    private func _dequeueContentGuide() -> LayoutGuide {
-        let guide = layoutGuideCache.dequeueLayoutGuide()
-        contentGuides.append(guide)
-
-        addLayoutGuide(guide)
-
-        return guide
-    }
-
-    private func _reclaim(layoutGuide: LayoutGuide) {
-        contentGuides.removeAll(where: { $0 === layoutGuide })
-        layoutGuideCache.reclaim(layoutGuide: layoutGuide)
-    }
-
-    private func _makeConstraints(view: View, guide: LayoutGuide, index: Int) {
-        let previousGuide = index == 0 ? nil : contentGuides[index - 1]
-        let previousView = index == 0 ? nil : arrangedSubviews[index - 1]
-        let previousSpacing = previousView.flatMap { customSpacing[$0] } ?? spacing
+    private func _makeConstraints(view: View, index: Int) {
+        let previous: View? = index > 0 ? arrangedSubviews[index - 1] : nil
+        let viewSpacing = previous.flatMap { customSpacing[$0] } ?? spacing
         let isLastView = index == arrangedSubviews.count - 1
 
         view.layout.makeConstraints { make in
-            _makeViewConstraints(make, guide: guide)
-        }
-
-        guide.layout.makeConstraints { make in
-            _makeLayoutGuideConstraints(
-                make,
-                previousGuide: previousGuide,
-                isLastView: isLastView,
-                viewSpacing: previousSpacing
-            )
-        }
-    }
-
-    @LayoutResultBuilder
-    private func _makeViewConstraints(_ make: LayoutAnchors, guide: LayoutGuide) -> LayoutConstraintDefinitions {
-        switch alignment {
-        case .leading:
+            // Connection to previous view
             switch orientation {
             case .horizontal:
-                make.left == guide
-                make.right == guide
-                make.top == guide
-                make.bottom <= guide
-            case .vertical:
-                make.top == guide
-                make.bottom == guide
-                make.left == guide
-                make.right <= guide
+                if let previous = previous {
+                    make.right(of: previous, offset: viewSpacing)
+                } else {
+                    make.left == parentGuide
+                }
+                if isLastView {
+                    make.right == parentGuide
+                }
+            default:
+                if let previous = previous {
+                    make.under(previous, offset: viewSpacing)
+                } else {
+                    make.top == parentGuide
+                }
+                if isLastView {
+                    make.bottom == parentGuide
+                }
             }
 
-        case .trailing:
-            switch orientation {
-            case .horizontal:
-                make.left == guide
-                make.right == guide
-                make.top >= guide
-                make.bottom == guide
-            case .vertical:
-                make.top == guide
-                make.bottom == guide
-                make.width <= guide
-                make.right == guide
-            }
+            // Connect to parent guide
+            switch alignment {
+            case .leading:
+                switch orientation {
+                case .horizontal:
+                    make.top == parentGuide
+                    make.bottom <= parentGuide
 
-        case .fill:
-            make.edges == guide
+                case .vertical:
+                    make.left == parentGuide
+                    make.right <= parentGuide
+                }
 
-        case .centered:
-            switch orientation {
-            case .horizontal:
-                make.left == guide
-                make.height <= guide
-                make.centerY == guide
-                make.right == guide
+            case .trailing:
+                switch orientation {
+                case .horizontal:
+                    make.top >= parentGuide
+                    make.bottom == parentGuide
+                case .vertical:
+                    make.left >= parentGuide
+                    make.right == parentGuide
+                }
 
-            case .vertical:
-                make.top == guide
-                make.width <= guide
-                make.centerX == guide
-                make.bottom == guide
-            }
-        }
-    }
+            case .fill:
+                switch orientation {
+                case .horizontal:
+                    make.top == parentGuide
+                    make.bottom == parentGuide
 
-    @LayoutResultBuilder
-    private func _makeLayoutGuideConstraints(_ make: LayoutAnchors, previousGuide: LayoutGuide?, isLastView: Bool, viewSpacing: Double) -> LayoutConstraintDefinitions {
-        switch orientation {
-        case .horizontal:
-            make.top == parentGuide
-            make.bottom == parentGuide
+                case .vertical:
+                    make.left == parentGuide
+                    make.right == parentGuide
+                }
 
-            if let previous = previousGuide {
-                let _=(previous.layout.right == parentGuide).remove()
+            case .centered:
+                switch orientation {
+                case .horizontal:
+                    make.centerY == parentGuide
+                    make.height <= parentGuide
 
-                make.right(of: previous, offset: viewSpacing)
-            } else {
-                make.left == parentGuide
-            }
-            if isLastView {
-                make.right == parentGuide
-            }
-        default:
-            make.left == parentGuide
-            make.right == parentGuide
-
-            if let previous = previousGuide {
-                let _=(previous.layout.bottom == parentGuide).remove()
-
-                make.under(previous, offset: viewSpacing)
-            } else {
-                make.top == parentGuide
-            }
-            if isLastView {
-                make.bottom == parentGuide
+                case .vertical:
+                    make.centerX == parentGuide
+                    make.width <= parentGuide
+                }
             }
         }
     }
@@ -216,19 +164,18 @@ open class StackView: View {
         arrangedSubviews.append(view)
         addSubview(view)
 
-        let guide = _dequeueContentGuide()
-
-        _makeConstraints(view: view, guide: guide, index: contentGuides.count - 1)
+        recreateConstraints()
     }
 
     open func addArrangedSubviews(_ views: [View]) {
-        suspendLayout()
+        withSuspendedLayout(setNeedsLayout: true) {
+            for view in views where !arrangedSubviews.contains(view) {
+                arrangedSubviews.append(view)
+                addSubview(view)
+            }
 
-        for view in views {
-            addArrangedSubview(view)
+            recreateConstraints()
         }
-
-        resumeLayout(setNeedsLayout: true)
     }
 
     open func removeArrangedSubview(atIndex index: Int) {
@@ -282,21 +229,5 @@ open class StackView: View {
         /// or vertically along the available space, perpendicular to the stack
         /// view's orientation
         case centered
-    }
-
-    private class LayoutGuideCache {
-        var reclaimed: [LayoutGuide] = []
-
-        func dequeueLayoutGuide() -> LayoutGuide {
-            if let next = reclaimed.popLast() {
-                return next
-            }
-
-            return LayoutGuide()
-        }
-
-        func reclaim(layoutGuide: LayoutGuide) {
-            reclaimed.append(layoutGuide)
-        }
     }
 }

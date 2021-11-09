@@ -45,8 +45,12 @@ public class LayoutConstraint: Hashable {
     public var priority: LayoutPriority {
         get { definition.priority }
         set {
-            assert(priority != .required,
-                   "Cannot change priority of required constraints")
+            if priority == .required && newValue != .required {
+                assertionFailure("Cannot change priority of required constraints to be non-required.")
+            }
+            if priority != .required && newValue == .required {
+                assertionFailure("Cannot change priority of non-required constraints to be required.")
+            }
 
             definition.priority = newValue
         }

@@ -21,16 +21,16 @@ open class Label: View {
     var textLayout: TextLayoutType {
         return InnerLabelTextLayout(label: self)
     }
-    
+
     var baselineHeight: Double {
         return Double(minimalTextLayout.baselineHeightForLine(atIndex: 0))
     }
-    
+
     open var font: Font {
         didSet {
             invalidate()
             setNeedsLayout()
-            
+
             recreateMinimalTextLayout()
         }
     }
@@ -40,15 +40,15 @@ open class Label: View {
         }
         set {
             if !attributedText.hasAttributes && attributedText.string == newValue { return }
-            
+
             attributedText = AttributedText(newValue)
         }
     }
-    
+
     open var attributedText: AttributedText = AttributedText() {
         didSet {
             if attributedText == oldValue { return }
-            
+
             invalidate()
             setNeedsLayout()
             recreateMinimalTextLayout()
@@ -109,7 +109,7 @@ open class Label: View {
 
     open override func render(in renderer: Renderer, screenRegion: ClipRegion) {
         super.render(in: renderer, screenRegion: screenRegion)
-        
+
         _bitmapCache.isCachingEnabled = Label.cacheAsBitmap
         _bitmapCache.updateBitmapBounds(bounds)
         _bitmapCache.cachingOrRendering(renderer) { renderer in
@@ -118,18 +118,10 @@ open class Label: View {
             renderer.drawTextLayout(textLayout, at: .zero)
         }
     }
-    
+
     internal func autoSize() {
-        var resumeLayoutAfter = false
-        if !isLayoutSuspended {
-            suspendLayout()
-            resumeLayoutAfter = true
-        }
-        
-        bounds.size = intrinsicSize ?? .zero
-        
-        if resumeLayoutAfter {
-            resumeLayout(setNeedsLayout: false)
+        withSuspendedLayout(setNeedsLayout: false) {
+            bounds.size = intrinsicSize ?? .zero
         }
     }
 
@@ -149,7 +141,7 @@ open class Label: View {
                                 availableSize: bounds.size,
                                 horizontalAlignment: horizontalTextAlignment,
                                 verticalAlignment: verticalTextAlignment)
-        
+
         _cachedTextLayout = layout
 
         return layout
@@ -163,7 +155,7 @@ open class Label: View {
             }
             return label.recreateCachedTextLayout()
         }
-        
+
         var lines: [TextLayoutLine] { textLayout.lines }
         var font: Font { textLayout.font }
         var text: String { textLayout.text }
@@ -172,11 +164,11 @@ open class Label: View {
         var verticalAlignment: VerticalTextAlignment { textLayout.verticalAlignment }
         var numberOfLines: Int { textLayout.numberOfLines }
         var size: UISize { textLayout.size }
-        
+
         init(label: Label) {
             self.label = label
         }
-        
+
         func locationOfCharacter(index: Int) -> UIVector {
             return textLayout.locationOfCharacter(index: index)
         }
@@ -195,7 +187,7 @@ open class Label: View {
         func baselineHeightForLine(atIndex index: Int) -> Float {
             return textLayout.baselineHeightForLine(atIndex: index)
         }
-        
+
         func strokeText(in renderer: Renderer, location: UIVector) {
             renderer.strokeTextLayout(self, at: location)
         }

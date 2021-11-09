@@ -22,17 +22,17 @@ open class TextField: ControlView {
     private var _selectingWordSpan: Bool = false
     private var _wordSpanStartPosition: Int = 0
     private var _mouseDown = false
-    
+
     /// Event fired whenever the text contents of this text field are updated.
     ///
     /// This event is not raised if a client sets this text field's `text` property
     /// directly.
     @Event public var textChanged: EventSourceWithSender<TextField, TextFieldTextChangedEventArgs>
-    
+
     /// Event fired whenever the caret for this text field changes position or
     /// selection range
     @Event public var caretChanged: ValueChangeEvent<TextField, Caret>
-    
+
     /// Event fired whenever the user presses down the Enter key while
     /// `acceptsEnterKey` is true
     @Event public var enterKey: EventSourceWithSender<TextField, Void>
@@ -45,7 +45,7 @@ open class TextField: ControlView {
     /// If true, when the enter key is pressed an `EnterKey` event is raised for
     /// this text field.
     open var acceptsEnterKey: Bool = false
-    
+
     /// Whether to allow line breaks when pressing the enter key.
     open var allowLineBreaks: Bool = false
 
@@ -58,7 +58,7 @@ open class TextField: ControlView {
             }
         }
     }
-    
+
     /// Gets or sets the text of this textfield.
     ///
     /// As keyboard input is received, this value is updated accordingly.
@@ -72,7 +72,7 @@ open class TextField: ControlView {
             setNeedsLayout()
         }
     }
-    
+
     /// An optional placeholder text which is printed when the textfield's
     /// contents are empty.
     open var placeholderText: String? {
@@ -84,7 +84,7 @@ open class TextField: ControlView {
             invalidate()
         }
     }
-    
+
     /// Gets or sets the horizontal text alignment for both the input text and
     /// paceholder labels
     open var horizontalTextAlignment: HorizontalTextAlignment = .leading {
@@ -93,7 +93,7 @@ open class TextField: ControlView {
             _placeholderLabel.horizontalTextAlignment = horizontalTextAlignment
         }
     }
-    
+
     /// Gets or sets the caret position for this textfield.
     open var caret: Caret {
         get { _textEngine.caret }
@@ -117,26 +117,26 @@ open class TextField: ControlView {
         let buffer = LabelViewTextBuffer(label: label)
         _textEngine = TextEngine(textBuffer: buffer)
         self._label = label
-        
+
         super.init()
-        
+
         isEnabled = true
-        
+
         buffer.changed.addListener(owner: self) { [weak self] in
             self?.textBufferOnChanged()
         }
-        
+
         for (state, style) in TextFieldVisualStyleParameters.defaultDarkStyle() {
             setStyle(style, forState: state)
         }
-        
+
         initialize()
     }
 
     private func initialize() {
         _textEngine.caretChanged.addListener(owner: self) { [weak self] (_, event) in
             guard let self = self else { return }
-            
+
             self.invalidateCaret(at: event.newValue.location)
             self.invalidateCaret(at: event.oldValue.location)
             self.invalidate(bounds: self.getSelectionBounds(caret: event.oldValue))
@@ -145,7 +145,7 @@ open class TextField: ControlView {
             self.restartBlinkerTimer()
 
             self.scrollLabel()
-            
+
             self.onCaretChanged(event)
         }
 
@@ -169,15 +169,15 @@ open class TextField: ControlView {
     // MARK: - Events
     private func textBufferOnChanged() {
         restartBlinkerTimer()
-        
+
         onTextChanged()
-        
+
         updateLabelSize()
 
         updatePlaceholderVisibility()
         scrollLabel()
     }
-    
+
     /// Raises the `textChanged` event
     open func onTextChanged() {
         _textChanged.publishEvent(sender: self, TextFieldTextChangedEventArgs(text: text))
@@ -187,10 +187,10 @@ open class TextField: ControlView {
     open func onCaretChanged(_ event: ValueChangedEventArgs<Caret>) {
         _caretChanged.publishEvent(sender: self, event)
     }
-    
+
     open override func onResize(_ event: ValueChangedEventArgs<UISize>) {
         super.onResize(event)
-        
+
         updateLabelAndPlaceholder()
         scrollLabel()
     }
@@ -271,7 +271,7 @@ open class TextField: ControlView {
 
             _selectingWordSpan = true
         }
-        
+
         _lastMouseDownPoint = event.location
         _lastMouseDown = UISettings.timeInSeconds()
     }
@@ -327,9 +327,9 @@ open class TextField: ControlView {
 
     open override func onKeyDown(_ event: KeyEventArgs) {
         super.onKeyDown(event)
-        
+
         controlSystem?.setMouseHiddenUntilMouseMoves()
-        
+
         if event.handled { return }
 
         if event.modifiers.contains(.osControlKey) {
@@ -352,7 +352,7 @@ open class TextField: ControlView {
                     redo()
                     return
                 }
-                
+
                 undo()
                 return
 
@@ -375,11 +375,11 @@ open class TextField: ControlView {
             }
             return
         }
-        
+
         if handleCaretMoveEvent(event.keyCode, event.modifiers) {
             return
         }
-        
+
         if !editable {
             return
         }
@@ -400,9 +400,9 @@ open class TextField: ControlView {
 
     open override func onKeyPress(_ event: KeyPressEventArgs) {
         super.onKeyPress(event)
-        
+
         controlSystem?.setMouseHiddenUntilMouseMoves()
-        
+
         if event.handled { return }
 
         if event.modifiers.contains(.osControlKey) {
@@ -411,28 +411,28 @@ open class TextField: ControlView {
                 copy()
                 return
 
-            case "x" where editable, 
+            case "x" where editable,
                  "X" where editable:
                 cut()
                 return
 
-            case "v" where editable, 
+            case "v" where editable,
                  "V" where editable:
                 paste()
                 return
 
-            case "z" where editable, 
+            case "z" where editable,
                  "Z" where editable:
                 // Ctrl+Shift+Z as alternative for Ctrl+Y (redo)
                 if event.modifiers == (KeyboardModifier.osControlKey.union(.shift)) {
                     redo()
                     return
                 }
-                
+
                 undo()
                 return
 
-            case "y" where editable, 
+            case "y" where editable,
                  "Y" where editable:
                 redo()
                 return
@@ -592,34 +592,34 @@ open class TextField: ControlView {
 
         return false
     }
-    
+
     // MARK: - Rendering
-    
+
     open override func renderBackground(in renderer: Renderer, screenRegion: ClipRegion) {
         super.renderBackground(in: renderer, screenRegion: screenRegion)
-        
+
         renderSelection(in: renderer)
     }
-    
+
     open override func renderForeground(in renderer: Renderer, screenRegion: ClipRegion) {
         super.renderForeground(in: renderer, screenRegion: screenRegion)
-        
+
         if isFirstResponder {
             renderCaret(in: renderer)
         }
     }
-    
+
     private func renderSelection(in renderer: Renderer) {
         // Draw selected region
         guard caret.length > 0 && !style.selectionColor.isTransparent else {
             return
         }
-        
+
         let characterBounds = _label.textLayout.boundsForCharacters(in: caret.textRange)
         if characterBounds.count == 0 {
             return
         }
-        
+
         renderer.setFill(style.selectionColor)
 
         // TODO: Support selection backgrounds that span different lines
@@ -631,16 +631,16 @@ open class TextField: ControlView {
         renderer.fill(transformed)
         renderer.restoreState()
     }
-    
+
     private func renderCaret(in renderer: Renderer) {
         let transparency = _blinker.blinkState
-        
+
         if transparency <= 0 {
             return
         }
-        
+
         let caretBounds = getCaretBounds()
-        
+
         renderer.setFill(style.caretColor.withTransparency(Int(transparency * 255)))
         renderer.fill(caretBounds)
     }
@@ -652,11 +652,11 @@ open class TextField: ControlView {
     private func invalidateCaret(at offset: Int) {
         invalidateControlGraphics(bounds: getCaretBounds(at: offset).roundedToLargest())
     }
-    
+
     private func getCaretBounds() -> UIRectangle {
         return getCaretBounds(at: caret.location)
     }
-    
+
     private func getCaretBounds(at offset: Int) -> UIRectangle {
         let font = _label.textLayout.font(atLocation: offset)
         var caretLocation = UIRectangle(x: 0, y: 0, width: 1, height: Double(font.metrics.ascent + font.metrics.descent))
@@ -668,7 +668,7 @@ open class TextField: ControlView {
 
         return caretLocation
     }
-    
+
     private func getSelectionBounds() -> UIRectangle {
         return getSelectionBounds(caret: caret)
     }
@@ -708,7 +708,7 @@ open class TextField: ControlView {
 
         let firstResponder = super.becomeFirstResponder()
         restartBlinkerTimer()
-        
+
         return firstResponder
     }
 
@@ -716,17 +716,17 @@ open class TextField: ControlView {
         super.resignFirstResponder()
 
         invalidate()
-        
+
         if let timer = _cursorBlinkTimer {
             timer.invalidate()
             _cursorBlinkTimer = nil
         }
     }
-    
+
     private func restartBlinkerTimer() {
         _blinker.restart()
         _cursorBlinkTimer?.invalidate()
-        
+
         // Store the current time before firing the blinker timer to avoid
         // immediately firing the timer in platforms with flaky RunLoop
         // implementations
@@ -734,7 +734,7 @@ open class TextField: ControlView {
         _cursorBlinkTimer = Scheduler.instance.scheduleTimer(interval: _blinker.blinkInterval, repeats: true) { [weak self] in
             guard let self = self else { return }
             guard UISettings.timeInSeconds() - started >= self._blinker.blinkInterval / 2 else { return }
-            
+
             self._blinker.flipBlinkerState()
             self.invalidateCaret()
         }
@@ -744,7 +744,7 @@ open class TextField: ControlView {
 
     private func scrollLabel() {
         let loc = locationForOffset(caret.location)
-                
+
         var labelOffset = _label.location
         defer { _label.location = labelOffset }
 
@@ -755,10 +755,10 @@ open class TextField: ControlView {
         } else {
             labelOffset.x = 0
         }
-        
+
         var locInContainer = _labelContainer.convert(point: loc, from: self)
         locInContainer.y = 0
-        
+
         if !_labelContainer.contains(point: locInContainer) {
             if locInContainer.x > _labelContainer.bounds.width {
                 labelOffset = labelOffset - UIVector(x: locInContainer.x - _labelContainer.bounds.width, y: 0)
@@ -773,25 +773,23 @@ open class TextField: ControlView {
 
         updateLabelAndPlaceholder()
     }
-    
+
     private func updateLabelAndPlaceholder() {
-        suspendLayout()
-                
-        let insetBounds = contentInset.inset(rectangle: bounds)
-        _labelContainer.location = insetBounds.topLeft
-        _labelContainer.bounds.size = insetBounds.size
-        
-        // Currently, setting location.y individually causes a runtime crash
-        _label.location = UIVector(x: _label.location.x, y: _labelContainer.bounds.height / 2 - _label.bounds.height / 2)
-        
-        _label.bounds.width = max(_label.bounds.width, _labelContainer.bounds.width)
-        
-        _placeholderLabel.location = _label.location
-        _placeholderLabel.bounds.width = max(_placeholderLabel.bounds.width, _labelContainer.bounds.width)
-        
-        resumeLayout(setNeedsLayout: false)
+        withSuspendedLayout(setNeedsLayout: false) {
+            let insetBounds = contentInset.inset(rectangle: bounds)
+            _labelContainer.location = insetBounds.topLeft
+            _labelContainer.bounds.size = insetBounds.size
+
+            // Currently, setting location.y individually causes a runtime crash
+            _label.location = UIVector(x: _label.location.x, y: _labelContainer.bounds.height / 2 - _label.bounds.height / 2)
+
+            _label.bounds.width = max(_label.bounds.width, _labelContainer.bounds.width)
+
+            _placeholderLabel.location = _label.location
+            _placeholderLabel.bounds.width = max(_placeholderLabel.bounds.width, _labelContainer.bounds.width)
+        }
     }
-    
+
     private func updateLabelSize() {
         _label.autoSize()
         _label.bounds.width = max(_label.bounds.width, _labelContainer.bounds.width)
@@ -849,10 +847,10 @@ open class TextField: ControlView {
     /// Returns string offset at a given point on this text field.
     private func offsetUnder(point: UIVector) -> Int {
         let converted = _label.convert(point: point, from: self)
-        
+
         let result = _label.textLayout.hitTestPoint(converted)
         let offset = result.textPosition + (result.isTrailing ? 1 : 0)
-        
+
         return min(offset, _label.text.count)
     }
 
@@ -860,12 +858,12 @@ open class TextField: ControlView {
     /// field's coordinates.
     private func locationForOffset(_ offset: Int) -> UIVector {
         var position = _label.textLayout.locationOfCharacter(index: offset)
-        
+
         position = _label.convert(point: position, to: self)
-        
+
         return position
     }
-    
+
     private func isValidInputCharacter(_ event: KeyEventArgs) -> Bool {
         #if os(macOS)
 
@@ -874,10 +872,10 @@ open class TextField: ControlView {
         }
 
         #endif
-        
+
         return true
     }
-    
+
     private func isValidInputCharacter(_ event: KeyPressEventArgs) -> Bool {
         #if os(macOS)
 
@@ -886,7 +884,7 @@ open class TextField: ControlView {
         }
 
         #endif
-        
+
         return true
     }
 }
@@ -912,7 +910,7 @@ private class CursorBlinker {
     public func restart() {
         blinkState = 1
     }
-    
+
     public func flipBlinkerState() {
         if blinkState == 0 {
             blinkState = 1
@@ -989,7 +987,7 @@ public struct TextFieldVisualStyleParameters {
     public var strokeWidth: Double = 0
     public var caretColor: Color = .black
     public var selectionColor: Color = .black
-    
+
     public init(textColor: Color = .black,
                 placeholderTextColor: Color = .black,
                 backgroundColor: Color = .white,
@@ -997,7 +995,7 @@ public struct TextFieldVisualStyleParameters {
                 strokeWidth: Double = 0,
                 caretColor: Color = .black,
                 selectionColor: Color = .black) {
-        
+
         self.textColor = textColor
         self.placeholderTextColor = placeholderTextColor
         self.backgroundColor = backgroundColor
@@ -1018,7 +1016,7 @@ public struct TextFieldVisualStyleParameters {
                     strokeWidth: 0,
                     caretColor: .white,
                     selectionColor: .slateGray),
-            
+
             .normal:
                 TextFieldVisualStyleParameters(
                     textColor: .white,
@@ -1028,7 +1026,7 @@ public struct TextFieldVisualStyleParameters {
                     strokeWidth: 1,
                     caretColor: .white,
                     selectionColor: .slateGray),
-            
+
             .focused:
                 TextFieldVisualStyleParameters(
                     textColor: .white,

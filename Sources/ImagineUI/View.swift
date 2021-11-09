@@ -40,10 +40,14 @@ open class View {
 
     var layoutVariables: LayoutVariables!
 
+    var layoutSuspendStackDepth: Int = 0
+
     /// Whether the layout of this view is suspended.
     /// When layout is suspended, the view does not propagates ``setNeedsLayout``
     /// invocations to parent views.
-    public internal(set) var isLayoutSuspended = false
+    public var isLayoutSuspended: Bool {
+        return layoutSuspendStackDepth > 0
+    }
 
     var rootView: RootView? {
         if let rootView = self as? RootView {
@@ -293,18 +297,43 @@ open class View {
     }
 
     /// Suspends setNeedsLayout() from affecting this view and its parent
-    /// hierarchy
+    /// hierarchy.
+    ///
+    /// Sequential calls to `suspendLayout()` must be balanced with a matching
+    /// number of `resumeLayout(setNeedsLayout:)` calls later in order for
+    /// layout to resume successfully.
     open func suspendLayout() {
-        isLayoutSuspended = true
+        layoutSuspendStackDepth += 1
     }
 
-    /// Resumes layout, optionally dispatching a message to layout the view
+    /// Resumes layout, optionally dispatching a `setNeedsLayout()` call to the
+    /// view at the end.
+    ///
+    /// Sequential calls to `resumeLayout(setNeedsLayout:)` must be balanced
+    /// with a matching number of earlier `suspendLayout()` calls in order for
+    /// layout to resume successfully.
     open func resumeLayout(setNeedsLayout: Bool) {
-        isLayoutSuspended = false
+        if layoutSuspendStackDepth > 0 {
+            layoutSuspendStackDepth -= 1
+        }
 
-        if setNeedsLayout {
+        if layoutSuspendStackDepth == 0 && setNeedsLayout {
             self.setNeedsLayout()
         }
+    }
+
+    /// Performs a given closure while suspending the layout of this view,
+    /// optionally dispatching a `setNeedsLayout()` call to the view at the end.
+    ///
+    /// Layout is resumed whether or not the closure throws before the end of
+    /// the block.
+    open func withSuspendedLayout(setNeedsLayout: Bool, _ block: () throws -> Void) rethrows {
+        suspendLayout()
+        defer {
+            resumeLayout(setNeedsLayout: setNeedsLayout)
+        }
+
+        try block()
     }
 
     open func setNeedsLayout() {
