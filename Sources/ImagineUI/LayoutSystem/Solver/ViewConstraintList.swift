@@ -65,7 +65,7 @@ extension ViewConstraintList {
 
         func makeDiff(previous: State) -> StateDiff {
             let constDiff = constraints.makeDifference(withPrevious: previous.constraints,
-                                                       areEqual: { $1.1 == $2.1 })
+                                                       areEqual: { $1.0.hasSameEffects(as: $2.0) && $1.1 == $2.1 })
 
             let suggestedDiff = suggestedValue.makeDifference(withPrevious: previous.suggestedValue,
                                                               areEqual: { $1 == $2 })

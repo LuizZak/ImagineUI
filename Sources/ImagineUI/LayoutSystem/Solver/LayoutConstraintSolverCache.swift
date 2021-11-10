@@ -68,8 +68,30 @@ public class LayoutConstraintSolverCache {
     }
 
     private func compareAndApplyStates() throws {
-        try withCaches {
-            try $0.compareAndApplyStates()
+        switch cacheState {
+        case .mixed(let cache):
+            try cache.compareAndApplyStates()
+
+        case .split(let horizontal, let vertical):
+            var horizontalResult: Result<Void, Error> = .success(())
+            var verticalResult: Result<Void, Error> = .success(())
+
+            let queue = OperationQueue()
+            queue.addOperation {
+                horizontalResult = Result<Void, Error>.init {
+                    try horizontal.compareAndApplyStates()
+                }
+            }
+            queue.addOperation {
+                verticalResult = Result<Void, Error>.init {
+                    try vertical.compareAndApplyStates()
+                }
+            }
+
+            queue.waitUntilAllOperationsAreFinished()
+
+            try horizontalResult.get()
+            try verticalResult.get()
         }
     }
 
@@ -196,16 +218,45 @@ fileprivate class _LayoutConstraintSolverCache {
     private func updateSolver(_ diff: CacheStateDiff) throws {
         let transaction = solver.startTransaction()
 
+        // Process removals first
+        for constDiff in diff.constraintDiffs {
+            switch constDiff {
+            case .removed(_, let constraint):
+                transaction.removeConstraint(constraint.constraint)
+
+            case .updated(_, let old, _):
+                transaction.removeConstraint(old.constraint)
+
+            case .added:
+                break
+            }
+        }
+
+        for viewDiff in diff.viewStateDiffs {
+            for constDiff in viewDiff.constraints {
+                switch constDiff {
+                case .removed(_, (let const, _)):
+                    transaction.removeConstraint(const)
+
+                case let .updated(_, old, _):
+                    transaction.removeConstraint(old.0)
+
+                case .added:
+                    break
+                }
+            }
+        }
+
+        // Process rest of constraints
         for constDiff in diff.constraintDiffs {
             switch constDiff {
             case .added(_, let constraint):
                 transaction.addConstraint(constraint.constraint)
 
-            case .removed(_, let constraint):
-                transaction.removeConstraint(constraint.constraint)
+            case .removed:
+                break
 
-            case .updated(_, let old, let new):
-                transaction.removeConstraint(old.constraint)
+            case .updated(_, _, let new):
                 transaction.addConstraint(new.constraint)
             }
         }
@@ -216,11 +267,10 @@ fileprivate class _LayoutConstraintSolverCache {
                 case let .added(_, (const, priority)):
                     transaction.addConstraint(const.setStrength(priority))
 
-                case .removed(_, (let const, _)):
-                    transaction.removeConstraint(const)
+                case .removed(_, _):
+                    break
 
-                case let .updated(_, old, new):
-                    transaction.removeConstraint(old.0)
+                case let .updated(_, _, new):
                     transaction.addConstraint(new.0.setStrength(new.1))
                 }
             }
@@ -336,9 +386,7 @@ fileprivate class _LayoutConstraintSolverCache {
             }
         }
 
-        // Prepend removals as they need to occur before additions in the solver
-        // change function
-        constDiff = removedList.map(KeyedDifference.removed) + constDiff + updatedList.map(KeyedDifference.updated)
+        constDiff += removedList.map(KeyedDifference.removed) + updatedList.map(KeyedDifference.updated)
 
         return constDiff
     }
