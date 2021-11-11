@@ -1,6 +1,8 @@
 import CassowarySwift
 
 public class LayoutConstraint: Hashable {
+    var isRemoved: Bool = false
+
     var definition: Definition {
         didSet {
             if definition == oldValue { return }
@@ -122,6 +124,12 @@ public class LayoutConstraint: Hashable {
     }
 
     func removeConstraint() {
+        guard !isRemoved else {
+            return
+        }
+
+        isRemoved = true
+
         container?.setNeedsLayout()
         firstCast._owner?.setNeedsLayout()
         secondCast?._owner?.setNeedsLayout()

@@ -427,7 +427,7 @@ public class TreeView: ControlView {
                 spacing: 5,
                 inset: .init(left: 4, top: 0, right: 0, bottom: 0),
                 customSpacing: [:]
-            )
+            ).create()
 
             _subItemsContainer.alignment = .fill
             _subItemsContainer.setContentHuggingPriority(.vertical, .veryLow)

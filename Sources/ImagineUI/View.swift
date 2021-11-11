@@ -775,7 +775,7 @@ extension View: SpatialReferenceType {
 }
 
 extension View: LayoutVariablesContainer {
-    var parent: SpatialReferenceType? {
+    var parent: LayoutVariablesContainer? {
         return superview
     }
     var viewInHierarchy: View? {

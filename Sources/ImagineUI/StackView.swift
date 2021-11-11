@@ -4,7 +4,7 @@ import CassowarySwift
 /// A view that lays out a set of its arranged subviews horizontally or
 /// vertically automatically
 open class StackView: View {
-    private let parentGuide = LayoutGuide()
+    private var _stackViewConstraints: [LayoutConstraint] = []
     private var customSpacing: [View: Double] = [:]
 
     private(set) public var arrangedSubviews: [View] = []
@@ -34,9 +34,12 @@ open class StackView: View {
     /// Insets between the edges of the stack view and its contents
     open var contentInset: UIEdgeInsets = .zero {
         didSet {
+            recreateConstraints()
+            /*
             parentGuide.layout.updateConstraints { make in
                 make.edges.equalTo(self, inset: contentInset)
             }
+            */
         }
     }
 
@@ -45,33 +48,32 @@ open class StackView: View {
 
         super.init()
 
+        /*
         addLayoutGuide(parentGuide)
         parentGuide.layout.makeConstraints { make in
             make.edges.equalTo(self, inset: contentInset)
         }
+        */
     }
 
     private func recreateConstraints() {
         withSuspendedLayout(setNeedsLayout: true) {
-            // Re-add the views back to allow constraints between views and the
-            // parent layout guide to reset
-            let views = arrangedSubviews
-            for view in arrangedSubviews {
-                view.removeFromSuperview()
-                addSubview(view)
+            for constraint in _stackViewConstraints {
+                constraint.removeConstraint()
             }
+            _stackViewConstraints.removeAll(keepingCapacity: true)
 
-            arrangedSubviews = views
-
-            Self.makeStackViewConstraints(
+            let constraints = Self.makeStackViewConstraints(
                 views: arrangedSubviews,
-                parent: parentGuide,
+                parent: self,
                 orientation: orientation,
                 alignment: alignment,
                 spacing: spacing,
-                inset: .zero,
+                inset: contentInset,
                 customSpacing: customSpacing
-            )
+            ).create()
+
+            _stackViewConstraints = constraints
         }
     }
 
@@ -146,6 +148,7 @@ open class StackView: View {
 
     /// Creates stack view constraints with the specified parameters into a parent
     /// layout container.
+    @LayoutResultBuilder
     internal static func makeStackViewConstraints<T: LayoutAnchorsContainer>(
         views: [View],
         parent: T,
@@ -154,79 +157,84 @@ open class StackView: View {
         spacing: Double,
         inset: UIEdgeInsets,
         customSpacing: [View: Double]
-    ) {
+    ) -> LayoutConstraintDefinitions {
+
+        let widthInset = inset.left + inset.right
+        let heightInset = inset.top + inset.bottom
+
         for (index, view) in views.enumerated() {
             let previous: View? = index > 0 ? views[index - 1] : nil
             let viewSpacing = previous.flatMap { customSpacing[$0] } ?? spacing
             let isLastView = index == views.count - 1
 
-            view.layout.makeConstraints { make in
-                // Connection to previous view
+            let make = view.layout
+            view.areaIntoConstraintsMask = []
+
+            // Connection to previous view
+            switch orientation {
+            case .horizontal:
+                if let previous = previous {
+                    make.right(of: previous, offset: viewSpacing)
+                } else {
+                    make.left == parent + inset.left
+                }
+                if isLastView {
+                    make.right == parent - inset.right
+                }
+            default:
+                if let previous = previous {
+                    make.under(previous, offset: viewSpacing)
+                } else {
+                    make.top == parent + inset.top
+                }
+                if isLastView {
+                    make.bottom == parent - inset.bottom
+                }
+            }
+
+            // Connect to parent guide
+            switch alignment {
+            case .leading:
                 switch orientation {
                 case .horizontal:
-                    if let previous = previous {
-                        make.right(of: previous, offset: viewSpacing)
-                    } else {
-                        make.left == parent + inset.left
-                    }
-                    if isLastView {
-                        make.right == parent - inset.right
-                    }
-                default:
-                    if let previous = previous {
-                        make.under(previous, offset: viewSpacing)
-                    } else {
-                        make.top == parent + inset.top
-                    }
-                    if isLastView {
-                        make.bottom == parent - inset.bottom
-                    }
+                    make.top == parent + inset.top
+                    make.bottom <= parent - inset.bottom
+
+                case .vertical:
+                    make.left == parent + inset.left
+                    make.right <= parent - inset.right
                 }
 
-                // Connect to parent guide
-                switch alignment {
-                case .leading:
-                    switch orientation {
-                    case .horizontal:
-                        make.top == parent + inset.top
-                        make.bottom <= parent - inset.bottom
+            case .trailing:
+                switch orientation {
+                case .horizontal:
+                    make.top >= parent + inset.top
+                    make.bottom == parent - inset.bottom
+                case .vertical:
+                    make.left >= parent + inset.left
+                    make.right == parent - inset.right
+                }
 
-                    case .vertical:
-                        make.left == parent + inset.left
-                        make.right <= parent - inset.right
-                    }
+            case .fill:
+                switch orientation {
+                case .horizontal:
+                    make.top == parent + inset.top
+                    make.bottom == parent - inset.bottom
 
-                case .trailing:
-                    switch orientation {
-                    case .horizontal:
-                        make.top >= parent + inset.top
-                        make.bottom == parent - inset.bottom
-                    case .vertical:
-                        make.left >= parent + inset.left
-                        make.right == parent - inset.right
-                    }
+                case .vertical:
+                    make.left == parent + inset.left
+                    make.right == parent - inset.right
+                }
 
-                case .fill:
-                    switch orientation {
-                    case .horizontal:
-                        make.top == parent + inset.top
-                        make.bottom == parent - inset.bottom
+            case .centered:
+                switch orientation {
+                case .horizontal:
+                    make.centerY == parent + heightInset
+                    make.height <= parent - heightInset
 
-                    case .vertical:
-                        make.left == parent + inset.left
-                        make.right == parent - inset.right
-                    }
-
-                case .centered:
-                    switch orientation {
-                    case .horizontal:
-                        make.centerY == parent
-                        make.height <= parent
-
-                    case .vertical:
-                        make.centerX == parent
-                        make.width <= parent
-                    }
+                case .vertical:
+                    make.centerX == parent + widthInset
+                    make.width <= parent - widthInset
                 }
             }
         }

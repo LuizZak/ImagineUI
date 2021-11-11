@@ -26,8 +26,8 @@ public struct LayoutAnchors {
     /// another layout anchor list.
     public func removeConstraintsConnecting(to other: LayoutAnchors) {
         for constraint in container.constraints {
-            if (constraint.first.owner === container && constraint.second?.owner === other.container) ||
-                (constraint.second?.owner === container && constraint.first.owner === other.container) {
+            if (constraint.firstCast.owner === container && constraint.secondCast?.owner === other.container) ||
+                (constraint.firstCast.owner === other.container && constraint.secondCast?.owner === container) {
                 constraint.removeConstraint()
             }
         }

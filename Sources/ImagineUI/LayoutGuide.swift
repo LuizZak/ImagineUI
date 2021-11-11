@@ -37,7 +37,7 @@ public final class LayoutGuide {
 }
 
 extension LayoutGuide: LayoutVariablesContainer {
-    var parent: SpatialReferenceType? {
+    var parent: LayoutVariablesContainer? {
         return owningView
     }
     var viewInHierarchy: View? {

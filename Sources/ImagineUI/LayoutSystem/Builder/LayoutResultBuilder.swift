@@ -28,6 +28,14 @@ public struct LayoutResultBuilder {
         return component
     }
 
+    public static func buildArray(_ components: [LayoutConstraintDefinition]) -> LayoutConstraintDefinitions {
+        return LayoutConstraintDefinitions(definitions: components)
+    }
+
+    public static func buildArray(_ components: [LayoutConstraintDefinitions]) -> LayoutConstraintDefinitions {
+        return .init(definitions: components.flatMap(\.definitions))
+    }
+
     public static func buildOptional(_ component: LayoutConstraintDefinitions?) -> LayoutConstraintDefinitions {
         if let component = component {
             return component

@@ -7,6 +7,8 @@ public struct LayoutConstraintDefinition {
     var multiplier: Double
     var priority: LayoutPriority?
 
+    /// Creates the layout constraint defined within this `LayoutConstraintDefinition`
+    /// object.
     @discardableResult
     public func create() -> LayoutConstraint {
         if let secondCast = secondCast {
@@ -28,8 +30,13 @@ public struct LayoutConstraintDefinition {
         )
     }
 
+    /// Updates the layout constraint defined within this `LayoutConstraintDefinition`
+    /// object.
+    ///
+    /// Note: This method assumes the referenced constraint already exist. If
+    /// a matching constraint does not exist, the method traps with a `fatalError`.
     @discardableResult
-    public func update() -> LayoutConstraint {
+    public func update(updateAreaIntoConstraintsMask: Bool = true) -> LayoutConstraint {
         if let secondCast = secondCast {
             return LayoutConstraint._update(
                 first: firstCast,
@@ -80,25 +87,9 @@ public struct LayoutConstraintDefinition {
                                  offset: Double = 0,
                                  multiplier: Double = 1,
                                  priority: LayoutPriority = .required) -> LayoutConstraintDefinition {
-        return .create(
+        return ._create(
             first: first.toInternalLayoutAnchor(),
             second: second.toInternalLayoutAnchor(),
-            relationship: relationship,
-            offset: offset,
-            multiplier: multiplier,
-            priority: priority
-        )
-    }
-
-    internal static func create(first: AnyLayoutAnchor,
-                                second: AnyLayoutAnchor,
-                                relationship: Relationship = .equal,
-                                offset: Double = 0,
-                                multiplier: Double = 1,
-                                priority: LayoutPriority = .required) -> LayoutConstraintDefinition {
-        return .init(
-            firstCast: first,
-            secondCast: second,
             relationship: relationship,
             offset: offset,
             multiplier: multiplier,
@@ -110,7 +101,7 @@ public struct LayoutConstraintDefinition {
                                  relationship: Relationship = .equal,
                                  offset: Double = 0,
                                  priority: LayoutPriority = .required) -> LayoutConstraintDefinition {
-        return .create(
+        return ._create(
             first: first.toInternalLayoutAnchor(),
             relationship: relationship,
             offset: offset,
@@ -118,10 +109,26 @@ public struct LayoutConstraintDefinition {
         )
     }
 
-    internal static func create(first: AnyLayoutAnchor,
-                                relationship: Relationship = .equal,
-                                offset: Double = 0,
-                                priority: LayoutPriority = .required) -> LayoutConstraintDefinition {
+    internal static func _create(first: AnyLayoutAnchor,
+                                 second: AnyLayoutAnchor,
+                                 relationship: Relationship = .equal,
+                                 offset: Double = 0,
+                                 multiplier: Double = 1,
+                                 priority: LayoutPriority = .required) -> LayoutConstraintDefinition {
+        return .init(
+            firstCast: first,
+            secondCast: second,
+            relationship: relationship,
+            offset: offset,
+            multiplier: multiplier,
+            priority: priority
+        )
+    }
+
+    internal static func _create(first: AnyLayoutAnchor,
+                                 relationship: Relationship = .equal,
+                                 offset: Double = 0,
+                                 priority: LayoutPriority = .required) -> LayoutConstraintDefinition {
         return .init(
             firstCast: first,
             secondCast: nil,

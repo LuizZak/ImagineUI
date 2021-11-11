@@ -8,14 +8,36 @@ public class LayoutConstraintSolverCache {
         cacheState = .split(horizontal: _LayoutConstraintSolverCache(), vertical: _LayoutConstraintSolverCache())
     }
 
-    func update(result: ConstraintCollection) throws {
+    func update(fromView view: View) throws -> ConstraintCollection {
+        let visitor = ClosureViewVisitor<ConstraintCollection> { collection, view in
+            collection.affectedLayoutVariables.append(view.layoutVariables)
+            for guide in view.layoutGuides {
+                collection.affectedLayoutVariables.append(guide.layoutVariables)
+            }
+
+            for constraint in view.containedConstraints where constraint.isEnabled {
+                collection.constraints.append(constraint)
+            }
+        }
+        let result = ConstraintCollection()
+        let traveler = ViewTraveler(state: result, visitor: visitor)
+        traveler.travelThrough(view: view)
+
+        try update(result: result)
+
+        return result
+    }
+
+    private func update(result: ConstraintCollection) throws {
         saveState()
         register(result: result)
 
         try compareAndApplyStates()
+
+        updateVariables()
     }
 
-    func updateVariables() {
+    private func updateVariables() {
         withCaches {
             $0.updateVariables()
         }
@@ -73,6 +95,14 @@ public class LayoutConstraintSolverCache {
             try cache.compareAndApplyStates()
 
         case .split(let horizontal, let vertical):
+
+            #if DUMP_CONSTRAINTS_TO_DESKTOP // For debugging purposes, .compareAndApplyStates() must be run sequentially on the same thread due to potential dump file contention.
+
+            try horizontal.compareAndApplyStates()
+            try vertical.compareAndApplyStates()
+
+            #else // DUMP_CONSTRAINTS_TO_DESKTOP
+
             var horizontalResult: Result<Void, Error> = .success(())
             var verticalResult: Result<Void, Error> = .success(())
 
@@ -92,6 +122,8 @@ public class LayoutConstraintSolverCache {
 
             try horizontalResult.get()
             try verticalResult.get()
+
+            #endif // DUMP_CONSTRAINTS_TO_DESKTOP
         }
     }
 
@@ -295,8 +327,7 @@ fileprivate class _LayoutConstraintSolverCache {
             }
         }
 
-        // For debugging purposes
-        #if DUMP_CONSTRAINTS_TO_DESKTOP
+        #if DUMP_CONSTRAINTS_TO_DESKTOP // For debugging purposes
 
         do {
             let data = try SolverSerializer.serialize(transaction: transaction)
@@ -315,11 +346,7 @@ fileprivate class _LayoutConstraintSolverCache {
             }
         }
 
-        #endif // DUMP_CONSTRAINTS_TO_DESKTOP
-
         try transaction.apply()
-
-        #if DUMP_CONSTRAINTS_TO_DESKTOP
 
         do {
             var variables: [Variable] = []
@@ -342,6 +369,10 @@ fileprivate class _LayoutConstraintSolverCache {
                 FileManager.default.createFile(atPath: pathVariables.path, contents: newFile)
             }
         }
+
+        #else // DUMP_CONSTRAINTS_TO_DESKTOP
+
+        try transaction.apply()
 
         #endif // DUMP_CONSTRAINTS_TO_DESKTOP
     }

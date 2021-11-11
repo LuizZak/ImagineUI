@@ -1,4 +1,4 @@
-/// A list of layout constraint definitions that can be used to create and/or 
+/// A list of layout constraint definitions that can be used to create and/or
 /// update constraints on a view.
 public struct LayoutConstraintDefinitions {
     var definitions: [LayoutConstraintDefinition]
@@ -11,9 +11,13 @@ public struct LayoutConstraintDefinitions {
             $0.create()
         }
     }
-    
+
     /// Updates the layout constraints referenced by this `LayoutConstraintDefinitions`
     /// object.
+    ///
+    /// Note: This method assumes the referenced constraints already exist. If
+    /// one or more of the constraints does not exist, the method traps with a
+    /// `fatalError`.
     @discardableResult
     public func update() -> [LayoutConstraint] {
         return definitions.map {
