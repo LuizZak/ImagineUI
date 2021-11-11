@@ -33,7 +33,7 @@ class ViewConstraintList {
         let current = state.constraints[name]
 
         if current?.strength != strength {
-            state.constraints[name] = (constraint(), strength)
+            state.constraints[name] = (constraint().setStrength(strength), strength)
         }
     }
 
