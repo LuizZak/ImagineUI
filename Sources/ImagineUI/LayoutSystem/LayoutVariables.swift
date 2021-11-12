@@ -52,131 +52,151 @@ class LayoutVariables {
         baselineHeight = Variable("\(name)_baselineHeight")
     }
 
-    func deriveConstraints(_ constraintList: ViewConstraintList) {
+    func deriveConstraints(_ constraintCollector: ViewConstraintCollectorType) {
         if let view = container as? View {
-            deriveViewConstraints(view, constraintList)
+            deriveViewConstraints(view, constraintCollector)
         }
 
-        constraintList.addConstraint(name: "width >= 0",
-                                     orientation: .horizontal,
-                                     width >= 0,
-                                     strength: Strength.REQUIRED)
+        constraintCollector.addConstraint(
+            width >= 0,
+            tag: "width >= 0",
+            orientation: .horizontal
+        )
 
-
-        constraintList.addConstraint(name: "height >= 0",
-                                     orientation: .vertical,
-                                     height >= 0,
-                                     strength: Strength.REQUIRED)
-
+        constraintCollector.addConstraint(
+            height >= 0,
+            tag: "height >= 0",
+            orientation: .horizontal
+        )
 
         if container.hasConstraintsOnAnchorKind(.right) {
-            constraintList.addConstraint(name: "right == width + left",
-                                         orientation: .horizontal,
-                                         right == width + left,
-                                         strength: Strength.REQUIRED)
+            constraintCollector.addConstraint(
+                right == width + left,
+                tag: "right == width + left",
+                orientation: .horizontal
+            )
         }
 
         if container.hasConstraintsOnAnchorKind(.bottom) {
-            constraintList.addConstraint(name: "bottom == top + height",
-                                         orientation: .vertical,
-                                         bottom == top + height,
-                                         strength: Strength.REQUIRED)
+            constraintCollector.addConstraint(
+                bottom == top + height,
+                tag: "bottom == top + height",
+                orientation: .vertical
+            )
         }
 
         if constraintsReferencesAnchorKind(.centerX) {
-            constraintList.addConstraint(name: "centerX",
-                                         orientation: .horizontal,
-                                         centerX == left + width / 2,
-                                         strength: Strength.REQUIRED)
+            constraintCollector.addConstraint(
+                centerX == left + width / 2,
+                tag: "centerX",
+                orientation: .horizontal
+            )
         }
 
         if constraintsReferencesAnchorKind(.centerY) {
-            constraintList.addConstraint(name: "centerY",
-                                         orientation: .vertical,
-                                         centerY == top + height / 2,
-                                         strength: Strength.REQUIRED)
+            constraintCollector.addConstraint(
+                centerY == top + height / 2,
+                tag: "centerY",
+                orientation: .vertical
+            )
         }
 
         if constraintsReferencesAnchorKind(.firstBaseline) {
             if let label = viewForFirstBaseline() as? Label {
-                constraintList.suggestValue(variable: baselineHeight,
-                                            orientation: .vertical,
-                                            value: label.baselineHeight,
-                                            strength: Strength.STRONG)
+                constraintCollector.suggestValue(
+                    baselineHeight,
+                    value: label.baselineHeight,
+                    strength: Strength.STRONG,
+                    orientation: .vertical
+                )
 
-                constraintList.addConstraint(name: "firstBaseline=baselineHeight",
-                                            orientation: .vertical,
-                                            firstBaseline == top + baselineHeight,
-                                            strength: Strength.REQUIRED)
+                constraintCollector.addConstraint(
+                    firstBaseline == top + baselineHeight,
+                    tag: "firstBaseline=baselineHeight",
+                    orientation: .vertical
+                )
             } else {
-                constraintList.addConstraint(name: "firstBaseline=height",
-                                            orientation: .vertical,
-                                            firstBaseline == top + height,
-                                            strength: Strength.REQUIRED)
+                constraintCollector.addConstraint(
+                    firstBaseline == top + height,
+                    tag: "firstBaseline=height",
+                    orientation: .vertical
+                )
             }
         }
     }
 
-    func deriveViewConstraints(_ view: View, _ constraintList: ViewConstraintList) {
+    private func deriveViewConstraints(_ view: View, _ constraintCollector: ViewConstraintCollectorType) {
         if view.areaIntoConstraintsMask.contains(.location) {
             let location = view.convert(point: .zero, to: nil)
 
-            constraintList.suggestValue(variable: left,
-                                        orientation: .horizontal,
-                                        value: location.x,
-                                        strength: Strength.STRONG)
+            constraintCollector.suggestValue(
+                left,
+                value: location.x,
+                strength: Strength.STRONG,
+                orientation: .horizontal
+            )
 
-            constraintList.suggestValue(variable: top,
-                                        orientation: .vertical,
-                                        value: location.y,
-                                        strength: Strength.STRONG)
+            constraintCollector.suggestValue(
+                top,
+                value: location.y,
+                strength: Strength.STRONG,
+                orientation: .vertical
+            )
         }
         if view.areaIntoConstraintsMask.contains(.size) {
-            constraintList.suggestValue(variable: right,
-                                        orientation: .horizontal,
-                                        value: view.bounds.right,
-                                        strength: Strength.STRONG)
+            constraintCollector.suggestValue(
+                right,
+                value: view.bounds.right,
+                strength: Strength.STRONG,
+                orientation: .horizontal
+            )
 
-            constraintList.suggestValue(variable: bottom,
-                                        orientation: .vertical,
-                                        value: view.bounds.bottom,
-                                        strength: Strength.STRONG)
+            constraintCollector.suggestValue(
+                bottom,
+                value: view.bounds.bottom,
+                strength: Strength.STRONG,
+                orientation: .vertical
+            )
         }
 
         if let intrinsicSize = view._targetLayoutSize ?? view.intrinsicSize {
-            constraintList.suggestValue(variable: intrinsicWidth,
-                                        orientation: .horizontal,
-                                        value: intrinsicSize.width,
-                                        strength: Strength.STRONG)
-            constraintList.suggestValue(variable: intrinsicHeight,
-                                        orientation: .vertical,
-                                        value: intrinsicSize.height,
-                                        strength: Strength.STRONG)
+            constraintCollector.suggestValue(
+                intrinsicWidth,
+                value: intrinsicSize.width,
+                strength: Strength.STRONG,
+                orientation: .horizontal
+            )
+            constraintCollector.suggestValue(
+                intrinsicHeight,
+                value: intrinsicSize.height,
+                strength: Strength.STRONG,
+                orientation: .vertical
+            )
 
             // Content compression/hugging priority
-            constraintList.addConstraint(
-                name: "width >= intrinsicWidth",
-                orientation: .horizontal,
-                width >= intrinsicWidth,
-                strength: view.horizontalCompressResistance.cassowaryStrength)
+            constraintCollector.addConstraint(
+                (width >= intrinsicWidth).setStrength(view.horizontalCompressResistance.cassowaryStrength),
+                tag: "width >= intrinsicWidth",
+                orientation: .horizontal
+            )
 
-            constraintList.addConstraint(
-                name: "width <= intrinsicWidth",
-                orientation: .horizontal,
-                width <= intrinsicWidth,
-                strength: view.horizontalHuggingPriority.cassowaryStrength)
+            constraintCollector.addConstraint(
+                (width <= intrinsicWidth).setStrength(view.horizontalHuggingPriority.cassowaryStrength),
+                tag: "width <= intrinsicWidth",
+                orientation: .horizontal
+            )
 
-            constraintList.addConstraint(
-                name: "height >= intrinsicHeight",
-                orientation: .vertical,
-                height >= intrinsicHeight,
-                strength: view.verticalCompressResistance.cassowaryStrength)
+            constraintCollector.addConstraint(
+                (height >= intrinsicHeight).setStrength(view.verticalCompressResistance.cassowaryStrength),
+                tag: "height >= intrinsicHeight",
+                orientation: .vertical
+            )
 
-            constraintList.addConstraint(
-                name: "height <= intrinsicHeight",
-                orientation: .vertical,
-                height <= intrinsicHeight,
-                strength: view.verticalHuggingPriority.cassowaryStrength)
+            constraintCollector.addConstraint(
+                (height <= intrinsicHeight).setStrength(view.verticalHuggingPriority.cassowaryStrength),
+                tag: "height <= intrinsicHeight",
+                orientation: .vertical
+            )
         }
     }
 
@@ -216,14 +236,14 @@ class LayoutVariables {
             return container.hasConstraintsOnAnchorKind(kind)
 
         case .width:
-            if let view = container as? View, view.intrinsicSize != nil {
+            if let view = container as? View, view._targetLayoutSize != nil || view.intrinsicSize != nil {
                 return true
             }
 
             return container.hasConstraintsOnAnchorKind(.width) || container.hasConstraintsOnAnchorKind(.centerX)
 
         case .height:
-            if let view = container as? View, view.intrinsicSize != nil {
+            if let view = container as? View, view._targetLayoutSize != nil || view.intrinsicSize != nil {
                 return true
             }
 
@@ -252,5 +272,17 @@ class LayoutVariables {
         let pointer = Unmanaged.passUnretained(guide).toOpaque()
 
         return "\(type(of: guide))_\(pointer)"
+    }
+}
+
+extension LayoutVariables: Equatable {
+    static func == (lhs: LayoutVariables, rhs: LayoutVariables) -> Bool {
+        return lhs === rhs
+    }
+}
+
+extension LayoutVariables: Hashable {
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(ObjectIdentifier(self))
     }
 }

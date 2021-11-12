@@ -92,14 +92,14 @@ public class LayoutConstraintSolverCache {
     private func compareAndApplyStates() throws {
         switch cacheState {
         case .mixed(let cache):
-            try cache.compareAndApplyStates()
+            try cache.compareAndApplyStates(orientations: [.horizontal, .vertical, .mixed])
 
         case .split(let horizontal, let vertical):
 
             #if DUMP_CONSTRAINTS_TO_DESKTOP // For debugging purposes, .compareAndApplyStates() must be run sequentially on the same thread due to potential dump file contention.
 
-            try horizontal.compareAndApplyStates()
-            try vertical.compareAndApplyStates()
+            try horizontal.compareAndApplyStates(orientations: [.horizontal])
+            try vertical.compareAndApplyStates(orientations: [.vertical])
 
             #else // DUMP_CONSTRAINTS_TO_DESKTOP
 
@@ -109,12 +109,12 @@ public class LayoutConstraintSolverCache {
             let queue = OperationQueue()
             queue.addOperation {
                 horizontalResult = Result<Void, Error>.init {
-                    try horizontal.compareAndApplyStates()
+                    try horizontal.compareAndApplyStates(orientations: [.horizontal])
                 }
             }
             queue.addOperation {
                 verticalResult = Result<Void, Error>.init {
-                    try vertical.compareAndApplyStates()
+                    try vertical.compareAndApplyStates(orientations: [.vertical])
                 }
             }
 
@@ -156,8 +156,8 @@ fileprivate class _LayoutConstraintSolverCache {
     private var _constraintSet: [LayoutConstraint: ConstraintState] = [:]
     private var _previousConstraintSet: [LayoutConstraint: ConstraintState] = [:]
 
-    private var _viewConstraintList: [ObjectIdentifier: ViewConstraintList] = [:]
-    private var _previousViewConstraintList: [ObjectIdentifier: ViewConstraintList] = [:]
+    private var _viewConstraintList: [LayoutVariables: ViewConstraintList] = [:]
+    private var _previousViewConstraintList: [LayoutVariables: ViewConstraintList] = [:]
 
     private let solver: Solver
 
@@ -186,10 +186,24 @@ fileprivate class _LayoutConstraintSolverCache {
         _registerConstraints(result.constraints, orientations: orientations)
     }
 
-    internal func compareAndApplyStates() throws {
+    internal func compareAndApplyStates(orientations: Set<LayoutConstraintOrientation>) throws {
         let diff = compareState()
 
         try updateSolver(diff)
+
+        // TODO: Refactor view constraint state to work around a quirk where the
+        // TODO: new state must not replace the old state as it would end up losing
+        // TODO: reference to Constraint instance identity.
+        for (id, viewList) in _viewConstraintList where _previousViewConstraintList[id] == nil {
+            _previousViewConstraintList[id] = viewList.clone()
+        }
+
+        for (id, viewDiff) in diff.viewStateDiffs {
+            _previousViewConstraintList[id]?.apply(diff: viewDiff)
+        }
+
+        _viewConstraintList = _previousViewConstraintList.mapValues { $0.clone() }
+        _previousViewConstraintList.removeAll(keepingCapacity: true)
     }
 
     /* TODO: Implement cache merging to speedup merging of mixed constraint sets.
@@ -227,22 +241,13 @@ fileprivate class _LayoutConstraintSolverCache {
     }
 
     private func constraintList(for container: LayoutVariablesContainer, orientations: Set<LayoutConstraintOrientation>) -> ViewConstraintList {
-        let identifier = ObjectIdentifier(container)
-
-        // Check previous list to copy over old state first
-        if let previous = _previousViewConstraintList[identifier], previous.orientations == orientations {
-            let list = previous.clone()
-
-            _viewConstraintList[identifier] = list
-
-            return list
-        }
+        let identifier: LayoutVariables = container.layoutVariables
 
         if let list = _viewConstraintList[identifier], list.orientations == orientations {
             return list
         }
 
-        let list = ViewConstraintList(container: container, orientations: orientations)
+        let list = ViewConstraintList(orientations: orientations)
         _viewConstraintList[identifier] = list
         return list
     }
@@ -264,14 +269,29 @@ fileprivate class _LayoutConstraintSolverCache {
             }
         }
 
-        for viewDiff in diff.viewStateDiffs {
+        for (_, viewDiff) in diff.viewStateDiffs {
             for constDiff in viewDiff.constraints {
                 switch constDiff {
-                case .removed(_, (let const, _)):
+                case .removed(_, let const):
                     transaction.removeConstraint(const)
 
                 case let .updated(_, old, _):
-                    transaction.removeConstraint(old.0)
+                    transaction.removeConstraint(old)
+
+                case .added:
+                    break
+                }
+            }
+
+            for varDiff in viewDiff.suggestedValues {
+                switch varDiff {
+                case let .updated(variable, old, new):
+                    if old.strength != new.strength {
+                        transaction.removeEditVariable(variable)
+                    }
+
+                case .removed(let variable, _):
+                    transaction.removeEditVariable(variable)
 
                 case .added:
                     break
@@ -286,24 +306,24 @@ fileprivate class _LayoutConstraintSolverCache {
                 transaction.addConstraint(constraint.constraint)
 
             case .removed:
-                break
+                break // Already handled above
 
             case .updated(_, _, let new):
                 transaction.addConstraint(new.constraint)
             }
         }
 
-        for viewDiff in diff.viewStateDiffs {
+        for (_, viewDiff) in diff.viewStateDiffs {
             for constDiff in viewDiff.constraints {
                 switch constDiff {
-                case let .added(_, (const, priority)):
-                    transaction.addConstraint(const.setStrength(priority))
+                case let .added(_, const):
+                    transaction.addConstraint(const)
 
                 case .removed(_, _):
-                    break
+                    break // Already handled above
 
                 case let .updated(_, _, new):
-                    transaction.addConstraint(new.0.setStrength(new.1))
+                    transaction.addConstraint(new)
                 }
             }
 
@@ -315,14 +335,13 @@ fileprivate class _LayoutConstraintSolverCache {
 
                 case let .updated(variable, old, new):
                     if old.strength != new.strength {
-                        transaction.removeEditVariable(variable)
                         transaction.addEditVariable(variable, strength: new.strength)
                     }
 
                     transaction.suggestValue(variable, value: new.value)
 
-                case .removed(let variable, _):
-                    transaction.removeEditVariable(variable)
+                case .removed:
+                    break // Already handled above
                 }
             }
         }
@@ -422,8 +441,8 @@ fileprivate class _LayoutConstraintSolverCache {
         return constDiff
     }
 
-    private func _compareViewState() -> [ViewConstraintList.StateDiff] {
-        var viewDiff: [ViewConstraintList.StateDiff] = []
+    private func _compareViewState() -> [(LayoutVariables, ViewConstraintList.StateDiff)] {
+        var viewDiff: [(LayoutVariables, ViewConstraintList.StateDiff)] = []
 
         for (key, value) in _viewConstraintList {
             let diff: ViewConstraintList.StateDiff
@@ -434,14 +453,14 @@ fileprivate class _LayoutConstraintSolverCache {
             }
 
             if !diff.isEmpty {
-                viewDiff.append(diff)
+                viewDiff.append((key, diff))
             }
         }
         for (key, value) in _previousViewConstraintList where _viewConstraintList[key] == nil {
             let diff = value.state.makeDiffToEmpty()
 
             if !diff.isEmpty {
-                viewDiff.append(diff)
+                viewDiff.append((key, diff))
             }
         }
 
@@ -482,6 +501,6 @@ fileprivate class _LayoutConstraintSolverCache {
 
     private struct CacheStateDiff {
         var constraintDiffs: [KeyedDifference<LayoutConstraint, ConstraintState>]
-        var viewStateDiffs: [ViewConstraintList.StateDiff]
+        var viewStateDiffs: [(LayoutVariables, ViewConstraintList.StateDiff)]
     }
 }

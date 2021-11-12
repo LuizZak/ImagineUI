@@ -1,46 +1,38 @@
 import CassowarySwift
 
-class ViewConstraintList {
-    let container: LayoutVariablesContainer
+class ViewConstraintList: ViewConstraintCollectorType {
     var orientations: Set<LayoutConstraintOrientation>
     var state: State = State()
 
-    init(container: LayoutVariablesContainer, orientations: Set<LayoutConstraintOrientation>) {
-        self.container = container
+    init(orientations: Set<LayoutConstraintOrientation>) {
         self.orientations = orientations
     }
 
-    fileprivate init(container: LayoutVariablesContainer, state: State, orientations: Set<LayoutConstraintOrientation>) {
-        self.container = container
+    fileprivate init(state: State, orientations: Set<LayoutConstraintOrientation>) {
         self.state = state
         self.orientations = orientations
     }
 
     func clone() -> ViewConstraintList {
-        return ViewConstraintList(container: container, state: state, orientations: orientations)
+        return ViewConstraintList(state: state, orientations: orientations)
     }
 
     /// Adds a constraint with a given name and strength.
-    func addConstraint(name: String,
-                       orientation: LayoutConstraintOrientation,
-                       _ constraint: @autoclosure () -> Constraint,
-                       strength: Double) {
+    func addConstraint(_ constraint: Constraint,
+                       tag: String,
+                       orientation: LayoutConstraintOrientation) {
 
         if !orientations.contains(orientation) {
             return
         }
 
-        let current = state.constraints[name]
-
-        if current?.strength != strength {
-            state.constraints[name] = (constraint().setStrength(strength), strength)
-        }
+        state.constraints[tag] = constraint
     }
 
-    func suggestValue(variable: Variable,
-                      orientation: LayoutConstraintOrientation,
+    func suggestValue(_ variable: Variable,
                       value: Double,
-                      strength: Double) {
+                      strength: Double,
+                      orientation: LayoutConstraintOrientation) {
 
         if !orientations.contains(orientation) {
             return
@@ -48,11 +40,39 @@ class ViewConstraintList {
 
         state.suggestedValue[variable] = (value, strength)
     }
+
+    func apply(diff: StateDiff) {
+        for constraintDiff in diff.constraints {
+            switch constraintDiff {
+            case let .added(key, constraint):
+                state.constraints[key] = constraint
+
+            case let .updated(key, _, new):
+                state.constraints[key] = new
+
+            case let .removed(key, _):
+                state.constraints[key] = nil
+            }
+        }
+
+        for suggestedValueDiff in diff.suggestedValues {
+            switch suggestedValueDiff {
+            case let .added(key, value):
+                state.suggestedValue[key] = value
+
+            case let .updated(key, _, new):
+                state.suggestedValue[key] = new
+
+            case let .removed(key, _):
+                state.suggestedValue[key] = nil
+            }
+        }
+    }
 }
 
 extension ViewConstraintList {
     struct State {
-        var constraints: [String: (Constraint, strength: Double)] = [:]
+        var constraints: [String: Constraint] = [:]
         var suggestedValue: [Variable: (value: Double, strength: Double)] = [:]
 
         func makeDiffFromEmpty() -> StateDiff {
@@ -64,18 +84,24 @@ extension ViewConstraintList {
         }
 
         func makeDiff(previous: State) -> StateDiff {
-            let constDiff = constraints.makeDifference(withPrevious: previous.constraints,
-                                                       areEqual: { $1.0.hasSameEffects(as: $2.0) && $1.1 == $2.1 })
+            let constDiff =
+                constraints.makeDifference(
+                    withPrevious: previous.constraints,
+                    areEqual: { $1.hasSameEffects(as: $2) }
+                )
 
-            let suggestedDiff = suggestedValue.makeDifference(withPrevious: previous.suggestedValue,
-                                                              areEqual: { $1 == $2 })
+            let suggestedDiff =
+                suggestedValue.makeDifference(
+                    withPrevious: previous.suggestedValue,
+                    areEqual: { $1 == $2 }
+                )
 
             return StateDiff(constraints: constDiff, suggestedValues: suggestedDiff)
         }
     }
 
     struct StateDiff {
-        var constraints: [KeyedDifference<String, (Constraint, strength: Double)>]
+        var constraints: [KeyedDifference<String, Constraint>]
         var suggestedValues: [KeyedDifference<Variable, (value: Double, strength: Double)>]
 
         var isEmpty: Bool {
