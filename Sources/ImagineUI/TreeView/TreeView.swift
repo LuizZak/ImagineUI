@@ -44,8 +44,6 @@ public class TreeView: ControlView {
 
         rootStackView.contentInset = 4
         rootStackView.alignment = .fill
-        rootStackView.setContentCompressionResistance(.horizontal, .required)
-        rootStackView.setContentCompressionResistance(.vertical, .required)
         rootStackView.layout.makeConstraints { make in
             make.left == scrollView.contentView
             make.top == scrollView.contentView + 4
@@ -407,16 +405,16 @@ public class TreeView: ControlView {
             _chevronView.setContentCompressionResistance(.horizontal, .required)
             _chevronView.setContentCompressionResistance(.vertical, .required)
 
-            _labelView.setContentHuggingPriority(.horizontal, .lowest)
+            _labelView.setContentHuggingPriority(.horizontal, nil)
+            _labelView.setContentHuggingPriority(.vertical, .required)
             _labelView.setContentCompressionResistance(.horizontal, .required)
             _labelView.setContentCompressionResistance(.vertical, .required)
 
-            _titleView.setContentCompressionResistance(.horizontal, .required)
-            _titleView.setContentCompressionResistance(.vertical, .required)
             _titleView.layout.makeConstraints { make in
                 make.left == self
                 make.top == self
                 make.right == self
+                make.height <= _labelView
             }
 
             StackView.makeStackViewConstraints(
@@ -430,9 +428,6 @@ public class TreeView: ControlView {
             ).create()
 
             _subItemsContainer.alignment = .fill
-            _subItemsContainer.setContentHuggingPriority(.vertical, .veryLow)
-            _subItemsContainer.setContentCompressionResistance(.horizontal, .required)
-            _subItemsContainer.setContentCompressionResistance(.vertical, .required)
             _subItemsContainer.layout.makeConstraints { make in
                 make.under(_titleView)
                 make.left == self + 10

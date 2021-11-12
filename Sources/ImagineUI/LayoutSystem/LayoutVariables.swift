@@ -33,23 +33,88 @@ class LayoutVariables {
         ]
     }
 
+    private var widthConstraint: Constraint
+    private var heightConstraint: Constraint
+    private var right_definition: Constraint
+    private var bottom_definition: Constraint
+    private var centerX_definition: Constraint
+    private var centerY_definition: Constraint
+
+    @ParameterizedCachedConstraint private var firstBaseline_definition: (Bool) -> Constraint
+
+    @ParameterizedCachedConstraint private var widthHuggingConstraint: (Double) -> Constraint
+    @ParameterizedCachedConstraint private var heightHuggingConstraint: (Double) -> Constraint
+    @ParameterizedCachedConstraint private var widthCompressionConstraint: (Double) -> Constraint
+    @ParameterizedCachedConstraint private var heightCompressionConstraint: (Double) -> Constraint
+
+    @ParameterizedCachedConstraint private var widthAsIntrinsicSizeConstraint: (Double) -> Constraint
+    @ParameterizedCachedConstraint private var heightAsIntrinsicSizeConstraint: (Double) -> Constraint
+
     init(container: LayoutVariablesContainer) {
         let name = LayoutVariables.deriveName(container)
 
         self.container = container
 
-        left = Variable("\(name)_left")
-        right = Variable("\(name)_right")
-        top = Variable("\(name)_top")
-        bottom = Variable("\(name)_bottom")
-        width = Variable("\(name)_width")
-        height = Variable("\(name)_height")
-        centerX = Variable("\(name)_centerX")
-        centerY = Variable("\(name)_centerY")
-        firstBaseline = Variable("\(name)_firstBaseline")
-        intrinsicWidth = Variable("\(name)_intrinsicWidth")
-        intrinsicHeight = Variable("\(name)_intrinsicHeight")
-        baselineHeight = Variable("\(name)_baselineHeight")
+        let left = Variable("\(name)_left")
+        let right = Variable("\(name)_right")
+        let top = Variable("\(name)_top")
+        let bottom = Variable("\(name)_bottom")
+        let width = Variable("\(name)_width")
+        let height = Variable("\(name)_height")
+        let centerX = Variable("\(name)_centerX")
+        let centerY = Variable("\(name)_centerY")
+        let firstBaseline = Variable("\(name)_firstBaseline")
+        let intrinsicWidth = Variable("\(name)_intrinsicWidth")
+        let intrinsicHeight = Variable("\(name)_intrinsicHeight")
+        let baselineHeight = Variable("\(name)_baselineHeight")
+
+        widthConstraint = width >= 0
+        heightConstraint = height >= 0
+        right_definition = right == left + width
+        bottom_definition = bottom == top + height
+        centerX_definition = centerX == left + width / 2
+        centerY_definition = centerY == top + height / 2
+
+        firstBaseline_definition = { hasLabel in
+            if hasLabel {
+                return firstBaseline == top + baselineHeight
+            } else {
+                return firstBaseline == top + height
+            }
+        }
+
+        widthHuggingConstraint = { strength in
+            (width <= intrinsicWidth).setStrength(strength)
+        }
+        heightHuggingConstraint = { strength in
+            (height <= intrinsicHeight).setStrength(strength)
+        }
+        widthCompressionConstraint = { strength in
+            (width >= intrinsicWidth).setStrength(strength)
+        }
+        heightCompressionConstraint = { strength in
+            (height >= intrinsicHeight).setStrength(strength)
+        }
+
+        widthAsIntrinsicSizeConstraint = { strength in
+            (width == intrinsicWidth).setStrength(strength)
+        }
+        heightAsIntrinsicSizeConstraint = { strength in
+            (height == intrinsicHeight).setStrength(strength)
+        }
+
+        self.left = left
+        self.right = right
+        self.top = top
+        self.bottom = bottom
+        self.width = width
+        self.height = height
+        self.centerX = centerX
+        self.centerY = centerY
+        self.firstBaseline = firstBaseline
+        self.intrinsicWidth = intrinsicWidth
+        self.intrinsicHeight = intrinsicHeight
+        self.baselineHeight = baselineHeight
     }
 
     func deriveConstraints(_ constraintCollector: ViewConstraintCollectorType) {
@@ -58,28 +123,28 @@ class LayoutVariables {
         }
 
         constraintCollector.addConstraint(
-            width >= 0,
+            widthConstraint,
             tag: "width >= 0",
             orientation: .horizontal
         )
 
         constraintCollector.addConstraint(
-            height >= 0,
+            heightConstraint,
             tag: "height >= 0",
             orientation: .horizontal
         )
 
         if container.hasConstraintsOnAnchorKind(.right) {
             constraintCollector.addConstraint(
-                right == width + left,
-                tag: "right == width + left",
+                right_definition,
+                tag: "right == left + width",
                 orientation: .horizontal
             )
         }
 
         if container.hasConstraintsOnAnchorKind(.bottom) {
             constraintCollector.addConstraint(
-                bottom == top + height,
+                bottom_definition,
                 tag: "bottom == top + height",
                 orientation: .vertical
             )
@@ -87,7 +152,7 @@ class LayoutVariables {
 
         if constraintsReferencesAnchorKind(.centerX) {
             constraintCollector.addConstraint(
-                centerX == left + width / 2,
+                centerX_definition,
                 tag: "centerX",
                 orientation: .horizontal
             )
@@ -95,7 +160,7 @@ class LayoutVariables {
 
         if constraintsReferencesAnchorKind(.centerY) {
             constraintCollector.addConstraint(
-                centerY == top + height / 2,
+                centerY_definition,
                 tag: "centerY",
                 orientation: .vertical
             )
@@ -111,14 +176,14 @@ class LayoutVariables {
                 )
 
                 constraintCollector.addConstraint(
-                    firstBaseline == top + baselineHeight,
-                    tag: "firstBaseline=baselineHeight",
+                    $firstBaseline_definition(true),
+                    tag: "firstBaseline == top + baselineHeight",
                     orientation: .vertical
                 )
             } else {
                 constraintCollector.addConstraint(
-                    firstBaseline == top + height,
-                    tag: "firstBaseline=height",
+                    $firstBaseline_definition(false),
+                    tag: "firstBaseline == top + height",
                     orientation: .vertical
                 )
             }
@@ -160,12 +225,51 @@ class LayoutVariables {
         }
 
         if let intrinsicSize = view._targetLayoutSize ?? view.intrinsicSize {
+            deriveIntrinsicSizeConstraints(view, intrinsicSize: intrinsicSize, constraintCollector)
+        }
+    }
+
+    private func deriveIntrinsicSizeConstraints(_ view: View, intrinsicSize: UISize, _ constraintCollector: ViewConstraintCollectorType) {
+        // Horizontal
+        horizontal:
+        if view.horizontalCompressResistance != nil || view.horizontalHuggingPriority != nil {
             constraintCollector.suggestValue(
                 intrinsicWidth,
                 value: intrinsicSize.width,
                 strength: Strength.STRONG,
                 orientation: .horizontal
             )
+
+            if let horizontalCompressResistance = view.horizontalCompressResistance {
+                // When hugging == compression, we can simplify into an equality constraint.
+                if horizontalCompressResistance == view.horizontalHuggingPriority {
+                    constraintCollector.addConstraint(
+                        $widthAsIntrinsicSizeConstraint(horizontalCompressResistance.cassowaryStrength),
+                        tag: "width == intrinsicWidth",
+                        orientation: .vertical
+                    )
+                    break horizontal
+                }
+
+                constraintCollector.addConstraint(
+                    $widthCompressionConstraint(horizontalCompressResistance.cassowaryStrength),
+                    tag: "width >= intrinsicWidth",
+                    orientation: .horizontal
+                )
+            }
+
+            if let horizontalHuggingPriority = view.horizontalHuggingPriority {
+                constraintCollector.addConstraint(
+                    $widthHuggingConstraint(horizontalHuggingPriority.cassowaryStrength),
+                    tag: "width <= intrinsicWidth",
+                    orientation: .horizontal
+                )
+            }
+        }
+
+        // Vertical
+        vertical:
+        if view.verticalCompressResistance != nil || view.verticalHuggingPriority != nil {
             constraintCollector.suggestValue(
                 intrinsicHeight,
                 value: intrinsicSize.height,
@@ -173,30 +277,31 @@ class LayoutVariables {
                 orientation: .vertical
             )
 
-            // Content compression/hugging priority
-            constraintCollector.addConstraint(
-                (width >= intrinsicWidth).setStrength(view.horizontalCompressResistance.cassowaryStrength),
-                tag: "width >= intrinsicWidth",
-                orientation: .horizontal
-            )
+            if let verticalCompressResistance = view.verticalCompressResistance {
+                // When hugging == compression, we can simplify into an equality constraint.
+                if verticalCompressResistance == view.verticalHuggingPriority {
+                    constraintCollector.addConstraint(
+                        $heightAsIntrinsicSizeConstraint(verticalCompressResistance.cassowaryStrength),
+                        tag: "height == intrinsicHeight",
+                        orientation: .vertical
+                    )
+                    break vertical
+                }
 
-            constraintCollector.addConstraint(
-                (width <= intrinsicWidth).setStrength(view.horizontalHuggingPriority.cassowaryStrength),
-                tag: "width <= intrinsicWidth",
-                orientation: .horizontal
-            )
+                constraintCollector.addConstraint(
+                    $heightCompressionConstraint(verticalCompressResistance.cassowaryStrength),
+                    tag: "height >= intrinsicHeight",
+                    orientation: .vertical
+                )
+            }
 
-            constraintCollector.addConstraint(
-                (height >= intrinsicHeight).setStrength(view.verticalCompressResistance.cassowaryStrength),
-                tag: "height >= intrinsicHeight",
-                orientation: .vertical
-            )
-
-            constraintCollector.addConstraint(
-                (height <= intrinsicHeight).setStrength(view.verticalHuggingPriority.cassowaryStrength),
-                tag: "height <= intrinsicHeight",
-                orientation: .vertical
-            )
+            if let verticalHuggingPriority = view.verticalHuggingPriority {
+                constraintCollector.addConstraint(
+                    $heightHuggingConstraint(verticalHuggingPriority.cassowaryStrength),
+                    tag: "height <= intrinsicHeight",
+                    orientation: .vertical
+                )
+            }
         }
     }
 
@@ -284,5 +389,38 @@ extension LayoutVariables: Equatable {
 extension LayoutVariables: Hashable {
     func hash(into hasher: inout Hasher) {
         hasher.combine(ObjectIdentifier(self))
+    }
+}
+
+/// A parameterized cache that returns the same Constraint instance on repeated
+/// fetches with the same parameter, but refreshes the cache every time a
+/// different parameter value is provided.
+///
+/// Past parameters are not remembered, and attempting to fetch a constraint for
+/// a previous parameter returns a new Constraint instance.
+@propertyWrapper
+private class ParameterizedCachedConstraint<Parameter: Equatable> {
+    var cached: Constraint?
+    var currentParameter: Parameter?
+    var wrappedValue: (Parameter) -> Constraint
+    var projectedValue: (Parameter) -> Constraint {
+        return { parameter in
+            if self.currentParameter != parameter {
+                self.currentParameter = parameter
+                self.cached = nil
+            }
+
+            if let cached = self.cached {
+                return cached
+            }
+
+            let newConstraint = self.wrappedValue(parameter)
+            self.cached = newConstraint
+            return newConstraint
+        }
+    }
+
+    init(wrappedValue: @escaping (Parameter) -> Constraint) {
+        self.wrappedValue = wrappedValue
     }
 }

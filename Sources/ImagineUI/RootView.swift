@@ -3,9 +3,9 @@ import Geometry
 /// A view which serves as the root of a view hierarchy.
 public class RootView: ControlView {
     private var _constraintCache = LayoutConstraintSolverCache()
-    
+
     public weak var invalidationDelegate: RootViewRedrawInvalidationDelegate?
-    
+
     public override func setNeedsLayout() {
         super.setNeedsLayout()
 
@@ -16,9 +16,9 @@ public class RootView: ControlView {
         let rect = spatialReference.convert(bounds: bounds, to: nil)
         invalidationDelegate?.rootView(self, invalidateRect: rect)
     }
-    
-    internal override func performConstraintsLayout() {
+
+    internal override func performConstraintsLayout(cached: Bool) {
         let solver = LayoutConstraintSolver()
-        solver.solve(viewHierarchy: self, cache: _constraintCache)
+        solver.solve(viewHierarchy: self, cache: cached ? _constraintCache : nil)
     }
 }

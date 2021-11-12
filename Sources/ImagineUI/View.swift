@@ -8,14 +8,14 @@ open class View {
     /// minimal content sizes
     internal var _targetLayoutSize: UISize? = nil
 
-    var horizontalCompressResistance: LayoutPriority = .high {
+    var horizontalCompressResistance: LayoutPriority? = .high {
         didSet {
             if oldValue != horizontalCompressResistance {
                 setNeedsLayout()
             }
         }
     }
-    var verticalCompressResistance: LayoutPriority = .high {
+    var verticalCompressResistance: LayoutPriority? = .high {
         didSet {
             if oldValue != verticalCompressResistance {
                 setNeedsLayout()
@@ -23,14 +23,14 @@ open class View {
         }
     }
 
-    var horizontalHuggingPriority: LayoutPriority = .veryLow {
+    var horizontalHuggingPriority: LayoutPriority? = .veryLow {
         didSet {
             if oldValue != horizontalHuggingPriority {
                 setNeedsLayout()
             }
         }
     }
-    var verticalHuggingPriority: LayoutPriority = .veryLow {
+    var verticalHuggingPriority: LayoutPriority? = .veryLow {
         didSet {
             if oldValue != verticalHuggingPriority {
                 setNeedsLayout()
@@ -281,7 +281,7 @@ open class View {
         /// If no superview is available, perform constraint layout locally,
         /// instead
         if superview == nil {
-            performConstraintsLayout()
+            performConstraintsLayout(cached: true)
         }
 
         needsLayout = false
@@ -291,7 +291,7 @@ open class View {
         }
     }
 
-    internal func performConstraintsLayout() {
+    internal func performConstraintsLayout(cached: Bool) {
         let solver = LayoutConstraintSolver()
         solver.solve(viewHierarchy: self, cache: nil)
     }
@@ -358,7 +358,7 @@ open class View {
         superview = nil
 
         _targetLayoutSize = size
-        performConstraintsLayout()
+        performConstraintsLayout(cached: true)
 
         let optimalSize = self.size
 
@@ -367,6 +367,9 @@ open class View {
         _targetLayoutSize = nil
         needsLayout = previousNeedsLayout
         superview = previousSuperview
+
+        // Update constraint cache back
+        performConstraintsLayout(cached: true)
 
         return optimalSize
     }
@@ -696,30 +699,49 @@ open class View {
 
     // MARK: - Content Compression/Hugging configuration
 
+    /// Sets the content compression resistance of this view on a given orientation.
+    ///
+    /// Content compression resistance adds a minimal size constraint when the
+    /// view has a non-nil `intrinsicSize`.
+    ///
+    /// If `nil` is provided as a priority, it indicates the view makes no attempt
+    /// at ensuring that its size at the specified orientation be at least as
+    /// large as its `intrinsicSize` property.
     public func setContentCompressionResistance(_ orientation: LayoutAnchorOrientation,
-                                                _ priority: LayoutPriority) {
+                                                _ priority: LayoutPriority?) {
         switch orientation {
         case .horizontal: horizontalCompressResistance = priority
         case .vertical: verticalCompressResistance = priority
         }
     }
 
-    public func contentCompressionResistance(_ orientation: LayoutAnchorOrientation) -> LayoutPriority {
+    /// Gets the current content compression resistance of this view on the given
+    /// orientation.
+    public func contentCompressionResistance(_ orientation: LayoutAnchorOrientation) -> LayoutPriority? {
         switch orientation {
         case .horizontal: return horizontalCompressResistance
         case .vertical: return verticalCompressResistance
         }
     }
 
+    /// Sets the content hugging priority of this view on a given orientation.
+    ///
+    /// Content hugging priority adds a maximal size constraint when the
+    /// view has a non-nil `intrinsicSize`.
+    ///
+    /// If `nil` is provided as a priority, it indicates the view makes no attempt
+    /// at ensuring that its size at the specified orientation be at most as
+    /// large as its `intrinsicSize` property.
     public func setContentHuggingPriority(_ orientation: LayoutAnchorOrientation,
-                                          _ priority: LayoutPriority) {
+                                          _ priority: LayoutPriority?) {
         switch orientation {
         case .horizontal: horizontalHuggingPriority = priority
         case .vertical: verticalHuggingPriority = priority
         }
     }
 
-    public func contentHuggingPriority(_ orientation: LayoutAnchorOrientation) -> LayoutPriority {
+    /// Gets the content hugging priority of this view on a given orientation.
+    public func contentHuggingPriority(_ orientation: LayoutAnchorOrientation) -> LayoutPriority? {
         switch orientation {
         case .horizontal: return horizontalHuggingPriority
         case .vertical: return verticalHuggingPriority
