@@ -1,10 +1,10 @@
 public protocol ViewVisitor {
     associatedtype State
 
-    func onVisitorEnter(_ state: State, _ view: View)
-    func visitView(_ state: State, _ view: View) -> ViewVisitorResult
+    func onVisitorEnter(_ state: inout State, _ view: View)
+    func visitView(_ state: inout State, _ view: View) -> ViewVisitorResult
     func shouldVisitView(_ state: State, _ view: View) -> Bool
-    func onVisitorExit(_ state: State, _ view: View)
+    func onVisitorExit(_ state: inout State, _ view: View)
 }
 
 public enum ViewVisitorResult {
@@ -14,18 +14,18 @@ public enum ViewVisitorResult {
 
 public class ClosureViewVisitor<T>: ViewVisitor {
     public typealias State = T
-    let visitor: (T, View) -> Void
+    let visitor: (inout T, View) -> Void
 
-    public init(visitor: @escaping (T, View) -> Void) {
+    public init(visitor: @escaping (inout T, View) -> Void) {
         self.visitor = visitor
     }
 
-    public func onVisitorEnter(_ state: T, _ view: View) {
+    public func onVisitorEnter(_ state: inout T, _ view: View) {
 
     }
 
-    public func visitView(_ state: T, _ view: View) -> ViewVisitorResult {
-        visitor(state, view)
+    public func visitView(_ state: inout T, _ view: View) -> ViewVisitorResult {
+        visitor(&state, view)
         return .visitChildren
     }
 
@@ -33,13 +33,13 @@ public class ClosureViewVisitor<T>: ViewVisitor {
         return true
     }
 
-    public func onVisitorExit(_ state: T, _ view: View) {
+    public func onVisitorExit(_ state: inout T, _ view: View) {
 
     }
 }
 
 public class ViewTraveler<Visitor: ViewVisitor> {
-    let state: Visitor.State
+    var state: Visitor.State
     let visitor: Visitor
 
     public init(state: Visitor.State, visitor: Visitor) {
@@ -52,15 +52,15 @@ public class ViewTraveler<Visitor: ViewVisitor> {
             return
         }
 
-        visitor.onVisitorEnter(state, view)
+        visitor.onVisitorEnter(&state, view)
 
-        if visitor.visitView(state, view) == .visitChildren {
+        if visitor.visitView(&state, view) == .visitChildren {
             for subview in view.subviews {
                 travelThrough(view: subview)
             }
         }
 
-        visitor.onVisitorExit(state, view)
+        visitor.onVisitorExit(&state, view)
     }
 }
 

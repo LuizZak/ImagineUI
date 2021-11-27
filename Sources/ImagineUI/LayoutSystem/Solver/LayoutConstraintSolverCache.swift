@@ -19,13 +19,12 @@ public class LayoutConstraintSolverCache {
                 collection.constraints.append(constraint)
             }
         }
-        let result = ConstraintCollection()
-        let traveler = ViewTraveler(state: result, visitor: visitor)
+        let traveler = ViewTraveler(state: ConstraintCollection(), visitor: visitor)
         traveler.travelThrough(view: view)
 
-        try update(result: result)
+        try update(result: traveler.state)
 
-        return result
+        return traveler.state
     }
 
     private func update(result: ConstraintCollection) throws {
