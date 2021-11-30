@@ -201,6 +201,57 @@ public class TreeView: ControlView {
 
     private func _handleKeyDown(_ keyCode: Keys, _ modifiers: KeyboardModifier) -> Bool {
         switch keyCode {
+        case .up:
+            guard _selected.count == 1, let selectedIndex = _selected.first else {
+                return true
+            }
+
+            var candidateView: ItemView?
+            for itemView in _visibleItems {
+                guard let current = candidateView else {
+                    if itemView.itemIndex < selectedIndex {
+                        candidateView = itemView
+                    }
+                    continue
+                }
+
+                if itemView.itemIndex > current.itemIndex && itemView.itemIndex < selectedIndex {
+                    candidateView = itemView
+                }
+            }
+
+            if let candidateView = candidateView {
+                _selectItemView(candidateView)
+                return true
+            }
+
+        case .down:
+            guard _selected.count == 1, let selectedIndex = _selected.first else {
+                return true
+            }
+
+            var candidateView: ItemView?
+            for itemView in _visibleItems {
+                guard let current = candidateView else {
+                    if itemView.itemIndex > selectedIndex {
+                        candidateView = itemView
+                    }
+                    continue
+                }
+
+                if itemView.itemIndex < current.itemIndex && itemView.itemIndex > selectedIndex {
+                    candidateView = itemView
+                }
+            }
+
+            if let candidateView = candidateView {
+                _selectItemView(candidateView)
+                return true
+            }
+
+        case .down:
+            break
+
         case .right:
             guard _selected.count == 1, let index = _selected.first else {
                 return true

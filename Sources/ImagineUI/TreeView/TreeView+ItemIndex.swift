@@ -61,13 +61,16 @@ extension TreeView {
         /// Returns `true` if `lhs` comes before in a hierarchy compared to
         /// `rhs`.
         ///
-        /// A hierarchy item comes before another if every index in `indices`
+        /// A hierarchy item comes before another if any index in `indices`
         /// compares lower to another hierarchy item.
         ///
-        /// In case all indices are the same between the two parameters, `true`
-        /// is returned if `rhs` is of a deeper hierarchy (`rhs.indices.count > lhs.indices.count`).
+        /// In case the indices have different depths, `true` is returned if
+        /// `rhs` is of a deeper hierarchy (`lhs.indices.count < rhs.indices.count`).
         public static func < (lhs: Self, rhs: Self) -> Bool {
             for (l, r) in zip(lhs.indices, rhs.indices) {
+                if l < r {
+                    return true
+                }
                 if l > r {
                     return false
                 }
@@ -107,7 +110,7 @@ extension TreeView {
         /// lower to the other item's, or if the hierarchical parent is the same,
         /// if the `index` compares lower.
         public static func < (lhs: Self, rhs: Self) -> Bool {
-            return lhs.parent < rhs.parent || lhs.index < rhs.index
+            return lhs.asHierarchyIndex < rhs.asHierarchyIndex
         }
     }
 }
