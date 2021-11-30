@@ -1,10 +1,24 @@
 public protocol ViewVisitor {
     associatedtype State
 
-    func onVisitorEnter(_ state: inout State, _ view: View)
-    func visitView(_ state: inout State, _ view: View) -> ViewVisitorResult
-    func shouldVisitView(_ state: State, _ view: View) -> Bool
-    func onVisitorExit(_ state: inout State, _ view: View)
+    func onVisitorEnter(_ view: View, _ state: inout State)
+    func visitView(_ view: View, _ state: inout State) -> ViewVisitorResult
+    func shouldVisitView(_ view: View, _ state: State) -> Bool
+    func onVisitorExit(_ view: View, _ state: inout State)
+}
+
+public extension ViewVisitor {
+    func onVisitorEnter(_ view: View, _ state: inout State) {
+
+    }
+
+    func shouldVisitView(_ view: View, _ state: State) -> Bool {
+        return true
+    }
+
+    func onVisitorExit(_ view: View, _ state: inout State) {
+
+    }
 }
 
 public enum ViewVisitorResult {
@@ -20,20 +34,20 @@ public class ClosureViewVisitor<T>: ViewVisitor {
         self.visitor = visitor
     }
 
-    public func onVisitorEnter(_ state: inout T, _ view: View) {
+    public func onVisitorEnter(_ view: View, _ state: inout T) {
 
     }
 
-    public func visitView(_ state: inout T, _ view: View) -> ViewVisitorResult {
+    public func visitView(_ view: View, _ state: inout T) -> ViewVisitorResult {
         visitor(&state, view)
         return .visitChildren
     }
 
-    public func shouldVisitView(_ state: T, _ view: View) -> Bool {
+    public func shouldVisitView(_ view: View, _ state: T) -> Bool {
         return true
     }
 
-    public func onVisitorExit(_ state: inout T, _ view: View) {
+    public func onVisitorExit(_ view: View, _ state: inout T) {
 
     }
 }
@@ -48,19 +62,19 @@ public class ViewTraveler<Visitor: ViewVisitor> {
     }
 
     public func travelThrough(view: View) {
-        if !visitor.shouldVisitView(state, view) {
+        if !visitor.shouldVisitView(view, state) {
             return
         }
 
-        visitor.onVisitorEnter(&state, view)
+        visitor.onVisitorEnter(view, &state)
 
-        if visitor.visitView(&state, view) == .visitChildren {
+        if visitor.visitView(view, &state) == .visitChildren {
             for subview in view.subviews {
                 travelThrough(view: subview)
             }
         }
 
-        visitor.onVisitorExit(&state, view)
+        visitor.onVisitorExit(view, &state)
     }
 }
 

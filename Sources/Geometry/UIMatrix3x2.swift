@@ -55,56 +55,56 @@ import Foundation
 public struct UIMatrix: Hashable, Codable, CustomStringConvertible {
     public typealias Scalar = Double
     public typealias Vector = UIVector
-    
+
     /// Gets the identity matrix.
     public static var identity: Self { Self(m11: 1, m12: 0,
                                             m21: 0, m22: 1,
                                             m31: 0, m32: 0) }
-    
+
     /// Element (1,1)
     public let m11: Scalar
-    
+
     /// Element (1,2)
     public let m12: Scalar
-    
+
     /// Element (2,1)
     public let m21: Scalar
-    
+
     /// Element (2,2)
     public let m22: Scalar
-    
+
     /// Element (3,1)
     public let m31: Scalar
-    
+
     /// Element (3,2)
     public let m32: Scalar
-    
+
     /// Gets the first row in the matrix; that is M11 and M12.
     public var row1: [Scalar] { [m11, m12] }
-    
+
     /// Gets the second row in the matrix; that is M21 and M22.
     public var row2: [Scalar] { [m21, m22] }
-    
+
     /// Gets the third row in the matrix; that is M31 and M32.
     public var row3: [Scalar] { [m31, m32] }
-    
+
     /// Gets the first column in the matrix; that is M11, M21, and M31.
     public var column1: [Scalar] { [m11, m21, m31] }
-    
+
     /// Gets the second column in the matrix; that is M12, M22, and M32.
     public var column2: [Scalar] { [m12, m22, m32] }
-    
+
     /// Gets the translation of the matrix; that is M31 and M32.
     public var translationVector: Vector { Vector(x: m31, y: m32) }
-    
+
     /// Gets the scale of the matrix; that is M11 and M22.
     public var scaleVector: Vector { Vector(x: m11, y: m22) }
-    
+
     /// Gets a value indicating whether this instance is an identity matrix.
     ///
     /// `true` if this instance is an identity matrix; otherwise, `false`.
     public var isIdentity: Bool { UIMatrix.identity == self }
-    
+
     /// Gets or sets the component at the specified index.
     ///
     /// - Parameter index: The zero-based index of the component to access.
@@ -127,7 +127,7 @@ public struct UIMatrix: Hashable, Codable, CustomStringConvertible {
             fatalError("Indices for UIMatrix run from 0 to 5, inclusive.")
         }
     }
-    
+
     /// Gets or sets the component at the specified index.
     ///
     /// - Parameter row: The row of the matrix to access.
@@ -140,15 +140,15 @@ public struct UIMatrix: Hashable, Codable, CustomStringConvertible {
                      "Rows for UIMatrix run from 0 to 2, inclusive.")
         precondition(column >= 0 || column <= 1,
                      "Rows and columns for UIMatrix run from 0 to 1, inclusive.")
-        
+
         return self[index: row * 2 + column]
     }
-    
+
     /// Returns a `String` that represents this instance.
     public var description: String {
         "[M11:\(m11) M12:\(m12)] [M21:\(m21) M22:\(m22)] [M31:\(m31) M32:\(m32)]"
     }
-    
+
     /// Initializes a new instance of the `UIMatrix` struct.
     ///
     /// - Parameter value: The value that will be assigned to all components.
@@ -160,7 +160,7 @@ public struct UIMatrix: Hashable, Codable, CustomStringConvertible {
         m31 = value
         m32 = value
     }
-    
+
     /// Initializes a new instance of the `UIMatrix` struct.
     ///
     /// - Parameter m11: The value to assign at row 1 column 1 of the matrix.
@@ -177,7 +177,7 @@ public struct UIMatrix: Hashable, Codable, CustomStringConvertible {
         self.m31 = m31
         self.m32 = m32
     }
-    
+
     /// Initializes a new instance of the `UIMatrix` struct.
     ///
     /// - Parameter values: The values to assign to the components of the matrix.
@@ -186,36 +186,36 @@ public struct UIMatrix: Hashable, Codable, CustomStringConvertible {
     /// - precondition: `values.count == 6`
     public init(values: [Scalar]) {
         precondition(values.count == 6, "There must be six input values for UIMatrix")
-        
+
         m11 = values[0]
         m12 = values[1]
-        
+
         m21 = values[2]
         m22 = values[3]
-        
+
         m31 = values[4]
         m32 = values[5]
     }
-    
+
     /// Creates an array containing the elements of the matrix.
     ///
     /// - Returns: A six-element array containing the components of the matrix.
     public func toArray() -> [Scalar] {
         [m11, m12, m21, m22, m31, m32]
     }
-    
+
     /// Calculates the determinant of this matrix.
     ///
     /// - Returns: Result of the determinant.
     public func determinant() -> Scalar {
         ((m11 * m22) as Scalar) - m12 * m21
     }
-    
+
     /// Calculates the inverse of this matrix instance.
     public func inverted() -> UIMatrix {
         UIMatrix.invert(self)
     }
-    
+
     /// Determines the sum of two matrices.
     ///
     /// - Parameter left: The first matrix to add.
@@ -227,10 +227,10 @@ public struct UIMatrix: Hashable, Codable, CustomStringConvertible {
         let m22 = left.m22 + right.m22
         let m31 = left.m31 + right.m31
         let m32 = left.m32 + right.m32
-        
+
         return UIMatrix(m11: m11, m12: m12, m21: m21, m22: m22, m31: m31, m32: m32)
     }
-    
+
     /// Determines the difference between two matrices.
     ///
     /// - Parameter left: The first matrix to subtract.
@@ -242,10 +242,10 @@ public struct UIMatrix: Hashable, Codable, CustomStringConvertible {
         let m22 = left.m22 - right.m22
         let m31 = left.m31 - right.m31
         let m32 = left.m32 - right.m32
-        
+
         return UIMatrix(m11: m11, m12: m12, m21: m21, m22: m22, m31: m31, m32: m32)
     }
-    
+
     /// Scales a matrix by the given value.
     ///
     /// - Parameter left: The matrix to scale.
@@ -257,10 +257,10 @@ public struct UIMatrix: Hashable, Codable, CustomStringConvertible {
         let m22 = left.m22 * right
         let m31 = left.m31 * right
         let m32 = left.m32 * right
-        
+
         return UIMatrix(m11: m11, m12: m12, m21: m21, m22: m22, m31: m31, m32: m32)
     }
-    
+
     /// Determines the product of two matrices.
     ///
     /// - Parameter left: The first matrix to multiply.
@@ -272,27 +272,27 @@ public struct UIMatrix: Hashable, Codable, CustomStringConvertible {
         let m22: Scalar = (left.m21 * right.m12) as Scalar + (left.m22 * right.m22) as Scalar
         let m31: Scalar = (left.m31 * right.m11) as Scalar + (left.m32 * right.m21 + right.m31) as Scalar
         let m32: Scalar = (left.m31 * right.m12) as Scalar + (left.m32 * right.m22 + right.m32) as Scalar
-        
+
         return UIMatrix(m11: m11, m12: m12, m21: m21, m22: m22, m31: m31, m32: m32)
     }
-    
+
     /// Scales a matrix by the given value.
     ///
     /// - Parameter left: The matrix to scale.
     /// - Parameter right: The amount by which to scale. Must be greater than zero
     public static func divide(_ left: UIMatrix, _ right: Scalar) -> UIMatrix {
         let inv = Scalar(1) / right
-        
+
         let m11 = left.m11 * inv
         let m12 = left.m12 * inv
         let m21 = left.m21 * inv
         let m22 = left.m22 * inv
         let m31 = left.m31 * inv
         let m32 = left.m32 * inv
-        
+
         return UIMatrix(m11: m11, m12: m12, m21: m21, m22: m22, m31: m31, m32: m32)
     }
-    
+
     /// Determines the quotient of two matrices.
     ///
     /// - Parameter left: The first matrix to divide.
@@ -304,10 +304,10 @@ public struct UIMatrix: Hashable, Codable, CustomStringConvertible {
         let m22 = left.m22 / right.m22
         let m31 = left.m31 / right.m31
         let m32 = left.m32 / right.m32
-        
+
         return UIMatrix(m11: m11, m12: m12, m21: m21, m22: m22, m31: m31, m32: m32)
     }
-    
+
     /// Negates a matrix.
     ///
     /// - Parameter value: The matrix to be negated.
@@ -318,10 +318,10 @@ public struct UIMatrix: Hashable, Codable, CustomStringConvertible {
         let m22 = -value.m22
         let m31 = -value.m31
         let m32 = -value.m32
-        
+
         return UIMatrix(m11: m11, m12: m12, m21: m21, m22: m22, m31: m31, m32: m32)
     }
-    
+
     /// Performs a linear interpolation between two matrices.
     ///
     /// Passing `amount` a value of 0 will cause `start` to be returned; a value
@@ -337,17 +337,17 @@ public struct UIMatrix: Hashable, Codable, CustomStringConvertible {
         let m22 = Self.lerp(from: start.m22, to: end.m22, amount: amount)
         let m31 = Self.lerp(from: start.m31, to: end.m31, amount: amount)
         let m32 = Self.lerp(from: start.m32, to: end.m32, amount: amount)
-        
+
         return UIMatrix(m11: m11, m12: m12, m21: m21, m22: m22, m31: m31, m32: m32)
     }
-    
+
     /// Creates a matrix that scales along the x-axis and y-axis.
     ///
-    /// - Parameter scale: Scaling factor for both axes.
-    public static func scaling(scale: UIVector) -> UIMatrix {
-        scaling(x: scale.x, y: scale.y)
+    /// - Parameter value: Scaling factor for both axes.
+    public static func scaling(_ value: UIVector) -> UIMatrix {
+        scaling(x: value.x, y: value.y)
     }
-    
+
     /// Creates a matrix that scales along the x-axis and y-axis.
     ///
     /// - Parameter x: Scaling factor that is applied along the x-axis.
@@ -357,7 +357,7 @@ public struct UIMatrix: Hashable, Codable, CustomStringConvertible {
                  m21: 0, m22: y,
                  m31: 0, m32: 0)
     }
-    
+
     /// Creates a matrix that uniformly scales along both axes.
     ///
     /// - Parameter scale: The uniform scale that is applied along both axes.
@@ -366,7 +366,7 @@ public struct UIMatrix: Hashable, Codable, CustomStringConvertible {
                  m21: 0, m22: scale,
                  m31: 0, m32: 0)
     }
-    
+
     /// Creates a matrix that is scaling from a specified center.
     ///
     /// - Parameter x: Scaling factor that is applied along the x-axis.
@@ -377,7 +377,7 @@ public struct UIMatrix: Hashable, Codable, CustomStringConvertible {
                  m21: 0, m22: y,
                  m31: center.x - x * center.x, m32: center.y - y * center.y)
     }
-    
+
     /// Creates a matrix that rotates.
     ///
     /// - Parameter angle: Angle of rotation in radians. Angles are measured
@@ -387,12 +387,12 @@ public struct UIMatrix: Hashable, Codable, CustomStringConvertible {
     public static func rotation(angle: Scalar) -> UIMatrix {
         let cosAngle = cos(angle)
         let sinAngle = sin(angle)
-        
+
         return UIMatrix(m11: cosAngle, m12: sinAngle,
                         m21: -sinAngle, m22: cosAngle,
                         m31: 0, m32: 0)
     }
-    
+
     /// Creates a matrix that rotates about a specified center.
     ///
     /// - Parameter angle: Angle of rotation in radians. Angles are measured
@@ -401,7 +401,7 @@ public struct UIMatrix: Hashable, Codable, CustomStringConvertible {
     public static func rotation(angle: Scalar, center: Vector) -> UIMatrix {
         translation(-center) * rotation(angle: angle) * translation(center)
     }
-    
+
     /// Creates a translation matrix using the specified offsets.
     ///
     /// - Parameter value: The offset for both coordinate planes.
@@ -410,7 +410,7 @@ public struct UIMatrix: Hashable, Codable, CustomStringConvertible {
     public static func translation(_ value: Vector) -> UIMatrix {
         translation(x: value.x, y: value.y)
     }
-    
+
     /// Creates a translation matrix using the specified offsets.
     ///
     /// - Parameter x: X-coordinate offset.
@@ -420,7 +420,7 @@ public struct UIMatrix: Hashable, Codable, CustomStringConvertible {
                  m21: 0, m22: 1,
                  m31: x, m32: y)
     }
-    
+
     /// Creates a transformation matrix.
     ///
     /// - Parameter xScale: Scaling factor that is applied along the x-axis.
@@ -434,12 +434,12 @@ public struct UIMatrix: Hashable, Codable, CustomStringConvertible {
                                       angle: Scalar,
                                       xOffset: Scalar,
                                       yOffset: Scalar) -> UIMatrix {
-        
+
         scaling(x: xScale, y: yScale)
             * rotation(angle: angle)
             * translation(x: xOffset, y: yOffset)
     }
-    
+
     /// Transforms a point by this matrix.
     ///
     /// - Parameter matrix: The matrix to use as a transformation matrix.
@@ -449,10 +449,10 @@ public struct UIMatrix: Hashable, Codable, CustomStringConvertible {
     public static func transform(matrix: UIMatrix, point: UIPoint) -> UIPoint {
         let x = (point.x * matrix.m11) as Scalar + (point.y * matrix.m21) as Scalar + matrix.m31
         let y = (point.x * matrix.m12) as Scalar + (point.y * matrix.m22) as Scalar + matrix.m32
-        
+
         return .init(x: x, y: y)
     }
-    
+
     /// Creates a skew matrix.
     ///
     /// - Parameter angleX: Angle of skew along the X-axis in radians.
@@ -462,32 +462,32 @@ public struct UIMatrix: Hashable, Codable, CustomStringConvertible {
                  m21: tan(angleY), m22: 1,
                  m31: 0, m32: 0)
     }
-    
+
     /// Calculates the inverse of the specified matrix.
     ///
     /// - Parameter value: The matrix whose inverse is to be calculated.
     /// - Parameter result: When the method completes, contains the inverse of the specified matrix.
     public static func invert(_ value: UIMatrix) -> UIMatrix {
         let determinant = value.determinant()
-        
+
         if UIMatrix.isZero(determinant) {
             return identity
         }
-        
+
         let invdet = Scalar(1) / determinant
         let offsetX = value.m31
         let offsetY = value.m32
-        
+
         let m11 = value.m22 * invdet
         let m12 = -value.m12 * invdet
         let m21 = -value.m21 * invdet
         let m22 = value.m11 * invdet
         let m31: Scalar = ((value.m21 * offsetY as Scalar - offsetX * value.m22) as Scalar) * invdet
         let m32: Scalar = ((offsetX * value.m12 as Scalar - value.m11 * offsetY) as Scalar) * invdet
-        
+
         return UIMatrix(m11: m11, m12: m12, m21: m21, m22: m22, m31: m31, m32: m32)
     }
-    
+
     /// Adds two matrices.
     ///
     /// - Parameter left: The first matrix to add.
@@ -496,7 +496,7 @@ public struct UIMatrix: Hashable, Codable, CustomStringConvertible {
     public static func + (left: UIMatrix, right: UIMatrix) -> UIMatrix {
         add(left, right)
     }
-    
+
     /// Assert a matrix (return it unchanged).
     ///
     /// - Parameter value: The matrix to assert (unchanged).
@@ -504,7 +504,7 @@ public struct UIMatrix: Hashable, Codable, CustomStringConvertible {
     public static prefix func + (value: UIMatrix) -> UIMatrix {
         value
     }
-    
+
     /// Subtracts two matrices.
     ///
     /// - Parameter left: The first matrix to subtract.
@@ -513,7 +513,7 @@ public struct UIMatrix: Hashable, Codable, CustomStringConvertible {
     public static func - (left: UIMatrix, right: UIMatrix) -> UIMatrix {
         subtract(left, right)
     }
-    
+
     /// Negates a matrix.
     ///
     /// - Parameter value: The matrix to negate.
@@ -521,7 +521,7 @@ public struct UIMatrix: Hashable, Codable, CustomStringConvertible {
     public static prefix func - (value: UIMatrix) -> UIMatrix {
         negate(value)
     }
-    
+
     /// Scales a matrix by a given value.
     ///
     /// - Parameter right: The matrix to scale.
@@ -530,7 +530,7 @@ public struct UIMatrix: Hashable, Codable, CustomStringConvertible {
     public static func * (left: Scalar, right: UIMatrix) -> UIMatrix {
         multiply(right, left)
     }
-    
+
     /// Scales a matrix by a given value.
     ///
     /// - Parameter left: The matrix to scale.
@@ -539,7 +539,7 @@ public struct UIMatrix: Hashable, Codable, CustomStringConvertible {
     public static func * (left: UIMatrix, right: Scalar) -> UIMatrix {
         multiply(left, right)
     }
-    
+
     /// Multiplies two matrices.
     ///
     /// - Parameter left: The first matrix to multiply.
@@ -548,7 +548,7 @@ public struct UIMatrix: Hashable, Codable, CustomStringConvertible {
     public static func * (left: UIMatrix, right: UIMatrix) -> UIMatrix {
         multiply(left, right)
     }
-    
+
     /// Scales a matrix by a given value.
     ///
     /// - Parameter left: The matrix to scale.
@@ -557,7 +557,7 @@ public struct UIMatrix: Hashable, Codable, CustomStringConvertible {
     public static func / (left: UIMatrix, right: Scalar) -> UIMatrix {
         divide(left, right)
     }
-    
+
     /// Divides two matrices.
     /// - Parameter left: The first matrix to divide.
     /// - Parameter right: The second matrix to divide.
@@ -565,7 +565,7 @@ public struct UIMatrix: Hashable, Codable, CustomStringConvertible {
     public static func / (left: UIMatrix, right: UIMatrix) -> UIMatrix {
         divide(left, right)
     }
-    
+
     /// Interpolates between two values using a linear function by a given amount.
     ///
     /// - Remarks:
@@ -579,14 +579,14 @@ public struct UIMatrix: Hashable, Codable, CustomStringConvertible {
     private static func lerp(from: Scalar, to: Scalar, amount: Scalar) -> Scalar {
         ((1 - amount) * from as Scalar) + ((amount * to) as Scalar)
     }
-    
+
     /// Determines whether the specified value is close to zero (0.0f).
     /// - Parameter a: The floating value.
     /// - Returns: `true` if the specified value is close to zero (0.0f);
     /// otherwise, `false`.
     private static func isZero(_ a: Scalar) -> Bool {
         let zeroTolerance = Scalar.leastNonzeroMagnitude
-        
+
         return abs(a) < zeroTolerance
     }
 }
@@ -605,23 +605,23 @@ public extension UIMatrix {
         let topRight = transform(rect.topRight)
         let bottomLeft = transform(rect.bottomLeft)
         let bottomRight = transform(rect.bottomRight)
-        
+
         var minimum = UIPoint.pointwiseMin(topLeft, topRight)
         minimum = UIPoint.pointwiseMin(minimum, bottomLeft)
         minimum = UIPoint.pointwiseMin(minimum, bottomRight)
-        
+
         var maximum = UIPoint.pointwiseMax(topLeft, topRight)
         maximum = UIPoint.pointwiseMax(maximum, bottomLeft)
         maximum = UIPoint.pointwiseMax(maximum, bottomRight)
-        
+
         return .init(location: minimum, size: .init(maximum - minimum))
     }
-    
+
     @_transparent
     func transform(_ point: UIPoint) -> UIPoint {
         Self.transform(matrix: self, point: point)
     }
-    
+
     @_transparent
     func transform(points: [UIPoint]) -> [UIPoint] {
         points.map(transform(_:))

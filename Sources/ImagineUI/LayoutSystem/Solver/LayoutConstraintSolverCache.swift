@@ -9,16 +9,7 @@ public class LayoutConstraintSolverCache {
     }
 
     func update(fromView view: View) throws -> ConstraintCollection {
-        let visitor = ClosureViewVisitor<ConstraintCollection> { collection, view in
-            collection.affectedLayoutVariables.append(view.layoutVariables)
-            for guide in view.layoutGuides {
-                collection.affectedLayoutVariables.append(guide.layoutVariables)
-            }
-
-            for constraint in view.containedConstraints where constraint.isEnabled {
-                collection.constraints.append(constraint)
-            }
-        }
+        let visitor = ConstraintViewVisitor()
         let traveler = ViewTraveler(state: ConstraintCollection(), visitor: visitor)
         traveler.travelThrough(view: view)
 
@@ -148,6 +139,28 @@ public class LayoutConstraintSolverCache {
 
         // Separate caches for horizontal/vertical constraints.
         case split(horizontal: _LayoutConstraintSolverCache, vertical: _LayoutConstraintSolverCache)
+    }
+
+    private class ConstraintViewVisitor: ViewVisitor {
+        func visitView(_ view: View, _ collection: inout ConstraintCollection) -> ViewVisitorResult {
+            if view.areaIntoConstraintsMask != Set(BoundsConstraintMask.allCases) || view.constraints.isEmpty {
+                inspectLayoutVariables(view.layoutVariables, collection: &collection)
+            }
+
+            for guide in view.layoutGuides {
+                inspectLayoutVariables(guide.layoutVariables, collection: &collection)
+            }
+
+            for constraint in view.containedConstraints where constraint.isEnabled {
+                collection.constraints.append(constraint)
+            }
+
+            return .visitChildren
+        }
+
+        func inspectLayoutVariables(_ layoutVariables: LayoutVariables, collection: inout ConstraintCollection) {
+            collection.affectedLayoutVariables.append(layoutVariables)
+        }
     }
 }
 

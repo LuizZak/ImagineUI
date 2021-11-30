@@ -93,14 +93,38 @@ open class View {
         }
     }
 
+    /// The center of the transform for this view.
+    /// When a view is scaled and/or rotated, this value specifies the relative
+    /// center of the transformation.
+    ///
+    /// A value of `.zero` rotates/scales around the view's top-left corner,
+    /// a value of `0.5` transforms around the center of the view's bounds, and
+    /// a value of `1.0` transforms around the bottom-right corner of the view.
+    /// Values in between transform around the relative intermediaries.
+    ///
+    /// Defaults to `UIVector.zero`.
+    open var relativeTransformCenter: UIVector = .zero
+
     open var transform: UIMatrix {
-        return .transformation(
+        let baseMatrix: UIMatrix = .transformation(
             xScale: scale.x,
             yScale: scale.y,
             angle: rotation,
             xOffset: location.x,
             yOffset: location.y
         )
+
+        if relativeTransformCenter == .zero {
+            return baseMatrix
+        }
+
+        var matrix = UIMatrix.translation(-size.asUIPoint * relativeTransformCenter)
+
+        matrix = matrix * baseMatrix
+
+        matrix = .translation(size.asUIPoint * relativeTransformCenter) * matrix
+
+        return matrix
     }
 
     public var location: UIVector {
@@ -273,21 +297,29 @@ open class View {
         }
     }
 
+    /// Recursively invokes `performLayout()` and `performInternalLayout()` on all subviews.
     open func performLayout() {
         if !needsLayout {
             return
         }
 
-        /// If no superview is available, perform constraint layout locally,
-        /// instead
-        if superview == nil {
-            performConstraintsLayout(cached: true)
+        withSuspendedLayout(setNeedsLayout: false) {
+            performInternalLayout()
         }
 
         needsLayout = false
 
         for subview in subviews {
             subview.performLayout()
+        }
+    }
+
+    /// Requests that this view perform its internal layout.
+    open func performInternalLayout() {
+        /// If no superview is available, perform constraint layout locally,
+        /// instead.
+        if superview == nil {
+            performConstraintsLayout(cached: true)
         }
     }
 
@@ -327,13 +359,13 @@ open class View {
     ///
     /// Layout is resumed whether or not the closure throws before the end of
     /// the block.
-    open func withSuspendedLayout(setNeedsLayout: Bool, _ block: () throws -> Void) rethrows {
+    open func withSuspendedLayout<T>(setNeedsLayout: Bool, _ block: () throws -> T) rethrows -> T {
         suspendLayout()
         defer {
             resumeLayout(setNeedsLayout: setNeedsLayout)
         }
 
-        try block()
+        return try block()
     }
 
     open func setNeedsLayout() {
@@ -347,17 +379,29 @@ open class View {
 
     /// Calculates the optimal size for this view, taking in consideration its
     /// active constraints, while approaching the target size as much as possible.
+    ///
+    /// The view's bounds then changes to match the calculated size, with its
+    /// location left unchanged.
+    open func layoutToFit(size: UISize) {
+        self.size = layoutSizeFitting(size: size)
+    }
+
+    /// Calculates the optimal size for this view, taking in consideration its
+    /// active constraints, while approaching the target size as much as possible.
     /// The layout of the view is kept as-is, and no changes to its size are made.
     open func layoutSizeFitting(size: UISize) -> UISize {
         // Store state for later restoring
         let previousSuperview = superview
         let previousNeedsLayout = needsLayout
+        let previousAreaIntoConstraintsMask = areaIntoConstraintsMask
         let snapshot = LayoutAreaSnapshot.snapshotHierarchy(self)
 
         // Remove view from hierarchy to avoid propagating invalidations
         superview = nil
 
         _targetLayoutSize = size
+        areaIntoConstraintsMask = [.location]
+
         performConstraintsLayout(cached: true)
 
         let optimalSize = self.size
@@ -365,6 +409,7 @@ open class View {
         // Restore views back to previous state
         snapshot.restore()
         _targetLayoutSize = nil
+        areaIntoConstraintsMask = previousAreaIntoConstraintsMask
         needsLayout = previousNeedsLayout
         superview = previousSuperview
 
@@ -827,7 +872,7 @@ extension View: Hashable {
     }
 }
 
-public enum BoundsConstraintMask {
+public enum BoundsConstraintMask: CaseIterable {
     case location
     case size
 }
