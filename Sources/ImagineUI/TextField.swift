@@ -9,7 +9,7 @@ open class TextField: ControlView {
     private let _blinker = CursorBlinker()
     private var _label: Label
     private var _labelContainer = View()
-    private var _placeholderLabel = Label()
+    private var _placeholderLabel = Label(textColor: .white)
     private var _textEngine: TextEngine
     private let _statesStyles = StatedValueStore<TextFieldVisualStyleParameters>()
     private var _cursorBlinkTimer: SchedulerTimerType?
@@ -113,7 +113,7 @@ open class TextField: ControlView {
     open override var canBecomeFirstResponder: Bool { isEnabled }
 
     public override init() {
-        let label = Label()
+        let label = Label(textColor: .white)
         let buffer = LabelViewTextBuffer(label: label)
         _textEngine = TextEngine(textBuffer: buffer)
         self._label = label

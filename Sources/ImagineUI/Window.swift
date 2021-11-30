@@ -30,7 +30,7 @@ public class Window: RootView {
     private var _resizeCorner: BorderResize?
     private var _mouseDown = false
     private var _mouseDownPoint: UIVector = .zero
-    private let _titleLabel = Label()
+    private let _titleLabel = Label(textColor: .white)
     private let _buttons = WindowButtons()
     private let _titleBarHeight = 25.0
 

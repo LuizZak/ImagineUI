@@ -30,10 +30,20 @@ public class TreeView: ControlView {
         }
 
         _content.layout.makeConstraints { make in
-            make.edges == _scrollView.contentView
+            (make.left, make.top) == _scrollView.contentView
+            make.bottom <= _scrollView.contentView
+            make.right <= _scrollView.contentView
         }
 
         _content.areaIntoConstraintsMask = [.location, .size]
+    }
+    
+    public override func performLayout() {
+        super.performLayout()
+    }
+    
+    public override func renderForeground(in renderer: Renderer, screenRegion: ClipRegion) {
+        super.renderForeground(in: renderer, screenRegion: screenRegion)
     }
 
     /// Repopulates the tree view's items.
@@ -94,7 +104,7 @@ public class TreeView: ControlView {
 
     private class ItemView: ControlView {
         private let _chevronView: ChevronView = ChevronView()
-        private let _titleView: Label = Label()
+        private let _titleView: Label = Label(textColor: .black)
 
         var index: ItemIndex
 
@@ -145,11 +155,9 @@ public class TreeView: ControlView {
 
             _chevronView.area.centerY = bounds.centerY
 
-            //_titleView.layoutToFit(size: UISize(width: size.width - _titleView.location.x, height: 0))
-            _titleView.size = UISize(width: 100, height: 15)
+            _titleView.layoutToFit(size: UISize(width: size.width - _titleView.location.x, height: 0))
 
-            _titleView.area = _titleView.area
-                .alignRight(of: _chevronView.area, verticalAlignment: .center)
+            _titleView.area = _titleView.area.alignRight(of: _chevronView.area, verticalAlignment: .center)
         }
 
         override func layoutSizeFitting(size: UISize) -> UISize {

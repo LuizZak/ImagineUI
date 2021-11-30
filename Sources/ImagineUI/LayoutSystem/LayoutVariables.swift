@@ -193,6 +193,9 @@ class LayoutVariables {
     private func deriveViewConstraints(_ view: View, _ constraintCollector: ViewConstraintCollectorType) {
         if view.areaIntoConstraintsMask.contains(.location) {
             let location = view.convert(point: .zero, to: nil)
+            
+            left.value = location.x
+            top.value = location.y
 
             constraintCollector.suggestValue(
                 left,
@@ -209,16 +212,19 @@ class LayoutVariables {
             )
         }
         if view.areaIntoConstraintsMask.contains(.size) {
+            width.value = view.size.width
+            height.value = view.size.height
+            
             constraintCollector.suggestValue(
-                right,
-                value: view.bounds.right,
+                width,
+                value: view.size.width,
                 strength: Strength.STRONG,
                 orientation: .horizontal
             )
 
             constraintCollector.suggestValue(
-                bottom,
-                value: view.bounds.bottom,
+                height,
+                value: view.size.height,
                 strength: Strength.STRONG,
                 orientation: .vertical
             )

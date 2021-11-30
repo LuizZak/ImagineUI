@@ -5,7 +5,7 @@ public typealias CheckboxStateWillChangeEventArgs = CancellableValueChangedEvent
 
 open class Checkbox: ControlView {
     private let textStates = StatedValueStore<String>()
-    public let label = Label()
+    public let label = Label(textColor: .white)
     
     open var checkboxState: State = .unchecked {
         didSet {

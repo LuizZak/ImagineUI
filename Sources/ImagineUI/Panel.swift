@@ -34,7 +34,7 @@ public class Panel: ControlView {
     }
 
     public init(title: String) {
-        label = Label()
+        label = Label(textColor: .white)
         label.text = title
         super.init()
         clipToBounds = false

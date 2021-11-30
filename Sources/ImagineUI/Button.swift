@@ -5,7 +5,7 @@ import CassowarySwift
 open class Button: ControlView {
     private var _backColor = StatedValueStore<Color>()
     
-    public let label = Label()
+    public let label = Label(textColor: .white)
 
     open var title: String {
         get {

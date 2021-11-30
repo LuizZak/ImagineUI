@@ -4,8 +4,8 @@ import Rendering
 public class SliderView: ControlView {
     private var isMouseDown = false
     private var mouseDownOffset = UIVector.zero
-    private var leftLabel = Label()
-    private var rightLabel = Label()
+    private var leftLabel = Label(textColor: .white)
+    private var rightLabel = Label(textColor: .white)
 
     private var knobSize = UISize(width: 11, height: 19)
     private var knobTop = 2.0

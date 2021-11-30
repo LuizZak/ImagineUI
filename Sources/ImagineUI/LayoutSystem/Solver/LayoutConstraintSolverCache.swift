@@ -143,12 +143,16 @@ public class LayoutConstraintSolverCache {
 
     private class ConstraintViewVisitor: ViewVisitor {
         func visitView(_ view: View, _ collection: inout ConstraintCollection) -> ViewVisitorResult {
-            if view.areaIntoConstraintsMask != Set(BoundsConstraintMask.allCases) || view.constraints.isEmpty {
-                inspectLayoutVariables(view.layoutVariables, collection: &collection)
+            // Ignore fully static views that do not participate in the overall
+            // layout system
+            if !(view.areaIntoConstraintsMask == Set(BoundsConstraintMask.allCases) && view.constraints.isEmpty) {
+                collection.affectedLayoutVariables.append(view.layoutVariables)
+            } else {
+                collection.fixedLayoutVariables.append(view.layoutVariables)
             }
 
             for guide in view.layoutGuides {
-                inspectLayoutVariables(guide.layoutVariables, collection: &collection)
+                collection.affectedLayoutVariables.append(guide.layoutVariables)
             }
 
             for constraint in view.containedConstraints where constraint.isEnabled {
@@ -156,10 +160,6 @@ public class LayoutConstraintSolverCache {
             }
 
             return .visitChildren
-        }
-
-        func inspectLayoutVariables(_ layoutVariables: LayoutVariables, collection: inout ConstraintCollection) {
-            collection.affectedLayoutVariables.append(layoutVariables)
         }
     }
 }

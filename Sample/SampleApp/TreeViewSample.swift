@@ -7,7 +7,7 @@ import Cocoa
 import Blend2DRenderer
 
 private class DataSource: TreeViewDataSource {
-    func hasItems(_ treeView: TreeView, at hierarchyIndex: TreeView.HierarchyIndex) -> Bool {
+    func hasItems(at hierarchyIndex: TreeView.HierarchyIndex) -> Bool {
         if hierarchyIndex.indices == [2] {
             return true
         }
@@ -15,7 +15,7 @@ private class DataSource: TreeViewDataSource {
         return false
     }
 
-    func numberOfItems(_ treeView: TreeView, at hierarchyIndex: TreeView.HierarchyIndex) -> Int {
+    func numberOfItems(at hierarchyIndex: TreeView.HierarchyIndex) -> Int {
         if hierarchyIndex.isRoot {
             return 10
         }
