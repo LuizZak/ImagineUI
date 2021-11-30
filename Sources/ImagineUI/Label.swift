@@ -67,6 +67,8 @@ open class Label: View {
 
     open override var bounds: UIRectangle {
         didSet {
+            // TODO: Avoid thrashing cache if changes to label's size do not
+            // TODO: affect the positioning of the text.
             if bounds.size != oldValue.size {
                 clearCachedTextLayout()
             }
@@ -120,7 +122,7 @@ open class Label: View {
             renderer.drawTextLayout(textLayout, at: .zero)
         }
     }
-    
+
     open override func layoutSizeFitting(size: UISize) -> UISize {
         guard let intrinsicSize = intrinsicSize else {
             return size
