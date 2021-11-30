@@ -34,32 +34,32 @@ public extension UIRectangle {
     /// Returns a new UIRectangle that matches this rectangle's size, while changing
     /// its location to match its right edge to another rectangle's left edge,
     /// with a specified vertical alignment.
-    func alignLeft(of rectangle: UIRectangle, verticalAlignment: UIAlignment = .leading) -> UIRectangle {
-        movingRight(to: rectangle.left)
+    func alignLeft(of rectangle: UIRectangle, spacing: Double = 0.0, verticalAlignment: UIAlignment = .leading) -> UIRectangle {
+        movingRight(to: rectangle.left - spacing)
             .alignVertically(to: rectangle, alignment: verticalAlignment)
     }
 
     /// Returns a new UIRectangle that matches this rectangle's size, while changing
     /// its location to match its left edge to another rectangle's right edge,
     /// with a specified vertical alignment.
-    func alignRight(of rectangle: UIRectangle, verticalAlignment: UIAlignment = .leading) -> UIRectangle {
-        movingLeft(to: rectangle.right)
+    func alignRight(of rectangle: UIRectangle, spacing: Double = 0.0, verticalAlignment: UIAlignment = .leading) -> UIRectangle {
+        movingLeft(to: rectangle.right + spacing)
             .alignVertically(to: rectangle, alignment: verticalAlignment)
     }
 
     /// Returns a new UIRectangle that matches this rectangle's size, while changing
     /// its location to match its bottom edge to another rectangle's top edge,
     /// with a specified horizontal alignment.
-    func alignTop(of rectangle: UIRectangle, horizontalAlignment: UIAlignment = .leading) -> UIRectangle {
-        movingBottom(to: rectangle.top)
+    func alignTop(of rectangle: UIRectangle, spacing: Double = 0.0, horizontalAlignment: UIAlignment = .leading) -> UIRectangle {
+        movingBottom(to: rectangle.top - spacing)
             .alignHorizontally(to: rectangle, alignment: horizontalAlignment)
     }
 
     /// Returns a new UIRectangle that matches this rectangle's size, while changing
     /// its location to match its top edge to another rectangle's bottom edge,
     /// with a specified horizontal alignment.
-    func alignBottom(of rectangle: UIRectangle, horizontalAlignment: UIAlignment = .leading) -> UIRectangle {
-        movingTop(to: rectangle.bottom)
+    func alignBottom(of rectangle: UIRectangle, spacing: Double = 0.0, horizontalAlignment: UIAlignment = .leading) -> UIRectangle {
+        movingTop(to: rectangle.bottom + spacing)
             .alignHorizontally(to: rectangle, alignment: horizontalAlignment)
     }
 }

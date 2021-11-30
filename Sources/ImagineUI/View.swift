@@ -382,8 +382,12 @@ open class View {
     ///
     /// The view's bounds then changes to match the calculated size, with its
     /// location left unchanged.
+    ///
+    /// This method also calls 'performLayout()' afterwards to update its contents.
     open func layoutToFit(size: UISize) {
         self.size = layoutSizeFitting(size: size)
+
+        performLayout()
     }
 
     /// Calculates the optimal size for this view, taking in consideration its
@@ -460,7 +464,7 @@ open class View {
         // We check parent views only because the way containedConstraints are
         // stored, each constraint is guaranteed to only affect the view itself
         // or one of its subviews, thus we check the parent hierarchy for
-        // constraints involving this view tree, but not the children hierarchy.
+        // constraints involving this view tree, but not the child hierarchy.
         superview.visitingSuperviews { view in
             for constraint in view.containedConstraints {
                 if constraint.firstCast._owner?.viewInHierarchy?.isDescendant(of: self) == true {

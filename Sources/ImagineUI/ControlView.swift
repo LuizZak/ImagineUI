@@ -223,6 +223,8 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
 
     /// Renders this view's background
     open func renderBackground(in renderer: Renderer, screenRegion: ClipRegion) {
+        let bounds = boundsForFillOrStroke()
+
         // Fill
         if backColor.alpha > 0 {
             renderer.setFill(backColor)
@@ -250,6 +252,14 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
     /// Renders this view's foreground content (not drawn on top of child views)
     open func renderForeground(in renderer: Renderer, screenRegion: ClipRegion) {
 
+    }
+
+    /// Returns a rectangle on this control view's coordinate system that should
+    /// be used for fill/stroke operations in `renderBackground`.
+    ///
+    /// Defaults to `self.bounds`.
+    open func boundsForFillOrStroke() -> UIRectangle {
+        return bounds
     }
 
     override func boundsForRedraw() -> UIRectangle {
