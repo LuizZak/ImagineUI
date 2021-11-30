@@ -1,7 +1,7 @@
 public protocol TreeViewDataSource: AnyObject {
     /// If `true`, this signals the tree view that the item should be rendered
     /// with a UI hint that it can be expanded.
-    func hasItems(at hierarchyIndex: TreeView.HierarchyIndex) -> Bool
+    func hasSubItems(at index: TreeView.ItemIndex) -> Bool
 
     /// Returns the total number of sub-items at a given hierarchical index.
     func numberOfItems(at hierarchyIndex: TreeView.HierarchyIndex) -> Int

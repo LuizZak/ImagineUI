@@ -5,6 +5,7 @@ public class TreeView: ControlView {
     private let _scrollView: ScrollView = ScrollView(scrollBarsMode: .both)
     private let _content: View = View()
     private let _contentInset: UIEdgeInsets = .init(left: 0, top: 4, right: 0, bottom: 4)
+    private let _subItemInset: Double = 7.0
 
     private var _expanded: Set<ItemIndex> = []
     private var _selected: Set<ItemIndex> = []
@@ -82,8 +83,8 @@ public class TreeView: ControlView {
     public func reloadData() {
         suspendLayout()
         defer {
-            resumeLayout(setNeedsLayout: false)
             _updateSize()
+            resumeLayout(setNeedsLayout: true)
         }
 
         for view in _visibleItems {
@@ -130,23 +131,27 @@ public class TreeView: ControlView {
         let count = dataSource.numberOfItems(at: hierarchy)
         var currentLocation = origin
 
+        // TODO: Replace chevron spacing with a visual indicator taking the same
+        // TODO: space, instead.
+        /*
         // Check first whether any item has subitems, and if so, toggle the chevron
         // area for all items.
         var reserveChevron = false
         for index in 0..<count {
             let itemIndex = hierarchy.subItem(index: index)
 
-            if dataSource.hasItems(at: itemIndex.asHierarchyIndex) {
+            if dataSource.hasSubItems(at: itemIndex) {
                 reserveChevron = true
                 break
             }
         }
+        */
 
         for index in 0..<count {
             let itemIndex = hierarchy.subItem(index: index)
 
             let itemView = _makeItemView(itemIndex: itemIndex, dataSource: dataSource)
-            itemView.reserveChevronSpace = reserveChevron
+            itemView.reserveChevronSpace = true
             itemView.location = currentLocation
             itemView.layoutToFit(size: .zero)
 
@@ -155,8 +160,13 @@ public class TreeView: ControlView {
             _visibleItems.append(itemView)
             _content.addSubview(itemView)
 
-            if _isExpanded(index: itemIndex) && dataSource.hasItems(at: itemIndex.asHierarchyIndex) {
-                let newY = _recursiveAddItems(hierarchy: itemIndex.asHierarchyIndex, dataSource: dataSource, origin: currentLocation + UIPoint(x: 5, y: 0))
+            if _isExpanded(index: itemIndex) && dataSource.hasSubItems(at: itemIndex) {
+                let newOrigin = currentLocation + UIPoint(x: _subItemInset, y: 0)
+                let newY = _recursiveAddItems(
+                    hierarchy: itemIndex.asHierarchyIndex,
+                    dataSource: dataSource,
+                    origin: newOrigin
+                )
 
                 currentLocation.y = newY
             }
@@ -181,7 +191,7 @@ public class TreeView: ControlView {
             }
         }
 
-        itemView.isChevronVisible = dataSource.hasItems(at: itemIndex.asHierarchyIndex)
+        itemView.isChevronVisible = dataSource.hasSubItems(at: itemIndex)
         itemView.isExpanded = _isExpanded(index: itemIndex)
         itemView.isSelected = _isSelected(index: itemIndex)
         itemView.title = dataSource.titleForItem(at: itemIndex)
@@ -229,6 +239,8 @@ public class TreeView: ControlView {
         return false
     }
 
+    // TODO: Do incremental expansion/collapsing of tree instead of doing full reload.
+
     private func _expand(_ index: ItemIndex) {
         guard !_isExpanded(index: index) else {
             return
@@ -238,9 +250,7 @@ public class TreeView: ControlView {
             return
         }
 
-        let hierarchyIndex = index.asHierarchyIndex
-
-        guard dataSource.hasItems(at: hierarchyIndex) else {
+        guard dataSource.hasSubItems(at: index) else {
             return
         }
 
@@ -267,7 +277,7 @@ public class TreeView: ControlView {
         guard let dataSource = dataSource else {
             return true
         }
-        guard dataSource.hasItems(at: index.asHierarchyIndex) else {
+        guard dataSource.hasSubItems(at: index) else {
             return true
         }
 

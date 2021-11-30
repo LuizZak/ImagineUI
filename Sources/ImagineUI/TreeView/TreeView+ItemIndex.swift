@@ -84,6 +84,11 @@ extension TreeView {
         /// The index of the item.
         public var index: Int
 
+        public init(parent: HierarchyIndex, index: Int) {
+            self.parent = parent
+            self.index = index
+        }
+
         /// Gets this item index as a hierarchy index.
         @_transparent
         public var asHierarchyIndex: HierarchyIndex {
