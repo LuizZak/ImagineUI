@@ -72,7 +72,7 @@ class ImagineUISample: Blend2DSample {
         attributedText.append("A multi\n")
         attributedText.append("line\n", attributes: [.font: Fonts.defaultFont(size: 20)])
         attributedText.append("label!")
-        let label = Label()
+        let label = Label(textColor: .white)
         label.attributedText = attributedText
         label.horizontalTextAlignment = .center
         label.verticalTextAlignment = .center
@@ -95,7 +95,7 @@ class ImagineUISample: Blend2DSample {
         scrollView.backColor = .white
         scrollView.contentSize = UISize(width: 0, height: 300)
         
-        let scrollViewLabel = Label()
+        let scrollViewLabel = Label(textColor: .white)
         scrollViewLabel.text = "A\nScroll\nView"
         scrollViewLabel.horizontalTextAlignment = .center
         scrollViewLabel.verticalTextAlignment = .center

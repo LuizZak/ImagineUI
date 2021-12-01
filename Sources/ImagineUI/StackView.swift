@@ -10,7 +10,7 @@ open class StackView: View {
     private(set) public var arrangedSubviews: [View] = []
 
     public override var intrinsicSize: UISize? {
-        return .zero
+        return arrangedSubviews.isEmpty ? .zero : nil
     }
 
     open var spacing: Double = 0 {
@@ -35,11 +35,6 @@ open class StackView: View {
     open var contentInset: UIEdgeInsets = .zero {
         didSet {
             recreateConstraints()
-            /*
-            parentGuide.layout.updateConstraints { make in
-                make.edges.equalTo(self, inset: contentInset)
-            }
-            */
         }
     }
 
@@ -47,13 +42,6 @@ open class StackView: View {
         self.orientation = orientation
 
         super.init()
-
-        /*
-        addLayoutGuide(parentGuide)
-        parentGuide.layout.makeConstraints { make in
-            make.edges.equalTo(self, inset: contentInset)
-        }
-        */
     }
 
     private func recreateConstraints() {

@@ -8,14 +8,14 @@ open class View {
     /// minimal content sizes
     internal var _targetLayoutSize: UISize? = nil
 
-    var horizontalCompressResistance: LayoutPriority = .high {
+    var horizontalCompressResistance: LayoutPriority? = .high {
         didSet {
             if oldValue != horizontalCompressResistance {
                 setNeedsLayout()
             }
         }
     }
-    var verticalCompressResistance: LayoutPriority = .high {
+    var verticalCompressResistance: LayoutPriority? = .high {
         didSet {
             if oldValue != verticalCompressResistance {
                 setNeedsLayout()
@@ -23,14 +23,14 @@ open class View {
         }
     }
 
-    var horizontalHuggingPriority: LayoutPriority = .veryLow {
+    var horizontalHuggingPriority: LayoutPriority? = .veryLow {
         didSet {
             if oldValue != horizontalHuggingPriority {
                 setNeedsLayout()
             }
         }
     }
-    var verticalHuggingPriority: LayoutPriority = .veryLow {
+    var verticalHuggingPriority: LayoutPriority? = .veryLow {
         didSet {
             if oldValue != verticalHuggingPriority {
                 setNeedsLayout()
@@ -93,14 +93,38 @@ open class View {
         }
     }
 
+    /// The center of the transform for this view.
+    /// When a view is scaled and/or rotated, this value specifies the relative
+    /// center of the transformation.
+    ///
+    /// A value of `.zero` rotates/scales around the view's top-left corner,
+    /// a value of `0.5` transforms around the center of the view's bounds, and
+    /// a value of `1.0` transforms around the bottom-right corner of the view.
+    /// Values in between transform around the relative intermediaries.
+    ///
+    /// Defaults to `UIVector.zero`.
+    open var relativeTransformCenter: UIVector = .zero
+
     open var transform: UIMatrix {
-        return .transformation(
+        let baseMatrix: UIMatrix = .transformation(
             xScale: scale.x,
             yScale: scale.y,
             angle: rotation,
             xOffset: location.x,
             yOffset: location.y
         )
+
+        if relativeTransformCenter == .zero {
+            return baseMatrix
+        }
+
+        var matrix = UIMatrix.translation(-size.asUIPoint * relativeTransformCenter)
+
+        matrix = matrix * baseMatrix
+
+        matrix = .translation(size.asUIPoint * relativeTransformCenter) * matrix
+
+        return matrix
     }
 
     public var location: UIVector {
@@ -273,15 +297,14 @@ open class View {
         }
     }
 
+    /// Recursively invokes `performLayout()` and `performInternalLayout()` on all subviews.
     open func performLayout() {
         if !needsLayout {
             return
         }
 
-        /// If no superview is available, perform constraint layout locally,
-        /// instead
-        if superview == nil {
-            performConstraintsLayout()
+        withSuspendedLayout(setNeedsLayout: false) {
+            performInternalLayout()
         }
 
         needsLayout = false
@@ -291,7 +314,16 @@ open class View {
         }
     }
 
-    internal func performConstraintsLayout() {
+    /// Requests that this view perform its internal layout.
+    open func performInternalLayout() {
+        /// If no superview is available, perform constraint layout locally,
+        /// instead.
+        if superview == nil {
+            performConstraintsLayout(cached: true)
+        }
+    }
+
+    internal func performConstraintsLayout(cached: Bool) {
         let solver = LayoutConstraintSolver()
         solver.solve(viewHierarchy: self, cache: nil)
     }
@@ -327,13 +359,13 @@ open class View {
     ///
     /// Layout is resumed whether or not the closure throws before the end of
     /// the block.
-    open func withSuspendedLayout(setNeedsLayout: Bool, _ block: () throws -> Void) rethrows {
+    open func withSuspendedLayout<T>(setNeedsLayout: Bool, _ block: () throws -> T) rethrows -> T {
         suspendLayout()
         defer {
             resumeLayout(setNeedsLayout: setNeedsLayout)
         }
 
-        try block()
+        return try block()
     }
 
     open func setNeedsLayout() {
@@ -347,26 +379,46 @@ open class View {
 
     /// Calculates the optimal size for this view, taking in consideration its
     /// active constraints, while approaching the target size as much as possible.
+    ///
+    /// The view's bounds then changes to match the calculated size, with its
+    /// location left unchanged.
+    ///
+    /// This method also calls 'performLayout()' afterwards to update its contents.
+    open func layoutToFit(size: UISize) {
+        self.size = layoutSizeFitting(size: size)
+
+        performLayout()
+    }
+
+    /// Calculates the optimal size for this view, taking in consideration its
+    /// active constraints, while approaching the target size as much as possible.
     /// The layout of the view is kept as-is, and no changes to its size are made.
     open func layoutSizeFitting(size: UISize) -> UISize {
         // Store state for later restoring
         let previousSuperview = superview
         let previousNeedsLayout = needsLayout
+        let previousAreaIntoConstraintsMask = areaIntoConstraintsMask
         let snapshot = LayoutAreaSnapshot.snapshotHierarchy(self)
 
         // Remove view from hierarchy to avoid propagating invalidations
         superview = nil
 
         _targetLayoutSize = size
-        performConstraintsLayout()
+        areaIntoConstraintsMask = [.location]
+
+        performConstraintsLayout(cached: true)
 
         let optimalSize = self.size
 
         // Restore views back to previous state
         snapshot.restore()
         _targetLayoutSize = nil
+        areaIntoConstraintsMask = previousAreaIntoConstraintsMask
         needsLayout = previousNeedsLayout
         superview = previousSuperview
+
+        // Update constraint cache back
+        performConstraintsLayout(cached: true)
 
         return optimalSize
     }
@@ -412,7 +464,7 @@ open class View {
         // We check parent views only because the way containedConstraints are
         // stored, each constraint is guaranteed to only affect the view itself
         // or one of its subviews, thus we check the parent hierarchy for
-        // constraints involving this view tree, but not the children hierarchy.
+        // constraints involving this view tree, but not the child hierarchy.
         superview.visitingSuperviews { view in
             for constraint in view.containedConstraints {
                 if constraint.firstCast._owner?.viewInHierarchy?.isDescendant(of: self) == true {
@@ -696,30 +748,49 @@ open class View {
 
     // MARK: - Content Compression/Hugging configuration
 
+    /// Sets the content compression resistance of this view on a given orientation.
+    ///
+    /// Content compression resistance adds a minimal size constraint when the
+    /// view has a non-nil `intrinsicSize`.
+    ///
+    /// If `nil` is provided as a priority, it indicates the view makes no attempt
+    /// at ensuring that its size at the specified orientation be at least as
+    /// large as its `intrinsicSize` property.
     public func setContentCompressionResistance(_ orientation: LayoutAnchorOrientation,
-                                                _ priority: LayoutPriority) {
+                                                _ priority: LayoutPriority?) {
         switch orientation {
         case .horizontal: horizontalCompressResistance = priority
         case .vertical: verticalCompressResistance = priority
         }
     }
 
-    public func contentCompressionResistance(_ orientation: LayoutAnchorOrientation) -> LayoutPriority {
+    /// Gets the current content compression resistance of this view on the given
+    /// orientation.
+    public func contentCompressionResistance(_ orientation: LayoutAnchorOrientation) -> LayoutPriority? {
         switch orientation {
         case .horizontal: return horizontalCompressResistance
         case .vertical: return verticalCompressResistance
         }
     }
 
+    /// Sets the content hugging priority of this view on a given orientation.
+    ///
+    /// Content hugging priority adds a maximal size constraint when the
+    /// view has a non-nil `intrinsicSize`.
+    ///
+    /// If `nil` is provided as a priority, it indicates the view makes no attempt
+    /// at ensuring that its size at the specified orientation be at most as
+    /// large as its `intrinsicSize` property.
     public func setContentHuggingPriority(_ orientation: LayoutAnchorOrientation,
-                                          _ priority: LayoutPriority) {
+                                          _ priority: LayoutPriority?) {
         switch orientation {
         case .horizontal: horizontalHuggingPriority = priority
         case .vertical: verticalHuggingPriority = priority
         }
     }
 
-    public func contentHuggingPriority(_ orientation: LayoutAnchorOrientation) -> LayoutPriority {
+    /// Gets the content hugging priority of this view on a given orientation.
+    public func contentHuggingPriority(_ orientation: LayoutAnchorOrientation) -> LayoutPriority? {
         switch orientation {
         case .horizontal: return horizontalHuggingPriority
         case .vertical: return verticalHuggingPriority
@@ -805,7 +876,7 @@ extension View: Hashable {
     }
 }
 
-public enum BoundsConstraintMask {
+public enum BoundsConstraintMask: CaseIterable {
     case location
     case size
 }

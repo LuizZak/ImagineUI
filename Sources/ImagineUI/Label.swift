@@ -55,7 +55,7 @@ open class Label: View {
         }
     }
 
-    open var textColor: Color = .white {
+    open var textColor: Color {
         didSet {
             if textColor == oldValue { return }
 
@@ -67,6 +67,8 @@ open class Label: View {
 
     open override var bounds: UIRectangle {
         didSet {
+            // TODO: Avoid thrashing cache if changes to label's size do not
+            // TODO: affect the positioning of the text.
             if bounds.size != oldValue.size {
                 clearCachedTextLayout()
             }
@@ -93,14 +95,16 @@ open class Label: View {
         }
     }
 
-    public override init() {
+    public init(textColor: Color) {
+        self.textColor = textColor
         self.font = Fonts.defaultFont(size: 11)
         minimalTextLayout = TextLayout(font: font, attributedText: AttributedText())
 
         super.init()
     }
 
-    public init(font: Font) {
+    public init(textColor: Color, font: Font) {
+        self.textColor = textColor
         self.font = font
         minimalTextLayout = TextLayout(font: font, attributedText: AttributedText())
 
@@ -117,6 +121,14 @@ open class Label: View {
             renderer.setStroke(textColor)
             renderer.drawTextLayout(textLayout, at: .zero)
         }
+    }
+
+    open override func layoutSizeFitting(size: UISize) -> UISize {
+        guard let intrinsicSize = intrinsicSize else {
+            return size
+        }
+
+        return max(size, intrinsicSize)
     }
 
     internal func autoSize() {

@@ -4,20 +4,20 @@ import Foundation
 public final class Scheduler {
     /// Gets the singleton global instance of `Scheduler`.
     public static let instance = Scheduler()
-    
+
     /// Event invoked every time `onFixedFrame` is invoked; usually aligned to
     /// the display's refresh rate.
-    @Event public var fixedFrameEvent: EventSource<TimeInterval>
-    
+    @Event<TimeInterval> public var fixedFrameEvent
+
     private init() {
-        
+
     }
-    
+
     /// Raises the `fixedFrameEvent` event.
     /// Should be invoked at an interval that is equal to the refresh rate of the
     /// monitor.
     public func onFixedFrame(_ intervalInSeconds: TimeInterval) {
-        _fixedFrameEvent.publishEvent(intervalInSeconds)
+        _fixedFrameEvent(intervalInSeconds)
     }
 
     /// Schedules a timer to fire at a specified interval.

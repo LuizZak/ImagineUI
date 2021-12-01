@@ -1,6 +1,7 @@
 import Geometry
 
-/// A rectangular area that can interact with the layout constraint system
+/// A rectangular area in a view that can interact with the layout constraint
+/// system.
 public final class LayoutGuide {
     var layoutVariables: LayoutVariables!
     var constraints: [LayoutConstraint] = []

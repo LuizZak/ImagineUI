@@ -5,14 +5,14 @@ public typealias CheckboxStateWillChangeEventArgs = CancellableValueChangedEvent
 
 open class Checkbox: ControlView {
     private let textStates = StatedValueStore<String>()
-    public let label = Label()
-    
+    public let label = Label(textColor: .white)
+
     open var checkboxState: State = .unchecked {
         didSet {
             invalidate()
         }
     }
-    
+
     open var title: String {
         get {
             return label.text
@@ -27,7 +27,8 @@ open class Checkbox: ControlView {
     ///
     /// Event listeners have a chance to cancel the event by switching `cancel`
     /// to `true` during the event dispatch round.
-    @Event public var checkboxStateWillChange: CancellableValueChangeEvent<Checkbox, Checkbox.State>
+    @CancellableValueChangeEvent<Checkbox, Checkbox.State>
+    public var checkboxStateWillChange
 
     public init(title: String) {
         super.init()
@@ -63,7 +64,7 @@ open class Checkbox: ControlView {
             make.edges.equalTo(self, inset: UIEdgeInsets(left: 16, top: 0, right: 0, bottom: 0))
         }
     }
-    
+
     open override func viewForFirstBaseline() -> View? {
         return label
     }
@@ -91,7 +92,7 @@ open class Checkbox: ControlView {
     }
 
     func invokeStateWillChangeEvent(newState: State) {
-        if !_checkboxStateWillChange.publishCancellableChangeEvent(sender: self, old: checkboxState, new: newState) {
+        if !_checkboxStateWillChange(sender: self, old: checkboxState, new: newState) {
             checkboxState = newState
         }
     }
@@ -154,12 +155,12 @@ open class Checkbox: ControlView {
                 UIVector(x: checkAreaBottomLeft.right, y: checkArea.bottom),
                 checkArea.topRight
             ]
-            
+
             let stroke = StrokeStyle(color: .white,
                                      width: 1.5,
                                      startCap: .butt,
                                      endCap: .butt)
-            
+
             renderer.setStroke(stroke)
 
             renderer.stroke(polyline: points)

@@ -4,8 +4,8 @@ import Rendering
 public class SliderView: ControlView {
     private var isMouseDown = false
     private var mouseDownOffset = UIVector.zero
-    private var leftLabel = Label()
-    private var rightLabel = Label()
+    private var leftLabel = Label(textColor: .white)
+    private var rightLabel = Label(textColor: .white)
 
     private var knobSize = UISize(width: 11, height: 19)
     private var knobTop = 2.0
@@ -94,7 +94,7 @@ public class SliderView: ControlView {
     }
 
     /// Event fired whenever `value` is changed
-    @Event public var valueChanged: ValueChangeEvent<SliderView, Double>
+    @ValueChangeEvent<SliderView, Double> public var valueChanged
 
     public override var intrinsicSize: UISize? {
         return UISize(width: bounds.width, height: knobSize.height)
@@ -151,7 +151,7 @@ public class SliderView: ControlView {
     }
 
     public func onValueChanged(_ event: ValueChangedEventArgs<Double>) {
-        _valueChanged.publishEvent(sender: self, event)
+        _valueChanged(sender: self, event)
     }
 
     public override func onStateChanged(_ event: ValueChangedEventArgs<ControlViewState>) {

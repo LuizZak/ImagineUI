@@ -1,7 +1,7 @@
 import Geometry
 
 // TODO: Consider making Window also a control system of its own, to enable
-// TODO: windiw-specific innterception of innputs to better support tasks like
+// TODO: window-specific interception of inputs to better support tasks like
 // TODO: resizing detection with the mouse within the client area.
 public class DefaultControlSystem: ControlSystem {
     /// When mouse is down on a control, this is the control that the mouse
@@ -17,13 +17,13 @@ public class DefaultControlSystem: ControlSystem {
     private var _firstResponder: KeyboardEventHandler?
 
     public weak var delegate: DefaultControlSystemDelegate?
-    
+
     public init() {
-        
+
     }
-    
+
     // MARK: - Window management
-    
+
     public func bringRootViewToFront(_ rootView: RootView) {
         delegate?.bringRootViewToFront(rootView)
     }
@@ -54,7 +54,7 @@ public class DefaultControlSystem: ControlSystem {
                 self._firstResponder?.resignFirstResponder()
             }
         }
-        
+
         if let rootView = control.rootView {
             bringRootViewToFront(rootView)
         }
@@ -74,7 +74,7 @@ public class DefaultControlSystem: ControlSystem {
     public func onMouseUp(_ event: MouseEventArgs) {
         if let control = _mouseDownTarget {
             control.onMouseUp(event.convertLocation(handler: control))
-            
+
             // Figure out if it's a click or mouse up event
             // Click events fire when mouseDown + mouseUp occur over the same element
             if let upControl = delegate?.controlViewUnder(point: event.location, enabledOnly: true), upControl === control {
@@ -160,7 +160,7 @@ public class DefaultControlSystem: ControlSystem {
             _mouseHoverTarget = nil
             return
         }
-        
+
         // Make request
         let request = InnerMouseEventRequest(event: event, eventType: eventType) { handler in
             if self._mouseHoverTarget !== handler {
@@ -219,11 +219,11 @@ public class DefaultControlSystem: ControlSystem {
     }
 
     // MARK: - Mouse Cursor
-    
+
     public func setMouseCursor(_ cursor: MouseCursorKind) {
         delegate?.setMouseCursor(cursor)
     }
-    
+
     public func setMouseHiddenUntilMouseMoves() {
         delegate?.setMouseHiddenUntilMouseMoves()
     }
@@ -284,14 +284,14 @@ private class InnerMouseEventRequest: InnerEventRequest<MouseEventHandler>, Mous
          modifiers: KeyboardModifier,
          eventType: MouseEventType,
          onAccept: @escaping (MouseEventHandler) -> Void) {
-        
+
         self.screenLocation = screenLocation
         self.buttons = buttons
         self.delta = delta
         self.clicks = clicks
         self.modifiers = modifiers
         self.eventType = eventType
-        
+
         super.init(onAccept: onAccept)
     }
 }

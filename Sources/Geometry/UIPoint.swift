@@ -33,13 +33,18 @@ public struct UIPoint: Hashable, Codable {
     }
 
     @_transparent
+    public init(_ point: UIIntPoint) {
+        self.init(x: Scalar(point.x), y: Scalar(point.y))
+    }
+
+    @_transparent
     public init(_ size: UISize) {
         self.init(x: size.width, y: size.height)
     }
 
     @_transparent
-    public init(_ point: UIIntPoint) {
-        self.init(x: Scalar(point.x), y: Scalar(point.y))
+    public init(_ size: UIIntSize) {
+        self.init(x: Double(size.width), y: Double(size.height))
     }
 
     @_transparent

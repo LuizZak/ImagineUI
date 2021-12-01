@@ -33,6 +33,12 @@ public struct UISize: Hashable, Codable {
     }
 
     @_transparent
+    public init(_ size: UIIntSize) {
+        self.width = Double(size.width)
+        self.height = Double(size.height)
+    }
+
+    @_transparent
     public init(_ point: UIPoint) {
         self.width = point.x
         self.height = point.y

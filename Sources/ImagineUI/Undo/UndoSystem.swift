@@ -8,7 +8,7 @@ protocol UndoSystemType {
 
     /// Gets whether this UndoSystem can currently redo a task
     var canRedo: Bool { get }
-    
+
     /// Undoes one task on this UndoSystem
     func undo()
 
@@ -51,22 +51,22 @@ class UndoSystem: UndoSystemType {
     private var _currentGroupUndoTask: GroupUndoTask?
 
     /// Occurs whenever a new Undo task is registered
-    @Event public var undoRegistered: EventSourceWithSender<UndoSystem, UndoEventArgs>
+    @EventWithSender<UndoSystem, UndoEventArgs> public var undoRegistered
 
     /// Occurs whenever a task will be undone
-    @Event public var willPerformUndo: EventSourceWithSender<UndoSystem, UndoEventArgs>
+    @EventWithSender<UndoSystem, UndoEventArgs> public var willPerformUndo
 
     /// Occurs whenever a task was undone
-    @Event public var undoPerformed: EventSourceWithSender<UndoSystem, UndoEventArgs>
+    @EventWithSender<UndoSystem, UndoEventArgs> public var undoPerformed
 
     /// Occurs whenever a task will be redone
-    @Event public var willPerformRedo: EventSourceWithSender<UndoSystem, UndoEventArgs>
+    @EventWithSender<UndoSystem, UndoEventArgs> public var willPerformRedo
 
     /// Occurs whenever a task was redone
-    @Event public var redoPerformed: EventSourceWithSender<UndoSystem, UndoEventArgs>
+    @EventWithSender<UndoSystem, UndoEventArgs> public var redoPerformed
 
     /// Occurs whenever the undo system was cleared
-    @Event public var cleared: EventSourceWithSender<UndoSystem, Void>
+    @EventWithSender<UndoSystem, Void> public var cleared
 
     /// Gets the amount of tasks currently held by this `UndoSystem`
     public var count: Int { _undoTasks.count }
@@ -132,7 +132,7 @@ class UndoSystem: UndoSystemType {
 
         _undoTasks.append(task)
 
-        _undoRegistered.publishEvent(sender: self, UndoEventArgs(task: task))
+        _undoRegistered(sender: self, UndoEventArgs(task: task))
     }
 
     /// Undoes one task on this `UndoSystem`
@@ -153,14 +153,14 @@ class UndoSystem: UndoSystemType {
         // Get the task to undo
         let task = _undoTasks[_currentTask - 1]
 
-        _willPerformUndo.publishEvent(sender: self, UndoEventArgs(task: task))
+        _willPerformUndo(sender: self, UndoEventArgs(task: task))
 
         _currentTask -= 1
         task.undo()
 
         _isDoingWork = false
 
-        _undoPerformed.publishEvent(sender: self, UndoEventArgs(task: task))
+        _undoPerformed(sender: self, UndoEventArgs(task: task))
     }
 
     /// Redoes one task on this `UndoSystem`
@@ -171,24 +171,24 @@ class UndoSystem: UndoSystemType {
         if inGroupUndo, let groupUndo = _currentGroupUndoTask {
             finishGroupUndo(cancel: groupUndo.discardOnOperation)
         }
-        
+
         if _currentTask == _undoTasks.count {
             return
         }
-        
+
         _isDoingWork = true
 
         // Get the task to undo
         let task = _undoTasks[_currentTask]
 
-        _willPerformRedo.publishEvent(sender: self, UndoEventArgs(task: task))
+        _willPerformRedo(sender: self, UndoEventArgs(task: task))
 
         _currentTask += 1
         task.redo()
 
         _isDoingWork = false
 
-        _redoPerformed.publishEvent(sender: self, UndoEventArgs(task: task))
+        _redoPerformed(sender: self, UndoEventArgs(task: task))
     }
 
     /// Starts a group undo task
@@ -219,7 +219,7 @@ class UndoSystem: UndoSystemType {
         guard let task = _currentGroupUndoTask else {
             return
         }
-        
+
         _currentGroupUndoTask = nil
 
         if task.undoList.count > 0 && !cancel {
@@ -256,7 +256,7 @@ class UndoSystem: UndoSystemType {
         if !canRedo {
             return nil
         }
-        
+
         defer { _undoTasks.remove(at: _currentTask) }
 
         return nextRedo
@@ -276,7 +276,7 @@ class UndoSystem: UndoSystemType {
 
         _currentTask = 0
 
-        _cleared.publishEvent(sender: self)
+        _cleared(sender: self)
     }
 
     /// Clear all redo tasks currently stored on this `UndoSystem`

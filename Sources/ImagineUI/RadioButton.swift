@@ -2,7 +2,7 @@ import Geometry
 import Rendering
 
 open class RadioButton: ControlView {
-    public let label = Label()
+    public let label = Label(textColor: .white)
     
     /// Gets or sets the radio button manager for this radio button.
     /// If not specified, the default radio button manager will be the first
