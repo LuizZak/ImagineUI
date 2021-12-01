@@ -5,7 +5,7 @@ public class TreeView: ControlView {
     private let _scrollView: ScrollView = ScrollView(scrollBarsMode: .both)
     private let _content: View = View()
     private let _contentInset: UIEdgeInsets = .init(left: 0, top: 4, right: 0, bottom: 4)
-    private let _subItemInset: Double = 7.0
+    private let _subItemInset: Double = 5.0
 
     private var _expanded: Set<ItemIndex> = []
     private var _selected: Set<ItemIndex> = []
@@ -64,7 +64,7 @@ public class TreeView: ControlView {
     public override func performInternalLayout() {
         withSuspendedLayout(setNeedsLayout: false) {
             if size != _lastSize {
-                _updateSize()
+                _layoutItemViews()
             }
         }
     }
@@ -83,7 +83,7 @@ public class TreeView: ControlView {
     public func reloadData() {
         suspendLayout()
         defer {
-            _updateSize()
+            _layoutItemViews()
             resumeLayout(setNeedsLayout: true)
         }
 
@@ -99,7 +99,7 @@ public class TreeView: ControlView {
             return
         }
 
-        _recursiveAddItems(hierarchy: .root, dataSource: dataSource, origin: .zero)
+        _recursiveAddItems(hierarchy: .root, dataSource: dataSource)
     }
 
     open override func onKeyDown(_ event: KeyEventArgs) {
@@ -112,91 +112,27 @@ public class TreeView: ControlView {
         }
     }
 
-    private func _updateSize() {
-        // TODO: Fix horizontal scroll bar flickering when downsizing tree views
-        // TODO: horizontally.
-        var totalArea: UIRectangle = .zero
+    private func _layoutItemViews() {
+        withSuspendedLayout(setNeedsLayout: true) {
+            var totalArea: UIRectangle = .zero
+            var currentY: Double = 0.0
 
-        for item in _visibleItems {
-            item.layoutToFit(size: UISize(width: _scrollView.visibleContentBounds.size.width - item.location.x, height: 0))
-            totalArea = UIRectangle.union(totalArea, item.area)
-        }
+            for item in _visibleItems.sorted(by: { $0.itemIndex < $1.itemIndex }) {
+                item.location.y = currentY
+                item.layoutToFit(size: UISize(width: _scrollView.visibleContentBounds.size.width, height: 0))
+                currentY += item.area.height
 
-        _content.size = totalArea.size
-        _lastSize = size
-    }
-
-    @discardableResult
-    private func _recursiveAddItems(hierarchy: HierarchyIndex, dataSource: TreeViewDataSource, origin: UIPoint) -> Double {
-        let count = dataSource.numberOfItems(at: hierarchy)
-        var currentLocation = origin
-
-        // TODO: Replace chevron spacing with a visual indicator taking the same
-        // TODO: space, instead.
-        /*
-        // Check first whether any item has subitems, and if so, toggle the chevron
-        // area for all items.
-        var reserveChevron = false
-        for index in 0..<count {
-            let itemIndex = hierarchy.subItem(index: index)
-
-            if dataSource.hasSubItems(at: itemIndex) {
-                reserveChevron = true
-                break
+                totalArea = UIRectangle.union(totalArea, item.area)
             }
-        }
-        */
 
-        for index in 0..<count {
-            let itemIndex = hierarchy.subItem(index: index)
-
-            let itemView = _makeItemView(itemIndex: itemIndex, dataSource: dataSource)
-            itemView.reserveChevronSpace = true
-            itemView.location = currentLocation
-            itemView.layoutToFit(size: .zero)
-
-            currentLocation.y += itemView.size.height
-
-            _visibleItems.append(itemView)
-            _content.addSubview(itemView)
-
-            if _isExpanded(index: itemIndex) && dataSource.hasSubItems(at: itemIndex) {
-                let newOrigin = currentLocation + UIPoint(x: _subItemInset, y: 0)
-                let newY = _recursiveAddItems(
-                    hierarchy: itemIndex.asHierarchyIndex,
-                    dataSource: dataSource,
-                    origin: newOrigin
-                )
-
-                currentLocation.y = newY
+            // Do a second pass to assign the largest width to all visible items
+            for item in _visibleItems {
+                item.size.width = totalArea.width
             }
+
+            _content.size = totalArea.size
+            _lastSize = size
         }
-
-        return currentLocation.y
-    }
-
-    private func _makeItemView(itemIndex: ItemIndex, dataSource: TreeViewDataSource) -> ItemView {
-        let itemView = _itemViewCache.dequeue(itemIndex: itemIndex) { itemView in
-            itemView.mouseSelected.addListener(owner: self) { [weak self] (sender, _) in
-                self?._selectItemView(sender)
-            }
-            itemView.mouseDownChevron.addListener(owner: self) { [weak self] (sender, _) in
-                guard let self = self else { return }
-
-                if self._isExpanded(index: sender.itemIndex) {
-                    self._raiseCollapseEvent(sender.itemIndex)
-                } else {
-                    self._raiseExpandEvent(sender.itemIndex)
-                }
-            }
-        }
-
-        itemView.isChevronVisible = dataSource.hasSubItems(at: itemIndex)
-        itemView.isExpanded = _isExpanded(index: itemIndex)
-        itemView.isSelected = _isSelected(index: itemIndex)
-        itemView.title = dataSource.titleForItem(at: itemIndex)
-
-        return itemView
     }
 
     private func _handleKeyDown(_ keyCode: Keys, _ modifiers: KeyboardModifier) -> Bool {
@@ -307,7 +243,12 @@ public class TreeView: ControlView {
 
         _expanded.insert(index)
 
-        reloadData()
+        if let visible = _visibleItem(withIndex: index) {
+            visible.isExpanded = true
+        }
+
+        _recursiveAddItems(hierarchy: index.asHierarchyIndex, dataSource: dataSource)
+        _layoutItemViews()
     }
 
     private func _collapse(_ index: ItemIndex) {
@@ -317,7 +258,19 @@ public class TreeView: ControlView {
 
         _expanded.remove(index)
 
-        reloadData()
+        if let visible = _visibleItem(withIndex: index) {
+            visible.isExpanded = false
+        }
+
+        let hierarchyIndex = index.asHierarchyIndex
+        for (i, itemView) in _visibleItems.enumerated().reversed() where itemView.itemIndex.isChild(of: hierarchyIndex) {
+            itemView.removeFromSuperview()
+            _visibleItems.remove(at: i)
+
+            _reclaim(itemView: itemView)
+        }
+
+        _layoutItemViews()
     }
 
     @discardableResult
@@ -404,10 +357,81 @@ public class TreeView: ControlView {
         return _expanded.contains(index)
     }
 
+    private func _recursiveAddItems(hierarchy: HierarchyIndex, dataSource: TreeViewDataSource) {
+        let count = dataSource.numberOfItems(at: hierarchy)
+
+        // TODO: Replace chevron spacing with a visual indicator taking the same
+        // TODO: space, instead.
+        /*
+        // Check first whether any item has subitems, and if so, toggle the chevron
+        // area for all items.
+        var reserveChevron = false
+        for index in 0..<count {
+            let itemIndex = hierarchy.subItem(index: index)
+
+            if dataSource.hasSubItems(at: itemIndex) {
+                reserveChevron = true
+                break
+            }
+        }
+        */
+
+        for index in 0..<count {
+            let itemIndex = hierarchy.subItem(index: index)
+
+            let itemView = _makeItemView(itemIndex: itemIndex, dataSource: dataSource)
+            itemView.reserveChevronSpace = true
+            itemView.layoutToFit(size: .zero)
+
+            _visibleItems.append(itemView)
+            _content.addSubview(itemView)
+
+            if _isExpanded(index: itemIndex) && dataSource.hasSubItems(at: itemIndex) {
+                _recursiveAddItems(
+                    hierarchy: itemIndex.asHierarchyIndex,
+                    dataSource: dataSource
+                )
+            }
+        }
+    }
+
+    private func _reclaim(itemView: ItemView) {
+        _itemViewCache.reclaim(view: itemView)
+    }
+
+    private func _makeItemView(itemIndex: ItemIndex, dataSource: TreeViewDataSource) -> ItemView {
+        let itemView = _itemViewCache.dequeue(itemIndex: itemIndex) { itemView in
+            itemView.mouseSelected.addListener(owner: self) { [weak self] (sender, _) in
+                self?._selectItemView(sender)
+            }
+            itemView.mouseDownChevron.addListener(owner: self) { [weak self] (sender, _) in
+                guard let self = self else { return }
+
+                if self._isExpanded(index: sender.itemIndex) {
+                    self._raiseCollapseEvent(sender.itemIndex)
+                } else {
+                    self._raiseExpandEvent(sender.itemIndex)
+                }
+            }
+        }
+
+        itemView.isChevronVisible = dataSource.hasSubItems(at: itemIndex)
+        itemView.isExpanded = _isExpanded(index: itemIndex)
+        itemView.isSelected = _isSelected(index: itemIndex)
+        itemView.title = dataSource.titleForItem(at: itemIndex)
+        itemView.icon = dataSource.iconForItem(at: itemIndex)
+        itemView.leftIndentationSpace = _subItemInset * Double(itemIndex.parent.depth)
+
+        return itemView
+    }
+
     private class ItemView: ControlView {
         private let _chevronView: ChevronView = ChevronView()
+        private let _iconImageView: ImageView = ImageView(image: nil)
         private let _titleLabelView: Label = Label(textColor: .black)
-        private let _contentInset: UIEdgeInsets = UIEdgeInsets(left: 4, top: 0, right: 2, bottom: 0)
+
+        private let _contentInset: UIEdgeInsets = UIEdgeInsets(left: 4, top: 0, right: 4, bottom: 0)
+        private let _imageHeight: Double = 10.0
 
         var itemIndex: ItemIndex
 
@@ -418,6 +442,16 @@ public class TreeView: ControlView {
 
         var viewToHighlight: ControlView {
             self
+        }
+
+        /// Padding added to the left of the tree view item to indicate it belongs
+        /// to a hierarchy.
+        var leftIndentationSpace: Double = 0.0 {
+            didSet {
+                if oldValue != leftIndentationSpace {
+                    setNeedsLayout()
+                }
+            }
         }
 
         var reserveChevronSpace: Bool = false {
@@ -444,6 +478,15 @@ public class TreeView: ControlView {
             }
         }
 
+        var icon: Image? {
+            get {
+                return _iconImageView.image
+            }
+            set {
+                _iconImageView.image = newValue
+            }
+        }
+
         var title: String {
             get {
                 return _titleLabelView.text
@@ -461,6 +504,16 @@ public class TreeView: ControlView {
             _chevronView.mouseClicked.addListener(owner: self) { [weak self] (_, _) in
                 self?.onMouseDownChevron()
             }
+            _chevronView.mouseEntered.addListener(owner: self) { [weak self] (_, _) in
+                self?.isHighlighted = true
+            }
+            _chevronView.mouseUp.addListener(owner: self) { [weak self] (sender, event) in
+                guard let self = self else { return }
+
+                if !self.bounds.contains(self.convert(point: event.location, from: sender)) {
+                    self.isHighlighted = false
+                }
+            }
 
             mouseDown.addListener(owner: self) { [weak self] (_, _) in
                 self?.onMouseSelected()
@@ -471,53 +524,83 @@ public class TreeView: ControlView {
             super.setupHierarchy()
 
             addSubview(_chevronView)
+            addSubview(_iconImageView)
             addSubview(_titleLabelView)
         }
 
         override func performInternalLayout() {
             super.performInternalLayout()
 
-            let properBounds = bounds.inset(_contentInset)
+            _doLayout(size: size)
+        }
 
-            _chevronView.size = .init(width: 10, height: 10)
+        private func _doLayout(size: UISize) {
+            var properBounds = UIRectangle(location: .zero, size: size).inset(_contentInset)
+            properBounds.x += leftIndentationSpace
 
-            if !reserveChevronSpace && !isChevronVisible {
+            let hasChevron = reserveChevronSpace || isChevronVisible
+            let hasIcon = _iconImageView.image != nil
+
+            // Chevron
+            _chevronView.size = .init(repeating: _imageHeight)
+            if !hasChevron {
                 _chevronView.size.width = 0
             }
 
             _chevronView.location.x = properBounds.x + 2
             _chevronView.area.centerY = properBounds.centerY
 
-            _titleLabelView.layoutToFit(size: UISize(width: properBounds.width - _titleLabelView.location.x, height: 0))
+            // Icon
+            _iconImageView.size = .init(repeating: _imageHeight)
+            if !hasIcon {
+                _iconImageView.size.width = 0
+            }
 
-            _titleLabelView.area = _titleLabelView.area.alignRight(of: _chevronView.area, spacing: 5, verticalAlignment: .center)
+            if hasChevron && isChevronVisible {
+                _iconImageView.area = _iconImageView.area.alignRight(of: _chevronView.area, spacing: 5, verticalAlignment: .center)
+            } else {
+                _iconImageView.location.x = properBounds.x + 2
+                _iconImageView.area.centerY = properBounds.centerY
+            }
+
+            // Title label
+            let leftView = hasIcon ? _iconImageView : _chevronView
+            _titleLabelView.location.x = leftView.area.right + 5
+            _titleLabelView.layoutToFit(size: .zero)
+            _titleLabelView.area.centerY = leftView.area.centerY
         }
 
         override func layoutSizeFitting(size: UISize) -> UISize {
             return withSuspendedLayout(setNeedsLayout: false) {
                 let snapshot = LayoutAreaSnapshot.snapshotHierarchy(self)
 
-                self.size = size
+                _doLayout(size: size)
 
-                performInternalLayout()
-                var optimalSize = UIRectangle.union(_chevronView.area, _titleLabelView.area).size
-                // Account for content inset
-                optimalSize += UISize(width: _contentInset.left + _contentInset.right, height: _contentInset.top + _contentInset.bottom)
+                var totalArea = UIRectangle.union(subviews.map(\.area))
+                totalArea.expand(toInclude: .zero)
+                totalArea = totalArea.inset(-_contentInset)
 
                 snapshot.restore()
 
-                return max(size, optimalSize)
+                return max(size, totalArea.size)
             }
         }
 
         override func onStateChanged(_ event: ValueChangedEventArgs<ControlViewState>) {
             super.onStateChanged(event)
 
-            if event.newValue == .selected {
+            switch event.newValue {
+            case .selected:
                 viewToHighlight.backColor = .cornflowerBlue
                 _titleLabelView.textColor = .white
                 _chevronView.foreColor = .white
-            } else {
+
+            case .highlighted:
+                viewToHighlight.backColor = .lightGray.faded(towards: .white, factor: 0.5)
+                _titleLabelView.textColor = .black
+                _chevronView.foreColor = .gray
+
+            default:
                 viewToHighlight.backColor = .transparentBlack
                 _titleLabelView.textColor = .black
                 _chevronView.foreColor = .gray
@@ -546,7 +629,6 @@ public class TreeView: ControlView {
             var isExpanded: Bool = false {
                 didSet {
                     if isExpanded != oldValue {
-                        setNeedsLayout()
                         invalidateControlGraphics()
                     }
                 }
@@ -561,11 +643,31 @@ public class TreeView: ControlView {
 
                 foreColor = .gray
                 cacheAsBitmap = false
+                mouseDownSelected = true
+            }
+
+            override func onStateChanged(_ event: ValueChangedEventArgs<ControlViewState>) {
+                super.onStateChanged(event)
+
+                invalidateControlGraphics()
             }
 
             override func renderForeground(in renderer: Renderer, screenRegion: ClipRegion) {
+                var color = foreColor
+
+                switch currentState {
+                case .highlighted:
+                    color = color.faded(towards: .white, factor: 0.1)
+
+                case .selected:
+                    color = color.faded(towards: .black, factor: 0.1)
+
+                default:
+                    break
+                }
+
                 let stroke = StrokeStyle(
-                    color: foreColor,
+                    color: color,
                     width: 2,
                     startCap: .round,
                     endCap: .round

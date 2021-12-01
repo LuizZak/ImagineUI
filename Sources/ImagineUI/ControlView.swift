@@ -71,10 +71,14 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
 
     /// If `true`, `highlighted` is automatically toggled on and off whenever
     /// the user enters and exits this control with the mouse.
+    ///
+    /// Defaults to `true`.
     open var mouseOverHighlight: Bool = true
 
     /// If `true`, `selected` is automatically toggled on and off whenever the
     /// user holds down the mouse button on this control with the mouse.
+    ///
+    /// Defaults to `false`.
     open var mouseDownSelected: Bool = false
 
     // MARK: - Visual Style / Colors

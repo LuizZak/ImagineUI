@@ -107,8 +107,8 @@ extension TreeView {
         /// `rhs`.
         ///
         /// An item index comes before another if its hierarchical parent compares
-        /// lower to the other item's, or if the hierarchical parent is the same,
-        /// if the `index` compares lower.
+        /// lower to the other item's, or, if the hierarchical parent is the same,
+        /// if `index` compares lower.
         public static func < (lhs: Self, rhs: Self) -> Bool {
             return lhs.asHierarchyIndex < rhs.asHierarchyIndex
         }

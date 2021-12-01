@@ -406,6 +406,21 @@ public extension UIRectangle {
         return result
     }
 
+    /// Returns the union of a sequence of rectangles.
+    /// If the sequence is empty, `UIRectangle.zero` is returned.
+    @_transparent
+    static func union<S: Sequence>(_ rectangles: S) -> Self where S.Element == UIRectangle {
+        var iterator = rectangles.makeIterator()
+
+        var result: UIRectangle = iterator.next() ?? .zero
+
+        while let next = iterator.next() {
+            result = union(result, next)
+        }
+
+        return result
+    }
+
     @inlinable
     static func intersect(_ a: Self, _ b: Self) -> Self? {
         let x1 = max(a.left, b.left)
