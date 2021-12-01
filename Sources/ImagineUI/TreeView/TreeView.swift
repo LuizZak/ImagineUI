@@ -16,6 +16,8 @@ public class TreeView: ControlView {
     @Event public var willExpand: CancellableActionEvent<TreeView, ItemIndex>
     @Event public var willCollapse: CancellableActionEvent<TreeView, ItemIndex>
 
+    @Event public var willSelect: CancellableActionEvent<TreeView, ItemIndex>
+
     public weak var dataSource: TreeViewDataSource?
 
     public override var canBecomeFirstResponder: Bool {
@@ -79,6 +81,16 @@ public class TreeView: ControlView {
         super.renderForeground(in: renderer, screenRegion: screenRegion)
     }
 
+    open override func onKeyDown(_ event: KeyEventArgs) {
+        super.onKeyDown(event)
+
+        guard !event.handled else { return }
+
+        if _handleKeyDown(event.keyCode, event.modifiers) {
+            event.handled = true
+        }
+    }
+
     /// Repopulates the tree view's items.
     public func reloadData() {
         suspendLayout()
@@ -102,15 +114,24 @@ public class TreeView: ControlView {
         _recursiveAddItems(hierarchy: .root, dataSource: dataSource)
     }
 
-    open override func onKeyDown(_ event: KeyEventArgs) {
-        super.onKeyDown(event)
-
-        guard !event.handled else { return }
-
-        if _handleKeyDown(event.keyCode, event.modifiers) {
-            event.handled = true
+    /// Requests that the TreeView collapse all currently expanded items.
+    public func collapseAll() {
+        for index in _expanded {
+            _collapse(index)
         }
     }
+
+    /// Requests that the TreeView collapse a given item index.
+    public func collapse(index: ItemIndex) {
+        _collapse(index)
+    }
+
+    /// Requests that the TreeView collapse a given item index.
+    public func expand(index: ItemIndex) {
+        _expand(index)
+    }
+
+    // MARK: Internals
 
     private func _layoutItemViews() {
         withSuspendedLayout(setNeedsLayout: true) {
@@ -226,8 +247,6 @@ public class TreeView: ControlView {
         return false
     }
 
-    // TODO: Do incremental expansion/collapsing of tree instead of doing full reload.
-
     private func _expand(_ index: ItemIndex) {
         guard !_isExpanded(index: index) else {
             return
@@ -302,6 +321,24 @@ public class TreeView: ControlView {
         let cancel = _willCollapse.publishCancellableChangeEvent(sender: self, value: index)
         if !cancel {
             _collapse(index)
+        }
+
+        return cancel
+    }
+
+    @discardableResult
+    private func _raiseSelectEvent(_ itemView: ItemView) -> Bool {
+        guard !_isSelected(index: itemView.itemIndex) else {
+            return true
+        }
+
+        if !canBecomeFirstResponder {
+            return true
+        }
+
+        let cancel = _willSelect.publishCancellableChangeEvent(sender: self, value: itemView.itemIndex)
+        if !cancel {
+            _selectItemView(itemView)
         }
 
         return cancel
@@ -402,7 +439,7 @@ public class TreeView: ControlView {
     private func _makeItemView(itemIndex: ItemIndex, dataSource: TreeViewDataSource) -> ItemView {
         let itemView = _itemViewCache.dequeue(itemIndex: itemIndex) { itemView in
             itemView.mouseSelected.addListener(owner: self) { [weak self] (sender, _) in
-                self?._selectItemView(sender)
+                self?._raiseSelectEvent(sender)
             }
             itemView.mouseDownChevron.addListener(owner: self) { [weak self] (sender, _) in
                 guard let self = self else { return }
