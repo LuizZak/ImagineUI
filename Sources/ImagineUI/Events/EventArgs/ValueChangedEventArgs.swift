@@ -1,3 +1,5 @@
+// TODO: Separate ValueChangeEvent into ValueChangeEventWithSender.
+
 /// A typealias for an event that tracks changes to a property's value
 public typealias ValueChangeEvent<Sender, Value> = EventWithSender<Sender, ValueChangedEventArgs<Value>>
 

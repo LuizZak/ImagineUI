@@ -1,3 +1,5 @@
+// TODO: Separate CancellableValueChangeEvent into CancellableValueChangeEventWithSender.
+
 /// A typealias for an event that tracks changes to a property's value, while
 /// enabling the opportunity to cancel the value change
 public typealias CancellableValueChangeEvent<Sender, Value> = EventWithSender<Sender, CancellableValueChangedEventArgs<Value>>

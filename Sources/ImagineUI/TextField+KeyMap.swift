@@ -1,12 +1,12 @@
 public extension TextField {
     /// Defines the keys and modifiers to listen, based on OS-settings.
     enum KeyMap {
-        
+
     }
 }
 
 public extension TextField.KeyMap {
-    /// The keyboard modifier that is checked against to do text selecion while
+    /// The keyboard modifier that is checked against to do text selection while
     /// moving the caret.
     /// Is ``KeyboardModifier/shift`` on all OSs.
     static let selectModifier = KeyboardModifier.shift

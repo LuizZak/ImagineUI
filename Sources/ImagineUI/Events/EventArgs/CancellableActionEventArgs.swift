@@ -1,3 +1,5 @@
+// TODO: Separate CancellableActionEvent into CancellableActionEventWithSender.
+
 /// A typealias for an event that tracks actions that can be cancelled by
 /// listeners.
 public typealias CancellableActionEvent<Sender, Args> = EventWithSender<Sender, CancellableActionEventArgs<Args>>
