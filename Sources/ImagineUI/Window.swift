@@ -20,7 +20,7 @@ public class Window: RootView {
     /// Saves the location of the window before maximizing state
     private var _normalStateLocation: UIVector = .zero
 
-    /// List of temporary constraints applied during window resizing to mantain
+    /// List of temporary constraints applied during window resizing to maintain
     /// one or more of the boundaries of the window area fixed while the opposite
     /// sides are resized
     private var _resizeConstraints: [LayoutConstraint] = []
@@ -57,8 +57,6 @@ public class Window: RootView {
     public let contentsLayoutArea = LayoutGuide()
     public let titleBarLayoutArea = LayoutGuide()
 
-    public var rootControlSystem: ControlSystem?
-
     public var title: String {
         didSet {
             _titleLabel.text = title
@@ -68,10 +66,6 @@ public class Window: RootView {
         didSet {
             _titleLabel.font = titleFont
         }
-    }
-
-    public override var controlSystem: ControlSystem? {
-        return rootControlSystem
     }
 
     public override var intrinsicSize: UISize? {

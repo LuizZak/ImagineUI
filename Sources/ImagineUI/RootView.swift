@@ -6,6 +6,12 @@ public class RootView: ControlView {
 
     public weak var invalidationDelegate: RootViewRedrawInvalidationDelegate?
 
+    public var rootControlSystem: ControlSystem?
+
+    public override var controlSystem: ControlSystem? {
+        return rootControlSystem
+    }
+
     public override func setNeedsLayout() {
         super.setNeedsLayout()
 
