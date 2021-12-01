@@ -7,8 +7,11 @@ import Cocoa
 import Blend2DRenderer
 
 private class DataSource: TreeViewDataSource {
-    func hasItems(at hierarchyIndex: TreeView.HierarchyIndex) -> Bool {
-        if hierarchyIndex.indices == [2] {
+    func hasSubItems(at index: TreeView.ItemIndex) -> Bool {
+        if index.asHierarchyIndex.indices == [2] {
+            return true
+        }
+        if index.asHierarchyIndex.isSubHierarchy(of: .init(indices: [2, 0])) {
             return true
         }
 
@@ -22,16 +25,19 @@ private class DataSource: TreeViewDataSource {
         if hierarchyIndex.indices == [2] {
             return 2
         }
+        if hierarchyIndex.isSubHierarchy(of: .init(indices: [2, 0])) {
+            return 1
+        }
 
         return 0
     }
 
     func titleForItem(at index: TreeView.ItemIndex) -> String {
         if !index.parent.isRoot {
-            return "Item \(index.parent.indices.map(\.description).joined(separator: " -> ")) -> \(index.index)"
+            return "Item \(index.parent.indices.map { "\($0 + 1)" }.joined(separator: " -> ")) -> \(index.index + 1)"
         }
         
-        return "Item \(index.index)"
+        return "Item \(index.index + 1)"
     }
 }
 
@@ -233,48 +239,6 @@ class TreeSampleWindow: Blend2DSample {
         }
 
         rootViews.append(window)
-    }
-
-    func createSampleImage() -> Image {
-        let imgRenderer = rendererContext.createImageRenderer(width: 64, height: 64)
-
-        let ctx = imgRenderer.renderer
-
-        ctx.clear()
-        ctx.setFill(Color.skyBlue)
-        ctx.fill(UIRectangle(x: 0, y: 0, width: 64, height: 64))
-
-        // Render two mountains
-        ctx.setFill(Color.forestGreen)
-        ctx.translate(x: 15, y: 40)
-        let mount1 = BLTriangle.unitEquilateral.scaledBy(x: 35, y: 35)
-        let mount2 = BLTriangle.unitEquilateral.scaledBy(x: 30, y: 30)
-
-        ctx.fill(
-            UIPolygon(vertices: [
-                mount1.p0.asVector2,
-                mount1.p1.asVector2,
-                mount1.p2.asVector2
-            ])
-        )
-        ctx.translate(x: 15, y: 4)
-        ctx.fill(
-            UIPolygon(vertices: [
-                mount2.p0.asVector2,
-                mount2.p1.asVector2,
-                mount2.p2.asVector2
-            ])
-        )
-
-        // Render ground
-        ctx.resetTransform()
-        ctx.fill(UIRectangle(x: 0, y: 45, width: 64, height: 64))
-
-        // Render sun
-        ctx.setFill(Color.yellow)
-        ctx.fill(UICircle(x: 50, y: 20, radius: 10))
-
-        return imgRenderer.renderedImage()
     }
 }
 
