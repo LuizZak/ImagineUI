@@ -7,7 +7,7 @@ public final class Scheduler {
 
     /// Event invoked every time `onFixedFrame` is invoked; usually aligned to
     /// the display's refresh rate.
-    @Event public var fixedFrameEvent: EventSource<TimeInterval>
+    @Event<TimeInterval> public var fixedFrameEvent
 
     private init() {
 

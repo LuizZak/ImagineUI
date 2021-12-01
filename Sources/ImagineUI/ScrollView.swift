@@ -368,7 +368,7 @@ open class ScrollView: ControlView {
     }
 
     private class ContentView: View {
-        @Event var onResizeEvent: EventSourceWithSender<ContentView, Void>
+        @EventWithSender<ContentView, Void> var onResizeEvent
 
         override var bounds: UIRectangle {
             didSet {
@@ -426,7 +426,7 @@ public class ScrollBarControl: ControlView {
     /// Event called when the user scrolls the scroll bar.
     ///
     /// This is not called when `scroll` value is programmatically set.
-    @Event public var scrollChanged: EventSourceWithSender<ScrollBarControl, Double>
+    @EventWithSender<ScrollBarControl, Double> public var scrollChanged
 
     public init(orientation: Orientation) {
         self.orientation = orientation

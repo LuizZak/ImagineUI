@@ -15,7 +15,7 @@ open class TextField: ControlView {
     private var _cursorBlinkTimer: SchedulerTimerType?
 
     // TODO: Collapse these into an external handler or into Combine to lower
-    // the state clutter here
+    // TODO: the state clutter here
 
     private var _lastMouseDown: TimeInterval = 0
     private var _lastMouseDownPoint: UIVector = .zero
@@ -27,15 +27,15 @@ open class TextField: ControlView {
     ///
     /// This event is not raised if a client sets this text field's `text` property
     /// directly.
-    @Event public var textChanged: EventSourceWithSender<TextField, TextFieldTextChangedEventArgs>
+    @EventWithSender<TextField, TextFieldTextChangedEventArgs> public var textChanged
 
     /// Event fired whenever the caret for this text field changes position or
-    /// selection range
-    @Event public var caretChanged: ValueChangeEvent<TextField, Caret>
+    /// selection range.
+    @ValueChangeEvent<TextField, Caret> public var caretChanged
 
     /// Event fired whenever the user presses down the Enter key while
-    /// `acceptsEnterKey` is true
-    @Event public var enterKey: EventSourceWithSender<TextField, Void>
+    /// `acceptsEnterKey` is true.
+    @EventWithSender<TextField, Void> public var enterKey
 
     open var textColor: Color {
         get { _label.textColor }
@@ -59,7 +59,7 @@ open class TextField: ControlView {
         }
     }
 
-    /// Gets or sets the text of this textfield.
+    /// Gets or sets the text of this text field.
     ///
     /// As keyboard input is received, this value is updated accordingly.
     open var text: String {
@@ -73,7 +73,7 @@ open class TextField: ControlView {
         }
     }
 
-    /// An optional placeholder text which is printed when the textfield's
+    /// An optional placeholder text which is printed when the text field's
     /// contents are empty.
     open var placeholderText: String? {
         get { _placeholderLabel.text.isEmpty ? nil : _placeholderLabel.text }
@@ -86,7 +86,7 @@ open class TextField: ControlView {
     }
 
     /// Gets or sets the horizontal text alignment for both the input text and
-    /// paceholder labels
+    /// placeholder labels
     open var horizontalTextAlignment: HorizontalTextAlignment = .leading {
         didSet {
             _label.horizontalTextAlignment = horizontalTextAlignment
@@ -94,7 +94,7 @@ open class TextField: ControlView {
         }
     }
 
-    /// Gets or sets the caret position for this textfield.
+    /// Gets or sets the caret position for this text field.
     open var caret: Caret {
         get { _textEngine.caret }
         set { _textEngine.setCaret(newValue) }
@@ -107,7 +107,7 @@ open class TextField: ControlView {
         }
     }
 
-    /// Gets the current active style for this textfield.
+    /// Gets the current active style for this text field.
     public private(set) var style: TextFieldVisualStyleParameters = TextFieldVisualStyleParameters()
 
     open override var canBecomeFirstResponder: Bool { isEnabled }
@@ -800,7 +800,7 @@ open class TextField: ControlView {
         _textEngine.selectAll()
     }
 
-    /// Clears all undo/redo history for this textfield.
+    /// Clears all undo/redo history for this text field.
     public func clearUndo() {
         _textEngine.clearUndo()
     }
@@ -925,7 +925,7 @@ private class LabelViewTextBuffer: TextEngineTextualBuffer {
 
     public var textLength: Int { label.text.count }
 
-    @Event public var changed: EventSource<Void>
+    @Event<Void> public var changed
 
     public init(label: Label) {
         self.label = label
@@ -978,7 +978,7 @@ private class LabelViewTextBuffer: TextEngineTextualBuffer {
 /// Specifies the presentation style for a text field.
 ///
 /// Used to specify separate visual styles depending on the first-responding
-/// state of the textfield.
+/// state of the text field.
 public struct TextFieldVisualStyleParameters {
     public var textColor: Color = .black
     public var placeholderTextColor: Color = .black

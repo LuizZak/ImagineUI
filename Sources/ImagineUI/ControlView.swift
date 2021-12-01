@@ -131,61 +131,75 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
     /// Event raised whenever a client requests that this view redraw itself on
     /// screen or to a buffer.
     /// This event is raised after the view's contents have been painted.
-    @Event public var painted: EventSourceWithSender<ControlView, PaintEventArgs>
+    @EventWithSender<ControlView, PaintEventArgs>
+    public var painted
 
     /// Event raised whenever this control view's `currentState` value is changed
-    @Event public var stateChanged: ValueChangeEvent<ControlView, ControlViewState>
+    @ValueChangeEvent<ControlView, ControlViewState>
+    public var stateChanged
 
     /// Event raised whenever this control view's bounds have been updated to a
     /// different value
-    @Event public var resized: ValueChangeEvent<ControlView, UISize>
+    @ValueChangeEvent<ControlView, UISize>
+    public var resized
 
     // MARK: Mouse events
 
     /// Event raised whenever the user clicks this control view while enabled
-    @Event public var mouseClicked: EventSourceWithSender<ControlView, MouseEventArgs>
+    @EventWithSender<ControlView, MouseEventArgs>
+    public var mouseClicked
 
     /// Event raised when the user scrolls the mouse wheel while on top of this
     /// control
-    @Event public var mouseWheelScrolled: EventSourceWithSender<ControlView, MouseEventArgs>
+    @EventWithSender<ControlView, MouseEventArgs>
+    public var mouseWheelScrolled
 
     /// Event raised whenever the user holds down on this control view with any
     /// mouse button
-    @Event public var mouseDown: EventSourceWithSender<ControlView, MouseEventArgs>
+    @EventWithSender<ControlView, MouseEventArgs>
+    public var mouseDown
 
     /// Event raised whenever the user releases the mouse button they had held
     /// down previously on top of this control view
-    @Event public var mouseUp: EventSourceWithSender<ControlView, MouseEventArgs>
+    @EventWithSender<ControlView, MouseEventArgs>
+    public var mouseUp
 
     /// Event raised whenever the user moves the mouse on top of this control view's
     /// area
-    @Event public var mouseMoved: EventSourceWithSender<ControlView, MouseEventArgs>
+    @EventWithSender<ControlView, MouseEventArgs>
+    public var mouseMoved
 
     /// Event raised whenever the user enters this control view's area with the
     /// mouse cursor
-    @Event public var mouseEntered: EventSourceWithSender<ControlView, Void>
+    @EventWithSender<ControlView, Void>
+    public var mouseEntered
 
     /// Event raised whenever the user leaves this control view's area with the
     /// mouse cursor
-    @Event public var mouseExited: EventSourceWithSender<ControlView, Void>
+    @EventWithSender<ControlView, Void>
+    public var mouseExited
 
     // MARK: Keyboard events
 
     /// Event raised whenever the user presses a keyboard key while this view is
     /// the currently active first responder
-    @Event public var keyPressed: EventSourceWithSender<ControlView, KeyPressEventArgs>
+    @EventWithSender<ControlView, KeyPressEventArgs>
+    public var keyPressed
 
     /// Event raised whenever the user presses a keyboard key while this view is
     /// the currently active first responder
-    @Event public var keyDown: EventSourceWithSender<ControlView, KeyEventArgs>
+    @EventWithSender<ControlView, KeyEventArgs>
+    public var keyDown
 
     /// Event raised whenever the user depresses a keyboard key while this view
     /// is the currently active first responder
-    @Event public var keyUp: EventSourceWithSender<ControlView, KeyEventArgs>
+    @EventWithSender<ControlView, KeyEventArgs>
+    public var keyUp
 
     /// Event raised whenever the user presses a keyboard key while this view is
     /// the currently active first responder
-    @Event public var previewKeyDown: EventSourceWithSender<ControlView, PreviewKeyDownEventArgs>
+    @EventWithSender<ControlView, PreviewKeyDownEventArgs>
+    public var previewKeyDown
 
     // MARK: -
 

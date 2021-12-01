@@ -1,14 +1,14 @@
 /// A typealias for an event that tracks actions that can be cancelled by
 /// listeners.
-public typealias CancellableActionEvent<Sender, Value> = EventSourceWithSender<Sender, CancellableActionEventArgs<Value>>
+public typealias CancellableActionEvent<Sender, Args> = EventWithSender<Sender, CancellableActionEventArgs<Args>>
 
 /// An event argument set for an event that tracks cancellable actions, while
 /// exposing a `cancel` that can be changed by clients to cancel the action.
-public class CancellableActionEventArgs<Value> {
-    public let value: Value
+public class CancellableActionEventArgs<Args> {
+    public let value: Args
     public var cancel: Bool
 
-    public init(value: Value) {
+    public init(value: Args) {
         self.value = value
         cancel = false
     }

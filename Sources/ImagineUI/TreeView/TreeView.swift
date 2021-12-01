@@ -13,10 +13,10 @@ public class TreeView: ControlView {
 
     private var _lastSize: UISize? = nil
 
-    @Event public var willExpand: CancellableActionEvent<TreeView, ItemIndex>
-    @Event public var willCollapse: CancellableActionEvent<TreeView, ItemIndex>
+    @CancellableActionEvent<TreeView, ItemIndex> public var willExpand
+    @CancellableActionEvent<TreeView, ItemIndex> public var willCollapse
 
-    @Event public var willSelect: CancellableActionEvent<TreeView, ItemIndex>
+    @CancellableActionEvent<TreeView, ItemIndex> public var willSelect
 
     public weak var dataSource: TreeViewDataSource?
 
@@ -472,10 +472,10 @@ public class TreeView: ControlView {
 
         var itemIndex: ItemIndex
 
-        @Event var mouseSelected: EventSourceWithSender<ItemView, Void>
-        @Event var mouseDownChevron: EventSourceWithSender<ItemView, Void>
+        @EventWithSender<ItemView, Void> var mouseSelected
+        @EventWithSender<ItemView, Void> var mouseDownChevron
 
-        @Event var selectRight: EventSourceWithSender<ItemView, Void>
+        @EventWithSender<ItemView, Void> var selectRight
 
         var viewToHighlight: ControlView {
             self

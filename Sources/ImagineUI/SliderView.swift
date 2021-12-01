@@ -94,7 +94,7 @@ public class SliderView: ControlView {
     }
 
     /// Event fired whenever `value` is changed
-    @Event public var valueChanged: ValueChangeEvent<SliderView, Double>
+    @ValueChangeEvent<SliderView, Double> public var valueChanged
 
     public override var intrinsicSize: UISize? {
         return UISize(width: bounds.width, height: knobSize.height)

@@ -1,5 +1,5 @@
 /// A typealias for an event that tracks changes to a property's value
-public typealias ValueChangeEvent<Sender, Value> = EventSourceWithSender<Sender, ValueChangedEventArgs<Value>>
+public typealias ValueChangeEvent<Sender, Value> = EventWithSender<Sender, ValueChangedEventArgs<Value>>
 
 /// An event argument set for an event that tracks changes to a property
 public struct ValueChangedEventArgs<T> {
