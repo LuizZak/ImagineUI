@@ -199,12 +199,12 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
 
     /// Raises the `resized` event
     open func onResize(_ event: ValueChangedEventArgs<UISize>) {
-        _resized.publishEvent(sender: self, event)
+        _resized(sender: self, event)
     }
 
     /// Raises the `stateChanged` event
     open func onStateChanged(_ event: ValueChangedEventArgs<ControlViewState>) {
-        _stateChanged.publishEvent(sender: self, event)
+        _stateChanged(sender: self, event)
     }
 
     // MARK: - Rendering
@@ -222,7 +222,7 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
 
         renderer.restoreState(state)
 
-        _painted.publishEvent(sender: self, renderer)
+        _painted(sender: self, renderer)
     }
 
     /// Renders this view's background
@@ -333,7 +333,7 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
 
     /// Raises the `mouseDown` event
     open func onMouseDown(_ event: MouseEventArgs) {
-        _mouseDown.publishEvent(sender: self, event)
+        _mouseDown(sender: self, event)
 
         if mouseDownSelected {
             _isMouseDown = true
@@ -343,7 +343,7 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
 
     /// Raises the `mouseMoved` event
     open func onMouseMove(_ event: MouseEventArgs) {
-        _mouseMoved.publishEvent(sender: self, event)
+        _mouseMoved(sender: self, event)
 
         if _isMouseDown {
             isSelected = contains(point: event.location)
@@ -352,7 +352,7 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
 
     /// Raises the `mouseUp` event
     open func onMouseUp(_ event: MouseEventArgs) {
-        _mouseUp.publishEvent(sender: self, event)
+        _mouseUp(sender: self, event)
 
         if _isMouseDown {
             isSelected = false
@@ -362,7 +362,7 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
 
     /// Raises the `mouseEntered` event
     open func onMouseEnter() {
-        _mouseEntered.publishEvent(sender: self)
+        _mouseEntered(sender: self)
 
         if mouseOverHighlight {
             isHighlighted = true
@@ -371,7 +371,7 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
 
     /// Raises the `mouseExited` event
     open func onMouseLeave() {
-        _mouseExited.publishEvent(sender: self)
+        _mouseExited(sender: self)
 
         if mouseOverHighlight {
             isHighlighted = false
@@ -380,34 +380,34 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
 
     /// Raises the `mouseClicked` event
     open func onMouseClick(_ event: MouseEventArgs) {
-        _mouseClicked.publishEvent(sender: self, event)
+        _mouseClicked(sender: self, event)
     }
 
     /// Raises the `mouseWheelScrolled` event
     open func onMouseWheel(_ event: MouseEventArgs) {
-        _mouseWheelScrolled.publishEvent(sender: self, event)
+        _mouseWheelScrolled(sender: self, event)
     }
 
     // MARK: - Keyboard Event Handling
 
     /// Raises the `keyPressed` event
     open func onKeyPress(_ event: KeyPressEventArgs) {
-        _keyPressed.publishEvent(sender: self, event)
+        _keyPressed(sender: self, event)
     }
 
     /// Raises the `keyDown` event
     open func onKeyDown(_ event: KeyEventArgs) {
-        _keyDown.publishEvent(sender: self, event)
+        _keyDown(sender: self, event)
     }
 
     /// Raises the `keyUp` event
     open func onKeyUp(_ event: KeyEventArgs) {
-        _keyUp.publishEvent(sender: self, event)
+        _keyUp(sender: self, event)
     }
 
     /// Raises the `previewKeyDown` event
     open func onPreviewKeyDown(_ event: PreviewKeyDownEventArgs) {
-        _previewKeyDown.publishEvent(sender: self, event)
+        _previewKeyDown(sender: self, event)
     }
 
     // MARK: -

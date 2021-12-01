@@ -30,4 +30,12 @@ public extension Event {
 
         return event.cancel
     }
+
+    func callAsFunction<Sender>(sender: Sender) -> Bool where T == SenderEventArgs<Sender, CancellableActionEventArgs<Void>> {
+        return publishCancellableChangeEvent(sender: sender)
+    }
+
+    func callAsFunction<Sender, Value>(sender: Sender, value: Value) -> Bool where T == SenderEventArgs<Sender, CancellableActionEventArgs<Value>> {
+        return publishCancellableChangeEvent(sender: sender, value: value)
+    }
 }

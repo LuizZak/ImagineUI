@@ -180,12 +180,12 @@ open class TextField: ControlView {
 
     /// Raises the `textChanged` event
     open func onTextChanged() {
-        _textChanged.publishEvent(sender: self, TextFieldTextChangedEventArgs(text: text))
+        _textChanged(sender: self, TextFieldTextChangedEventArgs(text: text))
     }
 
     /// Raises the `caretChanged` event
     open func onCaretChanged(_ event: ValueChangedEventArgs<Caret>) {
-        _caretChanged.publishEvent(sender: self, event)
+        _caretChanged(sender: self, event)
     }
 
     open override func onResize(_ event: ValueChangedEventArgs<UISize>) {
@@ -371,7 +371,7 @@ open class TextField: ControlView {
 
         if event.keyCode == Keys.enter {
             if acceptsEnterKey {
-                _enterKey.publishEvent(sender: self)
+                _enterKey(sender: self)
             }
             return
         }
@@ -949,19 +949,19 @@ private class LabelViewTextBuffer: TextEngineTextualBuffer {
         let end = label.text.index(start, offsetBy: length)
 
         label.text.removeSubrange(start..<end)
-        _changed.publishEvent()
+        _changed()
     }
 
     public func insert(at index: Int, _ text: String) {
         let index = label.text.index(label.text.startIndex, offsetBy: index)
 
         label.text.insert(contentsOf: text, at: index)
-        _changed.publishEvent()
+        _changed()
     }
 
     public func append(_ text: String) {
         label.text += text
-        _changed.publishEvent()
+        _changed()
     }
 
     public func replace(at index: Int, length: Int, _ text: String) {
@@ -971,7 +971,7 @@ private class LabelViewTextBuffer: TextEngineTextualBuffer {
         label.text.removeSubrange(start..<end)
         label.text.insert(contentsOf: text, at: start)
 
-        _changed.publishEvent()
+        _changed()
     }
 }
 

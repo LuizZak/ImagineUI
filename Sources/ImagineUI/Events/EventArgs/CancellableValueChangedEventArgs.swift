@@ -8,22 +8,26 @@ public class CancellableValueChangedEventArgs<T> {
     public let oldValue: T
     public let newValue: T
     public var cancel: Bool
-    
+
     public init(oldValue: T, newValue: T) {
         self.oldValue = oldValue
         self.newValue = newValue
-        
+
         cancel = false
     }
 }
 
 public extension Event {
     func publishCancellableChangeEvent<Sender, Value>(sender: Sender, old: Value, new: Value) -> Bool where T == SenderEventArgs<Sender, CancellableValueChangedEventArgs<Value>> {
-        
+
         let event = CancellableValueChangedEventArgs(oldValue: old, newValue: new)
-        
+
         self.publishEvent((sender, event))
-        
+
         return event.cancel
+    }
+
+    func callAsFunction<Sender, Value>(sender: Sender, old: Value, new: Value) -> Bool where T == SenderEventArgs<Sender, CancellableValueChangedEventArgs<Value>> {
+        return publishCancellableChangeEvent(sender: sender, old: old, new: new)
     }
 }

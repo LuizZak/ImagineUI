@@ -6,13 +6,13 @@ public typealias CheckboxStateWillChangeEventArgs = CancellableValueChangedEvent
 open class Checkbox: ControlView {
     private let textStates = StatedValueStore<String>()
     public let label = Label(textColor: .white)
-    
+
     open var checkboxState: State = .unchecked {
         didSet {
             invalidate()
         }
     }
-    
+
     open var title: String {
         get {
             return label.text
@@ -63,7 +63,7 @@ open class Checkbox: ControlView {
             make.edges.equalTo(self, inset: UIEdgeInsets(left: 16, top: 0, right: 0, bottom: 0))
         }
     }
-    
+
     open override func viewForFirstBaseline() -> View? {
         return label
     }
@@ -91,7 +91,7 @@ open class Checkbox: ControlView {
     }
 
     func invokeStateWillChangeEvent(newState: State) {
-        if !_checkboxStateWillChange.publishCancellableChangeEvent(sender: self, old: checkboxState, new: newState) {
+        if !_checkboxStateWillChange(sender: self, old: checkboxState, new: newState) {
             checkboxState = newState
         }
     }
@@ -154,12 +154,12 @@ open class Checkbox: ControlView {
                 UIVector(x: checkAreaBottomLeft.right, y: checkArea.bottom),
                 checkArea.topRight
             ]
-            
+
             let stroke = StrokeStyle(color: .white,
                                      width: 1.5,
                                      startCap: .butt,
                                      endCap: .butt)
-            
+
             renderer.setStroke(stroke)
 
             renderer.stroke(polyline: points)

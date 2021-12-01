@@ -373,7 +373,7 @@ open class ScrollView: ControlView {
         override var bounds: UIRectangle {
             didSet {
                 if oldValue != bounds {
-                    _onResizeEvent.publishEvent(sender: self)
+                    _onResizeEvent(sender: self)
                 }
             }
         }
@@ -489,7 +489,7 @@ public class ScrollBarControl: ControlView {
             }
 
             if previousScroll != scroll {
-                _scrollChanged.publishEvent(sender: self, scroll)
+                _scrollChanged(sender: self, scroll)
             }
         }
     }

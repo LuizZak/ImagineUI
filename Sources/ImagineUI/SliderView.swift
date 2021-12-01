@@ -151,7 +151,7 @@ public class SliderView: ControlView {
     }
 
     public func onValueChanged(_ event: ValueChangedEventArgs<Double>) {
-        _valueChanged.publishEvent(sender: self, event)
+        _valueChanged(sender: self, event)
     }
 
     public override func onStateChanged(_ event: ValueChangedEventArgs<ControlViewState>) {

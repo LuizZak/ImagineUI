@@ -304,7 +304,7 @@ public class TreeView: ControlView {
             return true
         }
 
-        let cancel = _willExpand.publishCancellableChangeEvent(sender: self, value: index)
+        let cancel = _willExpand(sender: self, value: index)
         if !cancel {
             _expand(index)
         }
@@ -318,7 +318,7 @@ public class TreeView: ControlView {
             return true
         }
 
-        let cancel = _willCollapse.publishCancellableChangeEvent(sender: self, value: index)
+        let cancel = _willCollapse(sender: self, value: index)
         if !cancel {
             _collapse(index)
         }
@@ -336,7 +336,7 @@ public class TreeView: ControlView {
             return true
         }
 
-        let cancel = _willSelect.publishCancellableChangeEvent(sender: self, value: itemView.itemIndex)
+        let cancel = _willSelect(sender: self, value: itemView.itemIndex)
         if !cancel {
             _selectItemView(itemView)
         }
@@ -655,11 +655,11 @@ public class TreeView: ControlView {
         }
 
         private func onMouseDownChevron() {
-            _mouseDownChevron.publishEvent(sender: self)
+            _mouseDownChevron(sender: self)
         }
 
         private func onMouseSelected() {
-            _mouseSelected.publishEvent(sender: self)
+            _mouseSelected(sender: self)
         }
 
         private class ChevronView: ControlView {
