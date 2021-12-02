@@ -209,7 +209,7 @@ open class View {
     /// A list of constraints that are affecting this view.
     internal(set) public var constraints: [LayoutConstraint] = []
 
-    public var intrinsicSize: UISize? {
+    open var intrinsicSize: UISize? {
         return nil
     }
 
