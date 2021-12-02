@@ -200,15 +200,6 @@ public class Window: RootView {
         drawWindowBorders(context)
     }
 
-    public override func layoutSizeFitting(size: UISize) -> UISize {
-        let previousInvalidationDelegate = invalidationDelegate
-
-        let result = super.layoutSizeFitting(size: size)
-
-        invalidationDelegate = previousInvalidationDelegate
-        return result
-    }
-
     public override func onMouseDown(_ event: MouseEventArgs) {
         super.onMouseDown(event)
 

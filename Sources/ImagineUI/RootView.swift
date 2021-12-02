@@ -14,11 +14,16 @@ public class RootView: ControlView {
 
     public override func setNeedsLayout() {
         super.setNeedsLayout()
-
+        
+        guard !_isSizingLayout else { return }
+        guard !isLayoutSuspended else { return }
+        
         invalidationDelegate?.rootViewInvalidatedLayout(self)
     }
 
     override func invalidate(bounds: UIRectangle, spatialReference: SpatialReferenceType) {
+        guard !_isSizingLayout else { return }
+        
         let rect = spatialReference.convert(bounds: bounds, to: nil)
         invalidationDelegate?.rootView(self, invalidateRect: rect)
     }

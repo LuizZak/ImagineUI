@@ -3,10 +3,12 @@ import Geometry
 import Rendering
 
 open class View {
-    /// Whether the layout variables produced by this container should have a
-    /// forced intrinsic size of zero. Used by View's methods that calculate
-    /// minimal content sizes
+    /// An override to intrinsicSize. Used by View's methods that calculate
+    /// minimal content sizes.
     internal var _targetLayoutSize: UISize? = nil
+    /// Whether this view is currently in the process of calculating an optimal
+    /// size during a `layoutSizeFitting` call.
+    internal var _isSizingLayout: Bool = false
 
     var horizontalCompressResistance: LayoutPriority? = .high {
         didSet {
@@ -369,9 +371,8 @@ open class View {
     }
 
     open func setNeedsLayout() {
-        if isLayoutSuspended {
-            return
-        }
+        guard !_isSizingLayout else { return }
+        guard !isLayoutSuspended else { return }
 
         superview?.setNeedsLayout()
         needsLayout = true
@@ -394,14 +395,11 @@ open class View {
     /// active constraints, while approaching the target size as much as possible.
     /// The layout of the view is kept as-is, and no changes to its size are made.
     open func layoutSizeFitting(size: UISize) -> UISize {
+        _isSizingLayout = true
+        
         // Store state for later restoring
-        let previousSuperview = superview
-        let previousNeedsLayout = needsLayout
         let previousAreaIntoConstraintsMask = areaIntoConstraintsMask
         let snapshot = LayoutAreaSnapshot.snapshotHierarchy(self)
-
-        // Remove view from hierarchy to avoid propagating invalidations
-        superview = nil
 
         _targetLayoutSize = size
         areaIntoConstraintsMask = [.location]
@@ -414,11 +412,11 @@ open class View {
         snapshot.restore()
         _targetLayoutSize = nil
         areaIntoConstraintsMask = previousAreaIntoConstraintsMask
-        needsLayout = previousNeedsLayout
-        superview = previousSuperview
 
         // Update constraint cache back
         performConstraintsLayout(cached: true)
+        
+        _isSizingLayout = false
 
         return optimalSize
     }
@@ -520,6 +518,8 @@ open class View {
     }
 
     internal func invalidate(bounds: UIRectangle, spatialReference: SpatialReferenceType) {
+        guard !_isSizingLayout else { return }
+        
         superview?.invalidate(bounds: bounds, spatialReference: spatialReference)
     }
 
