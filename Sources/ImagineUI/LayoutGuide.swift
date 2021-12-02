@@ -65,6 +65,10 @@ extension LayoutGuide: LayoutVariablesContainer {
     func constraintsOnAnchorKind(_ anchorKind: AnchorKind) -> [LayoutConstraint] {
         constraints.filter { ($0.firstCast._owner === self && $0.firstCast.kind == anchorKind) || ($0.secondCast?._owner === self && $0.secondCast?.kind == anchorKind) }
     }
+
+    func setAreaSkippingLayout(_ area: UIRectangle) {
+        self.area = area
+    }
 }
 
 extension LayoutGuide: SpatialReferenceType {

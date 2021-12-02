@@ -3,7 +3,7 @@ import Geometry
 protocol LayoutVariablesContainer: AnyObject, SpatialReferenceType {
     var layoutVariables: LayoutVariables! { get }
     var parent: LayoutVariablesContainer? { get }
-    var area: UIRectangle { get set }
+    var area: UIRectangle { get }
     var viewInHierarchy: View? { get }
 
     /// A list of constraints that are affecting this layout container.
@@ -17,4 +17,5 @@ protocol LayoutVariablesContainer: AnyObject, SpatialReferenceType {
     func boundsForRedrawOnScreen() -> UIRectangle
     func hasConstraintsOnAnchorKind(_ anchorKind: AnchorKind) -> Bool
     func constraintsOnAnchorKind(_ anchorKind: AnchorKind) -> [LayoutConstraint]
+    func setAreaSkippingLayout(_ area: UIRectangle)
 }

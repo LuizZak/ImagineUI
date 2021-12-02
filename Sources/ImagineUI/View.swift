@@ -3,6 +3,10 @@ import Geometry
 import Rendering
 
 open class View {
+    /// If `true`, setting `self.location` or `self.bounds` skips calling `setNeedsLayout`
+    /// internally.
+    private var _skipSetNeedsLayoutOnBounds: Bool = false
+
     /// An override to intrinsicSize. Used by View's methods that calculate
     /// minimal content sizes.
     internal var _targetLayoutSize: UISize? = nil
@@ -142,7 +146,7 @@ open class View {
 
             invalidate()
 
-            if areaIntoConstraintsMask.contains(.location) {
+            if !_skipSetNeedsLayoutOnBounds && areaIntoConstraintsMask.contains(.location) {
                 setNeedsLayout()
             }
         }
@@ -162,7 +166,7 @@ open class View {
 
             invalidate()
 
-            if areaIntoConstraintsMask.contains(.size) {
+            if !_skipSetNeedsLayoutOnBounds && areaIntoConstraintsMask.contains(.size) {
                 setNeedsLayout()
             }
         }
@@ -316,7 +320,8 @@ open class View {
         }
     }
 
-    /// Requests that this view perform its internal layout.
+    /// Requests that this view perform its internal layout, while ignoring
+    /// layout of subviews.
     open func performInternalLayout() {
         /// If no superview is available, perform constraint layout locally,
         /// instead.
@@ -396,7 +401,7 @@ open class View {
     /// The layout of the view is kept as-is, and no changes to its size are made.
     open func layoutSizeFitting(size: UISize) -> UISize {
         _isSizingLayout = true
-        
+
         // Store state for later restoring
         let previousAreaIntoConstraintsMask = areaIntoConstraintsMask
         let snapshot = LayoutAreaSnapshot.snapshotHierarchy(self)
@@ -415,7 +420,7 @@ open class View {
 
         // Update constraint cache back
         performConstraintsLayout(cached: true)
-        
+
         _isSizingLayout = false
 
         return optimalSize
@@ -519,7 +524,7 @@ open class View {
 
     internal func invalidate(bounds: UIRectangle, spatialReference: SpatialReferenceType) {
         guard !_isSizingLayout else { return }
-        
+
         superview?.invalidate(bounds: bounds, spatialReference: spatialReference)
     }
 
@@ -859,6 +864,12 @@ extension View: LayoutVariablesContainer {
 
     func constraintsOnAnchorKind(_ anchorKind: AnchorKind) -> [LayoutConstraint] {
         constraints.filter { ($0.firstCast._owner === self && $0.firstCast.kind == anchorKind) || ($0.secondCast?._owner === self && $0.secondCast?.kind == anchorKind) }
+    }
+
+    func setAreaSkippingLayout(_ area: UIRectangle) {
+        _skipSetNeedsLayoutOnBounds = true
+        self.area = area
+        _skipSetNeedsLayoutOnBounds = false
     }
 }
 

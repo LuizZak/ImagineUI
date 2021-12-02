@@ -322,7 +322,7 @@ class LayoutVariables {
         let w = width.value
         let h = height.value
 
-        container.area = UIRectangle(location: location, size: UISize(width: w, height: h))
+        container.setAreaSkippingLayout(UIRectangle(location: location, size: UISize(width: w, height: h)))
     }
 
     func viewForFirstBaseline() -> View? {
