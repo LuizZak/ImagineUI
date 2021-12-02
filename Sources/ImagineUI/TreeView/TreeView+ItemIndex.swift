@@ -8,6 +8,10 @@ extension TreeView {
         /// for this hierarchy index.
         /// Is an empty list for items at the root of the tree view.
         public var indices: [Int]
+        
+        public subscript(index: Int) -> ItemIndex {
+            subItem(index: index)
+        }
 
         /// The hierarchy index for the parent of this index.
         ///

@@ -10,7 +10,7 @@ public protocol TreeViewDataSource: AnyObject {
     func titleForItem(at index: TreeView.ItemIndex) -> String
 
     /// Gets the optional icon for the item at a given index.
-    /// If `nil`, the item is rendered without a label.
+    /// If `nil`, the item is rendered without an icon.
     func iconForItem(at index: TreeView.ItemIndex) -> Image?
 }
 
