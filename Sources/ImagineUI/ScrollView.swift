@@ -167,17 +167,30 @@ open class ScrollView: ControlView {
         verticalBar.scroll = -contentOffset.y
     }
 
-    open override func onResize(_ event: ValueChangedEventArgs<UISize>) {
-        super.onResize(event)
+    public override func performInternalLayout() {
+        super.performInternalLayout()
 
         contentView.location = contentOffset
-
         horizontalBar.visibleSize = bounds.width
         verticalBar.visibleSize = bounds.height
 
         updateScrollBarVisibility()
         limitTargetContentOffset()
         updateScrollBarSizes()
+    }
+
+    open override func onResize(_ event: ValueChangedEventArgs<UISize>) {
+        super.onResize(event)
+
+        contentView.location = contentOffset
+        horizontalBar.visibleSize = bounds.width
+        verticalBar.visibleSize = bounds.height
+        
+        updateScrollBarVisibility()
+        limitTargetContentOffset()
+        updateScrollBarSizes()
+
+        setNeedsLayout()
     }
 
     open override func canHandle(_ eventRequest: EventRequest) -> Bool {

@@ -74,7 +74,7 @@ public class TreeView: ControlView {
     public override func onResize(_ event: ValueChangedEventArgs<UISize>) {
         super.onResize(event)
 
-        setNeedsLayout()
+        //setNeedsLayout()
     }
 
     public override func renderForeground(in renderer: Renderer, screenRegion: ClipRegion) {
