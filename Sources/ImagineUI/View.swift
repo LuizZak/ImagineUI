@@ -303,7 +303,8 @@ open class View {
         }
     }
 
-    /// Recursively invokes `performLayout()` and `performInternalLayout()` on all subviews.
+    /// Recursively invokes `performLayout()` and `performInternalLayout()` on
+    /// all subviews.
     open func performLayout() {
         if !needsLayout {
             return
@@ -442,6 +443,8 @@ open class View {
         view.invalidate()
 
         didAddSubview(view)
+
+        view.superviewDidChange(self)
     }
 
     /// Function called after a view has been added as a subview of this view
@@ -481,6 +484,13 @@ open class View {
 
         superview.subviews.removeAll(where: { $0 === self })
         self.superview = nil
+
+        superviewDidChange(nil)
+    }
+
+    /// Called when the superview of this view has changed.
+    open func superviewDidChange(_ newSuperview: View?) {
+        
     }
 
     /// A method that should return the subview from this view hierarchy to which
