@@ -610,7 +610,7 @@ open class View {
     ///
     /// The `inflatingArea` argument can be used to inflate the area of the
     /// views to perform less precise hit tests.
-    public func viewUnder(point: UIVector, inflatingArea: UIVector = .zero) -> View? {
+    open func viewUnder(point: UIVector, inflatingArea: UIVector = .zero) -> View? {
         guard contains(point: point, inflatingArea: inflatingArea) else {
             return nil
         }
@@ -634,7 +634,7 @@ open class View {
     ///
     /// The `inflatingArea` argument can be used to inflate the area of the views
     /// to perform less precise hit tests.
-    public func viewUnder(point: UIVector, inflatingArea: UIVector = .zero, predicate: (View) -> Bool) -> View? {
+    open func viewUnder(point: UIVector, inflatingArea: UIVector = .zero, predicate: (View) -> Bool) -> View? {
         guard contains(point: point, inflatingArea: inflatingArea) else {
             return nil
         }
@@ -665,7 +665,7 @@ open class View {
     /// - Parameter inflatingArea: Used to inflate the area of the views to
     /// perform less precise hit tests.
     /// - Returns: An array where each view returned crosses the given point.
-    public func viewsUnder(point: UIVector, inflatingArea: UIVector = .zero) -> [View] {
+    open func viewsUnder(point: UIVector, inflatingArea: UIVector = .zero) -> [View] {
         var views: [View] = []
 
         internalViewsUnder(point: point, inflatingArea, &views)
@@ -705,7 +705,7 @@ open class View {
     /// less precise hit tests.
     /// - Returns: An enumerable where each view returned intersects the given
     /// `BLRect`
-    public func viewsUnder(area: UIRectangle, inflatingArea: UIVector = .zero) -> [View] {
+    open func viewsUnder(area: UIRectangle, inflatingArea: UIVector = .zero) -> [View] {
         var views: [View] = []
 
         internalViewsUnder(area: area, inflatingArea, &views)
@@ -740,7 +740,7 @@ open class View {
     /// - Parameter point: Point to test
     /// - Parameter inflatingArea: Used to inflate the area of the view to
     /// perform less precise hit tests.
-    public func contains(point: UIVector, inflatingArea: UIVector = .zero) -> Bool {
+    open func contains(point: UIVector, inflatingArea: UIVector = .zero) -> Bool {
         if inflatingArea == .zero {
             return bounds.contains(point)
         }

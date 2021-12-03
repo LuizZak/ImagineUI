@@ -50,7 +50,6 @@ public extension LayoutAnchors {
     /// to affect the view correctly.
     @discardableResult
     func updateConstraints(@LayoutResultBuilder _ builder: (LayoutAnchors) -> LayoutConstraintDefinitions) -> [LayoutConstraint] {
-
         let definitions = builder(self)
 
         return definitions.update()
