@@ -135,18 +135,22 @@ open class ScrollView: ControlView {
         //recreateSizeViewConstraints()
     }
 
+    open override func addSubview(_ view: View) {
+        contentView.addSubview(view)
+    }
+
     private func horizontalScrollChanged(_ scroll: Double) {
         targetContentOffset = UIVector(x: -horizontalBar.scroll, y: targetContentOffset.y)
         contentOffset = UIVector(x: -horizontalBar.scroll, y: contentOffset.y)
+
+        contentView.location = contentOffset
     }
 
     private func verticalScrollChanged(_ scroll: Double) {
         targetContentOffset = UIVector(x: targetContentOffset.x, y: -verticalBar.scroll)
         contentOffset = UIVector(x: contentOffset.x, y: -verticalBar.scroll)
-    }
 
-    open override func addSubview(_ view: View) {
-        contentView.addSubview(view)
+        contentView.location = contentOffset
     }
 
     internal func onFixedFrame(interval: TimeInterval) {
