@@ -71,12 +71,6 @@ public class TreeView: ControlView {
         }
     }
 
-    public override func onResize(_ event: ValueChangedEventArgs<UISize>) {
-        super.onResize(event)
-
-        //setNeedsLayout()
-    }
-
     public override func renderForeground(in renderer: Renderer, screenRegion: ClipRegion) {
         super.renderForeground(in: renderer, screenRegion: screenRegion)
     }
@@ -455,7 +449,7 @@ public class TreeView: ControlView {
         itemView.isChevronVisible = dataSource.hasSubItems(at: itemIndex)
         itemView.isExpanded = _isExpanded(index: itemIndex)
         itemView.isSelected = _isSelected(index: itemIndex)
-        itemView.title = dataSource.titleForItem(at: itemIndex)
+        itemView.attributedTextTitle = dataSource.titleForItem(at: itemIndex)
         itemView.icon = dataSource.iconForItem(at: itemIndex)
         itemView.leftIndentationSpace = _subItemInset * Double(itemIndex.parent.depth)
 
@@ -468,7 +462,7 @@ public class TreeView: ControlView {
         private let _titleLabelView: Label = Label(textColor: .black)
 
         private let _contentInset: UIEdgeInsets = UIEdgeInsets(left: 4, top: 0, right: 4, bottom: 0)
-        private let _imageHeight: Double = 10.0
+        private let _imageHeight: Double = 16.0
 
         var itemIndex: ItemIndex
 
@@ -533,16 +527,30 @@ public class TreeView: ControlView {
             }
         }
 
+        var attributedTextTitle: AttributedText {
+            get {
+                return _titleLabelView.attributedText
+            }
+            set {
+                _titleLabelView.attributedText = newValue
+            }
+        }
+
         init(itemIndex: ItemIndex) {
             self.itemIndex = itemIndex
 
             super.init()
+
+            _iconImageView.scalingMode = .centeredAsIs
 
             _chevronView.mouseClicked.addListener(owner: self) { [weak self] (_, _) in
                 self?.onMouseDownChevron()
             }
             _chevronView.mouseEntered.addListener(owner: self) { [weak self] (_, _) in
                 self?.isHighlighted = true
+            }
+            _chevronView.mouseExited.addListener(owner: self) { [weak self] (_, _) in
+                self?.isHighlighted = false
             }
             _chevronView.mouseUp.addListener(owner: self) { [weak self] (sender, event) in
                 guard let self = self else { return }
@@ -594,7 +602,7 @@ public class TreeView: ControlView {
             }
 
             if hasChevron && isChevronVisible {
-                _iconImageView.area = _iconImageView.area.alignRight(of: _chevronView.area, spacing: 5, verticalAlignment: .center)
+                _iconImageView.area = _iconImageView.area.alignRight(of: _chevronView.area, verticalAlignment: .center)
             } else {
                 _iconImageView.location.x = properBounds.x + 2
                 _iconImageView.area.centerY = properBounds.centerY

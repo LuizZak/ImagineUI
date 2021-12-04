@@ -27,6 +27,18 @@ public struct UIPolygon: Hashable, Codable {
         addVertex(.init(x: x, y: y))
     }
 
+    /// Adds a new vertex at the end of the vertices list that has the same location
+    /// as the initial vertex.
+    ///
+    /// If this polygon has no vertices, nothing is done.
+    public mutating func close() {
+        guard let first = vertices.first else {
+            return
+        }
+
+        addVertex(first)
+    }
+
     public func withCenter(on point: UIPoint) -> UIPolygon {
         let center = self.center
         let offset = point - center
@@ -44,5 +56,16 @@ public struct UIPolygon: Hashable, Codable {
         return UIPolygon(vertices: vertices.map { vert in
             vert.rotated(by: angleInRadians, around: center)
         })
+    }
+
+    /// Returns a polygon that is the transform of the vertices of this polygon
+    /// using a given `UIMatrix`.
+    public func transformed(by matrix: UIMatrix) -> UIPolygon {
+        .init(vertices: matrix.transform(points: vertices))
+    }
+
+    /// Transforms the vertices of this polygon in place using a given `UIMatrix`.
+    public mutating func transform(by matrix: UIMatrix) {
+        self = transformed(by: matrix)
     }
 }

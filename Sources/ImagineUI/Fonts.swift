@@ -10,7 +10,7 @@ public enum Fonts {
     
     public static func defaultFont(size: Float) -> Font {
         guard let fontFace = defaultFontFace else {
-            fatalError("Called Fonts.defaultFont(size:) before calling UISettings.initialize with a vaid FontManager and default font path")
+            fatalError("Called Fonts.defaultFont(size:) before calling UISettings.initialize with a valid FontManager and default font path")
         }
         
         if let cached = _fontCache[size] {

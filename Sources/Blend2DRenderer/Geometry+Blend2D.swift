@@ -109,17 +109,28 @@ public extension UIEllipse {
     }
 }
 
+public extension UITriangle {
+    var asBLTriangle: BLTriangle {
+        .init(p0: p0.asBLPoint, p1: p1.asBLPoint, p2: p2.asBLPoint)
+    }
+}
+
+public extension UIArc {
+    var asBLArc: BLArc {
+        .init(
+            center: center.asBLPoint,
+            radius: radius.asBLPoint,
+            start: startAngle,
+            sweep: sweepAngle
+        )
+    }
+}
+
 public extension UIEdgeInsets {
     func inset(rectangle: BLRect) -> BLRect {
         return BLRect(x: rectangle.x + left,
                       y: rectangle.y + top,
                       w: rectangle.w - left - right,
                       h: rectangle.h - top - bottom)
-    }
-}
-
-public extension UITriangle {
-    var asBLTriangle: BLTriangle {
-        .init(p0: p0.asBLPoint, p1: p1.asBLPoint, p2: p2.asBLPoint)
     }
 }

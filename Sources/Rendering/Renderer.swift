@@ -58,6 +58,12 @@ public protocol Renderer {
     /// Fills a given triangle with the current fill style
     func fill(_ triangle: UITriangle)
 
+    /// Fills a given arc as a chord with the current fill style
+    func fill(chord: UIArc)
+
+    /// Fills a given arc as a pie with the current fill style
+    func fill(pie: UIArc)
+
     // MARK: - Stroke Operations
 
     /// Strokes a given line with the current stroke style
@@ -80,6 +86,15 @@ public protocol Renderer {
 
     /// Strokes a given triangle with the current stroke style
     func stroke(_ triangle: UITriangle)
+
+    /// Strokes a given arc with the current stroke style
+    func stroke(_ arc: UIArc)
+
+    /// Strokes a given arc as a chord with the current stroke style
+    func stroke(chord: UIArc)
+
+    /// Strokes a given arc as a pie with the current stroke style
+    func stroke(pie: UIArc)
 
     /// Strokes a line formed by the given start and end vectors with the
     /// current stroke style
@@ -169,7 +184,7 @@ public protocol RendererStateToken {
 
 }
 
-/// Result for invocations of ``Renderer.hitTestClip(_:)``
+/// Result for invocations of ``Renderer/hitTestClip(_:)``
 public enum HitTestResult {
     case `in`
     case partial

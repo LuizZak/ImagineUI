@@ -94,6 +94,14 @@ public class Blend2DRenderer: Renderer {
         _context.fillTriangle(triangle.asBLTriangle)
     }
 
+    public func fill(chord: UIArc) {
+        _context.fillChord(chord.asBLArc)
+    }
+
+    public func fill(pie: UIArc) {
+        _context.fillPie(pie.asBLArc)
+    }
+
     // MARK: - Stroke
 
     public func stroke(_ line: UILine) {
@@ -130,6 +138,18 @@ public class Blend2DRenderer: Renderer {
 
     public func stroke(polyline: [UIVector]) {
         _context.strokePolyline(polyline.map(\.asBLPoint))
+    }
+
+    public func stroke(_ arc: UIArc) {
+        _context.strokeArc(arc.asBLArc)
+    }
+
+    public func stroke(chord: UIArc) {
+        _context.strokeChord(chord.asBLArc)
+    }
+
+    public func stroke(pie: UIArc) {
+        _context.strokePie(pie.asBLArc)
     }
 
     // MARK: - Bitmap

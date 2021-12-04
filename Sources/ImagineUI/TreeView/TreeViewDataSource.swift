@@ -1,3 +1,5 @@
+import Text
+
 public protocol TreeViewDataSource: AnyObject {
     /// If `true`, this signals the tree view that the item should be rendered
     /// with a UI hint that it can be expanded.
@@ -7,7 +9,7 @@ public protocol TreeViewDataSource: AnyObject {
     func numberOfItems(at hierarchyIndex: TreeView.HierarchyIndex) -> Int
 
     /// Gets the display label for the item at a given index.
-    func titleForItem(at index: TreeView.ItemIndex) -> String
+    func titleForItem(at index: TreeView.ItemIndex) -> AttributedText
 
     /// Gets the optional icon for the item at a given index.
     /// If `nil`, the item is rendered without an icon.

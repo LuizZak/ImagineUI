@@ -27,3 +27,15 @@ public struct UILine: Hashable, Codable {
         start.distance(to: end)
     }
 }
+
+public extension UILine {
+    @_transparent
+    func offsetBy(x: Scalar, y: Scalar) -> Self {
+        offsetBy(.init(x: x, y: y))
+    }
+
+    @_transparent
+    func offsetBy(_ vector: UIVector) -> Self {
+        .init(start: start + vector, end: end + vector)
+    }
+}

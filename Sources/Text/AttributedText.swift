@@ -402,6 +402,36 @@ public struct AttributedText: Equatable {
     }
 }
 
+extension AttributedText: ExpressibleByStringLiteral {
+    public init(stringLiteral value: String) {
+        self.init(value)
+    }
+}
+
+extension AttributedText: ExpressibleByStringInterpolation {
+    public init(stringInterpolation: StringInterpolation) {
+        self.init(stringInterpolation.output)
+    }
+
+    public struct StringInterpolation: StringInterpolationProtocol {
+        public typealias StringLiteralType = String
+
+        var output: String = ""
+
+        public init(literalCapacity: Int, interpolationCount: Int) {
+            output.reserveCapacity(literalCapacity * 2)
+        }
+
+        public mutating func appendLiteral(_ literal: String) {
+            output += literal
+        }
+
+        public mutating func appendInterpolation<T>(_ literal: T) {
+            output += "\(literal)"
+        }
+    }
+}
+
 // TODO: Use typed system to define attribute name and attribute values so mis-typing attributes is not possible
 
 struct Attribute<T> {

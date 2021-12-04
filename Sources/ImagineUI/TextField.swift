@@ -17,11 +17,12 @@ open class TextField: ControlView {
     // TODO: Collapse these into an external handler or into Combine to lower
     // TODO: the state clutter here
 
-    private var _lastMouseDown: TimeInterval = 0
-    private var _lastMouseDownPoint: UIVector = .zero
     private var _selectingWordSpan: Bool = false
     private var _wordSpanStartPosition: Int = 0
     private var _mouseDown = false
+    // TODO: Make double clicking be handled by `DefaultControlSystem`.
+    private var _lastMouseDown: TimeInterval = 0
+    private var _lastMouseDownPoint: UIVector = .zero
 
     /// Event fired whenever the text contents of this text field are updated.
     ///

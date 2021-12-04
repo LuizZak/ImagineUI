@@ -208,8 +208,8 @@ public extension UIRectangle {
     }
 
     @_transparent
-    func offsetBy(_ point: UIPoint) -> Self {
-        .init(location: location + point, size: size)
+    func offsetBy(_ vector: UIVector) -> Self {
+        .init(location: location + vector, size: size)
     }
 
     @_transparent
