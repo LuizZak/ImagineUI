@@ -271,14 +271,18 @@ public class TreeView: ControlView {
 
         _expanded.remove(index)
 
-        if let visible = _visibleItem(withIndex: index) {
-            visible.isExpanded = false
+        guard let visible = _visibleItem(withIndex: index) else {
+            return
         }
+
+        visible.isExpanded = false
 
         let hierarchyIndex = index.asHierarchyIndex
         for (i, itemView) in _visibleItems.enumerated().reversed() where itemView.itemIndex.isChild(of: hierarchyIndex) {
             itemView.removeFromSuperview()
             _visibleItems.remove(at: i)
+
+            _selected.remove(itemView.itemIndex)
 
             _reclaim(itemView: itemView)
         }
