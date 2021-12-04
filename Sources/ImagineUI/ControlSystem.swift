@@ -19,6 +19,12 @@ public protocol ControlSystem {
     /// responder was successful.
     func removeAsFirstResponder(_ eventHandler: EventHandler) -> Bool
 
+    /// Removes the first responder if it is a subview in a given hierarchy.
+    ///
+    /// - Returns: Whether the attempt to remove a first responder in the given
+    /// hierarchy was successful.
+    func removeAsFirstResponder(anyInHierarchy view: View) -> Bool
+
     /// Returns whether a given event handler is the current first responder.
     func isFirstResponder(_ eventHandler: EventHandler) -> Bool
     

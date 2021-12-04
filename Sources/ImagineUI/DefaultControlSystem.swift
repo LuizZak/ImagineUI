@@ -214,6 +214,31 @@ public class DefaultControlSystem: ControlSystem {
         return false
     }
 
+    public func removeAsFirstResponder(anyInHierarchy view: View) -> Bool {
+        guard let firstResponder = _firstResponder else {
+            return false
+        }
+        if let firstResponderView = firstResponder as? View, firstResponderView.isDescendant(of: view) {
+            firstResponder.resignFirstResponder()
+            return true
+        }
+
+        let visitor = SkippableClosureViewVisitor<Bool> { (found, view) in
+            if let eventHandler = view as? EventHandler, self.isFirstResponder(eventHandler) {
+                eventHandler.resignFirstResponder()
+                found = true
+                return .skipChildren
+            }
+
+            return .visitChildren
+        }
+        let traveler = ViewTraveler(state: false, visitor: visitor)
+
+        traveler.travelThrough(view: view)
+
+        return traveler.state
+    }
+
     public func isFirstResponder(_ eventHandler: EventHandler) -> Bool {
         return _firstResponder === eventHandler
     }

@@ -454,7 +454,7 @@ open class View {
 
     /// Function called before a view is removed as a subview of this view instance
     open func willRemoveSubview(_ view: View) {
-
+        _=controlSystem?.removeAsFirstResponder(anyInHierarchy: view)
     }
 
     open func removeFromSuperview() {
@@ -856,6 +856,20 @@ open class View {
     }
 }
 
+extension View: Equatable {
+    /// Returns `true` if the two given view references are pointing to the same
+    /// view instance.
+    public static func == (lhs: View, rhs: View) -> Bool {
+        return lhs === rhs
+    }
+}
+
+extension View: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(ObjectIdentifier(self))
+    }
+}
+
 extension View: SpatialReferenceType {
 
 }
@@ -880,20 +894,6 @@ extension View: LayoutVariablesContainer {
         _skipSetNeedsLayoutOnBounds = true
         self.area = area
         _skipSetNeedsLayoutOnBounds = false
-    }
-}
-
-extension View: Equatable {
-    /// Returns `true` if the two given view references are pointing to the same
-    /// view instance.
-    public static func == (lhs: View, rhs: View) -> Bool {
-        return lhs === rhs
-    }
-}
-
-extension View: Hashable {
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(ObjectIdentifier(self))
     }
 }
 
