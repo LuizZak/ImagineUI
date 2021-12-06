@@ -86,10 +86,46 @@ public struct UIRectangle: Hashable, Codable {
         }
     }
 
-    @_transparent public var left: Scalar { x }
-    @_transparent public var top: Scalar { y }
-    @_transparent public var right: Scalar { left + width }
-    @_transparent public var bottom: Scalar { top + height }
+    public var left: Scalar {
+        @_transparent
+        get {
+            x
+        }
+        @_transparent
+        set {
+            x = newValue
+        }
+    }
+    public var top: Scalar {
+        @_transparent
+        get {
+            y
+        }
+        @_transparent
+        set {
+            y = newValue
+        }
+    }
+    public var right: Scalar {
+        @_transparent
+        get {
+            left + width
+        }
+        @_transparent
+        set {
+            width = newValue - left
+        }
+    }
+    public var bottom: Scalar {
+        @_transparent
+        get {
+            top + height
+        }
+        @_transparent
+        set {
+            height = newValue - top
+        }
+    }
 
     public var minimum: UIPoint {
         @_transparent

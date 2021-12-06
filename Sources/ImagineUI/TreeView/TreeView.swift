@@ -500,7 +500,7 @@ public class TreeView: ControlView {
         private let _iconImageView: ImageView = ImageView(image: nil)
         private let _titleLabelView: Label = Label(textColor: .black)
 
-        private let _contentInset: UIEdgeInsets = UIEdgeInsets(left: 4, top: 0, right: 4, bottom: 0)
+        private let _contentInset: UIEdgeInsets = UIEdgeInsets(left: 4, top: 2, right: 4, bottom: 2)
         private let _imageHeight: Double = 16.0
 
         var itemIndex: ItemIndex
@@ -669,7 +669,7 @@ public class TreeView: ControlView {
                 _doLayout(size: size)
 
                 var totalArea = UIRectangle.union(subviews.map(\.area))
-                totalArea.expand(toInclude: .zero)
+                totalArea.left = 0
                 totalArea = totalArea.inset(-_contentInset)
 
                 snapshot.restore()
@@ -708,7 +708,7 @@ public class TreeView: ControlView {
         }
 
         override func boundsForFillOrStroke() -> UIRectangle {
-            return bounds.inset(_contentInset)
+            return bounds
         }
 
         private func onMouseClickChevron() {
