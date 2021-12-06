@@ -55,7 +55,7 @@ public extension StrokeStyle {
         case round
     }
     
-    /// Represents the join kind for a strok
+    /// Represents the join kind for a stroke
     enum JoinStyle {
         /// Miter-join possibly clipped at `miterLimit` [default].
         case miterClip(limit: Double)

@@ -13,10 +13,16 @@ public class TreeView: ControlView {
 
     private var _lastSize: UISize? = nil
 
-    @CancellableActionEvent<TreeView, ItemIndex> public var willExpand
-    @CancellableActionEvent<TreeView, ItemIndex> public var willCollapse
+    @CancellableActionEvent<TreeView, ItemIndex>
+    public var willExpand
+    @CancellableActionEvent<TreeView, ItemIndex>
+    public var willCollapse
 
-    @CancellableActionEvent<TreeView, ItemIndex> public var willSelect
+    @CancellableActionEvent<TreeView, ItemIndex>
+    public var willSelect
+
+    @EventWithSender<TreeView, ItemIndex>
+    public var mouseRightClickedItem
 
     public weak var dataSource: TreeViewDataSource?
 
@@ -24,12 +30,22 @@ public class TreeView: ControlView {
         return true
     }
 
+    /// Specifies the visual style of this tree view.
+    public var style: VisualStyle = VisualStyle.defaultDarkStyle() {
+        didSet {
+            _applyStyle()
+        }
+    }
+
     public override init() {
         super.init()
 
-        backColor = .white
+        cacheAsBitmap = false
         _scrollView.scrollBarsAlwaysVisible = false
+        _applyStyle()
     }
+
+    // MARK: - Hierarchy
 
     public override func setupHierarchy() {
         super.setupHierarchy()
@@ -55,14 +71,6 @@ public class TreeView: ControlView {
         _content.areaIntoConstraintsMask = [.location, .size]
     }
 
-    public override func canHandle(_ eventRequest: EventRequest) -> Bool {
-        if eventRequest is KeyboardEventRequest {
-            return true
-        }
-
-        return super.canHandle(eventRequest)
-    }
-
     public override func performInternalLayout() {
         withSuspendedLayout(setNeedsLayout: false) {
             if size != _lastSize {
@@ -71,11 +79,17 @@ public class TreeView: ControlView {
         }
     }
 
-    public override func renderForeground(in renderer: Renderer, screenRegion: ClipRegion) {
-        super.renderForeground(in: renderer, screenRegion: screenRegion)
+    // MARK: - Events
+
+    public override func canHandle(_ eventRequest: EventRequest) -> Bool {
+        if eventRequest is KeyboardEventRequest {
+            return true
+        }
+
+        return super.canHandle(eventRequest)
     }
 
-    open override func onKeyDown(_ event: KeyEventArgs) {
+    public override func onKeyDown(_ event: KeyEventArgs) {
         super.onKeyDown(event)
 
         guard !event.handled else { return }
@@ -84,6 +98,8 @@ public class TreeView: ControlView {
             event.handled = true
         }
     }
+
+    // MARK: - Data/display management
 
     /// Repopulates the tree view's items.
     public func reloadData() {
@@ -125,7 +141,15 @@ public class TreeView: ControlView {
         _expand(index)
     }
 
-    // MARK: Internals
+    // MARK: - Internals
+
+    private func _applyStyle() {
+        backColor = style.backgroundColor
+
+        for visible in _visibleItems {
+            visible.style = style
+        }
+    }
 
     private func _layoutItemViews() {
         withSuspendedLayout(setNeedsLayout: true) {
@@ -342,6 +366,10 @@ public class TreeView: ControlView {
         return cancel
     }
 
+    private func _raiseRightMouseClick(_ index: ItemIndex) {
+        _mouseRightClickedItem(sender: self, index)
+    }
+
     private func _selectItemView(_ itemView: ItemView) {
         if !becomeFirstResponder() {
             return
@@ -379,7 +407,9 @@ public class TreeView: ControlView {
     }
 
     private func _itemUnderPoint(_ point: UIPoint) -> ItemView? {
-        return _scrollView.viewUnder(point: point) { view in
+        let pointOnScrollView = _scrollView.convert(point: point, from: self)
+
+        return _scrollView.viewUnder(point: pointOnScrollView) { view in
             view is ItemView
         } as? ItemView
     }
@@ -435,11 +465,11 @@ public class TreeView: ControlView {
     }
 
     private func _makeItemView(itemIndex: ItemIndex, dataSource: TreeViewDataSource) -> ItemView {
-        let itemView = _itemViewCache.dequeue(itemIndex: itemIndex) { itemView in
+        let itemView = _itemViewCache.dequeue(itemIndex: itemIndex, style: style) { itemView in
             itemView.mouseSelected.addListener(owner: self) { [weak self] (sender, _) in
                 self?._raiseSelectEvent(sender)
             }
-            itemView.mouseDownChevron.addListener(owner: self) { [weak self] (sender, _) in
+            itemView.mouseClickChevron.addListener(owner: self) { [weak self] (sender, _) in
                 guard let self = self else { return }
 
                 if self._isExpanded(index: sender.itemIndex) {
@@ -447,6 +477,11 @@ public class TreeView: ControlView {
                 } else {
                     self._raiseExpandEvent(sender.itemIndex)
                 }
+            }
+            itemView.mouseRightClicked.addListener(owner: self) { [weak self] (sender, _) in
+                guard let self = self else { return }
+
+                self._raiseRightMouseClick(sender.itemIndex)
             }
         }
 
@@ -469,11 +504,14 @@ public class TreeView: ControlView {
         private let _imageHeight: Double = 16.0
 
         var itemIndex: ItemIndex
+        var style: VisualStyle
 
-        @EventWithSender<ItemView, Void> var mouseSelected
-        @EventWithSender<ItemView, Void> var mouseDownChevron
-
-        @EventWithSender<ItemView, Void> var selectRight
+        @EventWithSender<ItemView, Void>
+        var mouseSelected
+        @EventWithSender<ItemView, Void>
+        var mouseClickChevron
+        @EventWithSender<ItemView, Void>
+        var mouseRightClicked
 
         var viewToHighlight: ControlView {
             self
@@ -540,15 +578,20 @@ public class TreeView: ControlView {
             }
         }
 
-        init(itemIndex: ItemIndex) {
+        init(itemIndex: ItemIndex, style: VisualStyle) {
             self.itemIndex = itemIndex
+            self.style = style
 
             super.init()
+
+            _titleLabelView.cacheAsBitmap = false
+            cacheAsBitmap = false
+            _applyStyle(style.itemStyle.normal)
 
             _iconImageView.scalingMode = .centeredAsIs
 
             _chevronView.mouseClicked.addListener(owner: self) { [weak self] (_, _) in
-                self?.onMouseDownChevron()
+                self?.onMouseClickChevron()
             }
             _chevronView.mouseEntered.addListener(owner: self) { [weak self] (_, _) in
                 self?.isHighlighted = true
@@ -639,20 +682,14 @@ public class TreeView: ControlView {
             super.onStateChanged(event)
 
             switch event.newValue {
-            case .selected:
-                viewToHighlight.backColor = .cornflowerBlue
-                _titleLabelView.textColor = .white
-                _chevronView.foreColor = .white
-
             case .highlighted:
-                viewToHighlight.backColor = .lightGray.faded(towards: .white, factor: 0.5)
-                _titleLabelView.textColor = .black
-                _chevronView.foreColor = .gray
+                _applyStyle(style.itemStyle.highlighted)
+
+            case .selected:
+                _applyStyle(style.itemStyle.selected)
 
             default:
-                viewToHighlight.backColor = .transparentBlack
-                _titleLabelView.textColor = .black
-                _chevronView.foreColor = .gray
+                _applyStyle(style.itemStyle.normal)
             }
         }
 
@@ -662,16 +699,34 @@ public class TreeView: ControlView {
             onMouseSelected()
         }
 
+        override func onMouseClick(_ event: MouseEventArgs) {
+            super.onMouseClick(event)
+
+            if event.buttons == .right {
+                onMouseRightClick()
+            }
+        }
+
         override func boundsForFillOrStroke() -> UIRectangle {
             return bounds.inset(_contentInset)
         }
 
-        private func onMouseDownChevron() {
-            _mouseDownChevron(sender: self)
+        private func onMouseClickChevron() {
+            _mouseClickChevron(sender: self)
         }
 
         private func onMouseSelected() {
             _mouseSelected(sender: self)
+        }
+
+        private func onMouseRightClick() {
+            _mouseRightClicked(sender: self)
+        }
+
+        private func _applyStyle(_ style: VisualStyle.ItemStyle) {
+            viewToHighlight.backColor = style.backgroundColor
+            _titleLabelView.textColor = style.textColor
+            _chevronView.foreColor = style.chevronColor
         }
 
         private class ChevronView: ControlView {
@@ -741,7 +796,7 @@ public class TreeView: ControlView {
     private class TreeViewCache {
         var reclaimed: [ItemView] = []
 
-        func dequeue(itemIndex: TreeView.ItemIndex, initializer: (ItemView) -> Void) -> ItemView {
+        func dequeue(itemIndex: TreeView.ItemIndex, style: VisualStyle, initializer: (ItemView) -> Void) -> ItemView {
             // Search for a matching item index
             for (i, view) in reclaimed.enumerated() where view.itemIndex == itemIndex {
                 reclaimed.remove(at: i)
@@ -755,7 +810,7 @@ public class TreeView: ControlView {
             }
 
             // Create a new view as a last resort.
-            let view = ItemView(itemIndex: itemIndex)
+            let view = ItemView(itemIndex: itemIndex, style: style)
 
             initializer(view)
 

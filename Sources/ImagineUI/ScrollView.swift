@@ -84,6 +84,7 @@ open class ScrollView: ControlView {
     }
 
     func initialize() {
+        cacheAsBitmap = false
         _contentView.areaIntoConstraintsMask = [.location]
         _contentView.onResizeEvent.addListener(owner: self) { [weak self] (_, _) in
             self?.updateScrollBarSizes()

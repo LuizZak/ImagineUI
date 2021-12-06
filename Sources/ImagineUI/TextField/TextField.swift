@@ -11,7 +11,7 @@ open class TextField: ControlView {
     private var _labelContainer = View()
     private var _placeholderLabel = Label(textColor: .white)
     private var _textEngine: TextEngine
-    private let _statesStyles = StatedValueStore<TextFieldVisualStyleParameters>()
+    private let _statesStyles = StatedValueStore<VisualStyle>()
     private var _cursorBlinkTimer: SchedulerTimerType?
 
     // TODO: Collapse these into an external handler or into Combine to lower
@@ -28,15 +28,18 @@ open class TextField: ControlView {
     ///
     /// This event is not raised if a client sets this text field's `text` property
     /// directly.
-    @EventWithSender<TextField, TextFieldTextChangedEventArgs> public var textChanged
+    @EventWithSender<TextField, TextFieldTextChangedEventArgs>
+    public var textChanged
 
     /// Event fired whenever the caret for this text field changes position or
     /// selection range.
-    @ValueChangeEvent<TextField, Caret> public var caretChanged
+    @ValueChangeEvent<TextField, Caret>
+    public var caretChanged
 
     /// Event fired whenever the user presses down the Enter key while
     /// `acceptsEnterKey` is true.
-    @EventWithSender<TextField, Void> public var enterKey
+    @EventWithSender<TextField, Void>
+    public var enterKey
 
     open var textColor: Color {
         get { _label.textColor }
@@ -109,7 +112,7 @@ open class TextField: ControlView {
     }
 
     /// Gets the current active style for this text field.
-    public private(set) var style: TextFieldVisualStyleParameters = TextFieldVisualStyleParameters()
+    public private(set) var style: VisualStyle = VisualStyle()
 
     open override var canBecomeFirstResponder: Bool { isEnabled }
 
@@ -127,7 +130,7 @@ open class TextField: ControlView {
             self?.textBufferOnChanged()
         }
 
-        for (state, style) in TextFieldVisualStyleParameters.defaultDarkStyle() {
+        for (state, style) in VisualStyle.defaultDarkStyle() {
             setStyle(style, forState: state)
         }
 
@@ -207,7 +210,7 @@ open class TextField: ControlView {
 
     /// Sets the visual style of this text field when it's under a given view
     /// state.
-    open func setStyle(_ style: TextFieldVisualStyleParameters, forState state: ControlViewState) {
+    open func setStyle(_ style: VisualStyle, forState state: ControlViewState) {
         _statesStyles.setValue(style, forState: state)
 
         if currentState == state {
@@ -231,11 +234,11 @@ open class TextField: ControlView {
     ///
     /// If no custom visual style is specified for the state, the normal state
     /// style is returned instead.
-    open func getStyle(forState state: ControlViewState) -> TextFieldVisualStyleParameters {
-        return _statesStyles.getValue(state, defaultValue: TextFieldVisualStyleParameters())
+    open func getStyle(forState state: ControlViewState) -> VisualStyle {
+        return _statesStyles.getValue(state, defaultValue: VisualStyle())
     }
 
-    private func applyStyle(_ style: TextFieldVisualStyleParameters) {
+    private func applyStyle(_ style: VisualStyle) {
         self.style = style
 
         foreColor = style.textColor
@@ -973,84 +976,5 @@ private class LabelViewTextBuffer: TextEngineTextualBuffer {
         label.text.insert(contentsOf: text, at: start)
 
         _changed()
-    }
-}
-
-/// Specifies the presentation style for a text field.
-///
-/// Used to specify separate visual styles depending on the first-responding
-/// state of the text field.
-public struct TextFieldVisualStyleParameters {
-    public var textColor: Color = .black
-    public var placeholderTextColor: Color = .black
-    public var backgroundColor: Color = .white
-    public var strokeColor: Color = .black
-    public var strokeWidth: Double = 0
-    public var caretColor: Color = .black
-    public var selectionColor: Color = .black
-
-    public init(textColor: Color = .black,
-                placeholderTextColor: Color = .black,
-                backgroundColor: Color = .white,
-                strokeColor: Color = .black,
-                strokeWidth: Double = 0,
-                caretColor: Color = .black,
-                selectionColor: Color = .black) {
-
-        self.textColor = textColor
-        self.placeholderTextColor = placeholderTextColor
-        self.backgroundColor = backgroundColor
-        self.strokeColor = strokeColor
-        self.strokeWidth = strokeWidth
-        self.caretColor = caretColor
-        self.selectionColor = selectionColor
-    }
-
-    public static func defaultDarkStyle() -> [ControlViewState: TextFieldVisualStyleParameters] {
-        return [
-            .disabled:
-                TextFieldVisualStyleParameters(
-                    textColor: .gray,
-                    placeholderTextColor: .dimGray,
-                    backgroundColor: Color(red: 40, green: 40, blue: 40),
-                    strokeColor: .transparentBlack,
-                    strokeWidth: 0,
-                    caretColor: .white,
-                    selectionColor: .slateGray),
-
-            .normal:
-                TextFieldVisualStyleParameters(
-                    textColor: .white,
-                    placeholderTextColor: .dimGray,
-                    backgroundColor: .black,
-                    strokeColor: Color(alpha: 255, red: 50, green: 50, blue: 50),
-                    strokeWidth: 1,
-                    caretColor: .white,
-                    selectionColor: .slateGray),
-
-            .focused:
-                TextFieldVisualStyleParameters(
-                    textColor: .white,
-                    placeholderTextColor: .dimGray,
-                    backgroundColor: .black,
-                    strokeColor: .cornflowerBlue,
-                    strokeWidth: 1,
-                    caretColor: .white,
-                    selectionColor: .steelBlue)
-        ]
-    }
-
-    public static func defaultLightStyle() -> [ControlViewState: TextFieldVisualStyleParameters] {
-        return [
-            .normal:
-                TextFieldVisualStyleParameters(
-                    textColor: .black,
-                    placeholderTextColor: .gray,
-                    backgroundColor: .white /* TODO: Should be KnownColor.Control */,
-                    strokeColor: .black,
-                    strokeWidth: 1,
-                    caretColor: .black,
-                    selectionColor: .lightBlue)
-        ]
     }
 }

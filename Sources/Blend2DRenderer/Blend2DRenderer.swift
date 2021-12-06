@@ -67,6 +67,12 @@ public class Blend2DRenderer: Renderer {
         _stroke.width = width
         _context.setStrokeWidth(width)
     }
+    
+    public func setStrokeDash(dashOffset: Double, dashArray: [Double]) {
+        _stroke.dashOffset = dashOffset
+        _stroke.dashArray = dashArray
+        _stroke.setStyle(in: _context)
+    }
 
     // MARK: - Fill
 

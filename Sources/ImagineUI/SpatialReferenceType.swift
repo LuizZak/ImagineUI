@@ -5,14 +5,14 @@ import Geometry
 public protocol SpatialReferenceType {
     func absoluteTransform() -> UIMatrix
     
-    func convert(point: UIVector, to other: SpatialReferenceType?) -> UIVector
-    func convert(point: UIVector, from other: SpatialReferenceType?) -> UIVector
+    func convert(point: UIPoint, to other: SpatialReferenceType?) -> UIPoint
+    func convert(point: UIPoint, from other: SpatialReferenceType?) -> UIPoint
     func convert(bounds: UIRectangle, to other: SpatialReferenceType?) -> UIRectangle
     func convert(bounds: UIRectangle, from other: SpatialReferenceType?) -> UIRectangle
 }
 
 public extension SpatialReferenceType {
-    func convert(point: UIVector, to other: SpatialReferenceType?) -> UIVector {
+    func convert(point: UIPoint, to other: SpatialReferenceType?) -> UIPoint {
         var point = point
         point *= absoluteTransform()
         if let other = other {
@@ -21,7 +21,7 @@ public extension SpatialReferenceType {
         return point
     }
 
-    func convert(point: UIVector, from other: SpatialReferenceType?) -> UIVector {
+    func convert(point: UIPoint, from other: SpatialReferenceType?) -> UIPoint {
         var point = point
         if let other = other {
             point *= other.absoluteTransform()

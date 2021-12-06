@@ -38,6 +38,9 @@ public protocol Renderer {
     /// Sets the width of the current stroke brush.
     func setStrokeWidth(_ width: Double)
 
+    /// Sets the stroke dash for the current stroke brush.
+    func setStrokeDash(dashOffset: Double, dashArray: [Double])
+
     // MARK: - Fill Operations
 
     /// Fills a given rectangle with the current fill style
@@ -178,6 +181,21 @@ public protocol Renderer {
 
     /// Restores renderer state to the state represented by the given token
     func restoreState(_ state: RendererStateToken)
+
+    /// Performs a given closure while this renderer saves its internal state,
+    /// reverting any change before returning control to the caller.
+    func withTemporaryState<T>(_ closure: () throws -> T) rethrows -> T
+}
+
+public extension Renderer {
+    func withTemporaryState<T>(_ closure: () throws -> T) rethrows -> T {
+        let token = saveState()
+        defer {
+            restoreState(token)
+        }
+
+        return try closure()
+    }
 }
 
 public protocol RendererStateToken {
