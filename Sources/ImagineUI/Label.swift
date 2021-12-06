@@ -6,7 +6,7 @@ open class Label: View {
     /// Whether to cache all labels' text as a bitmap.
     /// This increases memory usage, but reduces CPU usage when redrawing the
     /// label over and over.
-    public static var cacheAsBitmap: Bool = true
+    public static var globallyCacheAsBitmap: Bool = true
 
     /// The bare text layout with no external text sizing constraints applied
     var minimalTextLayout: TextLayoutType
@@ -14,7 +14,7 @@ open class Label: View {
     /// Latest cached text layout instance
     private var _cachedTextLayout: TextLayoutType?
 
-    private var _bitmapCache = ViewBitmapCache(isCachingEnabled: Label.cacheAsBitmap)
+    private var _bitmapCache = ViewBitmapCache(isCachingEnabled: Label.globallyCacheAsBitmap)
 
     /// Same as `minimalTextLayout`, but with view boundaries constraints taken
     /// into account.
@@ -24,6 +24,17 @@ open class Label: View {
 
     var baselineHeight: Double {
         return Double(minimalTextLayout.baselineHeightForLine(atIndex: 0))
+    }
+
+    /// Overrides the default `Label.globallyCacheAsBitmap` value with a specified
+    /// boolean value. If `nil`, the global value is used, instead.
+    public var cacheAsBitmap: Bool? = nil {
+        didSet {
+            guard cacheAsBitmap != oldValue else { return }
+
+            _bitmapCache.invalidateCache()
+            invalidate()
+        }
     }
 
     open var font: Font {
@@ -114,7 +125,7 @@ open class Label: View {
     open override func render(in renderer: Renderer, screenRegion: ClipRegion) {
         super.render(in: renderer, screenRegion: screenRegion)
 
-        _bitmapCache.isCachingEnabled = Label.cacheAsBitmap
+        _bitmapCache.isCachingEnabled = cacheAsBitmap ?? Label.globallyCacheAsBitmap
         _bitmapCache.updateBitmapBounds(bounds)
         _bitmapCache.cachingOrRendering(renderer) { renderer in
             renderer.setFill(textColor)
