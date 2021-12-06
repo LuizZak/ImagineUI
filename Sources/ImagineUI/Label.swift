@@ -4,9 +4,10 @@ import Rendering
 
 open class Label: View {
     /// Whether to cache all labels' text as a bitmap.
-    /// This increases memory usage, but reduces CPU usage when redrawing the
-    /// label over and over.
-    public static var globallyCacheAsBitmap: Bool = true
+    ///
+    /// This increases memory usage and reduces quality of text in scaled scenarios,
+    /// but reduces CPU usage when rendering the same label.
+    public static var globallyCacheAsBitmap: Bool = false
 
     /// The bare text layout with no external text sizing constraints applied
     var minimalTextLayout: TextLayoutType
