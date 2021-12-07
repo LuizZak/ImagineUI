@@ -1,14 +1,30 @@
 import Geometry
 
 /// A view which serves as the root of a view hierarchy.
-public class RootView: ControlView {
+open class RootView: ControlView {
     private var _constraintCache = LayoutConstraintSolverCache()
+    private weak var _invalidationDelegate: RootViewRedrawInvalidationDelegate?
 
-    public weak var invalidationDelegate: RootViewRedrawInvalidationDelegate?
+    public var invalidationDelegate: RootViewRedrawInvalidationDelegate? {
+        get {
+            if _invalidationDelegate == nil, let superview = superview as? RootView {
+                return superview.invalidationDelegate
+            }
+
+            return _invalidationDelegate
+        }
+        set {
+            _invalidationDelegate = newValue
+        }
+    }
 
     public var rootControlSystem: ControlSystem?
 
     public override var controlSystem: ControlSystem? {
+        if rootControlSystem == nil, let controlSystem = superview?.controlSystem {
+            return controlSystem
+        }
+        
         return rootControlSystem
     }
 
