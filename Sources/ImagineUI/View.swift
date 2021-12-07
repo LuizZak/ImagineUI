@@ -493,6 +493,24 @@ open class View {
         
     }
 
+    /// Brings this view to the end of this view's superview's subviews list.
+    ///
+    /// Has implications for display and user interactions, as views that are
+    /// last on the subviews list get rendered on top, and receive priority for
+    /// mouse events as a consequence.
+    ///
+    /// If this view has no superview, nothing is done.
+    open func bringToFrontOfSuperview() {
+        guard let superview = superview, let index = superview.subviews.firstIndex(of: self) else {
+            return
+        }
+
+        superview.subviews.remove(at: index)
+        superview.subviews.append(self)
+
+        invalidate()
+    }
+
     /// A method that should return the subview from this view hierarchy to which
     /// firstBaseline constraints should be attached to.
     ///

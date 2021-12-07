@@ -221,6 +221,14 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
         _stateChanged(sender: self, event)
     }
 
+    // MARK: - Subviews
+
+    open override func bringToFrontOfSuperview() {
+        super.bringToFrontOfSuperview()
+
+        invalidateControlGraphics()
+    }
+
     // MARK: - Rendering
 
     /// Paints this control view on a given render context
@@ -285,9 +293,7 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
     }
 
     open func invalidateControlGraphics() {
-        invalidate()
-
-        _bitmapCache.invalidateCache()
+        invalidateControlGraphics(bounds: boundsForRedraw())
     }
 
     open func invalidateControlGraphics(bounds: UIRectangle) {
