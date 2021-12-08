@@ -235,14 +235,12 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
     public final override func render(in renderer: Renderer, screenRegion: ClipRegion) {
         super.render(in: renderer, screenRegion: screenRegion)
 
-        let state = renderer.saveState()
-
-        _bitmapCache.cachingOrRendering(renderer) { ctx in
-            renderBackground(in: ctx, screenRegion: screenRegion)
-            renderForeground(in: ctx, screenRegion: screenRegion)
+        renderer.withTemporaryState {
+            _bitmapCache.cachingOrRendering(renderer) { ctx in
+                renderBackground(in: ctx, screenRegion: screenRegion)
+                renderForeground(in: ctx, screenRegion: screenRegion)
+            }
         }
-
-        renderer.restoreState(state)
 
         _painted(sender: self, renderer)
     }

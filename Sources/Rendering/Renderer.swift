@@ -184,6 +184,9 @@ public protocol Renderer {
 
     /// Performs a given closure while this renderer saves its internal state,
     /// reverting any change before returning control to the caller.
+    ///
+    /// Can be nested multiple times, resulting in intermediary states that are
+    /// popped in FIFO order.
     func withTemporaryState<T>(_ closure: () throws -> T) rethrows -> T
 }
 

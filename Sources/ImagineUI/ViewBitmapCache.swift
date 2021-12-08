@@ -32,8 +32,8 @@ public class ViewBitmapCache {
     }
 
     public func updateBitmapBounds(_ bounds: UIRectangle) {
-        if self.rectangle != bounds {
-            self.rectangle = bounds
+        if rectangle != bounds {
+            rectangle = bounds
             invalidateCache()
         }
     }
@@ -48,9 +48,10 @@ public class ViewBitmapCache {
             return
         }
 
-        let rect = UIRectangle(x: rectangle.x, y: rectangle.y,
-                             width: Double(bitmapWidth) / scale.x,
-                             height: Double(bitmapHeight) / scale.y)
+        let rect = rectangle.withSize(
+            width: Double(bitmapWidth) / scale.x,
+            height: Double(bitmapHeight) / scale.y
+        )
 
         if let bitmap = bitmap {
             renderer.drawImageScaled(bitmap, area: rect)

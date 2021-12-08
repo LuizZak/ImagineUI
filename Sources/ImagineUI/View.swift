@@ -267,20 +267,18 @@ open class View {
             return
         }
 
-        let token = renderer.saveState()
+        renderer.withTemporaryState {
+            renderer.transform(transform)
+            if clipToBounds {
+                renderer.clip(boundsForRedraw())
+            }
 
-        renderer.transform(transform)
-        if clipToBounds {
-            renderer.clip(boundsForRedraw())
+            render(in: renderer, screenRegion: screenRegion)
+
+            for view in subviews {
+                view.renderRecursive(in: renderer, screenRegion: screenRegion)
+            }
         }
-
-        render(in: renderer, screenRegion: screenRegion)
-
-        for view in subviews {
-            view.renderRecursive(in: renderer, screenRegion: screenRegion)
-        }
-
-        renderer.restoreState(token)
     }
 
     open func render(in context: Renderer, screenRegion: ClipRegion) {
