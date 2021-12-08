@@ -44,6 +44,12 @@ public class DefaultControlSystem: ControlSystem {
             return
         }
 
+        // Request that the given root view be brought to the front of the views
+        // list to be rendered on top of all other views.
+        if let rootView = control.rootView {
+            bringRootViewToFront(rootView)
+        }
+
         // TODO: Consider registering double clicks on mouse down on Windows
         // TODO: as a response to events WM_LBUTTONDOWN, WM_LBUTTONUP,
         // TODO: WM_LBUTTONDBLCLK, and WM_LBUTTONUP, as per Win32 documentation:
@@ -58,10 +64,6 @@ public class DefaultControlSystem: ControlSystem {
             if handler !== self._firstResponder && handler.canBecomeFirstResponder {
                 self._firstResponder?.resignFirstResponder()
             }
-        }
-
-        if let rootView = control.rootView {
-            bringRootViewToFront(rootView)
         }
 
         control.handleOrPass(request)

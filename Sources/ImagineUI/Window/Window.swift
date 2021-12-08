@@ -2,20 +2,6 @@ import Geometry
 import CassowarySwift
 import Rendering
 
-public protocol WindowDelegate: AnyObject {
-    /// Invoked when the user has selected to close the window
-    func windowWantsToClose(_ window: Window)
-
-    /// Invoked when the user has selected to maximize the window
-    func windowWantsToMaximize(_ window: Window)
-
-    /// Invoked when the user has selected to minimize the window
-    func windowWantsToMinimize(_ window: Window)
-
-    /// Returns size for fullscreen
-    func windowSizeForFullscreen(_ window: Window) -> UISize
-}
-
 public class Window: RootView {
     /// Saves the location of the window before maximizing state
     private var _normalStateLocation: UIVector = .zero
