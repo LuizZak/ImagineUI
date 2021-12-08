@@ -8,7 +8,7 @@ class Blend2DFontFace: FontFace {
         self.fontFace = fontFace
     }
     
-    func font(with size: Float) -> Font {
+    func font(withSize size: Float) -> Font {
         return Blend2DFont(font: BLFont(fromFace: fontFace, size: size))
     }
 }

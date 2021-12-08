@@ -38,6 +38,8 @@ open class Label: View {
         }
     }
 
+    /// The current default font to render text with.
+    /// Custom fonts in `attributedText` override this property.
     open var font: Font {
         didSet {
             invalidate()
@@ -46,10 +48,18 @@ open class Label: View {
             recreateMinimalTextLayout()
         }
     }
+
+    /// Convenience for changing the current font's size.
+    /// Same as `self.font.size`, setting this property updates the font to be
+    /// `self.font = self.font.fontFace.font(withSize: newValue)`.
+    /// Custom fonts in `attributedText` override this property.
+    open var fontSize: Float {
+        get { font.size }
+        set { font = font.fontFace.font(withSize: newValue) }
+    }
+
     open var text: String {
-        get {
-            return attributedText.string
-        }
+        get { attributedText.string }
         set {
             if !attributedText.hasAttributes && attributedText.string == newValue { return }
 
@@ -87,9 +97,7 @@ open class Label: View {
         }
     }
 
-    open override var intrinsicSize: UISize? {
-        return minimalTextLayout.size
-    }
+    open override var intrinsicSize: UISize? { minimalTextLayout.size }
 
     open var horizontalTextAlignment: HorizontalTextAlignment = .leading {
         didSet {

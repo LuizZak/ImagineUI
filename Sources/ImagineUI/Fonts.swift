@@ -17,7 +17,7 @@ public enum Fonts {
             return cached
         }
         
-        let font = fontFace.font(with: size)
+        let font = fontFace.font(withSize: size)
         _fontCache[size] = font
         
         return font
