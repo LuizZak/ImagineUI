@@ -287,6 +287,20 @@ public extension UIRectangle {
             expand(toInclude: p)
         }
     }
+
+    init<S: Sequence>(boundsFor points: S) where S.Element == UIPoint {
+        var iterator = points.makeIterator()
+        guard let first = iterator.next() else {
+            self.init()
+            return
+        }
+
+        self.init(minimum: first, maximum: first)
+
+        while let next = iterator.next() {
+            expand(toInclude: next)
+        }
+    }
 }
 
 // MARK: Edge / Center Moving

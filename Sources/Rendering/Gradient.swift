@@ -30,7 +30,9 @@ public struct Gradient {
     
     /// Defines a stop for a gradient
     public struct Stop: Equatable {
+        /// Offset of this gradient stop, between 0 - 1.
         public var offset: Double
+        /// The color at this gradient stop.
         public var color: Color
         
         public init(offset: Double, color: Color) {
@@ -67,19 +69,26 @@ public extension Gradient {
     }
     
     struct RadialGradientParameters: Equatable {
-        /// The bounds of the radial gradient
-        public var bounds: UIRectangle
+        /// The center of the radial gradient
+        public var center: UIPoint
+
+        /// The focal point of the gradient.
+        /// Having a focal point that is offset from the center of the radial
+        /// gradient generates a different center point for the gradient than
+        /// the one specified by `center`, squishing and stretching the gradient
+        /// pattern near and away from the focal point.
+        public var focalPoint: UIPoint
         
         /// The radius of the radial gradient
         public var radius: Double
         
-        public init(left: Double, top: Double, right: Double, bottom: Double, radius: Double) {
-            bounds = UIRectangle(left: left, top: top, right: right, bottom: bottom)
-            self.radius = radius
+        public init(x: Double, y: Double, focalX: Double, focalY: Double, radius: Double) {
+            self.init(center: .init(x: x, y: y), focalPoint: .init(x: focalX, y: focalY), radius: radius)
         }
         
-        public init(bounds: UIRectangle, radius: Double) {
-            self.bounds = bounds
+        public init(center: UIPoint, focalPoint: UIPoint, radius: Double) {
+            self.center = center
+            self.focalPoint = focalPoint
             self.radius = radius
         }
     }
@@ -118,13 +127,26 @@ public extension Gradient {
                         matrix: matrix)
     }
     
-    static func radial(bounds: UIRectangle,
+    static func radial(center: UIPoint,
+                       focalPoint: UIPoint,
                        radius: Double,
                        stops: [Stop] = [],
                        extendMode: ExtendMode = .pad,
                        matrix: UIMatrix = .identity) -> Gradient {
         
-        return Gradient(type: .radial(RadialGradientParameters(bounds: bounds, radius: radius)),
+        return Gradient(type: .radial(RadialGradientParameters(center: center, focalPoint: focalPoint, radius: radius)),
+                        stops: stops,
+                        extendMode: extendMode,
+                        matrix: matrix)
+    }
+    
+    static func radial(center: UIPoint,
+                       radius: Double,
+                       stops: [Stop] = [],
+                       extendMode: ExtendMode = .pad,
+                       matrix: UIMatrix = .identity) -> Gradient {
+        
+        return Gradient(type: .radial(RadialGradientParameters(center: center, focalPoint: center, radius: radius)),
                         stops: stops,
                         extendMode: extendMode,
                         matrix: matrix)

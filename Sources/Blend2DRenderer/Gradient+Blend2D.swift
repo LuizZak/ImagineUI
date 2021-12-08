@@ -44,10 +44,10 @@ extension Gradient.LinearGradientParameters {
 
 extension Gradient.RadialGradientParameters {
     var asBLRadialGradientParameters: BLRadialGradientValues {
-        return BLRadialGradientValues(x0: bounds.left,
-                                      y0: bounds.right,
-                                      x1: bounds.right,
-                                      y1: bounds.bottom,
+        return BLRadialGradientValues(x0: center.x,
+                                      y0: center.y,
+                                      x1: focalPoint.x,
+                                      y1: focalPoint.y,
                                       r0: radius)
     }
 }
