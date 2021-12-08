@@ -44,6 +44,11 @@ public class DefaultControlSystem: ControlSystem {
             return
         }
 
+        // TODO: Consider registering double clicks on mouse down on Windows
+        // TODO: as a response to events WM_LBUTTONDOWN, WM_LBUTTONUP,
+        // TODO: WM_LBUTTONDBLCLK, and WM_LBUTTONUP, as per Win32 documentation:
+        // TODO: https://docs.microsoft.com/en-us/windows/win32/inputdev/wm-lbuttondblclk#remarks
+
         // Make request
         let request = InnerMouseEventRequest(event: event, eventType: .mouseDown) { handler in
             handler.onMouseDown(event.convertLocation(handler: handler))
