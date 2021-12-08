@@ -5,6 +5,9 @@ public protocol Font: TextAttributeType {
     var metrics: FontMetrics { get }
     
     var matrix: FontMatrix { get }
+
+    /// Gets the font face associated with this font.
+    var fontFace: FontFace { get }
     
     /// Creates a glyph buffer for a given string segment
     func createGlyphBuffer<S: StringProtocol>(_ string: S) -> GlyphBuffer
