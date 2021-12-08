@@ -3,26 +3,15 @@ import Geometry
 /// A view which serves as the root of a view hierarchy.
 open class RootView: ControlView {
     private var _constraintCache = LayoutConstraintSolverCache()
-    private weak var _invalidationDelegate: RootViewRedrawInvalidationDelegate?
 
-    public var invalidationDelegate: RootViewRedrawInvalidationDelegate? {
-        get {
-            if _invalidationDelegate == nil, let superview = superview as? RootView {
-                return superview.invalidationDelegate
-            }
-
-            return _invalidationDelegate
-        }
-        set {
-            _invalidationDelegate = newValue
-        }
-    }
-
+    public weak var invalidationDelegate: RootViewRedrawInvalidationDelegate?
     public var rootControlSystem: ControlSystem?
 
     public override var controlSystem: ControlSystem? {
-        if rootControlSystem == nil, let controlSystem = superview?.controlSystem {
-            return controlSystem
+        // Propagate parent's control system, if none where specified for this
+        // root view.
+        if rootControlSystem == nil {
+            return superview?.controlSystem
         }
         
         return rootControlSystem
@@ -39,9 +28,15 @@ open class RootView: ControlView {
 
     override func invalidate(bounds: UIRectangle, spatialReference: SpatialReferenceType) {
         guard !_isSizingLayout else { return }
-        
-        let rect = spatialReference.convert(bounds: bounds, to: nil)
-        invalidationDelegate?.rootView(self, invalidateRect: rect)
+
+        if let invalidationDelegate = invalidationDelegate {
+            let rect = spatialReference.convert(bounds: bounds, to: nil)
+            invalidationDelegate.rootView(self, invalidateRect: rect)
+        } else {
+            // Propagate invalidation to parent view, if no invalidation delegate 
+            // was specified for this root view.
+            superview?.invalidate(bounds: bounds, spatialReference: spatialReference)
+        }
     }
 
     internal override func performConstraintsLayout(cached: Bool) {

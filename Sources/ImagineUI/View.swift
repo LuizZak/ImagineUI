@@ -256,13 +256,7 @@ open class View {
         if !isVisible {
             return
         }
-        // TODO: Re-enable fully once Blend2D supports polygon clipping.
-        // Currently, clipping is subtractive over rectangles, but redraw regions
-        // can be a series of rectangles overlapping one another producing a
-        // polygon-like clipping area
-        //
-        // For now, clipping region is merged at sample app before rendering, so
-        // it is guaranteed the clipping region is a single box.
+
         if screenRegion.hitTest(boundsForRedrawOnScreen()) == .out {
             return
         }
@@ -620,7 +614,8 @@ open class View {
     // MARK: - Bounds / Hit testing
 
     /// Performs a hit test operation on the area of this, and all child base
-    /// views, for the given absolute coordinates point.
+    /// views, for the given point that is relative to this view's coordinate 
+    /// system.
     ///
     /// Returns the first base view that crosses the point.
     ///
@@ -643,7 +638,8 @@ open class View {
     }
 
     /// Performs a hit test operation on the area of this, and all child base
-    /// views, for the given absolute coordinates point.
+    /// views, for the given point that is relative to this view's coordinate 
+    /// system.
     ///
     /// Returns the first base view that crosses the point and returns true for
     /// `predicate`.
@@ -677,7 +673,8 @@ open class View {
     /// The `inflatingArea` argument can be used to inflate the area of the views
     /// to perform less precise hit tests.
     ///
-    /// - Parameter point: Point to test
+    /// - Parameter point: Point to test, relative to this view's coordinate 
+    /// system.
     /// - Parameter inflatingArea: Used to inflate the area of the views to
     /// perform less precise hit tests.
     /// - Returns: An array where each view returned crosses the given point.
@@ -707,20 +704,21 @@ open class View {
         target.append(self)
     }
 
-    /// Returns an enumerable of all views that cross the given `BLRect` bounds.
+    /// Returns an enumerable of all views that cross the given `UIRectangle` bounds.
     ///
     /// The `inflatingArea` argument can be used to inflate the area of the views
     /// to perform less precise hit tests.
     ///
-    /// The `BLRect` is converted into local bounds for each subview, so distortion
-    /// may occur and result in inaccurate results for views that are rotated.
-    /// There are no alternatives for this, currently.
+    /// The `UIRectangle` is converted into local bounds for each subview, so
+    /// distortion may occur and result in inaccurate results for views that are
+    /// rotated. There are no alternatives for this, currently.
     ///
-    /// - Parameter point: BLRect to test
+    /// - Parameter point: rectangle to test, relative to this view's coordinate 
+    /// system.
     /// - Parameter inflatingArea: Used to inflate the area of the views to perform
     /// less precise hit tests.
     /// - Returns: An enumerable where each view returned intersects the given
-    /// `BLRect`
+    /// `UIRectangle`
     open func viewsUnder(area: UIRectangle, inflatingArea: UIVector = .zero) -> [View] {
         var views: [View] = []
 
@@ -764,7 +762,7 @@ open class View {
         return bounds.insetBy(x: -inflatingArea.x, y: -inflatingArea.y).contains(point)
     }
 
-    /// Returns true if the given `BLRect` intersects this view's area when
+    /// Returns true if the given `UIRectangle` intersects this view's area when
     /// inflated by a specified amount.
     ///
     /// Children views' bounds do not affect the hit test- it happens only on
