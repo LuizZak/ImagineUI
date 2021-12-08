@@ -2,6 +2,13 @@ import Geometry
 import Rendering
 
 open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
+    /// Whether to cache all controls' contents as a bitmap.
+    ///
+    /// This increases memory usage and reduces quality of controls in scaled
+    /// scenarios, but reduces CPU usage when re-rendering controls that had no
+    /// state change.
+    public static var globallyCacheAsBitmap: Bool = true
+
     private let _stateManager = StateManager()
     private var _isMouseDown: Bool = false
     private var _bitmapCache = ViewBitmapCache(isCachingEnabled: true)
@@ -18,9 +25,16 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
         return true
     }
 
-    open var cacheAsBitmap: Bool {
-        get { _bitmapCache.isCachingEnabled }
-        set { _bitmapCache.isCachingEnabled = newValue }
+    /// Overrides the default `ControlView.globallyCacheAsBitmap` value with a 
+    /// specified boolean value. If `nil`, the global value is used, instead.
+    ///
+    /// Defaults to `nil` on creation.
+    open var cacheAsBitmap: Bool? = nil {
+        didSet {
+            guard cacheAsBitmap != oldValue else { return }
+
+            invalidateControlGraphics()
+        }
     }
 
     open var isFirstResponder: Bool {
@@ -236,6 +250,7 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
         super.render(in: renderer, screenRegion: screenRegion)
 
         renderer.withTemporaryState {
+            _bitmapCache.isCachingEnabled = cacheAsBitmap ?? ControlView.globallyCacheAsBitmap
             _bitmapCache.cachingOrRendering(renderer) { ctx in
                 renderBackground(in: ctx, screenRegion: screenRegion)
                 renderForeground(in: ctx, screenRegion: screenRegion)
