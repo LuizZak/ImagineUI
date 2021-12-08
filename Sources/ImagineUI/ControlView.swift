@@ -301,6 +301,8 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
         return bounds
     }
 
+    /// The bounds that this control view renders into, taking into account the
+    /// current stroke width.
     override func boundsForRedraw() -> UIRectangle {
         return bounds.inflatedBy(x: strokeWidth, y: strokeWidth)
     }
