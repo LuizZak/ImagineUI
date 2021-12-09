@@ -146,7 +146,7 @@ public class SliderView: ControlView {
         }
     }
 
-    override func boundsForRedraw() -> UIRectangle {
+    public override func boundsForRedraw() -> UIRectangle {
         return bounds.inflatedBy(x: 2, y: 0)
     }
 

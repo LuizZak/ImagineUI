@@ -526,10 +526,14 @@ open class View {
 
     // MARK: - Redraw Invalidation
 
+    /// Invalidates the entire redraw boundaries of this view.
+    ///
+    /// Equivalent to `self.invalidate(bounds: self.boundsForRedraw())`.
     open func invalidate() {
         invalidate(bounds: boundsForRedraw())
     }
 
+    /// Invalidates a specified region of this view's boundaries.
     open func invalidate(bounds: UIRectangle) {
         var bounds = bounds
         if clipToBounds {
@@ -548,7 +552,11 @@ open class View {
         superview?.invalidate(bounds: bounds, spatialReference: spatialReference)
     }
 
-    func boundsForRedraw() -> UIRectangle {
+    /// Returns a recrangle that represents the invalidation and redraw area of
+    /// this view in its local coordinates.
+    ///
+    /// Defaults to `self.bounds` on `View` class.
+    open func boundsForRedraw() -> UIRectangle {
         return bounds
     }
 
@@ -771,7 +779,7 @@ open class View {
     /// - Parameter area: area to test
     /// - Parameter inflatingArea: Used to inflate the area of the view to
     /// perform less precise hit tests.
-    public func intersects(area: UIRectangle, inflatingArea: UIVector = .zero) -> Bool {
+    open func intersects(area: UIRectangle, inflatingArea: UIVector = .zero) -> Bool {
         return bounds.insetBy(x: -inflatingArea.x, y: -inflatingArea.y).intersects(area)
     }
 
