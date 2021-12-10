@@ -117,9 +117,9 @@ class LayoutVariables {
         self.baselineHeight = baselineHeight
     }
 
-    func deriveConstraints(_ constraintCollector: ViewConstraintCollectorType) {
+    func deriveConstraints(_ constraintCollector: ViewConstraintCollectorType, rootSpatialReference: View?) {
         if let view = container as? View {
-            deriveViewConstraints(view, constraintCollector)
+            deriveViewConstraints(view, constraintCollector, relativeTo: rootSpatialReference)
         }
 
         constraintCollector.addConstraint(
@@ -190,9 +190,9 @@ class LayoutVariables {
         }
     }
 
-    private func deriveViewConstraints(_ view: View, _ constraintCollector: ViewConstraintCollectorType) {
+    private func deriveViewConstraints(_ view: View, _ constraintCollector: ViewConstraintCollectorType, relativeTo spatialReference: View?) {
         if view.areaIntoConstraintsMask.contains(.location) {
-            let location = view.convert(point: .zero, to: nil)
+            let location = view.convert(point: .zero, to: spatialReference)
             
             left.value = location.x
             top.value = location.y
@@ -311,10 +311,10 @@ class LayoutVariables {
         }
     }
 
-    func applyVariables() {
+    func applyVariables(relativeTo spatialReference: View?) {
         let location: UIVector
         if let parent = container.parent {
-            location = parent.convert(point: UIVector(x: left.value, y: top.value), from: nil)
+            location = parent.convert(point: UIVector(x: left.value, y: top.value), from: spatialReference)
         } else {
             location = UIVector(x: left.value, y: top.value)
         }

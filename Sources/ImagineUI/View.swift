@@ -328,6 +328,19 @@ open class View {
         solver.solve(viewHierarchy: self, cache: nil)
     }
 
+    /// If `true`, indicates that this view has an internal layout that is
+    /// self-contained and can be solved deterministically regardless of the
+    /// layout state of superviews.
+    ///
+    /// This makes the Cassowary layout constraint system ignore this view and
+    /// any subview in its hierarchy during constraint resolution of superviews.
+    ///
+    /// If a view returns `true` but contains constraints that relate it to a
+    /// view outside its hierarchy, an undefined layout behavior can occur.
+    open func hasIndependentInternalLayout() -> Bool {
+        false
+    }
+
     /// Suspends setNeedsLayout() from affecting this view and its parent
     /// hierarchy.
     ///
@@ -552,7 +565,7 @@ open class View {
         superview?.invalidate(bounds: bounds, spatialReference: spatialReference)
     }
 
-    /// Returns a recrangle that represents the invalidation and redraw area of
+    /// Returns a rectangle that represents the invalidation and redraw area of
     /// this view in its local coordinates.
     ///
     /// Defaults to `self.bounds` on `View` class.
@@ -832,6 +845,17 @@ open class View {
         case .horizontal: return horizontalHuggingPriority
         case .vertical: return verticalHuggingPriority
         }
+    }
+
+    // MARK: LayoutVariablesContainer implementations
+    // NOTE: adding the methods here instead of extension bellow to allow overriding.
+    
+    func didAddConstraint(_ constraint: LayoutConstraint) {
+
+    }
+
+    func didRemoveConstraint(_ constraint: LayoutConstraint) {
+
     }
 
     // MARK: - Descendent Checking / Hierarchy

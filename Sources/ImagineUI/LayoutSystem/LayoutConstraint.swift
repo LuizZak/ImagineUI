@@ -137,6 +137,8 @@ public class LayoutConstraint: Hashable {
         container?.viewInHierarchy?.containedConstraints.removeAll { $0 === self }
         firstCast._owner?.constraints.removeAll { $0 === self }
         secondCast?._owner?.constraints.removeAll { $0 === self }
+        firstCast._owner?.didRemoveConstraint(self)
+        secondCast?._owner?.didRemoveConstraint(self)
     }
 
     @discardableResult
@@ -212,6 +214,9 @@ public class LayoutConstraint: Hashable {
         first._owner?.setNeedsLayout()
         second._owner?.setNeedsLayout()
 
+        first._owner?.didAddConstraint(constraint)
+        second._owner?.didAddConstraint(constraint)
+
         return constraint
     }
 
@@ -236,6 +241,8 @@ public class LayoutConstraint: Hashable {
         container.constraints.append(constraint)
 
         container.setNeedsLayout()
+
+        container.didAddConstraint(constraint)
 
         return constraint
     }

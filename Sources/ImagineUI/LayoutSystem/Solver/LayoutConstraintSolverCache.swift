@@ -9,18 +9,18 @@ public class LayoutConstraintSolverCache {
     }
 
     func update(fromView view: View) throws -> ConstraintCollection {
-        let visitor = ConstraintViewVisitor()
+        let visitor = ConstraintViewVisitor(rootView: view)
         let traveler = ViewTraveler(state: ConstraintCollection(), visitor: visitor)
         traveler.travelThrough(view: view)
 
-        try update(result: traveler.state)
+        try update(result: traveler.state, rootSpatialReference: view)
 
         return traveler.state
     }
 
-    private func update(result: ConstraintCollection) throws {
+    private func update(result: ConstraintCollection, rootSpatialReference: View?) throws {
         saveState()
-        register(result: result)
+        register(result: result, rootSpatialReference: rootSpatialReference)
 
         try compareAndApplyStates()
 
@@ -39,7 +39,7 @@ public class LayoutConstraintSolverCache {
         }
     }
 
-    private func register(result: ConstraintCollection) {
+    private func register(result: ConstraintCollection, rootSpatialReference: View?) {
         if _hasMixedConstraints(result) {
             let mixed: _LayoutConstraintSolverCache
 
@@ -53,7 +53,7 @@ public class LayoutConstraintSolverCache {
                 mixed.saveState()
             }
 
-            mixed.register(result: result, orientations: [.horizontal, .vertical, .mixed])
+            mixed.register(result: result, orientations: [.horizontal, .vertical, .mixed], rootSpatialReference: rootSpatialReference)
             cacheState = .mixed(mixed)
         } else {
             let horizontal: _LayoutConstraintSolverCache
@@ -72,8 +72,8 @@ public class LayoutConstraintSolverCache {
                 vertical = v
             }
 
-            horizontal.register(result: result, orientations: [.horizontal])
-            vertical.register(result: result, orientations: [.vertical])
+            horizontal.register(result: result, orientations: [.horizontal], rootSpatialReference: rootSpatialReference)
+            vertical.register(result: result, orientations: [.vertical], rootSpatialReference: rootSpatialReference)
 
             cacheState = .split(horizontal: horizontal, vertical: vertical)
         }
@@ -141,7 +141,22 @@ public class LayoutConstraintSolverCache {
         case split(horizontal: _LayoutConstraintSolverCache, vertical: _LayoutConstraintSolverCache)
     }
 
-    private class ConstraintViewVisitor: ViewVisitor {
+    private struct ConstraintViewVisitor: ViewVisitor {
+        var rootView: View
+
+        init(rootView: View) {
+            self.rootView = rootView
+        }
+
+        func shouldVisitView(_ view: View, _ state: State) -> Bool {
+            if view === rootView {
+                return true
+            }
+
+            // Stop short at the boundaries to independent layout systems.
+            return !view.hasIndependentInternalLayout()
+        }
+
         func visitView(_ view: View, _ collection: inout ConstraintCollection) -> ViewVisitorResult {
             // Ignore fully static views that do not participate in the overall
             // layout system
@@ -189,10 +204,10 @@ fileprivate class _LayoutConstraintSolverCache {
         _viewConstraintList.removeAll(keepingCapacity: true)
     }
 
-    internal func register(result: ConstraintCollection, orientations: Set<LayoutConstraintOrientation>) {
+    internal func register(result: ConstraintCollection, orientations: Set<LayoutConstraintOrientation>, rootSpatialReference: View?) {
         for affectedView in result.affectedLayoutVariables {
             let viewConstraintList = constraintList(for: affectedView.container, orientations: orientations)
-            affectedView.deriveConstraints(viewConstraintList)
+            affectedView.deriveConstraints(viewConstraintList, rootSpatialReference: rootSpatialReference)
         }
 
         _registerConstraints(result.constraints, orientations: orientations)

@@ -6,7 +6,7 @@ public class LayoutConstraintSolver {
             let result = try locCache.update(fromView: viewHierarchy)
 
             for variables in result.affectedLayoutVariables {
-                variables.applyVariables()
+                variables.applyVariables(relativeTo: viewHierarchy)
             }
         } catch {
             print("Error solving layout constraints: \(error)")
