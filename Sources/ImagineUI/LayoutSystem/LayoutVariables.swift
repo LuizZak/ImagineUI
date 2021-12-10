@@ -191,40 +191,40 @@ class LayoutVariables {
     }
 
     private func deriveViewConstraints(_ view: View, _ constraintCollector: ViewConstraintCollectorType, relativeTo spatialReference: View?) {
+        let bounds = view.convert(bounds: view.bounds, to: spatialReference)
+
         if view.areaIntoConstraintsMask.contains(.location) {
-            let location = view.convert(point: .zero, to: spatialReference)
-            
-            left.value = location.x
-            top.value = location.y
+            left.value = bounds.x
+            top.value = bounds.y
 
             constraintCollector.suggestValue(
                 left,
-                value: location.x,
+                value: bounds.x,
                 strength: Strength.STRONG,
                 orientation: .horizontal
             )
 
             constraintCollector.suggestValue(
                 top,
-                value: location.y,
+                value: bounds.y,
                 strength: Strength.STRONG,
                 orientation: .vertical
             )
         }
         if view.areaIntoConstraintsMask.contains(.size) {
-            width.value = view.size.width
-            height.value = view.size.height
+            width.value = bounds.width
+            height.value = bounds.height
             
             constraintCollector.suggestValue(
                 width,
-                value: view.size.width,
+                value: bounds.width,
                 strength: Strength.STRONG,
                 orientation: .horizontal
             )
 
             constraintCollector.suggestValue(
                 height,
-                value: view.size.height,
+                value: bounds.height,
                 strength: Strength.STRONG,
                 orientation: .vertical
             )
@@ -312,17 +312,17 @@ class LayoutVariables {
     }
 
     func applyVariables(relativeTo spatialReference: View?) {
-        let location: UIVector
+        var area = UIRectangle(
+            x: left.value,
+            y: top.value,
+            width: width.value,
+            height: height.value
+        )
         if let parent = container.parent {
-            location = parent.convert(point: UIVector(x: left.value, y: top.value), from: spatialReference)
-        } else {
-            location = UIVector(x: left.value, y: top.value)
+            area = parent.convert(bounds: area, from: spatialReference)
         }
 
-        let w = width.value
-        let h = height.value
-
-        container.setAreaSkippingLayout(UIRectangle(location: location, size: UISize(width: w, height: h)))
+        container.setAreaSkippingLayout(area)
     }
 
     func viewForFirstBaseline() -> View? {
