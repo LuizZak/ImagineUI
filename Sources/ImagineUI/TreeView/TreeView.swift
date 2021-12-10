@@ -759,7 +759,7 @@ public class TreeView: ControlView {
             override func renderForeground(in renderer: Renderer, screenRegion: ClipRegion) {
                 var color = foreColor
 
-                switch currentState {
+                switch controlState {
                 case .highlighted:
                     color = color.faded(towards: .white, factor: 0.1)
 

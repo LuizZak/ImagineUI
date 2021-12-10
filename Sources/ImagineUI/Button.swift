@@ -24,7 +24,7 @@ open class Button: ControlView {
     
     open override var backColor: Color {
         get {
-            return _backColor.getValue(currentState, defaultValue: .royalBlue)
+            return _backColor.getValue(controlState, defaultValue: .royalBlue)
         }
         set {
             super.backColor = newValue
@@ -81,7 +81,7 @@ open class Button: ControlView {
     func setBackgroundColor(_ color: Color, forState state: ControlViewState) {
         _backColor.setValue(color, forState: state)
         
-        if state == currentState {
+        if state == controlState {
             invalidateControlGraphics()
         }
     }

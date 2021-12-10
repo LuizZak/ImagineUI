@@ -79,7 +79,7 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
         set { _stateManager.isHighlighted = newValue }
     }
 
-    open var currentState: ControlViewState {
+    open var controlState: ControlViewState {
         return _stateManager.state
     }
 

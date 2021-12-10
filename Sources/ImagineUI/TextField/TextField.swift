@@ -213,7 +213,7 @@ open class TextField: ControlView {
     open func setStyle(_ style: VisualStyle, forState state: ControlViewState) {
         _statesStyles.setValue(style, forState: state)
 
-        if currentState == state {
+        if controlState == state {
             applyStyle(style)
         }
     }

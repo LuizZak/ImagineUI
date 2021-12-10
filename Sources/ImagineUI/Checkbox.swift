@@ -100,9 +100,9 @@ open class Checkbox: ControlView {
     func drawCheckBox(state: State, _ renderer: Renderer) {
         func tintColorWithState(_ color: Color) -> Color {
             var color = color
-            if currentState == .selected {
+            if controlState == .selected {
                 color = color.faded(towards: .black, factor: 0.1)
-            } else if currentState == .disabled {
+            } else if controlState == .disabled {
                 if checkboxState == .unchecked {
                     color = color.faded(towards: .gray, factor: 0.5)
                 } else {

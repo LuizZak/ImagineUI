@@ -257,7 +257,7 @@ public class SliderView: ControlView {
         renderer.translate(x: knobOffset(), y: 0)
 
         var color: Color = .royalBlue
-        if currentState == .highlighted {
+        if controlState == .highlighted {
             color = color.faded(towards: .white, factor: 0.2)
         }
 

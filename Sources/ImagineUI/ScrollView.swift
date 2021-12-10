@@ -533,7 +533,7 @@ public class ScrollBarControl: ControlView {
         let roundRect = barArea.makeRoundedRectangle(radius: radius)
 
         let color: Color
-        switch currentState {
+        switch controlState {
         case .highlighted:
             color = .gray.faded(towards: .white, factor: 0.2)
         case .selected:
