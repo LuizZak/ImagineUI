@@ -13,12 +13,12 @@ public class TreeView: ControlView {
 
     private var _lastSize: UISize? = nil
 
-    @CancellableActionEvent<TreeView, ItemIndex>
+    @CancellableActionEventWithSender<TreeView, ItemIndex>
     public var willExpand
-    @CancellableActionEvent<TreeView, ItemIndex>
+    @CancellableActionEventWithSender<TreeView, ItemIndex>
     public var willCollapse
 
-    @CancellableActionEvent<TreeView, ItemIndex>
+    @CancellableActionEventWithSender<TreeView, ItemIndex>
     public var willSelect
 
     @EventWithSender<TreeView, ItemIndex>

@@ -33,7 +33,7 @@ open class TextField: ControlView {
 
     /// Event fired whenever the caret for this text field changes position or
     /// selection range.
-    @ValueChangeEvent<TextField, Caret>
+    @ValueChangedEventWithSender<TextField, Caret>
     public var caretChanged
 
     /// Event fired whenever the user presses down the Enter key while

@@ -1,8 +1,6 @@
-// TODO: Separate CancellableValueChangeEvent into CancellableValueChangeEventWithSender.
-
 /// A typealias for an event that tracks changes to a property's value, while
-/// enabling the opportunity to cancel the value change
-public typealias CancellableValueChangeEvent<Sender, Value> = EventWithSender<Sender, CancellableValueChangedEventArgs<Value>>
+/// giving the opportunity for a listener to cancel the value change.
+public typealias CancellableValueChangeEvent<Value> = Event<CancellableValueChangedEventArgs<Value>>
 
 /// An event argument set for an event that tracks changes to a property, while
 /// exposing a `cancel` that can be changed by clients to cancel the state change
@@ -20,16 +18,16 @@ public class CancellableValueChangedEventArgs<T> {
 }
 
 public extension Event {
-    func publishCancellableChangeEvent<Sender, Value>(sender: Sender, old: Value, new: Value) -> Bool where T == SenderEventArgs<Sender, CancellableValueChangedEventArgs<Value>> {
+    func publishCancellableChangeEvent<Value>(old: Value, new: Value) -> Bool where T == CancellableValueChangedEventArgs<Value> {
 
         let event = CancellableValueChangedEventArgs(oldValue: old, newValue: new)
 
-        self.publishEvent((sender, event))
+        self.publishEvent(event)
 
         return event.cancel
     }
 
-    func callAsFunction<Sender, Value>(sender: Sender, old: Value, new: Value) -> Bool where T == SenderEventArgs<Sender, CancellableValueChangedEventArgs<Value>> {
-        return publishCancellableChangeEvent(sender: sender, old: old, new: new)
+    func callAsFunction<Value>(old: Value, new: Value) -> Bool where T == CancellableValueChangedEventArgs<Value> {
+        return publishCancellableChangeEvent(old: old, new: new)
     }
 }

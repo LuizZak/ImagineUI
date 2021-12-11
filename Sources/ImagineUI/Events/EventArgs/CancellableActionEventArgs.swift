@@ -1,8 +1,6 @@
-// TODO: Separate CancellableActionEvent into CancellableActionEventWithSender.
-
 /// A typealias for an event that tracks actions that can be cancelled by
 /// listeners.
-public typealias CancellableActionEvent<Sender, Args> = EventWithSender<Sender, CancellableActionEventArgs<Args>>
+public typealias CancellableActionEvent<Args> = Event<CancellableActionEventArgs<Args>>
 
 /// An event argument set for an event that tracks cancellable actions, while
 /// exposing a `cancel` that can be changed by clients to cancel the action.
@@ -17,27 +15,27 @@ public class CancellableActionEventArgs<Args> {
 }
 
 public extension Event {
-    func publishCancellableChangeEvent<Sender>(sender: Sender) -> Bool where T == SenderEventArgs<Sender, CancellableActionEventArgs<Void>> {
+    func publishCancellableChangeEvent() -> Bool where T == CancellableActionEventArgs<Void> {
         let event = CancellableActionEventArgs(value: ())
 
-        self.publishEvent((sender, event))
+        self.publishEvent(event)
 
         return event.cancel
     }
 
-    func publishCancellableChangeEvent<Sender, Value>(sender: Sender, value: Value) -> Bool where T == SenderEventArgs<Sender, CancellableActionEventArgs<Value>> {
+    func publishCancellableChangeEvent<Value>(value: Value) -> Bool where T == CancellableActionEventArgs<Value> {
         let event = CancellableActionEventArgs(value: value)
 
-        self.publishEvent((sender, event))
+        self.publishEvent(event)
 
         return event.cancel
     }
 
-    func callAsFunction<Sender>(sender: Sender) -> Bool where T == SenderEventArgs<Sender, CancellableActionEventArgs<Void>> {
-        return publishCancellableChangeEvent(sender: sender)
+    func callAsFunction() -> Bool where T == CancellableActionEventArgs<Void> {
+        return publishCancellableChangeEvent()
     }
 
-    func callAsFunction<Sender, Value>(sender: Sender, value: Value) -> Bool where T == SenderEventArgs<Sender, CancellableActionEventArgs<Value>> {
-        return publishCancellableChangeEvent(sender: sender, value: value)
+    func callAsFunction<Value>(value: Value) -> Bool where T == CancellableActionEventArgs<Value> {
+        return publishCancellableChangeEvent(value: value)
     }
 }

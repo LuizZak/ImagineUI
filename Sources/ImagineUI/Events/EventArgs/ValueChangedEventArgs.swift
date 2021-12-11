@@ -1,7 +1,5 @@
-// TODO: Separate ValueChangeEvent into ValueChangeEventWithSender.
-
 /// A typealias for an event that tracks changes to a property's value
-public typealias ValueChangeEvent<Sender, Value> = EventWithSender<Sender, ValueChangedEventArgs<Value>>
+public typealias ValueChangedEvent<Value> = Event<ValueChangedEventArgs<Value>>
 
 /// An event argument set for an event that tracks changes to a property
 public struct ValueChangedEventArgs<T> {
@@ -15,11 +13,11 @@ public struct ValueChangedEventArgs<T> {
 }
 
 public extension Event {
-    func publishChangeEvent<Sender, Value>(sender: Sender, old: Value, new: Value) where T == SenderEventArgs<Sender, ValueChangedEventArgs<Value>> {
-        self.publishEvent((sender, ValueChangedEventArgs(oldValue: old, newValue: new)))
+    func publishChangeEvent<Value>(old: Value, new: Value) where T == ValueChangedEventArgs<Value> {
+        self.publishEvent(ValueChangedEventArgs(oldValue: old, newValue: new))
     }
 
-    func callAsFunction<Sender, Value>(sender: Sender, old: Value, new: Value) where T == SenderEventArgs<Sender, ValueChangedEventArgs<Value>> {
-        self.publishChangeEvent(sender: sender, old: old, new: new)
+    func callAsFunction<Value>(old: Value, new: Value) where T == ValueChangedEventArgs<Value> {
+        self.publishChangeEvent(old: old, new: new)
     }
 }

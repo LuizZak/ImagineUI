@@ -19,7 +19,7 @@ class TextEngine: TextEngineType {
     private let _undoSystem: UndoSystem
 
     /// Event fired whenever the current `caret` value is changed.
-    @ValueChangeEvent<TextEngine, Caret>
+    @ValueChangedEventWithSender<TextEngine, Caret>
     public var caretChanged
 
     /// Gets the internal undo system that this text engine records undo and

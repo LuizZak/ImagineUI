@@ -25,7 +25,7 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
         return true
     }
 
-    /// Overrides the default `ControlView.globallyCacheAsBitmap` value with a 
+    /// Overrides the default `ControlView.globallyCacheAsBitmap` value with a
     /// specified boolean value. If `nil`, the global value is used, instead.
     ///
     /// Defaults to `nil` on creation.
@@ -149,12 +149,12 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
     public var painted
 
     /// Event raised whenever this control view's `currentState` value is changed
-    @ValueChangeEvent<ControlView, ControlViewState>
+    @ValueChangedEventWithSender<ControlView, ControlViewState>
     public var stateChanged
 
     /// Event raised whenever this control view's bounds have been updated to a
     /// different value
-    @ValueChangeEvent<ControlView, UISize>
+    @ValueChangedEventWithSender<ControlView, UISize>
     public var resized
 
     // MARK: Mouse events
@@ -220,8 +220,8 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
     public override init() {
         super.init()
 
-        _stateManager.onStateChanged = { [weak self] old, new in
-            self?.onStateChanged(ValueChangedEventArgs(oldValue: old, newValue: new))
+        _stateManager.stateChanged.addListener(owner: self) { [weak self] event in
+            self?.onStateChanged(event)
         }
     }
 
@@ -486,30 +486,31 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
 
     // MARK: - StateManager
     private class StateManager {
-        public var isEnabled: Bool = true {
+        var isEnabled: Bool = true {
             didSet {
                 deriveNewState()
             }
         }
-        public var isSelected: Bool = false {
+        var isSelected: Bool = false {
             didSet {
                 deriveNewState()
             }
         }
-        public var isHighlighted: Bool = false {
+        var isHighlighted: Bool = false {
             didSet {
                 deriveNewState()
             }
         }
-        public var isFirstResponder: Bool = false {
+        var isFirstResponder: Bool = false {
             didSet {
                 deriveNewState()
             }
         }
 
-        public var state: ControlViewState = .normal
+        var state: ControlViewState = .normal
 
-        public var onStateChanged: ((ControlViewState, ControlViewState) -> Void)?
+        @ValueChangedEvent<ControlViewState>
+        var stateChanged
 
         init() {
 
@@ -544,7 +545,7 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
 
             self.state = state
 
-            onStateChanged?(oldState, state)
+            _stateChanged(old: oldState, new: state)
         }
     }
 
