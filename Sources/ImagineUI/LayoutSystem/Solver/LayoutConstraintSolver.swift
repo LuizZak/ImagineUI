@@ -3,10 +3,12 @@ public class LayoutConstraintSolver {
         let locCache = cache ?? LayoutConstraintSolverCache()
 
         do {
-            let result = try locCache.update(fromView: viewHierarchy)
+            let spatialReference = viewHierarchy.superview
+            
+            let result = try locCache.update(fromView: viewHierarchy, rootSpatialReference: spatialReference)
 
             for variables in result.affectedLayoutVariables {
-                variables.applyVariables(relativeTo: viewHierarchy)
+                variables.applyVariables(relativeTo: spatialReference)
             }
         } catch {
             print("Error solving layout constraints: \(error)")

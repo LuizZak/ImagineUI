@@ -8,12 +8,12 @@ public class LayoutConstraintSolverCache {
         cacheState = .split(horizontal: _LayoutConstraintSolverCache(), vertical: _LayoutConstraintSolverCache())
     }
 
-    func update(fromView view: View) throws -> ConstraintCollection {
+    func update(fromView view: View, rootSpatialReference: View?) throws -> ConstraintCollection {
         let visitor = ConstraintViewVisitor(rootView: view)
         let traveler = ViewTraveler(state: ConstraintCollection(), visitor: visitor)
         traveler.travelThrough(view: view)
 
-        try update(result: traveler.state, rootSpatialReference: view)
+        try update(result: traveler.state, rootSpatialReference: rootSpatialReference)
 
         return traveler.state
     }
