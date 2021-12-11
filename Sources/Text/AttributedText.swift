@@ -432,6 +432,12 @@ extension AttributedText: ExpressibleByStringInterpolation {
     }
 }
 
+extension AttributedText: AttributedTextConvertible {
+    public func attributedText() -> AttributedText {
+        return self
+    }
+}
+
 // TODO: Use typed system to define attribute name and attribute values so mis-typing attributes is not possible
 
 struct Attribute<T> {
