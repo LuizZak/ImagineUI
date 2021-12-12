@@ -17,6 +17,9 @@ public class DefaultControlSystem: ControlSystemType {
     /// Used to handle `onMouseEnter`/`onMouseLeave` on controls
     private var _mouseHoverTarget: MouseEventHandler?
 
+    /// Current mouse position atop _mouseHoverTarget.
+    private var _mouseHoverPoint: UIVector = .zero
+
     /// First responder for keyboard events
     private var _firstResponder: KeyboardEventHandler?
 
@@ -98,6 +101,8 @@ public class DefaultControlSystem: ControlSystemType {
 
             _mouseDownTarget = nil
 
+            // Dispatch a mouse move, in case the mouse up event caused objects
+            // on screen to shuffle.
             updateMouseOver(event: event, eventType: .mouseMove)
         }
     }
@@ -114,6 +119,12 @@ public class DefaultControlSystem: ControlSystemType {
             }
 
             control.handleOrPass(request)
+
+            // Dispatch a mouse move, in case the mouse wheel event caused objects
+            // on screen to shuffle.
+            if request.accepted {
+                updateMouseOver(event: event, eventType: .mouseMove)
+            }
         }
     }
 
@@ -179,10 +190,11 @@ public class DefaultControlSystem: ControlSystemType {
 
     private func updateMouseOver(event: MouseEventArgs, eventType: MouseEventType) {
         guard let control = delegate?.controlViewUnder(point: event.location, enabledOnly: true) else {
-            hideTooltip()
-
             _mouseHoverTarget?.onMouseLeave()
             _mouseHoverTarget = nil
+            _mouseHoverPoint = .zero
+
+            hideTooltip()
             return
         }
 
@@ -194,14 +206,20 @@ public class DefaultControlSystem: ControlSystemType {
                 handler.onMouseEnter()
 
                 self._mouseHoverTarget = handler
+                self._mouseHoverPoint = event.convertLocation(handler: handler).location
 
                 if let tooltipProvider = handler as? TooltipProvider {
                     self.startHoverTimer(provider: tooltipProvider)
                 }
-            }
-            else
-            {
-                self._mouseHoverTarget?.onMouseMove(event.convertLocation(handler: handler))
+            } else {
+                let converted = event.convertLocation(handler: handler)
+
+                guard converted.location != self._mouseHoverPoint else {
+                    return
+                }
+
+                self._mouseHoverPoint = converted.location
+                self._mouseHoverTarget?.onMouseMove(converted)
 
                 if let tooltipProvider = handler as? TooltipProvider, !self.isTooltipVisible() {
                     self.startHoverTimer(provider: tooltipProvider)
@@ -211,9 +229,11 @@ public class DefaultControlSystem: ControlSystemType {
 
         control.handleOrPass(request)
 
-        if request.notAccepted {
+        if !request.accepted {
             _mouseHoverTarget?.onMouseLeave()
             _mouseHoverTarget = nil
+            _mouseHoverPoint = .zero
+
             hideTooltip()
         }
     }
@@ -447,7 +467,8 @@ private extension MouseEventArgs {
 
 private class InnerEventRequest<THandler> : EventRequest {
     private var onAccept: (THandler) -> Void
-    private(set) var notAccepted = true
+    
+    private(set) var accepted: Bool = false
 
     init(onAccept: @escaping (THandler) -> Void) {
         self.onAccept = onAccept
@@ -458,7 +479,7 @@ private class InnerEventRequest<THandler> : EventRequest {
             return
         }
 
-        notAccepted = false
+        accepted = true
         onAccept(casted)
     }
 }
