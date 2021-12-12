@@ -24,8 +24,17 @@ public final class Scheduler {
     ///
     /// The timer will fire in the main `RunLoop`, with `RunLoop.Mode.default`
     /// mode.
+    ///
+    /// The timer is scheduled to fire `interval` seconds after the current date
+    /// at the time of calling this method, and if `repeats` is passed as `true`,
+    /// every `interval` seconds afterwards until `SchedulerTimerType.invalidate()`
+    /// is called on the returned timer object.
+    ///
+    /// Precision of the timer is undefined, but it is guaranteed to not fire
+    /// before its scheduled time.
     public func scheduleTimer(interval: TimeInterval, repeats: Bool = false, _ block: @escaping () -> Void) -> SchedulerTimerType {
-        let timer = Timer(timeInterval: interval, repeats: repeats) { _ in
+        let date = Date().addingTimeInterval(interval)
+        let timer = Timer(fire: date, interval: interval, repeats: repeats) { _ in
             block()
         }
 
@@ -44,10 +53,18 @@ public final class Scheduler {
         func invalidate() {
             timer.invalidate()
         }
+
+        func fire() {
+            timer.fire()
+        }
     }
 }
 
 public protocol SchedulerTimerType {
     /// Invalidates, or stops, this timer from firing.
     func invalidate()
+
+    /// Immediately invokes the trigger associated with this timer, invalidating
+    /// the timer.
+    func fire()
 }

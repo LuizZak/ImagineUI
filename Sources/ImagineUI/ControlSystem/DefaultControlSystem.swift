@@ -1,9 +1,13 @@
+import Foundation
 import Geometry
 
 // TODO: Consider making Window also a control system of its own, to enable
 // TODO: window-specific interception of inputs to better support tasks like
 // TODO: resizing detection with the mouse within the client area.
 public class DefaultControlSystem: ControlSystemType {
+    /// Wrapper for timed tooltip display operations.
+    private let _tooltipWrapper: TooltipDisplayWrapper = TooltipDisplayWrapper()
+
     /// Reference to the current tooltip provider being displayed.
     ///
     /// Is `nil` if no tooltip is currently displayed.
@@ -48,6 +52,8 @@ public class DefaultControlSystem: ControlSystemType {
             _firstResponder?.resignFirstResponder()
             return
         }
+
+        hideTooltip()
 
         // Request that the given root view be brought to the front of the views
         // list to be rendered on top of all other views.
@@ -123,6 +129,8 @@ public class DefaultControlSystem: ControlSystemType {
             return
         }
 
+        hideTooltip()
+
         let request = InnerKeyboardEventRequest(eventType: .keyDown) { handler in
             handler.onKeyDown(event)
         }
@@ -134,6 +142,8 @@ public class DefaultControlSystem: ControlSystemType {
         guard let responder = _firstResponder else {
             return
         }
+
+        hideTooltip()
 
         let request = InnerKeyboardEventRequest(eventType: .keyUp) { handler in
             handler.onKeyUp(event)
@@ -147,6 +157,8 @@ public class DefaultControlSystem: ControlSystemType {
             return
         }
 
+        hideTooltip()
+
         let request = InnerKeyboardEventRequest(eventType: .keyPress) { handler in
             handler.onKeyPress(event)
         }
@@ -158,6 +170,8 @@ public class DefaultControlSystem: ControlSystemType {
         guard let responder = _firstResponder else {
             return
         }
+
+        hideTooltip()
 
         let request = InnerKeyboardEventRequest(eventType: .previewKeyDown) { handler in
             handler.onPreviewKeyDown(event)
@@ -181,17 +195,22 @@ public class DefaultControlSystem: ControlSystemType {
         let request = InnerMouseEventRequest(event: event, eventType: eventType) { handler in
             if self._mouseHoverTarget !== handler {
                 self._mouseHoverTarget?.onMouseLeave()
+                self.hideTooltip()
                 handler.onMouseEnter()
 
-                if let tooltipProvider = handler as? TooltipProvider {
-                    self.showTooltip(for: tooltipProvider)
-                }
-
                 self._mouseHoverTarget = handler
+
+                if let tooltipProvider = handler as? TooltipProvider {
+                    self.startHoverTimer(provider: tooltipProvider)
+                }
             }
             else
             {
                 self._mouseHoverTarget?.onMouseMove(event.convertLocation(handler: handler))
+
+                if let tooltipProvider = handler as? TooltipProvider, !self.isTooltipVisible() {
+                    self.startHoverTimer(provider: tooltipProvider)
+                }
             }
         }
 
@@ -200,6 +219,7 @@ public class DefaultControlSystem: ControlSystemType {
         if request.notAccepted {
             _mouseHoverTarget?.onMouseLeave()
             _mouseHoverTarget = nil
+            hideTooltip()
         }
     }
 
@@ -255,7 +275,7 @@ public class DefaultControlSystem: ControlSystemType {
 
     /// Returns `true` if a tooltip is currently visible on screen.
     public func isTooltipVisible() -> Bool {
-        _currentTooltipProvider != nil
+        _tooltipWrapper.isVisible()
     }
 
     /// Hides any currently visible tooltip.
@@ -266,25 +286,11 @@ public class DefaultControlSystem: ControlSystemType {
 
         delegate?.hideTooltip()
 
-        _currentTooltipProvider = nil
-    }
-
-    public func showTooltip(for tooltipProvider: TooltipProvider) {
-        if isTooltipVisible() {
-            hideTooltip()
-        }
-
-        guard let tooltip = tooltipProvider.tooltip else {
-            return
-        }
-
-        _currentTooltipProvider = tooltipProvider
-
-        delegate?.showTooltip(tooltip, view: tooltipProvider.viewForTooltip, location: tooltipProvider.preferredTooltipLocation)
+        _tooltipWrapper.setHidden()
     }
 
     public func hideTooltip(for view: ControlView) {
-        guard let current = _currentTooltipProvider else {
+        guard let current = _tooltipWrapper.currentProvider() else {
             return
         }
         guard let asView = current as? View else {
@@ -298,12 +304,36 @@ public class DefaultControlSystem: ControlSystemType {
     }
 
     public func hideTooltipFor(anyInHierarchy view: View) {
-        guard let tooltipView = _currentTooltipProvider as? ControlView else {
+        guard let tooltipView = _tooltipWrapper.currentProvider() as? ControlView else {
             return
         }
 
         if tooltipView.isDescendant(of: view) {
             hideTooltip(for: tooltipView)
+        }
+    }
+
+    private func showTooltip(for tooltipProvider: TooltipProvider) {
+        if isTooltipVisible() {
+            hideTooltip()
+        }
+
+        guard let tooltip = tooltipProvider.tooltip else {
+            return
+        }
+
+        _tooltipWrapper.setDisplay(provider: tooltipProvider)
+
+        delegate?.showTooltip(tooltip, view: tooltipProvider.viewForTooltip, location: tooltipProvider.preferredTooltipLocation)
+    }
+
+    private func startHoverTimer(provider: TooltipProvider) {
+        guard !isTooltipVisible() else {
+            return
+        }
+
+        _tooltipWrapper.setHover(provider: provider) {
+            self.showTooltip(for: provider)
         }
     }
 
@@ -315,6 +345,78 @@ public class DefaultControlSystem: ControlSystemType {
 
     public func setMouseHiddenUntilMouseMoves() {
         delegate?.setMouseHiddenUntilMouseMoves()
+    }
+
+    // MARK: -
+
+    private class TooltipDisplayWrapper {
+        private var state: TooltipState {
+            willSet {
+                state.invalidateTimer()
+            }
+        }
+
+        init() {
+            state = .none
+        }
+
+        func isVisible() -> Bool {
+            if case .displayed = state {
+                return true
+            }
+
+            return false
+        }
+
+        func currentProvider() -> TooltipProvider? {
+            state.provider
+        }
+
+        func setDisplay(provider: TooltipProvider) {
+            state = .displayed(provider: provider)
+        }
+
+        func setHover(provider: TooltipProvider, defaultDelay: TimeInterval = 0.5, callback: @escaping () -> Void) {
+            let delay = provider.tooltipDelay ?? defaultDelay
+
+            if delay <= 0.0 {
+                callback()
+                return
+            }
+
+            let timer = Scheduler.instance.scheduleTimer(interval: delay) {
+                callback()
+            }
+            state = .hovered(provider: provider, timer: timer)
+        }
+
+        func setHidden() {
+            state = .none
+        }
+
+        private enum TooltipState {
+            case none
+            case hovered(provider: TooltipProvider, timer: SchedulerTimerType)
+            case displayed(provider: TooltipProvider)
+
+            var provider: TooltipProvider? {
+                switch self {
+                case .none:
+                    return nil
+                case .hovered(let provider, _), .displayed(let provider):
+                    return provider
+                }
+            }
+
+            func invalidateTimer() {
+                switch self {
+                case .hovered(_, let timer):
+                    timer.invalidate()
+                default:
+                    break
+                }
+            }
+        }
     }
 }
 

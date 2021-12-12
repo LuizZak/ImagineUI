@@ -77,7 +77,6 @@ public class Window: RootView {
 
         self.area = area
         self.targetSize = area.size
-        strokeWidth = 5
 
         setContentHuggingPriority(.horizontal, 100)
         setContentHuggingPriority(.vertical, 100)
@@ -221,6 +220,10 @@ public class Window: RootView {
         if isResizingWindow() {
             finishWindowResizing()
         }
+    }
+
+    public override func boundsForRedraw() -> UIRectangle {
+        bounds.inflatedBy(3)
     }
 
     private func isResizingWindow() -> Bool {
@@ -495,9 +498,9 @@ class WindowButtons: View {
         setButtonColor(minimize, .gold)
         setButtonColor(maximize, .limeGreen)
 
-        close.tooltip = .init(text: "Close")
-        minimize.tooltip = .init(text: "Minimize")
-        minimize.tooltip = .init(text: "maximize")
+        close.tooltip = "Close"
+        minimize.tooltip = "Minimize"
+        maximize.tooltip = "Maximize"
     }
 
     override func setupHierarchy() {

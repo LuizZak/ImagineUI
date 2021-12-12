@@ -7,7 +7,8 @@ public class TooltipView: ControlView {
         super.init()
 
         backColor = Color(red: 37, green: 37, blue: 38)
-        strokeColor = .transparentBlack
+        strokeColor = .lightGray
+        strokeWidth = 1
     }
 
     public override func setupHierarchy() {

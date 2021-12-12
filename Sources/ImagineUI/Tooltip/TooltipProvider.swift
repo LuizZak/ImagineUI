@@ -1,3 +1,5 @@
+import Foundation
+
 /// A tooltip provider that dynamically updates its tooltips content.
 public protocol TooltipProvider {
     /// Gets the current tooltip value.
@@ -11,4 +13,8 @@ public protocol TooltipProvider {
 
     /// The preferred location for displaying tooltips of this provider.
     var preferredTooltipLocation: PreferredTooltipLocation { get }
+
+    /// Delay, in seconds, before a tooltip from this provider should be shown.
+    /// If `nil`, tooltip delay is defined by the control system implementation.
+    var tooltipDelay: TimeInterval? { get }
 }

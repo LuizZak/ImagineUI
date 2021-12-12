@@ -1,4 +1,4 @@
-/// A 2D rectangle with integer coordinates and size 
+/// A 2D rectangle with integer coordinates and size
 public struct UIIntRectangle: Hashable, Codable {
     public typealias Scalar = Int
 
@@ -73,7 +73,7 @@ public struct UIIntRectangle: Hashable, Codable {
             center.x = newValue
         }
     }
-    
+
     /// Gets or sets the center Y position of this Rectangle.
     public var centerY: Scalar {
         @_transparent
@@ -99,12 +99,12 @@ public struct UIIntRectangle: Hashable, Codable {
         @_transparent
         set {
             let diff = newValue - minimum
-            
+
             location = newValue
             size -= diff.asUIIntSize
         }
     }
-    
+
     public var maximum: UIIntPoint {
         @_transparent
         get {
@@ -140,7 +140,7 @@ public struct UIIntRectangle: Hashable, Codable {
         location = .zero
         size = .zero
     }
-    
+
     @_transparent
     public init(location: UIIntPoint, size: UIIntSize) {
         self.location = location
@@ -154,7 +154,7 @@ public struct UIIntRectangle: Hashable, Codable {
 
     @_transparent
     public init(x: Scalar, y: Scalar, width: Scalar, height: Scalar) {
-        self.init(location: .init(x: x, y: y), 
+        self.init(location: .init(x: x, y: y),
                   size: .init(width: width, height: height))
     }
 
@@ -193,33 +193,43 @@ public struct UIIntRectangle: Hashable, Codable {
 
 public extension UIIntRectangle {
     @_transparent
+    func offsetBy(_ point: UIIntPoint) -> Self {
+        .init(location: location + point, size: size)
+    }
+
+    @_transparent
     func offsetBy(x: Scalar, y: Scalar) -> Self {
         offsetBy(.init(x: x, y: y))
     }
 
     @_transparent
-    func offsetBy(_ point: UIIntPoint) -> Self {
-        .init(location: location + point, size: size)
-    }
-    
-    @_transparent
     func inflatedBy(_ size: UIIntPoint) -> Self {
         Self(location: location - size / 2, size: self.size + size.asUIIntSize)
     }
-    
-    @_transparent
-    func insetBy(_ size: UIIntPoint) -> Self {
-        Self(location: location + size / 2, size: self.size - size.asUIIntSize)
-    }
-    
+
     @_transparent
     func inflatedBy(x: Scalar, y: Scalar) -> Self {
         inflatedBy(.init(x: x, y: y))
     }
-    
+
+    @_transparent
+    func inflatedBy(_ value: Scalar) -> Self {
+        inflatedBy(.init(repeating: value))
+    }
+
+    @_transparent
+    func insetBy(_ size: UIIntPoint) -> Self {
+        Self(location: location + size / 2, size: self.size - size.asUIIntSize)
+    }
+
     @_transparent
     func insetBy(x: Scalar, y: Scalar) -> Self {
         insetBy(.init(x: x, y: y))
+    }
+
+    @_transparent
+    func insetBy(_ value: Scalar) -> Self {
+        insetBy(.init(repeating: value))
     }
 
     @_transparent
@@ -227,7 +237,7 @@ public extension UIIntRectangle {
         minimum = UIIntPoint.pointwiseMin(minimum, point)
         maximum = UIIntPoint.pointwiseMax(maximum, point)
     }
-    
+
     @inlinable
     mutating func expand<S: Sequence>(toInclude points: S) where S.Element == UIIntPoint {
         for p in points {
@@ -250,14 +260,14 @@ public extension UIIntRectangle {
     func movingCenter(toX x: Scalar, y: Scalar) -> Self {
         movingCenter(to: .init(x: x, y: y))
     }
-    
+
     /// Returns a new Rectangle with the same left, right, and height as the current
     /// instance, where the `top` lays on `value`.
     @_transparent
     func movingTop(to value: Scalar) -> Self {
         Self(x: left, y: value, width: width, height: height)
     }
-    
+
     /// Returns a new Rectangle with the same top, bottom, and width as the current
     /// instance, where the `left` lays on `value`.
     @_transparent
@@ -270,35 +280,35 @@ public extension UIIntRectangle {
     func movingRight(to value: Scalar) -> Self {
         Self(left: value - width, top: top, right: value, bottom: bottom)
     }
-    
+
     /// Returns a new Rectangle with the same left, right, and height as the current
     /// instance, where the `bottom` lays on `value`.
     @inlinable
     func movingBottom(to value: Scalar) -> Self {
         Self(left: left, top: value - height, right: right, bottom: value)
     }
-    
+
     /// Returns a new Rectangle with the same top, bottom, and right as the current
     /// instance, where the `left` lays on `value`.
     @inlinable
     func stretchingLeft(to value: Scalar) -> Self {
         Self(left: value, top: top, right: right, bottom: bottom)
     }
-    
+
     /// Returns a new Rectangle with the same left, right, and bottom as the current
     /// instance, where the `top` lays on `value`.
     @inlinable
     func stretchingTop(to value: Scalar) -> Self {
         Self(left: left, top: value, right: right, bottom: bottom)
     }
-    
+
     /// Returns a new Rectangle with the same top, bottom, and left as the current
     /// instance, where the `right` lays on `value`.
     @inlinable
     func stretchingRight(to value: Scalar) -> Self {
         Self(left: left, top: top, right: value, bottom: bottom)
     }
-    
+
     /// Returns a new Rectangle with the same left, right, and top as the current
     /// instance, where the `bottom` lays on `value`.
     @inlinable
@@ -319,17 +329,17 @@ public extension UIIntRectangle {
     func clamp(_ point: UIIntPoint) -> UIIntPoint {
         UIIntPoint.pointwiseMax(minimum, UIIntPoint.pointwiseMin(maximum, point))
     }
-    
+
     @_transparent
     func contains(_ point: UIIntPoint) -> Bool {
         point >= minimum && point <= maximum
     }
-    
+
     @_transparent
     func contains(_ rect: Self) -> Bool {
         rect.minimum >= minimum && rect.maximum <= maximum
     }
-    
+
     @_transparent
     func intersects(_ other: Self) -> Bool {
         minimum <= other.maximum && maximum >= other.minimum
@@ -343,12 +353,12 @@ public extension UIIntRectangle {
     func union(_ other: Self) -> Self {
         Self.union(self, other)
     }
-    
+
     @inlinable
     func intersection(_ other: Self) -> Self? {
         Self.intersect(self, other)
     }
-    
+
     @_transparent
     static func union(_ left: Self, _ right: Self) -> Self {
         Self(minimum: UIIntPoint.pointwiseMin(left.minimum, right.minimum),
@@ -361,11 +371,11 @@ public extension UIIntRectangle {
         let x2 = min(a.right, b.right)
         let y1 = max(a.top, b.top)
         let y2 = min(a.bottom, b.bottom)
-        
+
         if x2 >= x1 && y2 >= y1 {
             return Self(left: x1, top: y1, right: x2, bottom: y2)
         }
-        
+
         return nil
     }
 }

@@ -268,6 +268,16 @@ public extension UIRectangle {
         insetBy(.init(x: x, y: y))
     }
 
+    @_transparent
+    func inflatedBy(_ value: Scalar) -> Self {
+        inflatedBy(.init(repeating: value))
+    }
+
+    @_transparent
+    func insetBy(_ value: Scalar) -> Self {
+        insetBy(.init(repeating: value))
+    }
+
     /// Returns a rectangle where each coordinate is rounded such that the rectangle
     /// with the maximal possible bounds is returned.
     @_transparent

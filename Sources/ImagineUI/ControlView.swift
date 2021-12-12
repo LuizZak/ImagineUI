@@ -1,3 +1,4 @@
+import Foundation
 import Geometry
 import Rendering
 
@@ -56,7 +57,7 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
     open override var bounds: UIRectangle {
         didSet {
             if bounds.size != oldValue.size {
-                _bitmapCache.updateBitmapBounds(boundsForRedraw())
+                _updateCacheBounds()
                 onResize(ValueChangedEventArgs(oldValue: oldValue.size, newValue: bounds.size))
             }
         }
@@ -97,36 +98,35 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
 
     // MARK: - Visual Style / Colors
 
-    /// This view's neutral background color
+    /// This view's neutral background color.
     open var backColor: Color = .transparentBlack { // TODO: Should be KnownColor.Control
         didSet {
             invalidateControlGraphics()
         }
     }
 
-    /// This view's foreground color
+    /// This view's foreground color.
     open var foreColor: Color = .black {
         didSet {
             invalidateControlGraphics()
         }
     }
 
-    /// Corner radius for this control's corners
-    /// (does not affect clipping region)
+    /// Corner radius for this control's corners (does not affect clipping region).
     open var cornerRadius: Double = 0 {
         didSet {
             invalidateControlGraphics()
         }
     }
 
-    /// Stroke color around the bounds of the control view
+    /// Stroke color around the bounds of the control view.
     open var strokeColor: Color = .transparentBlack {
         didSet {
             invalidateControlGraphics()
         }
     }
 
-    /// Stroke width
+    /// Stroke width.
     open var strokeWidth: Double = 0 {
         willSet {
             if strokeWidth != newValue {
@@ -249,6 +249,12 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
         .systemDefined
     }
 
+    /// Preferred delay before a mouse hover event displays this control view's
+    /// tooltip.
+    open var tooltipDelay: TimeInterval? {
+        nil
+    }
+
     // MARK: -
 
     public override init() {
@@ -285,6 +291,8 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
 
         renderer.withTemporaryState {
             _bitmapCache.isCachingEnabled = cacheAsBitmap ?? ControlView.globallyCacheAsBitmap
+
+            _updateCacheBounds()
             _bitmapCache.cachingOrRendering(renderer) { ctx in
                 renderBackground(in: ctx, screenRegion: screenRegion)
                 renderForeground(in: ctx, screenRegion: screenRegion)
@@ -332,16 +340,33 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
     ///
     /// Defaults to `self.bounds`.
     open func boundsForFillOrStroke() -> UIRectangle {
-        return bounds
+        bounds
     }
 
     /// The bounds that this control view renders into, taking into account the
-    /// current stroke width.
+    /// current back/fore/stroke color configuration, `self.strokerWidth` and
+    /// `self.boundsForFillOrStroke()` values.
     open override func boundsForRedraw() -> UIRectangle {
-        return bounds.inflatedBy(x: strokeWidth, y: strokeWidth)
+        var result = bounds
+
+        // Back color area
+        if backColor.alpha > 0 {
+            result = result.union(boundsForFillOrStroke())
+        }
+
+        // Stroke area
+        if strokeColor.alpha > 0 && strokeWidth > 0 {
+            let strokeArea = boundsForFillOrStroke().inflatedBy(x: strokeWidth * 2, y: strokeWidth * 2)
+
+            result = result.union(strokeArea)
+        }
+
+        return result
     }
 
     open func invalidateControlGraphics() {
+        _updateCacheBounds()
+
         invalidateControlGraphics(bounds: boundsForRedraw())
     }
 
@@ -349,6 +374,10 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
         invalidate(bounds: bounds)
 
         _bitmapCache.invalidateCache()
+    }
+
+    private func _updateCacheBounds() {
+        _bitmapCache.updateBitmapBounds(boundsForRedraw())
     }
 
     // MARK: - Event Handling / First Responder

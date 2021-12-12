@@ -43,6 +43,8 @@ public class TooltipsManager {
         _tooltip.location = .init(x: 50, y: 50)
 
         _container.addSubview(_tooltip)
+
+        _computePosition(view: view, location: location)
     }
 
     /// Updates the mouse location so the tooltip stays besides it, in case it is
@@ -54,32 +56,22 @@ public class TooltipsManager {
     func _computePosition(view: View, location: PreferredTooltipLocation) {
         switch location {
         case .systemDefined:
-            break
+            _position = .nextToMouse
         case .right:
-            break
+            _position = .rightOf(view)
         case .left:
-            break
+            _position = .leftOf(view)
         case .top:
-            break
+            _position = .rightOf(view)
         case .bottom:
-            break
+            _position = .rightOf(view)
         case .nextToMouse:
-            break
+            _position = .nextToMouse
         case .followingMouse:
-            break
+            _position = .followingMouse
         }
-    }
 
-    private func show(text: String, at point: UIPoint, in view: View) {
-        _show(text: text, position: .relative(view, point))
-    }
-
-    private func show(text: String, rightOf view: View) {
-        _show(text: text, position: .rightOf(view))
-    }
-
-    private func showNextToMouse(text: String) {
-        _show(text: text, position: .nextToMouse)
+        _updateTooltipPosition()
     }
 
     private func _show(text: String, position: DisplayPosition) {
@@ -99,7 +91,7 @@ public class TooltipsManager {
     }
 
     private func _updateTooltipPosition() {
-        let mouseOffset: UIVector = .init(x: 12, y: 0)
+        let mouseOffset: UIVector = .init(x: 12, y: 5)
         let mousePosition = _mouseLocation + mouseOffset
 
         switch _position {
