@@ -86,25 +86,25 @@ open class ScrollView: ControlView {
     func initialize() {
         cacheAsBitmap = false
         _contentView.areaIntoConstraintsMask = [.location]
-        _contentView.onResizeEvent.addListener(owner: self) { [weak self] (_, _) in
+        _contentView.onResizeEvent.addListener(weakOwner: self) { [weak self] (_, _) in
             self?.updateScrollBarSizes()
             self?.updateScrollBarVisibility()
         }
 
         updateScrollBarVisibility()
 
-        horizontalBar.scrollChanged.addListener(owner: self) { [weak self] (_, scroll) in
+        horizontalBar.scrollChanged.addListener(weakOwner: self) { [weak self] (_, scroll) in
             self?.horizontalScrollChanged(scroll)
         }
 
-        verticalBar.scrollChanged.addListener(owner: self) { [weak self] (_, scroll) in
+        verticalBar.scrollChanged.addListener(weakOwner: self) { [weak self] (_, scroll) in
             self?.verticalScrollChanged(scroll)
         }
 
         updateScrollBarConstraints()
         didUpdateContentSize(oldValue: nil)
 
-        Scheduler.instance.fixedFrameEvent.addListener(owner: self) { [weak self] interval in
+        Scheduler.instance.fixedFrameEvent.addListener(weakOwner: self) { [weak self] interval in
             self?.onFixedFrame(interval: interval)
         }
     }
@@ -190,7 +190,7 @@ open class ScrollView: ControlView {
         contentView.location = contentOffset
         horizontalBar.visibleSize = bounds.width
         verticalBar.visibleSize = bounds.height
-        
+
         updateScrollBarVisibility()
         limitTargetContentOffset()
         updateScrollBarSizes()

@@ -260,7 +260,7 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
     public override init() {
         super.init()
 
-        _stateManager.stateChanged.addListener(owner: self) { [weak self] event in
+        _stateManager.stateChanged.addListener(weakOwner: self) { [weak self] event in
             self?.onStateChanged(event)
         }
     }

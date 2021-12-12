@@ -49,17 +49,17 @@ class TextEngine: TextEngineType {
         _undoSystem = UndoSystem()
         _undoSystem.maximumTaskCount = 30
 
-        _undoSystem.willPerformUndo.addListener(owner: self) { [weak self] _ in
+        _undoSystem.willPerformUndo.addListener(weakOwner: self) { [weak self] _ in
             self?._isPerformingUndoRedo = true
         }
-        _undoSystem.willPerformRedo.addListener(owner: self) { [weak self] _ in
+        _undoSystem.willPerformRedo.addListener(weakOwner: self) { [weak self] _ in
             self?._isPerformingUndoRedo = true
         }
 
-        _undoSystem.undoPerformed.addListener(owner: self) { [weak self] _ in
+        _undoSystem.undoPerformed.addListener(weakOwner: self) { [weak self] _ in
             self?._isPerformingUndoRedo = false
         }
-        _undoSystem.redoPerformed.addListener(owner: self) { [weak self] _ in
+        _undoSystem.redoPerformed.addListener(weakOwner: self) { [weak self] _ in
             self?._isPerformingUndoRedo = false
         }
     }

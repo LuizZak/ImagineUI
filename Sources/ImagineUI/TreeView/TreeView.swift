@@ -466,10 +466,10 @@ public class TreeView: ControlView {
 
     private func _makeItemView(itemIndex: ItemIndex, dataSource: TreeViewDataSource) -> ItemView {
         let itemView = _itemViewCache.dequeue(itemIndex: itemIndex, style: style) { itemView in
-            itemView.mouseSelected.addListener(owner: self) { [weak self] (sender, _) in
+            itemView.mouseSelected.addListener(weakOwner: self) { [weak self] (sender, _) in
                 self?._raiseSelectEvent(sender)
             }
-            itemView.mouseClickChevron.addListener(owner: self) { [weak self] (sender, _) in
+            itemView.mouseClickChevron.addListener(weakOwner: self) { [weak self] (sender, _) in
                 guard let self = self else { return }
 
                 if self._isExpanded(index: sender.itemIndex) {
@@ -478,7 +478,7 @@ public class TreeView: ControlView {
                     self._raiseExpandEvent(sender.itemIndex)
                 }
             }
-            itemView.mouseRightClicked.addListener(owner: self) { [weak self] (sender, _) in
+            itemView.mouseRightClicked.addListener(weakOwner: self) { [weak self] (sender, _) in
                 guard let self = self else { return }
 
                 self._raiseRightMouseClick(sender.itemIndex)
@@ -590,16 +590,16 @@ public class TreeView: ControlView {
 
             _iconImageView.scalingMode = .centeredAsIs
 
-            _chevronView.mouseClicked.addListener(owner: self) { [weak self] (_, _) in
+            _chevronView.mouseClicked.addListener(weakOwner: self) { [weak self] (_, _) in
                 self?.onMouseClickChevron()
             }
-            _chevronView.mouseEntered.addListener(owner: self) { [weak self] (_, _) in
+            _chevronView.mouseEntered.addListener(weakOwner: self) { [weak self] (_, _) in
                 self?.isHighlighted = true
             }
-            _chevronView.mouseExited.addListener(owner: self) { [weak self] (_, _) in
+            _chevronView.mouseExited.addListener(weakOwner: self) { [weak self] (_, _) in
                 self?.isHighlighted = false
             }
-            _chevronView.mouseUp.addListener(owner: self) { [weak self] (sender, event) in
+            _chevronView.mouseUp.addListener(weakOwner: self) { [weak self] (sender, event) in
                 guard let self = self else { return }
 
                 if !self.bounds.contains(self.convert(point: event.location, from: sender)) {
@@ -607,7 +607,7 @@ public class TreeView: ControlView {
                 }
             }
 
-            mouseDown.addListener(owner: self) { [weak self] (_, _) in
+            mouseDown.addListener(weakOwner: self) { [weak self] (_, _) in
                 self?.onMouseSelected()
             }
         }

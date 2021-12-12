@@ -8,11 +8,6 @@ public class DefaultControlSystem: ControlSystemType {
     /// Wrapper for timed tooltip display operations.
     private let _tooltipWrapper: TooltipDisplayWrapper = TooltipDisplayWrapper()
 
-    /// Reference to the current tooltip provider being displayed.
-    ///
-    /// Is `nil` if no tooltip is currently displayed.
-    private var _currentTooltipProvider: TooltipProvider?
-
     /// When mouse is down on a control, this is the control that the mouse
     /// was pressed down on
     private var _mouseDownTarget: MouseEventHandler?
@@ -322,7 +317,15 @@ public class DefaultControlSystem: ControlSystemType {
             return
         }
 
-        _tooltipWrapper.setDisplay(provider: tooltipProvider)
+        _tooltipWrapper.setDisplay(provider: tooltipProvider, onUpdate: { [weak self] tooltip in
+            guard let self = self else { return }
+
+            if let tooltip = tooltip {
+                self.updateTooltipContents(tooltip)
+            } else {
+                self.hideTooltip()
+            }
+        })
 
         delegate?.showTooltip(tooltip, view: tooltipProvider.viewForTooltip, location: tooltipProvider.preferredTooltipLocation)
     }
@@ -335,6 +338,10 @@ public class DefaultControlSystem: ControlSystemType {
         _tooltipWrapper.setHover(provider: provider) {
             self.showTooltip(for: provider)
         }
+    }
+
+    private func updateTooltipContents(_ tooltip: Tooltip) {
+        delegate?.updateTooltip(tooltip)
     }
 
     // MARK: - Mouse Cursor
@@ -350,6 +357,11 @@ public class DefaultControlSystem: ControlSystemType {
     // MARK: -
 
     private class TooltipDisplayWrapper {
+        private var _currentUpdateEvent: EventListenerKey? {
+            willSet {
+                _currentUpdateEvent?.removeListener()
+            }
+        }
         private var state: TooltipState {
             willSet {
                 state.invalidateTimer()
@@ -372,11 +384,15 @@ public class DefaultControlSystem: ControlSystemType {
             state.provider
         }
 
-        func setDisplay(provider: TooltipProvider) {
+        func setDisplay(provider: TooltipProvider, onUpdate: @escaping (Tooltip?) -> Void) {
             state = .displayed(provider: provider)
+
+            _currentUpdateEvent = provider.tooltipUpdated.addListener(weakOwner: self, onUpdate)
         }
 
         func setHover(provider: TooltipProvider, defaultDelay: TimeInterval = 0.5, callback: @escaping () -> Void) {
+            _currentUpdateEvent = nil
+
             let delay = provider.tooltipDelay ?? defaultDelay
 
             if delay <= 0.0 {
@@ -391,6 +407,7 @@ public class DefaultControlSystem: ControlSystemType {
         }
 
         func setHidden() {
+            _currentUpdateEvent = nil
             state = .none
         }
 

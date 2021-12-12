@@ -86,15 +86,15 @@ public class Window: RootView {
         _titleLabel.text = title
         _titleLabel.font = titleFont
 
-        _buttons.close.mouseClicked.addListener(owner: self) { [weak self] (_, _) in
+        _buttons.close.mouseClicked.addListener(weakOwner: self) { [weak self] (_, _) in
             guard let self = self else { return }
             self.delegate?.windowWantsToClose(self)
         }
-        _buttons.minimize.mouseClicked.addListener(owner: self) { [weak self] (_, _) in
+        _buttons.minimize.mouseClicked.addListener(weakOwner: self) { [weak self] (_, _) in
             guard let self = self else { return }
             self.delegate?.windowWantsToMinimize(self)
         }
-        _buttons.maximize.mouseClicked.addListener(owner: self) { [weak self] (_, _) in
+        _buttons.maximize.mouseClicked.addListener(weakOwner: self) { [weak self] (_, _) in
             guard let self = self else { return }
             self.delegate?.windowWantsToMaximize(self)
         }

@@ -53,6 +53,11 @@ public class TooltipsManager {
         _mouseLocation = location
     }
 
+    /// Updates the contents of the currently displayed tooltip.
+    public func updateTooltip(_ tooltip: Tooltip) {
+        _tooltip.update(tooltip)
+    }
+
     func _computePosition(view: View, location: PreferredTooltipLocation) {
         switch location {
         case .systemDefined:

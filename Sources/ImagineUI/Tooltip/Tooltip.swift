@@ -20,3 +20,27 @@ extension Tooltip: ExpressibleByStringLiteral {
         self.init(text: value)
     }
 }
+
+extension Tooltip: ExpressibleByStringInterpolation {
+    public init(stringInterpolation: StringInterpolation) {
+        self.init(text: stringInterpolation.output)
+    }
+
+    public struct StringInterpolation: StringInterpolationProtocol {
+        public typealias StringLiteralType = String
+
+        var output: String = ""
+
+        public init(literalCapacity: Int, interpolationCount: Int) {
+            output.reserveCapacity(literalCapacity * 2)
+        }
+
+        public mutating func appendLiteral(_ literal: String) {
+            output += literal
+        }
+
+        public mutating func appendInterpolation<T>(_ literal: T) {
+            output += "\(literal)"
+        }
+    }
+}

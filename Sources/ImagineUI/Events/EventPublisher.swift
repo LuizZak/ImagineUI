@@ -1,7 +1,11 @@
 public protocol EventPublisherType: AnyObject {
-
+    /// Removes a listener associated with a given key.
+    func removeListener(forKey key: EventListenerKey)
 }
 
+/// An event publisher that handles registration and dispatching of events.
+///
+/// Warning: Not thread-safe.
 public class EventPublisher<T>: EventPublisherType {
     private var _listenerKey = 0
     var listeners: [(key: EventListenerKey, listener: (T) -> Void)] = []
@@ -20,8 +24,8 @@ public class EventPublisher<T>: EventPublisherType {
         }
     }
 
-    public func addListener(owner: AnyObject, _ listener: @escaping (T) -> Void) -> EventListenerKey {
-        let key = EventListenerKey(owner: owner, publisher: self, key: _listenerKey)
+    public func addListener(weakOwner: AnyObject, _ listener: @escaping (T) -> Void) -> EventListenerKey {
+        let key = EventListenerKey(owner: weakOwner, publisher: self, key: _listenerKey)
         _listenerKey &+= 1
 
         listeners.append((key, listener))
@@ -29,7 +33,7 @@ public class EventPublisher<T>: EventPublisherType {
         return key
     }
 
-    public func removeListener(withKey key: EventListenerKey) {
+    public func removeListener(forKey key: EventListenerKey) {
         guard key.publisher === self else {
             return
         }

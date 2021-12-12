@@ -1,3 +1,10 @@
+/// Property wrapper that can be used to define an event publisher/source pair
+/// using a single property.
+///
+/// Events can be registered to with `someEvent.addListener()`, and published
+/// with `_someEvent(<eventValue>)`.
+///
+/// Warning: Not thread-safe.
 @propertyWrapper
 public class Event<T> {
     private let eventPublisher: EventPublisher<T>

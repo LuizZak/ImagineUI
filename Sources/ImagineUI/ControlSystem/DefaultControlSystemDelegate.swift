@@ -10,6 +10,10 @@ public protocol DefaultControlSystemDelegate: AnyObject {
     /// Requests that a tooltip be shown on screen for a given view.
     func showTooltip(_ tooltip: Tooltip, view: View, location: PreferredTooltipLocation)
 
+    /// Notifies the delegate that the contents of any currently displayed tooltip
+    /// should be updated to a specified value.
+    func updateTooltip(_ tooltip: Tooltip)
+
     /// Requests that the tooltip previously shown be hidden from the screen.
     func hideTooltip()
 

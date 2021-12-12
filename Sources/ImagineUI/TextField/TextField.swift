@@ -126,7 +126,7 @@ open class TextField: ControlView {
 
         isEnabled = true
 
-        buffer.changed.addListener(owner: self) { [weak self] in
+        buffer.changed.addListener(weakOwner: self) { [weak self] in
             self?.textBufferOnChanged()
         }
 
@@ -138,7 +138,7 @@ open class TextField: ControlView {
     }
 
     private func initialize() {
-        _textEngine.caretChanged.addListener(owner: self) { [weak self] (_, event) in
+        _textEngine.caretChanged.addListener(weakOwner: self) { [weak self] (_, event) in
             guard let self = self else { return }
 
             self.invalidateCaret(at: event.newValue.location)
