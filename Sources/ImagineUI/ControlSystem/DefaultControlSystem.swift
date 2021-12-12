@@ -90,41 +90,45 @@ public class DefaultControlSystem: ControlSystemType {
     }
 
     public func onMouseUp(_ event: MouseEventArgs) {
-        if let control = _mouseDownTarget {
-            control.onMouseUp(event.convertLocation(handler: control))
-
-            // Figure out if it's a click or mouse up event
-            // Click events fire when mouseDown + mouseUp occur over the same element
-            if let upControl = delegate?.controlViewUnder(point: event.location, enabledOnly: true), upControl === control {
-                upControl.onMouseClick(event.convertLocation(handler: upControl))
-            }
-
-            _mouseDownTarget = nil
-
-            // Dispatch a mouse move, in case the mouse up event caused objects
-            // on screen to shuffle.
-            updateMouseOver(event: event, eventType: .mouseMove)
+        guard let control = _mouseDownTarget else {
+            return
         }
+        
+        control.onMouseUp(event.convertLocation(handler: control))
+
+        // Figure out if it's a click or mouse up event
+        // Click events fire when mouseDown + mouseUp occur over the same element
+        if let upControl = delegate?.controlViewUnder(point: event.location, enabledOnly: true), upControl === control {
+            upControl.onMouseClick(event.convertLocation(handler: upControl))
+        }
+
+        _mouseDownTarget = nil
+
+        // Dispatch a mouse move, in case the mouse up event caused objects
+        // on screen to shuffle.
+        updateMouseOver(event: event, eventType: .mouseMove)
     }
 
     public func onMouseWheel(_ event: MouseEventArgs) {
-        if let control = delegate?.controlViewUnder(point: event.location, enabledOnly: true) {
-            // Make request
-            let request = InnerMouseEventRequest(event: event, eventType: .mouseWheel) { handler in
-                if let mouse = self._mouseDownTarget {
-                    mouse.onMouseWheel(event.convertLocation(handler: mouse))
-                } else {
-                    handler.onMouseWheel(event.convertLocation(handler: handler))
-                }
-            }
+        guard let control = delegate?.controlViewUnder(point: event.location, enabledOnly: true) else {
+            return
+        }
 
-            control.handleOrPass(request)
-
-            // Dispatch a mouse move, in case the mouse wheel event caused objects
-            // on screen to shuffle.
-            if request.accepted {
-                updateMouseOver(event: event, eventType: .mouseMove)
+        // Make request
+        let request = InnerMouseEventRequest(event: event, eventType: .mouseWheel) { handler in
+            if let mouse = self._mouseDownTarget {
+                mouse.onMouseWheel(event.convertLocation(handler: mouse))
+            } else {
+                handler.onMouseWheel(event.convertLocation(handler: handler))
             }
+        }
+
+        control.handleOrPass(request)
+
+        // Dispatch a mouse move, in case the mouse wheel event caused objects
+        // on screen to shuffle.
+        if request.accepted {
+            updateMouseOver(event: event, eventType: .mouseMove)
         }
     }
 
