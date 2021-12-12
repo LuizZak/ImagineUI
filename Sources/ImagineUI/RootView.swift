@@ -6,24 +6,30 @@ open class RootView: ControlView {
     private var _hasIndependentInternalLayout = true
 
     public weak var invalidationDelegate: RootViewRedrawInvalidationDelegate?
-    public var rootControlSystem: ControlSystem?
+    public var rootControlSystem: ControlSystemType?
 
-    public override var controlSystem: ControlSystem? {
+    /// If `true`, this root view ignores `hitTestControl` and `MouseEventRequest`
+    /// that land directly on `self`.
+    ///
+    /// Behavior is normal for subviews of `self` in either case.
+    public var passthroughMouseCapture: Bool = false
+
+    public override var controlSystem: ControlSystemType? {
         // Propagate parent's control system, if none where specified for this
         // root view.
         if rootControlSystem == nil {
             return superview?.controlSystem
         }
-        
+
         return rootControlSystem
     }
 
     public override func setNeedsLayout() {
         super.setNeedsLayout()
-        
+
         guard !_isSizingLayout else { return }
         guard !isLayoutSuspended else { return }
-        
+
         invalidationDelegate?.rootViewInvalidatedLayout(self)
     }
 
@@ -51,7 +57,7 @@ open class RootView: ControlView {
             let rect = spatialReference.convert(bounds: bounds, to: nil)
             invalidationDelegate.rootView(self, invalidateRect: rect)
         } else {
-            // Propagate invalidation to parent view, if no invalidation delegate 
+            // Propagate invalidation to parent view, if no invalidation delegate
             // was specified for this root view.
             superview?.invalidate(bounds: bounds, spatialReference: spatialReference)
         }
@@ -81,5 +87,22 @@ open class RootView: ControlView {
         }
 
         _hasIndependentInternalLayout = true
+    }
+
+    open override func canHandle(_ eventRequest: EventRequest) -> Bool {
+        if passthroughMouseCapture && eventRequest is MouseEventRequest {
+            return false
+        }
+
+        return super.canHandle(eventRequest)
+    }
+
+    open override func hitTestControl(_ point: UIVector, enabledOnly: Bool = true) -> ControlView? {
+        let result = super.hitTestControl(point, enabledOnly: enabledOnly)
+        if passthroughMouseCapture && result == self {
+            return nil
+        }
+
+        return result
     }
 }

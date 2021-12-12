@@ -2,7 +2,7 @@ import Geometry
 
 /// Base for a control system which handles views and controls from a full
 /// hierarchy
-public protocol ControlSystem {
+public protocol ControlSystemType {
     /// Sets an event handler as first responder
     ///
     /// - Parameter eventHandler: An event handler, or nil, in case of an attempt
@@ -27,10 +27,13 @@ public protocol ControlSystem {
 
     /// Returns whether a given event handler is the current first responder.
     func isFirstResponder(_ eventHandler: EventHandler) -> Bool
-    
+
     /// Changes the current mouse cursor.
     func setMouseCursor(_ cursor: MouseCursorKind)
-    
+
     /// Hides the mouse until it is moved by the user.
     func setMouseHiddenUntilMouseMoves()
+
+    /// Hides any visible tooltip attributed to a view in a given hierarchy.
+    func hideTooltipFor(anyInHierarchy view: View)
 }

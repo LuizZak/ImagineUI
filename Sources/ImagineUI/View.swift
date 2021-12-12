@@ -228,7 +228,7 @@ open class View {
 
     /// Gets the active control system for the view hierarchy.
     /// Used to handle first responder configurations.
-    public var controlSystem: ControlSystem? {
+    public var controlSystem: ControlSystemType? {
         return superview?.controlSystem
     }
 
@@ -452,14 +452,15 @@ open class View {
         view.superviewDidChange(self)
     }
 
-    /// Function called after a view has been added as a subview of this view
+    /// Function called after a view has been added as a subview of this view.
     open func didAddSubview(_ view: View) {
 
     }
 
-    /// Function called before a view is removed as a subview of this view instance
+    /// Function called before a view is removed as a subview of this view instance.
     open func willRemoveSubview(_ view: View) {
         _=controlSystem?.removeAsFirstResponder(anyInHierarchy: view)
+        controlSystem?.hideTooltipFor(anyInHierarchy: view)
     }
 
     open func removeFromSuperview() {
@@ -495,7 +496,7 @@ open class View {
 
     /// Called when the superview of this view has changed.
     open func superviewDidChange(_ newSuperview: View?) {
-        
+
     }
 
     /// Brings this view to the end of this view's superview's subviews list.
@@ -635,7 +636,7 @@ open class View {
     // MARK: - Bounds / Hit testing
 
     /// Performs a hit test operation on the area of this, and all child base
-    /// views, for the given point that is relative to this view's coordinate 
+    /// views, for the given point that is relative to this view's coordinate
     /// system.
     ///
     /// Returns the first base view that crosses the point.
@@ -659,7 +660,7 @@ open class View {
     }
 
     /// Performs a hit test operation on the area of this, and all child base
-    /// views, for the given point that is relative to this view's coordinate 
+    /// views, for the given point that is relative to this view's coordinate
     /// system.
     ///
     /// Returns the first base view that crosses the point and returns true for
@@ -694,7 +695,7 @@ open class View {
     /// The `inflatingArea` argument can be used to inflate the area of the views
     /// to perform less precise hit tests.
     ///
-    /// - Parameter point: Point to test, relative to this view's coordinate 
+    /// - Parameter point: Point to test, relative to this view's coordinate
     /// system.
     /// - Parameter inflatingArea: Used to inflate the area of the views to
     /// perform less precise hit tests.
@@ -734,7 +735,7 @@ open class View {
     /// distortion may occur and result in inaccurate results for views that are
     /// rotated. There are no alternatives for this, currently.
     ///
-    /// - Parameter point: rectangle to test, relative to this view's coordinate 
+    /// - Parameter point: rectangle to test, relative to this view's coordinate
     /// system.
     /// - Parameter inflatingArea: Used to inflate the area of the views to perform
     /// less precise hit tests.
@@ -849,7 +850,7 @@ open class View {
 
     // MARK: LayoutVariablesContainer implementations
     // NOTE: adding the methods here instead of extension bellow to allow overriding.
-    
+
     func didAddConstraint(_ constraint: LayoutConstraint) {
 
     }

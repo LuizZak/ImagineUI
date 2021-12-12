@@ -494,20 +494,10 @@ class WindowButtons: View {
         setButtonColor(close, .indianRed)
         setButtonColor(minimize, .gold)
         setButtonColor(maximize, .limeGreen)
-    }
 
-    private func setButtonColor(_ button: Button, _ color: Color) {
-        button.setBackgroundColor(color, forState: .normal)
-        button.setBackgroundColor(color.faded(towards: .white, factor: 0.1), forState: .highlighted)
-        button.setBackgroundColor(color.faded(towards: .black, factor: 0.1), forState: .selected)
-    }
-
-    private func configureButton(_ button: Button) {
-        button.cornerRadius = 5
-        button.strokeWidth = 0
-        button.layout.makeConstraints { make in
-            make.size == UISize(width: 10, height: 10)
-        }
+        close.tooltip = .init(text: "Close")
+        minimize.tooltip = .init(text: "Minimize")
+        minimize.tooltip = .init(text: "maximize")
     }
 
     override func setupHierarchy() {
@@ -525,6 +515,20 @@ class WindowButtons: View {
 
         stackView.layout.makeConstraints { make in
             make.edges == self
+        }
+    }
+
+    private func setButtonColor(_ button: Button, _ color: Color) {
+        button.setBackgroundColor(color, forState: .normal)
+        button.setBackgroundColor(color.faded(towards: .white, factor: 0.1), forState: .highlighted)
+        button.setBackgroundColor(color.faded(towards: .black, factor: 0.1), forState: .selected)
+    }
+
+    private func configureButton(_ button: Button) {
+        button.cornerRadius = 5
+        button.strokeWidth = 0
+        button.layout.makeConstraints { make in
+            make.size == UISize(width: 10, height: 10)
         }
     }
 }

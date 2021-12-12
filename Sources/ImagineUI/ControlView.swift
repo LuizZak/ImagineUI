@@ -1,7 +1,7 @@
 import Geometry
 import Rendering
 
-open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
+open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventHandler {
     /// Whether to cache all controls' contents as a bitmap.
     ///
     /// This increases memory usage and reduces quality of controls in scaled
@@ -214,6 +214,40 @@ open class ControlView: View, MouseEventHandler, KeyboardEventHandler {
     /// the currently active first responder
     @EventWithSender<ControlView, PreviewKeyDownEventArgs>
     public var previewKeyDown
+
+    // MARK: - Tooltip
+
+    /// Controls whether the view should display a tooltip on mouse hover.
+    public var showTooltip: Bool = true {
+        didSet {
+            _tooltipUpdated(showTooltip ? tooltip : nil)
+        }
+    }
+
+    /// Gets the current tooltip value.
+    public var tooltip: Tooltip? = nil {
+        didSet {
+            _tooltipUpdated(showTooltip ? tooltip : nil)
+        }
+    }
+
+    /// Gets a reference for the view that a tooltip should be located next to.
+    ///
+    /// `ControlView` returns `self` by default.
+    open var viewForTooltip: View {
+        self
+    }
+
+    /// Event called whenever the contents of the tooltip have been updated.
+    @Event<Tooltip?>
+    public var tooltipUpdated
+
+    /// The preferred location to display tooltips from this control.
+    ///
+    /// Defaults to `PreferredTooltipLocation.systemDefined`.
+    open var preferredTooltipLocation: PreferredTooltipLocation {
+        .systemDefined
+    }
 
     // MARK: -
 

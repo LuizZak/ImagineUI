@@ -3,7 +3,12 @@ import Geometry
 // TODO: Consider making Window also a control system of its own, to enable
 // TODO: window-specific interception of inputs to better support tasks like
 // TODO: resizing detection with the mouse within the client area.
-public class DefaultControlSystem: ControlSystem {
+public class DefaultControlSystem: ControlSystemType {
+    /// Reference to the current tooltip provider being displayed.
+    ///
+    /// Is `nil` if no tooltip is currently displayed.
+    private var _currentTooltipProvider: TooltipProvider?
+
     /// When mouse is down on a control, this is the control that the mouse
     /// was pressed down on
     private var _mouseDownTarget: MouseEventHandler?
@@ -70,6 +75,8 @@ public class DefaultControlSystem: ControlSystem {
     }
 
     public func onMouseMove(_ event: MouseEventArgs) {
+        delegate?.updateTooltipCursorLocation(event.location)
+
         // Fixed mouse-over on control that was pressed down
         if let mouseDownTarget = _mouseDownTarget {
             mouseDownTarget.onMouseMove(event.convertLocation(handler: mouseDownTarget))
@@ -163,6 +170,8 @@ public class DefaultControlSystem: ControlSystem {
 
     private func updateMouseOver(event: MouseEventArgs, eventType: MouseEventType) {
         guard let control = delegate?.controlViewUnder(point: event.location, enabledOnly: true) else {
+            hideTooltip()
+
             _mouseHoverTarget?.onMouseLeave()
             _mouseHoverTarget = nil
             return
@@ -173,6 +182,10 @@ public class DefaultControlSystem: ControlSystem {
             if self._mouseHoverTarget !== handler {
                 self._mouseHoverTarget?.onMouseLeave()
                 handler.onMouseEnter()
+
+                if let tooltipProvider = handler as? TooltipProvider {
+                    self.showTooltip(for: tooltipProvider)
+                }
 
                 self._mouseHoverTarget = handler
             }
@@ -225,29 +238,73 @@ public class DefaultControlSystem: ControlSystem {
         guard let firstResponder = _firstResponder else {
             return false
         }
-        if let firstResponderView = firstResponder as? View, firstResponderView.isDescendant(of: view) {
-            firstResponder.resignFirstResponder()
-            return true
+        guard let firstResponderView = firstResponder as? View, firstResponderView.isDescendant(of: view) else {
+            return false
         }
 
-        let visitor = SkippableClosureViewVisitor<Bool> { (found, view) in
-            if let eventHandler = view as? EventHandler, self.isFirstResponder(eventHandler) {
-                eventHandler.resignFirstResponder()
-                found = true
-                return .skipChildren
-            }
+        firstResponder.resignFirstResponder()
 
-            return .visitChildren
-        }
-        let traveler = ViewTraveler(state: false, visitor: visitor)
-
-        traveler.travelThrough(view: view)
-
-        return traveler.state
+        return true
     }
 
     public func isFirstResponder(_ eventHandler: EventHandler) -> Bool {
         return _firstResponder === eventHandler
+    }
+
+    // MARK: - Tooltip
+
+    /// Returns `true` if a tooltip is currently visible on screen.
+    public func isTooltipVisible() -> Bool {
+        _currentTooltipProvider != nil
+    }
+
+    /// Hides any currently visible tooltip.
+    public func hideTooltip() {
+        guard isTooltipVisible() else {
+            return
+        }
+
+        delegate?.hideTooltip()
+
+        _currentTooltipProvider = nil
+    }
+
+    public func showTooltip(for tooltipProvider: TooltipProvider) {
+        if isTooltipVisible() {
+            hideTooltip()
+        }
+
+        guard let tooltip = tooltipProvider.tooltip else {
+            return
+        }
+
+        _currentTooltipProvider = tooltipProvider
+
+        delegate?.showTooltip(tooltip, view: tooltipProvider.viewForTooltip, location: tooltipProvider.preferredTooltipLocation)
+    }
+
+    public func hideTooltip(for view: ControlView) {
+        guard let current = _currentTooltipProvider else {
+            return
+        }
+        guard let asView = current as? View else {
+            return
+        }
+        guard asView == view else {
+            return
+        }
+
+        hideTooltip()
+    }
+
+    public func hideTooltipFor(anyInHierarchy view: View) {
+        guard let tooltipView = _currentTooltipProvider as? ControlView else {
+            return
+        }
+
+        if tooltipView.isDescendant(of: view) {
+            hideTooltip(for: tooltipView)
+        }
     }
 
     // MARK: - Mouse Cursor
@@ -264,9 +321,7 @@ public class DefaultControlSystem: ControlSystem {
 private extension MouseEventArgs {
     func convertLocation(handler: EventHandler) -> MouseEventArgs {
         var mouseEvent = self
-        let point = UIVector(x: Double(mouseEvent.location.x), y: Double(mouseEvent.location.y))
-        mouseEvent.location = handler.convertFromScreen(point)
-
+        mouseEvent.location = handler.convertFromScreen(mouseEvent.location)
         return mouseEvent
     }
 }
