@@ -52,6 +52,12 @@ public struct AttributedText: Equatable {
         ]
     }
 
+    /// Reserves a specified number of segments to be added to this `AttributedText`
+    /// instance.
+    public mutating func reserveCapacity(segmentCount: Int) {
+        segments.reserveCapacity(segmentCount)
+    }
+
     public mutating func setText(_ text: String) {
         self.text = ""
         segments.removeAll()
@@ -411,24 +417,26 @@ extension AttributedText: ExpressibleByStringLiteral {
 
 extension AttributedText: ExpressibleByStringInterpolation {
     public init(stringInterpolation: StringInterpolation) {
-        self.init(stringInterpolation.output)
+        self = stringInterpolation.output
     }
 
     public struct StringInterpolation: StringInterpolationProtocol {
-        public typealias StringLiteralType = String
-
-        var output: String = ""
+        public var output: AttributedText = ""
 
         public init(literalCapacity: Int, interpolationCount: Int) {
-            output.reserveCapacity(literalCapacity * 2)
+            output.reserveCapacity(segmentCount: interpolationCount)
         }
 
         public mutating func appendLiteral(_ literal: String) {
-            output += literal
+            output.append(literal)
+        }
+
+        public mutating func appendInterpolation<T>(_ literal: T, attributes: AttributedText.Attributes) {
+            output.append("\(literal)", attributes: attributes)
         }
 
         public mutating func appendInterpolation<T>(_ literal: T) {
-            output += "\(literal)"
+            output.append("\(literal)")
         }
     }
 }
