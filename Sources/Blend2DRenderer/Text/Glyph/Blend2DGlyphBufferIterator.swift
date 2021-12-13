@@ -1,26 +1,26 @@
 import SwiftBlend2D
 import Text
 
-struct Blend2DGlyphBufferIterator: GlyphBufferIterator {
+public struct Blend2DGlyphBufferIterator: GlyphBufferIterator {
     var iterator: BLGlyphRunIterator
     
-    var index: Int {
+    public var index: Int {
         return iterator.index
     }
     
-    var atEnd: Bool {
+    public var atEnd: Bool {
         return iterator.atEnd
     }
     
-    var hasPlacement: Bool {
+    public var hasPlacement: Bool {
         return iterator.hasPlacement
     }
     
-    var glyphId: UInt32? {
+    public var glyphId: UInt32? {
         return iterator.glyphId()
     }
     
-    var advanceOffset: GlyphPlacement? {
+    public var advanceOffset: GlyphPlacement? {
         switch iterator.placementData {
         case .advanceOffset(let placement):
             return GlyphPlacement(placement: placement.placement.asIntPoint,
@@ -30,7 +30,7 @@ struct Blend2DGlyphBufferIterator: GlyphBufferIterator {
         }
     }
     
-    mutating func advance() {
+    public mutating func advance() {
         iterator.advance()
     }
 }

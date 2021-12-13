@@ -1,7 +1,7 @@
 import Geometry
 
-/// Represents a region composed of rectangles that can be queried with hit tests
-/// against rectangles
+/// Represents a region composed of rectangles that can be queried with
+/// intersection tests against other rectangles.
 public protocol ClipRegion {
     /// Returns the minimal rectangle capable of containing this clip region's
     /// contents.
