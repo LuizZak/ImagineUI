@@ -1,5 +1,6 @@
-/// Manages exhibition of tooltips for a view hierarchy.
-public class TooltipsManager {
+/// Manages exhibition of tooltips for a view hierarchy within an ImagineUI
+/// control system.
+public class ImagineUITooltipsManager: TooltipsManagerType {
     private var _mouseLocation: UIPoint = .zero {
         didSet {
             switch _position {
@@ -17,6 +18,10 @@ public class TooltipsManager {
     /// The container view for the tooltips to be added to.
     private let _container: View
 
+    public var isTooltipVisible: Bool {
+        _tooltip.superview != nil
+    }
+
     private var _position: DisplayPosition = .none {
         didSet {
             _updateTooltipPosition()
@@ -29,8 +34,8 @@ public class TooltipsManager {
         _tooltip.areaIntoConstraintsMask = [.location]
     }
 
-    public func isVisible() -> Bool {
-        _tooltip.superview != nil
+    public func isInTooltipView(_ view: View) -> Bool {
+        view.isDescendant(of: view)
     }
 
     public func hideTooltip() {
@@ -47,13 +52,10 @@ public class TooltipsManager {
         _computePosition(view: view, location: location)
     }
 
-    /// Updates the mouse location so the tooltip stays besides it, in case it is
-    /// currently being shown and is configured to follow the mouse.
     public func updateTooltipCursorLocation(_ location: UIPoint) {
         _mouseLocation = location
     }
 
-    /// Updates the contents of the currently displayed tooltip.
     public func updateTooltip(_ tooltip: Tooltip) {
         _tooltip.update(tooltip)
     }
@@ -77,22 +79,6 @@ public class TooltipsManager {
         }
 
         _updateTooltipPosition()
-    }
-
-    private func _show(text: String, position: DisplayPosition) {
-        if isVisible() {
-            hideTooltip()
-        }
-
-        _configure(text: text)
-        _container.addSubview(_tooltip)
-
-        _position = position
-        _updateTooltipPosition()
-    }
-
-    private func _configure(text: String) {
-        _tooltip.update(.init(text: text))
     }
 
     private func _updateTooltipPosition() {

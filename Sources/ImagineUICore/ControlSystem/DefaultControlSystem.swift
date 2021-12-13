@@ -23,6 +23,10 @@ public class DefaultControlSystem: ControlSystemType {
     /// First responder for keyboard events
     private var _firstResponder: KeyboardEventHandler?
 
+    private var tooltipsManager: TooltipsManagerType? {
+        delegate?.tooltipsManager()
+    }
+
     public weak var delegate: DefaultControlSystemDelegate?
 
     public init() {
@@ -79,8 +83,6 @@ public class DefaultControlSystem: ControlSystemType {
     }
 
     public func onMouseMove(_ event: MouseEventArgs) {
-        delegate?.updateTooltipCursorLocation(event.location)
-
         // Fixed mouse-over on control that was pressed down
         if let mouseDownTarget = _mouseDownTarget {
             mouseDownTarget.onMouseMove(event.convertLocation(handler: mouseDownTarget))
@@ -193,13 +195,25 @@ public class DefaultControlSystem: ControlSystemType {
     // MARK: - Mouse Target Management
 
     private func updateMouseOver(event: MouseEventArgs, eventType: MouseEventType) {
-        guard let control = delegate?.controlViewUnder(point: event.location, enabledOnly: true) else {
-            _mouseHoverTarget?.onMouseLeave()
-            _mouseHoverTarget = nil
-            _mouseHoverPoint = .zero
+        let bailOut: () -> Void = {
+            self._mouseHoverTarget?.onMouseLeave()
+            self._mouseHoverTarget = nil
+            self._mouseHoverPoint = .zero
 
+            self.hideTooltip()
+        }
+
+        guard let control = delegate?.controlViewUnder(point: event.location, enabledOnly: true) else {
+            return bailOut()
+        }
+
+        // Dismiss tooltips and try again
+        if tooltipsManager?.isInTooltipView(control) == true {
             hideTooltip()
-            return
+        }
+
+        guard let control = delegate?.controlViewUnder(point: event.location, enabledOnly: true) else {
+            return bailOut()
         }
 
         // Make request
@@ -234,11 +248,7 @@ public class DefaultControlSystem: ControlSystemType {
         control.handleOrPass(request)
 
         if !request.accepted {
-            _mouseHoverTarget?.onMouseLeave()
-            _mouseHoverTarget = nil
-            _mouseHoverPoint = .zero
-
-            hideTooltip()
+            bailOut()
         }
     }
 
@@ -318,7 +328,7 @@ public class DefaultControlSystem: ControlSystemType {
             return
         }
 
-        delegate?.hideTooltip()
+        tooltipsManager?.hideTooltip()
 
         _tooltipWrapper.setHidden()
     }
@@ -366,7 +376,7 @@ public class DefaultControlSystem: ControlSystemType {
             }
         })
 
-        delegate?.showTooltip(tooltip, view: tooltipProvider.viewForTooltip, location: tooltipProvider.preferredTooltipLocation)
+        tooltipsManager?.showTooltip(tooltip, view: tooltipProvider.viewForTooltip, location: tooltipProvider.preferredTooltipLocation)
     }
 
     private func startHoverTimer(provider: TooltipProvider) {
@@ -380,7 +390,7 @@ public class DefaultControlSystem: ControlSystemType {
     }
 
     private func updateTooltipContents(_ tooltip: Tooltip) {
-        delegate?.updateTooltip(tooltip)
+        tooltipsManager?.updateTooltip(tooltip)
     }
 
     // MARK: - Mouse Cursor

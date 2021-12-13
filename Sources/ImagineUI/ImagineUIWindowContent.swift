@@ -6,42 +6,66 @@ import ImagineUICore
 open class ImagineUIWindowContent: ImagineUIContentType, DefaultControlSystemDelegate, RootViewRedrawInvalidationDelegate, WindowDelegate {
     private var _lastFrame: TimeInterval = 0
     private var _bounds: UIRectangle
-    private var _controlSystem = DefaultControlSystem()
-    private var _rootViews: [RootView]
     private var _currentRedrawRegion: UIRectangle? = nil
+    
+    private var _rootViews: [RootView]
+
+    /// The root view where tooltips are presented to.
     private let _tooltipContainer: RootView = RootView()
-    private let _tooltipsManager: TooltipsManager
 
-    private(set) public var size: UIIntSize
-
-    public var width: Int { size.width }
-    public var height: Int { size.height }
-
-    public var preferredRenderScale: UIVector = .init(repeating: 1)
-
-    public var debugDrawFlags: Set<DebugDraw.DebugDrawFlags> = []
+    /// The active tooltip manager for this instance.
+    private let _tooltipsManager: ImagineUITooltipsManager
 
     /// The main view for this window content.
     public let rootView = RootView()
 
+    /// Control system for this instance.
+    public var controlSystem = DefaultControlSystem()
+
+    /// Gets the current display size.
+    private(set) public var size: UIIntSize
+
+    /// Convenience for `self.size.width`.
+    public var width: Int { size.width }
+
+    /// Convenience for `self.size.height`.
+    public var height: Int { size.height }
+
+    /// Gets or sets the preferred render scale for this instance.
+    open var preferredRenderScale: UIVector = .init(repeating: 1)
+
+    /// Gets or sets the debug draw flags.
+    ///
+    /// Changing this value invalidates the screen.
+    open var debugDrawFlags: Set<DebugDraw.DebugDrawFlags> = [] {
+        didSet {
+            if debugDrawFlags != oldValue {
+                invalidateScreen()
+            }
+        }
+    }
+
     /// The default refresh color for this window content.
     /// If `nil`, no region clear is done before render calls and the last
     /// refresh's pixels will remain on the backbuffer.
-    public var backgroundColor: Color? = .cornflowerBlue {
+    ///
+    /// Changing this value invalidates the screen.
+    open var backgroundColor: Color? = .cornflowerBlue {
         didSet {
             invalidateScreen()
         }
     }
 
+    /// The delegate for this window content.
     public weak var delegate: ImagineUIContentDelegate?
 
     public init(size: UIIntSize) {
-        _tooltipsManager = TooltipsManager(container: _tooltipContainer)
+        _tooltipsManager = ImagineUITooltipsManager(container: _tooltipContainer)
 
         self.size = size
         _bounds = .init(location: .zero, size: UISize(size))
         _rootViews = []
-        _controlSystem.delegate = self
+        controlSystem.delegate = self
 
         initialize()
     }
@@ -54,13 +78,15 @@ open class ImagineUIWindowContent: ImagineUIContentType, DefaultControlSystemDel
         _tooltipContainer.passthroughMouseCapture = true
     }
 
+    // MARK: -
+
     open func didCloseWindow() {
 
     }
 
     open func addRootView(_ view: RootView) {
         view.invalidationDelegate = self
-        view.rootControlSystem = _controlSystem
+        view.rootControlSystem = controlSystem
         _rootViews.append(view)
 
         if view !== _tooltipContainer && _rootViews.contains(_tooltipContainer) {
@@ -140,31 +166,33 @@ open class ImagineUIWindowContent: ImagineUIContentType, DefaultControlSystemDel
     }
 
     open func mouseDown(event: MouseEventArgs) {
-        _controlSystem.onMouseDown(event)
+        controlSystem.onMouseDown(event)
     }
 
     open func mouseMoved(event: MouseEventArgs) {
-        _controlSystem.onMouseMove(event)
+        _tooltipsManager.updateTooltipCursorLocation(event.location)
+
+        controlSystem.onMouseMove(event)
     }
 
     open func mouseUp(event: MouseEventArgs) {
-        _controlSystem.onMouseUp(event)
+        controlSystem.onMouseUp(event)
     }
 
     open func mouseScroll(event: MouseEventArgs) {
-        _controlSystem.onMouseWheel(event)
+        controlSystem.onMouseWheel(event)
     }
 
     open func keyDown(event: KeyEventArgs) {
-        _controlSystem.onKeyDown(event)
+        controlSystem.onKeyDown(event)
     }
 
     open func keyUp(event: KeyEventArgs) {
-        _controlSystem.onKeyUp(event)
+        controlSystem.onKeyUp(event)
     }
 
     open func keyPress(event: KeyPressEventArgs) {
-        _controlSystem.onKeyPress(event)
+        controlSystem.onKeyPress(event)
     }
 
     // MARK: - DefaultControlSystemDelegate
@@ -205,20 +233,8 @@ open class ImagineUIWindowContent: ImagineUIContentType, DefaultControlSystemDel
         delegate?.firstResponderChanged(self, newFirstResponder)
     }
 
-    open func showTooltip(_ tooltip: Tooltip, view: View, location: PreferredTooltipLocation) {
-        _tooltipsManager.showTooltip(tooltip, view: view, location: location)
-    }
-
-    open func updateTooltip(_ tooltip: Tooltip) {
-        _tooltipsManager.updateTooltip(tooltip)
-    }
-
-    open func hideTooltip() {
-        _tooltipsManager.hideTooltip()
-    }
-
-    open func updateTooltipCursorLocation(_ location: UIPoint) {
-        _tooltipsManager.updateTooltipCursorLocation(location)
+    open func tooltipsManager() -> TooltipsManagerType? {
+        _tooltipsManager
     }
 
     // MARK: - RootViewRedrawInvalidationDelegate
