@@ -4,11 +4,11 @@ import ImagineUICore
 /// A base class containing the required boilerplate for implementing an ImagineUI
 /// user interface.
 open class ImagineUIWindowContent: ImagineUIContentType, DefaultControlSystemDelegate, RootViewRedrawInvalidationDelegate, WindowDelegate {
-    private var lastFrame: TimeInterval = 0
-    private var bounds: UIRectangle
-    private var controlSystem = DefaultControlSystem()
-    private var rootViews: [RootView]
-    private var currentRedrawRegion: UIRectangle? = nil
+    private var _lastFrame: TimeInterval = 0
+    private var _bounds: UIRectangle
+    private var _controlSystem = DefaultControlSystem()
+    private var _rootViews: [RootView]
+    private var _currentRedrawRegion: UIRectangle? = nil
     private let _tooltipContainer: RootView = RootView()
     private let _tooltipsManager: TooltipsManager
 
@@ -21,6 +21,9 @@ open class ImagineUIWindowContent: ImagineUIContentType, DefaultControlSystemDel
 
     public var debugDrawFlags: Set<DebugDraw.DebugDrawFlags> = []
 
+    /// The main view for this window content.
+    public let rootView = RootView()
+
     /// The default refresh color for this window content.
     /// If `nil`, no region clear is done before render calls and the last
     /// refresh's pixels will remain on the backbuffer.
@@ -30,18 +33,15 @@ open class ImagineUIWindowContent: ImagineUIContentType, DefaultControlSystemDel
         }
     }
 
-    /// The main view for this window content.
-    public let rootView = RootView()
-
     public weak var delegate: ImagineUIContentDelegate?
 
     public init(size: UIIntSize) {
         _tooltipsManager = TooltipsManager(container: _tooltipContainer)
 
         self.size = size
-        bounds = .init(location: .zero, size: UISize(size))
-        rootViews = []
-        controlSystem.delegate = self
+        _bounds = .init(location: .zero, size: UISize(size))
+        _rootViews = []
+        _controlSystem.delegate = self
 
         initialize()
     }
@@ -60,10 +60,10 @@ open class ImagineUIWindowContent: ImagineUIContentType, DefaultControlSystemDel
 
     open func addRootView(_ view: RootView) {
         view.invalidationDelegate = self
-        view.rootControlSystem = controlSystem
-        rootViews.append(view)
+        view.rootControlSystem = _controlSystem
+        _rootViews.append(view)
 
-        if view !== _tooltipContainer && rootViews.contains(_tooltipContainer) {
+        if view !== _tooltipContainer && _rootViews.contains(_tooltipContainer) {
             // Keep the tooltip container above all other views
             bringRootViewToFront(_tooltipContainer)
         }
@@ -72,7 +72,7 @@ open class ImagineUIWindowContent: ImagineUIContentType, DefaultControlSystemDel
     open func removeRootView(_ view: RootView) {
         view.invalidationDelegate = nil
         view.rootControlSystem = nil
-        rootViews.removeAll { $0 === view }
+        _rootViews.removeAll { $0 === view }
     }
 
     open func willStartLiveResize() {
@@ -91,23 +91,23 @@ open class ImagineUIWindowContent: ImagineUIContentType, DefaultControlSystemDel
 
         _tooltipContainer.area = .init(x: 0, y: 0, width: Double(width), height: Double(height))
 
-        bounds = .init(location: .zero, size: UISize(size))
-        currentRedrawRegion = bounds
+        _bounds = .init(location: .zero, size: UISize(size))
+        _currentRedrawRegion = _bounds
 
-        for case let window as Window in rootViews where window.windowState == .maximized {
+        for case let window as Window in _rootViews where window.windowState == .maximized {
             window.setNeedsLayout()
         }
     }
 
     open func invalidateScreen() {
-        currentRedrawRegion = bounds
-        delegate?.invalidate(self, bounds: bounds)
+        _currentRedrawRegion = _bounds
+        delegate?.invalidate(self, bounds: _bounds)
     }
 
     open func update(_ time: TimeInterval) {
         // Fixed-frame update
-        let delta = time - lastFrame
-        lastFrame = time
+        let delta = time - _lastFrame
+        _lastFrame = time
         Scheduler.instance.onFixedFrame(delta)
 
         performLayout()
@@ -115,7 +115,7 @@ open class ImagineUIWindowContent: ImagineUIContentType, DefaultControlSystemDel
 
     open func performLayout() {
         // Layout loop
-        for rootView in rootViews {
+        for rootView in _rootViews {
             rootView.performLayout()
         }
     }
@@ -129,61 +129,61 @@ open class ImagineUIWindowContent: ImagineUIContentType, DefaultControlSystemDel
         }
 
         // Redraw loop
-        for rootView in rootViews {
+        for rootView in _rootViews {
             rootView.renderRecursive(in: renderer, screenRegion: clipRegion)
         }
 
         // Debug render
-        for rootView in rootViews {
+        for rootView in _rootViews {
             DebugDraw.debugDrawRecursive(rootView, flags: debugDrawFlags, in: renderer)
         }
     }
 
     open func mouseDown(event: MouseEventArgs) {
-        controlSystem.onMouseDown(event)
+        _controlSystem.onMouseDown(event)
     }
 
     open func mouseMoved(event: MouseEventArgs) {
-        controlSystem.onMouseMove(event)
+        _controlSystem.onMouseMove(event)
     }
 
     open func mouseUp(event: MouseEventArgs) {
-        controlSystem.onMouseUp(event)
+        _controlSystem.onMouseUp(event)
     }
 
     open func mouseScroll(event: MouseEventArgs) {
-        controlSystem.onMouseWheel(event)
+        _controlSystem.onMouseWheel(event)
     }
 
     open func keyDown(event: KeyEventArgs) {
-        controlSystem.onKeyDown(event)
+        _controlSystem.onKeyDown(event)
     }
 
     open func keyUp(event: KeyEventArgs) {
-        controlSystem.onKeyUp(event)
+        _controlSystem.onKeyUp(event)
     }
 
     open func keyPress(event: KeyPressEventArgs) {
-        controlSystem.onKeyPress(event)
+        _controlSystem.onKeyPress(event)
     }
 
     // MARK: - DefaultControlSystemDelegate
 
     open func bringRootViewToFront(_ rootView: RootView) {
-        rootViews.removeAll(where: { $0 == rootView })
+        _rootViews.removeAll(where: { $0 == rootView })
 
         // Keep the tooltip container above all other views
-        if rootView !== _tooltipContainer, let index = rootViews.firstIndex(of: _tooltipContainer) {
-            rootViews.insert(rootView, at: index)
+        if rootView !== _tooltipContainer, let index = _rootViews.firstIndex(of: _tooltipContainer) {
+            _rootViews.insert(rootView, at: index)
         } else {
-            rootViews.append(rootView)
+            _rootViews.append(rootView)
         }
 
         rootView.invalidate()
     }
 
     open func controlViewUnder(point: UIVector, enabledOnly: Bool) -> ControlView? {
-        for rootView in rootViews.reversed() {
+        for rootView in _rootViews.reversed() {
             let converted = rootView.convertFromScreen(point)
             if let view = rootView.hitTestControl(converted, enabledOnly: enabledOnly) {
                 return view
@@ -236,8 +236,8 @@ open class ImagineUIWindowContent: ImagineUIContentType, DefaultControlSystemDel
     // MARK: - WindowDelegate
 
     open func windowWantsToClose(_ window: Window) {
-        if let index = rootViews.firstIndex(of: window) {
-            rootViews.remove(at: index)
+        if let index = _rootViews.firstIndex(of: window) {
+            _rootViews.remove(at: index)
             invalidateScreen()
         }
     }
@@ -257,6 +257,6 @@ open class ImagineUIWindowContent: ImagineUIContentType, DefaultControlSystemDel
     }
 
     open func windowSizeForFullscreen(_ window: Window) -> UISize {
-        return bounds.size
+        return _bounds.size
     }
 }
