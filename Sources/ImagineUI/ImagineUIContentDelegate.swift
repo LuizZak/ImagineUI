@@ -10,7 +10,7 @@ public protocol ImagineUIContentDelegate: AnyObject {
 
     /// Called to notify that the content has requested a specified mouse cursor
     /// to be displayed.
-    func setMouseCursor(_ content: ImagineUIContentType, _ cursor: MouseCursorKind)
+    func setMouseCursor(_ content: ImagineUIContentType, cursor: MouseCursorKind)
 
     /// Called to notify that the content has requested that the mouse cursor be
     /// hidden until it is moved again by the user.

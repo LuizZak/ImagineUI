@@ -7,7 +7,7 @@ open class ImagineUIWindowContent: ImagineUIContentType, DefaultControlSystemDel
     private var _lastFrame: TimeInterval = 0
     private var _bounds: UIRectangle
     private var _currentRedrawRegion: UIRectangle? = nil
-    
+
     private var _rootViews: [RootView]
 
     /// The root view where tooltips are presented to.
@@ -222,7 +222,7 @@ open class ImagineUIWindowContent: ImagineUIContentType, DefaultControlSystemDel
     }
 
     open func setMouseCursor(_ cursor: MouseCursorKind) {
-        delegate?.setMouseCursor(self, cursor)
+        delegate?.setMouseCursor(self, cursor: cursor)
     }
 
     open func setMouseHiddenUntilMouseMoves() {
