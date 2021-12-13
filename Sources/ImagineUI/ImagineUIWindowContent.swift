@@ -6,7 +6,6 @@ import ImagineUICore
 open class ImagineUIWindowContent: ImagineUIContentType, DefaultControlSystemDelegate, RootViewRedrawInvalidationDelegate, WindowDelegate {
     private var _lastFrame: TimeInterval = 0
     private var _bounds: UIRectangle
-    private var _currentRedrawRegion: UIRectangle? = nil
 
     private var _rootViews: [RootView]
 
@@ -84,7 +83,12 @@ open class ImagineUIWindowContent: ImagineUIContentType, DefaultControlSystemDel
 
     }
 
+    /// Adds an extra root view in this content.
+    ///
+    /// - precondition: `view.superview == nil`
     open func addRootView(_ view: RootView) {
+        precondition(view.superview == nil)
+
         view.invalidationDelegate = self
         view.rootControlSystem = controlSystem
         _rootViews.append(view)
@@ -118,7 +122,6 @@ open class ImagineUIWindowContent: ImagineUIContentType, DefaultControlSystemDel
         _tooltipContainer.area = .init(x: 0, y: 0, width: Double(width), height: Double(height))
 
         _bounds = .init(location: .zero, size: UISize(size))
-        _currentRedrawRegion = _bounds
 
         for case let window as Window in _rootViews where window.windowState == .maximized {
             window.setNeedsLayout()
@@ -126,7 +129,6 @@ open class ImagineUIWindowContent: ImagineUIContentType, DefaultControlSystemDel
     }
 
     open func invalidateScreen() {
-        _currentRedrawRegion = _bounds
         delegate?.invalidate(self, bounds: _bounds)
     }
 
@@ -198,6 +200,10 @@ open class ImagineUIWindowContent: ImagineUIContentType, DefaultControlSystemDel
     // MARK: - DefaultControlSystemDelegate
 
     open func bringRootViewToFront(_ rootView: RootView) {
+        if !_rootViews.contains(rootView) {
+            return
+        }
+
         _rootViews.removeAll(where: { $0 == rootView })
 
         // Keep the tooltip container above all other views
