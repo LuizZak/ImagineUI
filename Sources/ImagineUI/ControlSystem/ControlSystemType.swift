@@ -3,6 +3,10 @@ import Geometry
 /// Base for a control system which handles views and controls from a full
 /// hierarchy
 public protocol ControlSystemType {
+    /// Called to notify that a view has been removed from the screen's hierarchy,
+    /// and any associated events and focus on its sub-hierarchy should be waived.
+    func viewRemovedFromHierarchy(_ view: View)
+    
     /// Sets an event handler as first responder
     ///
     /// - Parameter eventHandler: An event handler, or nil, in case of an attempt

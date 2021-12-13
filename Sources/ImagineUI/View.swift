@@ -459,8 +459,7 @@ open class View {
 
     /// Function called before a view is removed as a subview of this view instance.
     open func willRemoveSubview(_ view: View) {
-        _=controlSystem?.removeAsFirstResponder(anyInHierarchy: view)
-        controlSystem?.hideTooltipFor(anyInHierarchy: view)
+        controlSystem?.viewRemovedFromHierarchy(view)
     }
 
     open func removeFromSuperview() {

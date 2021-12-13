@@ -242,6 +242,21 @@ public class DefaultControlSystem: ControlSystemType {
         }
     }
 
+    // MARK: - View hierarchy changes
+
+    public func viewRemovedFromHierarchy(_ view: View) {
+        _=removeAsFirstResponder(anyInHierarchy: view)
+        hideTooltipFor(anyInHierarchy: view)
+
+        if let asView = _mouseHoverTarget as? View, asView.isDescendant(of: view) {
+            _mouseHoverTarget = nil
+            _mouseHoverPoint = .zero
+        }
+        if let asView = _mouseDownTarget as? View, asView.isDescendant(of: view) {
+            _mouseDownTarget = nil
+        }
+    }
+
     // MARK: - First Responder Management
 
     public func setAsFirstResponder(_ eventHandler: EventHandler?, force: Bool) -> Bool {
