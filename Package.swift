@@ -51,8 +51,11 @@ let package = Package(
             name: "Rendering",
             dependencies: ["Geometry", "Text"]),
         .target(
-            name: "ImagineUI",
+            name: "ImagineUICore",
             dependencies: ["Geometry", "Rendering", "Text", "CassowarySwift"]),
+        .target(
+            name: "ImagineUI",
+            dependencies: ["ImagineUICore"]),
         .target(
             name: "Blend2DRenderer",
             dependencies: ["SwiftBlend2D", "Geometry", "Rendering", "Text"]),
@@ -60,8 +63,8 @@ let package = Package(
             name: "TextTests",
             dependencies: ["Geometry", "Text", "SwiftBlend2D", "Blend2DRenderer", "TestUtils"]),
         .testTarget(
-            name: "ImagineUITests",
-            dependencies: ["Geometry", "Text", "Rendering", "Blend2DRenderer", "ImagineUI", "TestUtils"]),
+            name: "ImagineUICoreTests",
+            dependencies: ["Geometry", "Text", "Rendering", "Blend2DRenderer", "ImagineUICore", "TestUtils"]),
         .testTarget(
             name: "Blend2DRendererTests",
             dependencies: ["Geometry", "Text", "Rendering", "SwiftBlend2D", "Blend2DRenderer", "TestUtils"]),
