@@ -797,6 +797,14 @@ public class TreeView: ControlView {
             override func layoutSizeFitting(size: UISize) -> UISize {
                 _titleLabelView.layoutSizeFitting(size: size) + _contentInset.top + _contentInset.bottom
             }
+
+            override func canHandle(_ eventRequest: EventRequest) -> Bool {
+                if let mouseEvent = eventRequest as? MouseEventRequest {
+                    return mouseEvent.eventType == MouseEventType.mouseMove
+                }
+
+                return super.canHandle(eventRequest)
+            }
         }
 
         private class ChevronView: ControlView {
