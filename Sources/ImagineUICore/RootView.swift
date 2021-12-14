@@ -14,6 +14,23 @@ open class RootView: ControlView {
     /// Behavior is normal for subviews of `self` in either case.
     public var passthroughMouseCapture: Bool = false
 
+    open override var location: UIPoint {
+        get {
+            return super.location
+        }
+        set {
+            // If this root view has an independent layout system, changes to
+            // its location only do not affect its internal layout.
+            if _hasIndependentInternalLayout {
+                withSuspendedLayout(setNeedsLayout: false) {
+                    super.location = newValue
+                }
+            } else {
+                super.location = newValue
+            }
+        }
+    }
+
     public override var controlSystem: ControlSystemType? {
         // Propagate parent's control system, if none where specified for this
         // root view.
@@ -64,14 +81,14 @@ open class RootView: ControlView {
     }
 
     override func didAddConstraint(_ constraint: LayoutConstraint) {
-        _cacheIsIndependentLayout()
+        _cacheHasIndependentInternalLayout()
     }
 
     override func didRemoveConstraint(_ constraint: LayoutConstraint) {
-        _cacheIsIndependentLayout()
+        _cacheHasIndependentInternalLayout()
     }
 
-    private func _cacheIsIndependentLayout() {
+    private func _cacheHasIndependentInternalLayout() {
         for constraint in constraints {
             guard let first = constraint.first.owner as? View else {
                 continue
