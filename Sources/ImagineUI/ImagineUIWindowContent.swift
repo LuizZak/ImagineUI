@@ -210,11 +210,22 @@ open class ImagineUIWindowContent: ImagineUIContentType, DefaultControlSystemDel
         rootView.invalidate()
     }
 
-    open func controlViewUnder(point: UIVector, enabledOnly: Bool) -> ControlView? {
-        for rootView in _rootViews.reversed() {
-            let converted = rootView.convertFromScreen(point)
-            if let view = rootView.hitTestControl(converted, enabledOnly: enabledOnly) {
+    open func controlViewUnder(point: UIVector, controlKinds: ControlKinds) -> ControlView? {
+        let enabledOnly = !controlKinds.contains(.disabledFlag)
+
+        if controlKinds.contains(.tooltips) {
+            let converted = _tooltipContainer.convertFromScreen(point)
+            if let view = _tooltipContainer.hitTestControl(converted, enabledOnly: enabledOnly) {
                 return view
+            }
+        }
+
+        if controlKinds.contains(.tooltips) {
+            for rootView in _rootViews.reversed() where rootView != _tooltipContainer {
+                let converted = rootView.convertFromScreen(point)
+                if let view = rootView.hitTestControl(converted, enabledOnly: enabledOnly) {
+                    return view
+                }
             }
         }
 

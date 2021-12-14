@@ -72,6 +72,8 @@ public class ImagineUITooltipsManager: TooltipsManagerType {
             _position = .rightOf(view)
         case .bottom:
             _position = .rightOf(view)
+        case .inPlace:
+            _position = .inPlace(view)
         case .nextToMouse:
             _position = .nextToMouse
         case .followingMouse:
@@ -86,8 +88,6 @@ public class ImagineUITooltipsManager: TooltipsManagerType {
         let mousePosition = _mouseLocation + mouseOffset
 
         switch _position {
-        case .none:
-            break
         case .relative(let view, let point):
             _tooltip.location = _container.convert(point: point, from: view)
 
@@ -96,12 +96,18 @@ public class ImagineUITooltipsManager: TooltipsManagerType {
 
         case .leftOf(let view):
             _tooltip.location = _container.convert(point: .zero, from: view) - _tooltip.size.width
+        
+        case .inPlace(let view):
+            _tooltip.location = _container.convert(point: .zero, from: view)
 
         case .nextToMouse:
             _tooltip.location = _container.convert(point: mousePosition, from: nil)
 
         case .followingMouse:
             _tooltip.location = _container.convert(point: mousePosition, from: nil)
+
+        case .none:
+            break
         }
     }
 
@@ -110,6 +116,7 @@ public class ImagineUITooltipsManager: TooltipsManagerType {
         case relative(View, UIPoint)
         case rightOf(View)
         case leftOf(View)
+        case inPlace(View)
         case nextToMouse
         case followingMouse
     }

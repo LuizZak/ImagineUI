@@ -50,7 +50,7 @@ public class DefaultControlSystem: ControlSystemType {
 
     public func onMouseDown(_ event: MouseEventArgs) {
         // Find control
-        guard let control = delegate?.controlViewUnder(point: event.location, enabledOnly: true) else {
+        guard let control = delegate?.controlViewUnder(point: event.location, controlKinds: .allEnabled) else {
             _firstResponder?.resignFirstResponder()
             return
         }
@@ -100,7 +100,7 @@ public class DefaultControlSystem: ControlSystemType {
 
         // Figure out if it's a click or mouse up event
         // Click events fire when mouseDown + mouseUp occur over the same element
-        if let upControl = delegate?.controlViewUnder(point: event.location, enabledOnly: true), upControl === control {
+        if let upControl = delegate?.controlViewUnder(point: event.location, controlKinds: .allEnabled), upControl === control {
             upControl.onMouseClick(event.convertLocation(handler: upControl))
         }
 
@@ -112,7 +112,7 @@ public class DefaultControlSystem: ControlSystemType {
     }
 
     public func onMouseWheel(_ event: MouseEventArgs) {
-        guard let control = delegate?.controlViewUnder(point: event.location, enabledOnly: true) else {
+        guard let control = delegate?.controlViewUnder(point: event.location, controlKinds: .allEnabled) else {
             return
         }
 
@@ -203,7 +203,7 @@ public class DefaultControlSystem: ControlSystemType {
             self.hideTooltip()
         }
 
-        guard let control = delegate?.controlViewUnder(point: event.location, enabledOnly: true) else {
+        guard let control = delegate?.controlViewUnder(point: event.location, controlKinds: .allEnabled) else {
             return bailOut()
         }
 
@@ -212,7 +212,7 @@ public class DefaultControlSystem: ControlSystemType {
             hideTooltip()
         }
 
-        guard let control = delegate?.controlViewUnder(point: event.location, enabledOnly: true) else {
+        guard let control = delegate?.controlViewUnder(point: event.location, controlKinds: .allEnabled) else {
             return bailOut()
         }
 
