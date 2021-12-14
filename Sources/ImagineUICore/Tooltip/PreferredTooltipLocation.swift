@@ -15,6 +15,9 @@ public enum PreferredTooltipLocation {
     /// Tooltip is displayed anchored to the bottom of the view.
     case bottom
 
+    /// Tooltip is displayed atop the view specified by a `TooltipProvider`.
+    case inPlace
+
     /// Tooltip is displayed besides the mouse at the time the tooltip is first
     /// displayed.
     ///
