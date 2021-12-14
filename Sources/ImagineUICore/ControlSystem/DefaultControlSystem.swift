@@ -92,16 +92,22 @@ public class DefaultControlSystem: ControlSystemType {
     }
 
     public func onMouseUp(_ event: MouseEventArgs) {
-        guard let control = _mouseDownTarget else {
+        guard let handler = _mouseDownTarget else {
             return
         }
 
-        control.onMouseUp(event.convertLocation(handler: control))
+        handler.onMouseUp(event.convertLocation(handler: handler))
 
         // Figure out if it's a click or mouse up event
         // Click events fire when mouseDown + mouseUp occur over the same element
-        if let upControl = delegate?.controlViewUnder(point: event.location, controlKinds: .controls), upControl === control {
-            upControl.onMouseClick(event.convertLocation(handler: upControl))
+        if let control = delegate?.controlViewUnder(point: event.location, controlKinds: .controls) {
+            let request = InnerMouseEventRequest(event: event, eventType: .mouseClick) { clickHandler in
+                if clickHandler === handler {
+                    clickHandler.onMouseClick(event.convertLocation(handler: clickHandler))
+                }
+            }
+
+            control.handleOrPass(request)
         }
 
         _mouseDownTarget = nil
