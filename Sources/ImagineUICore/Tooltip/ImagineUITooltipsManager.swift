@@ -1,11 +1,14 @@
 /// Manages exhibition of tooltips for a view hierarchy within an ImagineUI
 /// control system.
 public class ImagineUITooltipsManager: TooltipsManagerType {
+    private var _previousConstraints: [LayoutConstraint] = []
+
     private var _mouseLocation: UIPoint = .zero {
         didSet {
             switch _position {
             case .followingMouse:
-                _updateTooltipPosition()
+                _updateTooltipConstraints()
+
             default:
                 break
             }
@@ -22,16 +25,16 @@ public class ImagineUITooltipsManager: TooltipsManagerType {
         _tooltip.superview != nil
     }
 
-    private var _position: DisplayPosition = .none {
-        didSet {
-            _updateTooltipPosition()
-        }
-    }
+    private var _position: DisplayPosition = .none
 
     public init(container: View) {
         self._container = container
 
-        _tooltip.areaIntoConstraintsMask = [.location]
+        _setupTooltipView()
+    }
+
+    private func _setupTooltipView() {
+        _tooltip.areaIntoConstraintsMask = []
     }
 
     public func isInTooltipView(_ view: View) -> Bool {
@@ -45,7 +48,6 @@ public class ImagineUITooltipsManager: TooltipsManagerType {
 
     public func showTooltip(_ tooltip: Tooltip, view: View, location: PreferredTooltipLocation) {
         _tooltip.update(tooltip)
-        _tooltip.location = .init(x: 50, y: 50)
 
         _container.addSubview(_tooltip)
 
@@ -80,7 +82,7 @@ public class ImagineUITooltipsManager: TooltipsManagerType {
             _position = .followingMouse
         }
 
-        _updateTooltipPosition()
+        _updateTooltipConstraints()
     }
 
     private func _computeInPlacePosition(_ view: View) -> UIPoint {
@@ -92,32 +94,51 @@ public class ImagineUITooltipsManager: TooltipsManagerType {
         return .zero
     }
 
-    private func _updateTooltipPosition() {
+    private func _updateTooltipConstraints() {
         let mouseOffset: UIVector = .init(x: 12, y: 5)
         let mousePosition = _mouseLocation + mouseOffset
+        let location: UIPoint
 
         switch _position {
         case .relative(let view, let point):
-            _tooltip.location = _container.convert(point: point, from: view)
+            location = _container.convert(point: point, from: view)
 
         case .rightOf(let view):
-            _tooltip.location = _container.convert(point: UIPoint(x: view.size.width, y: 0), from: view)
+            location = _container.convert(point: UIPoint(x: view.size.width, y: 0), from: view)
 
         case .leftOf(let view):
-            _tooltip.location = _container.convert(point: .zero, from: view) - _tooltip.size.width
+            location = _container.convert(point: .zero, from: view) - _tooltip.size.width
 
         case .inPlace(let view, let point):
-            _tooltip.location = _container.convert(point: point, from: view)
+            location = _container.convert(point: point, from: view)
 
         case .nextToMouse:
-            _tooltip.location = _container.convert(point: mousePosition, from: nil)
+            location = _container.convert(point: mousePosition, from: nil)
 
         case .followingMouse:
-            _tooltip.location = _container.convert(point: mousePosition, from: nil)
+            location = _container.convert(point: mousePosition, from: nil)
 
         case .none:
-            break
+            location = .zero
         }
+
+        for constraint in _previousConstraints {
+            constraint.removeConstraint()
+        }
+
+        _previousConstraints = _tooltip.layout.makeConstraints { make in
+            (make.left >= _container) | .medium
+            (make.top >= _container) | .medium
+            (make.right <= _container) | .medium
+            (make.bottom <= _container) | .medium
+
+            (make.left == location.x) | .low
+            (make.top == location.y) | .low
+        }
+    }
+
+    private func _updateTooltipPosition() {
+        
     }
 
     private enum DisplayPosition {

@@ -28,6 +28,8 @@ public class TooltipView: ControlView {
     public override func setupConstraints() {
         super.setupConstraints()
 
+        _label.setContentCompressionResistance(.horizontal, .required)
+        _label.setContentCompressionResistance(.vertical, .required)
         _label.layout.makeConstraints { make in
             make.edges.equalTo(self, inset: contentInset)
         }

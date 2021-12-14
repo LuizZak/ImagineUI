@@ -139,3 +139,11 @@ public struct LayoutConstraintDefinition {
         )
     }
 }
+
+public extension LayoutConstraintDefinition {
+    static func | (lhs: LayoutConstraintDefinition, rhs: LayoutPriority) -> LayoutConstraintDefinition {
+        var copy = lhs
+        copy.priority = rhs
+        return copy
+    }
+}
