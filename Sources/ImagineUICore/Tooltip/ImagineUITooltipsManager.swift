@@ -127,8 +127,8 @@ public class ImagineUITooltipsManager: TooltipsManagerType {
         }
 
         _previousConstraints = _tooltip.layout.makeConstraints { make in
-            (make.left >= _container) | .medium
-            (make.top >= _container) | .medium
+            (make.left >= _container) | .high
+            (make.top >= _container) | .high
             (make.right <= _container) | .medium
             (make.bottom <= _container) | .medium
 
