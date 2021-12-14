@@ -353,6 +353,9 @@ public class DefaultControlSystem: ControlSystemType {
             hideTooltip()
         }
 
+        guard matchesTooltipCondition(tooltipProvider) else {
+            return
+        }
         guard let tooltip = tooltipProvider.tooltip else {
             return
         }
@@ -375,6 +378,10 @@ public class DefaultControlSystem: ControlSystemType {
             return
         }
 
+        guard matchesTooltipCondition(provider) else {
+            return
+        }
+
         _tooltipWrapper.setHover(provider: provider) {
             self.showTooltip(for: provider)
         }
@@ -382,6 +389,18 @@ public class DefaultControlSystem: ControlSystemType {
 
     private func updateTooltipContents(_ tooltip: Tooltip) {
         tooltipsManager?.updateTooltip(tooltip)
+    }
+
+    private func matchesTooltipCondition(_ tooltipProvider: TooltipProvider) -> Bool {
+        switch tooltipProvider.tooltipCondition {
+        case .always:
+            return true
+
+        case .viewPartiallyOccluded:
+            let view = tooltipProvider.viewForTooltip
+
+            return !view.isFullyVisibleOnScreen(area: view.bounds)
+        }
     }
 
     // MARK: - Mouse Cursor

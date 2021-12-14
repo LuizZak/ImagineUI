@@ -61,7 +61,7 @@ open class Checkbox: ControlView {
 
         // Label constraints
         label.layout.makeConstraints { make in
-            make.edges.equalTo(self, inset: UIEdgeInsets(left: 16, top: 0, right: 0, bottom: 0))
+            make.edges.equalTo(self, inset: UIEdgeInsets(left: 16))
         }
     }
 

@@ -1,7 +1,15 @@
 /// A view used to display auxiliary information.
 public class TooltipView: ControlView {
     private let _label: Label = Label(textColor: .white)
-    private let _contentInset: UIEdgeInsets = UIEdgeInsets(8)
+
+    /// Inset from the bounds of the tooltip view to its contents.
+    var contentInset: UIEdgeInsets = UIEdgeInsets(8) {
+        didSet {
+            _label.layout.updateConstraints { make in
+                make.edges.equalTo(self, inset: contentInset)
+            }
+        }
+    }
 
     public override init() {
         super.init()
@@ -21,7 +29,7 @@ public class TooltipView: ControlView {
         super.setupConstraints()
 
         _label.layout.makeConstraints { make in
-            make.edges.equalTo(self, inset: _contentInset)
+            make.edges.equalTo(self, inset: contentInset)
         }
     }
 

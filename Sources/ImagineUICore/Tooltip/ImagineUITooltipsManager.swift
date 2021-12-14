@@ -73,7 +73,7 @@ public class ImagineUITooltipsManager: TooltipsManagerType {
         case .bottom:
             _position = .rightOf(view)
         case .inPlace:
-            _position = .inPlace(view)
+            _position = .inPlace(view, _computeInPlacePosition(view))
         case .nextToMouse:
             _position = .nextToMouse
         case .followingMouse:
@@ -81,6 +81,15 @@ public class ImagineUITooltipsManager: TooltipsManagerType {
         }
 
         _updateTooltipPosition()
+    }
+
+    private func _computeInPlacePosition(_ view: View) -> UIPoint {
+        // Align labels with the tooltip's internal label
+        if view is Label {
+            return -_tooltip.contentInset.topLeft
+        }
+
+        return .zero
     }
 
     private func _updateTooltipPosition() {
@@ -96,9 +105,9 @@ public class ImagineUITooltipsManager: TooltipsManagerType {
 
         case .leftOf(let view):
             _tooltip.location = _container.convert(point: .zero, from: view) - _tooltip.size.width
-        
-        case .inPlace(let view):
-            _tooltip.location = _container.convert(point: .zero, from: view)
+
+        case .inPlace(let view, let point):
+            _tooltip.location = _container.convert(point: point, from: view)
 
         case .nextToMouse:
             _tooltip.location = _container.convert(point: mousePosition, from: nil)
@@ -116,7 +125,7 @@ public class ImagineUITooltipsManager: TooltipsManagerType {
         case relative(View, UIPoint)
         case rightOf(View)
         case leftOf(View)
-        case inPlace(View)
+        case inPlace(View, UIPoint)
         case nextToMouse
         case followingMouse
     }

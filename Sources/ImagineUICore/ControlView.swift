@@ -249,6 +249,14 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
         .systemDefined
     }
 
+    /// Gets the conditions under which a tooltip from this tooltip provider
+    /// should be displayed.
+    ///
+    /// Defaults to `.always`.
+    open var tooltipCondition: TooltipDisplayCondition {
+        .always
+    }
+
     /// Preferred delay before a mouse hover event displays this control view's
     /// tooltip.
     open var tooltipDelay: TimeInterval? {

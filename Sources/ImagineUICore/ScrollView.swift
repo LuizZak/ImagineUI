@@ -62,10 +62,10 @@ open class ScrollView: ControlView {
     open var visibleContentBounds: UIRectangle {
         var size = bounds
         if scrollBarsMode.contains(.vertical) {
-            size = size.inset(UIEdgeInsets(left: 0, top: 0, right: scrollBarSize, bottom: 0))
+            size = size.inset(UIEdgeInsets(right: scrollBarSize))
         }
         if scrollBarsMode.contains(.horizontal) {
-            size = size.inset(UIEdgeInsets(left: 0, top: 0, right: 0, bottom: scrollBarSize))
+            size = size.inset(UIEdgeInsets(bottom: scrollBarSize))
         }
 
         size.width = max(1, size.width)
