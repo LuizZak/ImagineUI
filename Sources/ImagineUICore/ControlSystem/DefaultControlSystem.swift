@@ -95,7 +95,7 @@ public class DefaultControlSystem: ControlSystemType {
         guard let control = _mouseDownTarget else {
             return
         }
-        
+
         control.onMouseUp(event.convertLocation(handler: control))
 
         // Figure out if it's a click or mouse up event
@@ -203,7 +203,8 @@ public class DefaultControlSystem: ControlSystemType {
             self.hideTooltip()
         }
 
-        guard let control = delegate?.controlViewUnder(point: event.location, controlKinds: .allEnabled) else {
+        /*
+        guard let control = delegate?.controlViewUnder(point: event.location, controlKinds: .controls) else {
             return bailOut()
         }
 
@@ -211,8 +212,9 @@ public class DefaultControlSystem: ControlSystemType {
         if tooltipsManager?.isInTooltipView(control) == true {
             hideTooltip()
         }
+        */
 
-        guard let control = delegate?.controlViewUnder(point: event.location, controlKinds: .allEnabled) else {
+        guard let control = delegate?.controlViewUnder(point: event.location, controlKinds: .controls) else {
             return bailOut()
         }
 
@@ -496,7 +498,7 @@ private extension MouseEventArgs {
 
 private class InnerEventRequest<THandler> : EventRequest {
     private var onAccept: (THandler) -> Void
-    
+
     private(set) var accepted: Bool = false
 
     init(onAccept: @escaping (THandler) -> Void) {
