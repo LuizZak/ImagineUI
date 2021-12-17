@@ -14,6 +14,10 @@ public protocol TooltipProvider {
     /// The preferred location for displaying tooltips of this provider.
     var preferredTooltipLocation: PreferredTooltipLocation { get }
 
+    /// Gets the conditions under which a tooltip from this tooltip provider
+    /// should be displayed.
+    var tooltipCondition: TooltipDisplayCondition { get }
+
     /// Delay, in seconds, before a tooltip from this provider should be shown.
     /// If `nil`, tooltip delay is defined by the control system implementation.
     var tooltipDelay: TimeInterval? { get }

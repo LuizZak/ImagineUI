@@ -5,11 +5,11 @@ public struct TextRange: Hashable, CustomStringConvertible {
 
     /// End of range; Equivalent to `start + length`.
     public var end: Int { start + length }
-    
+
     public var description: String {
         return "[ \(start) : \(length) ]"
     }
-    
+
     public init(start: Int, length: Int) {
         self.start = start
         self.length = length
@@ -60,17 +60,17 @@ public struct TextRange: Hashable, CustomStringConvertible {
 
         return TextRange(start: s, length: e - s)
     }
-    
+
     /// Returns the result of the union operation between this and another text
     /// range.
     public func union(_ other: TextRange) -> TextRange {
         return TextRange.fromOffsets(min(start, other.start),
                                      max(end, other.end))
     }
-    
+
     /// Returns a new text range which is the same length as this text range, but
     /// with the starting index offset by a given value
-    public func offseting(by value: Int) -> TextRange {
+    public func offsetting(by value: Int) -> TextRange {
         TextRange(start: start + value, length: length)
     }
 

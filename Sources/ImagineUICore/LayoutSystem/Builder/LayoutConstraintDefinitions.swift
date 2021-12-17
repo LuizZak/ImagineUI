@@ -25,3 +25,11 @@ public struct LayoutConstraintDefinitions {
         }
     }
 }
+
+public extension LayoutConstraintDefinitions {
+    static func | (lhs: LayoutConstraintDefinitions, rhs: LayoutPriority) -> LayoutConstraintDefinitions {
+        .init(definitions: lhs.definitions.map {
+            $0 | rhs
+        })
+    }
+}

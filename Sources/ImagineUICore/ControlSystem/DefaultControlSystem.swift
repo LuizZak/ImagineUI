@@ -50,7 +50,7 @@ public class DefaultControlSystem: ControlSystemType {
 
     public func onMouseDown(_ event: MouseEventArgs) {
         // Find control
-        guard let control = delegate?.controlViewUnder(point: event.location, controlKinds: .allEnabled) else {
+        guard let control = delegate?.controlViewUnder(point: event.location, controlKinds: .controls) else {
             _firstResponder?.resignFirstResponder()
             return
         }
@@ -92,16 +92,22 @@ public class DefaultControlSystem: ControlSystemType {
     }
 
     public func onMouseUp(_ event: MouseEventArgs) {
-        guard let control = _mouseDownTarget else {
+        guard let handler = _mouseDownTarget else {
             return
         }
-        
-        control.onMouseUp(event.convertLocation(handler: control))
+
+        handler.onMouseUp(event.convertLocation(handler: handler))
 
         // Figure out if it's a click or mouse up event
         // Click events fire when mouseDown + mouseUp occur over the same element
-        if let upControl = delegate?.controlViewUnder(point: event.location, controlKinds: .allEnabled), upControl === control {
-            upControl.onMouseClick(event.convertLocation(handler: upControl))
+        if let control = delegate?.controlViewUnder(point: event.location, controlKinds: .controls) {
+            let request = InnerMouseEventRequest(event: event, eventType: .mouseClick) { clickHandler in
+                if clickHandler === handler {
+                    clickHandler.onMouseClick(event.convertLocation(handler: clickHandler))
+                }
+            }
+
+            control.handleOrPass(request)
         }
 
         _mouseDownTarget = nil
@@ -112,7 +118,7 @@ public class DefaultControlSystem: ControlSystemType {
     }
 
     public func onMouseWheel(_ event: MouseEventArgs) {
-        guard let control = delegate?.controlViewUnder(point: event.location, controlKinds: .allEnabled) else {
+        guard let control = delegate?.controlViewUnder(point: event.location, controlKinds: .controls) else {
             return
         }
 
@@ -203,16 +209,7 @@ public class DefaultControlSystem: ControlSystemType {
             self.hideTooltip()
         }
 
-        guard let control = delegate?.controlViewUnder(point: event.location, controlKinds: .allEnabled) else {
-            return bailOut()
-        }
-
-        // Dismiss tooltips and try again
-        if tooltipsManager?.isInTooltipView(control) == true {
-            hideTooltip()
-        }
-
-        guard let control = delegate?.controlViewUnder(point: event.location, controlKinds: .allEnabled) else {
+        guard let control = delegate?.controlViewUnder(point: event.location, controlKinds: .controls) else {
             return bailOut()
         }
 
@@ -362,6 +359,9 @@ public class DefaultControlSystem: ControlSystemType {
             hideTooltip()
         }
 
+        guard matchesTooltipCondition(tooltipProvider) else {
+            return
+        }
         guard let tooltip = tooltipProvider.tooltip else {
             return
         }
@@ -384,6 +384,10 @@ public class DefaultControlSystem: ControlSystemType {
             return
         }
 
+        guard matchesTooltipCondition(provider) else {
+            return
+        }
+
         _tooltipWrapper.setHover(provider: provider) {
             self.showTooltip(for: provider)
         }
@@ -391,6 +395,18 @@ public class DefaultControlSystem: ControlSystemType {
 
     private func updateTooltipContents(_ tooltip: Tooltip) {
         tooltipsManager?.updateTooltip(tooltip)
+    }
+
+    private func matchesTooltipCondition(_ tooltipProvider: TooltipProvider) -> Bool {
+        switch tooltipProvider.tooltipCondition {
+        case .always:
+            return true
+
+        case .viewPartiallyOccluded:
+            let view = tooltipProvider.viewForTooltip
+
+            return !view.isFullyVisibleOnScreen(area: view.bounds)
+        }
     }
 
     // MARK: - Mouse Cursor
@@ -496,7 +512,7 @@ private extension MouseEventArgs {
 
 private class InnerEventRequest<THandler> : EventRequest {
     private var onAccept: (THandler) -> Void
-    
+
     private(set) var accepted: Bool = false
 
     init(onAccept: @escaping (THandler) -> Void) {

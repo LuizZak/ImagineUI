@@ -3,12 +3,12 @@ import Rendering
 
 open class RadioButton: ControlView {
     public let label = Label(textColor: .white)
-    
+
     /// Gets or sets the radio button manager for this radio button.
     /// If not specified, the default radio button manager will be the first
     /// parent view that implements `RadioButtonManagerType`.
     var radioButtonManager: RadioButtonManagerType?
-    
+
     open var title: String {
         get {
             return label.text
@@ -30,10 +30,10 @@ open class RadioButton: ControlView {
 
         addSubview(label)
     }
-    
+
     open override func onStateChanged(_ event: ValueChangedEventArgs<ControlViewState>) {
         super.onStateChanged(event)
-        
+
         invalidateControlGraphics()
     }
 
@@ -48,10 +48,10 @@ open class RadioButton: ControlView {
 
         // Label constraints
         label.layout.makeConstraints { make in
-            make.edges.equalTo(self, inset: UIEdgeInsets(left: 16, top: 0, right: 0, bottom: 0))
+            make.edges.equalTo(self, inset: UIEdgeInsets(left: 16))
         }
     }
-    
+
     open override func viewForFirstBaseline() -> View? {
         return label
     }
@@ -61,29 +61,29 @@ open class RadioButton: ControlView {
 
         drawRadioButton(renderer)
     }
-    
+
     open override func onMouseClick(_ event: MouseEventArgs) {
         super.onMouseClick(event)
-        
+
         if isEnabled && !isSelected {
             getManager()?.selectRadioButton(self)
         }
     }
-    
+
     func getManager() -> RadioButtonManagerType? {
         if let manager = radioButtonManager {
             return manager
         }
-        
+
         var view = superview
         while let v = view {
             if let manager = v as? RadioButtonManagerType {
                 return manager
             }
-            
+
             view = v.superview
         }
-        
+
         return nil
     }
 
