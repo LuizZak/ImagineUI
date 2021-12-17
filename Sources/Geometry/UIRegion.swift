@@ -12,7 +12,12 @@ public class UIRegion {
         _rectangles = []
     }
 
-    /// Initializes this region with a set of rectangles that are added in additive
+    /// Initializes a region with a single rectangle.
+    public init(rectangle: UIRectangle) {
+        _rectangles = [rectangle]
+    }
+
+    /// Initializes a region with a set of rectangles that are added in additive
     /// fashion.
     public init(rectangles: [UIRectangle]) {
         _rectangles = []
