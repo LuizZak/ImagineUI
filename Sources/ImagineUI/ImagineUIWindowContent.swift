@@ -226,7 +226,7 @@ open class ImagineUIWindowContent: ImagineUIContentType, DefaultControlSystemDel
             }
         }
 
-        if controlKinds.contains(.tooltips) {
+        if controlKinds.contains(.controls) {
             for rootView in _rootViews.reversed() where rootView != _tooltipContainer {
                 let converted = rootView.convertFromScreen(point)
                 if let view = rootView.hitTestControl(converted, enabledOnly: enabledOnly) {

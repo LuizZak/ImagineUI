@@ -4,7 +4,7 @@ public class TreeView: ControlView {
     private let _itemViewCache: TreeViewCache = TreeViewCache()
     private let _scrollView: ScrollView = ScrollView(scrollBarsMode: .both)
     private let _content: View = View()
-    private let _contentInset: UIEdgeInsets = .init(left: 0, top: 4, right: 0, bottom: 4)
+    private let _contentInset: UIEdgeInsets = .init(top: 4, bottom: 4)
     private let _subItemInset: Double = 5.0
 
     private var _expanded: Set<ItemIndex> = []
@@ -498,9 +498,9 @@ public class TreeView: ControlView {
     private class ItemView: ControlView {
         private let _chevronView: ChevronView = ChevronView()
         private let _iconImageView: ImageView = ImageView(image: nil)
-        private let _titleLabelView: Label = Label(textColor: .black)
+        private let _titleView: TitleView = TitleView()
 
-        private let _contentInset: UIEdgeInsets = UIEdgeInsets(left: 4, top: 2, right: 4, bottom: 2)
+        private let _contentInset: UIEdgeInsets = UIEdgeInsets(left: 4, right: 4)
         private let _imageHeight: Double = 16.0
 
         var itemIndex: ItemIndex
@@ -508,8 +508,10 @@ public class TreeView: ControlView {
 
         @EventWithSender<ItemView, Void>
         var mouseSelected
+
         @EventWithSender<ItemView, Void>
         var mouseClickChevron
+
         @EventWithSender<ItemView, Void>
         var mouseRightClicked
 
@@ -560,21 +562,12 @@ public class TreeView: ControlView {
             }
         }
 
-        var title: String {
-            get {
-                return _titleLabelView.text
-            }
-            set {
-                _titleLabelView.text = newValue
-            }
-        }
-
         var attributedTextTitle: AttributedText {
             get {
-                return _titleLabelView.attributedText
+                return _titleView.attributedTextTitle
             }
             set {
-                _titleLabelView.attributedText = newValue
+                _titleView.attributedTextTitle = newValue
             }
         }
 
@@ -584,31 +577,36 @@ public class TreeView: ControlView {
 
             super.init()
 
-            _titleLabelView.cacheAsBitmap = false
             cacheAsBitmap = false
             _applyStyle(style.itemStyle.normal)
 
             _iconImageView.scalingMode = .centeredAsIs
 
+            _setupMouseForward(_chevronView)
+            _setupMouseForward(_titleView)
+
             _chevronView.mouseClicked.addListener(weakOwner: self) { [weak self] (_, _) in
                 self?.onMouseClickChevron()
             }
-            _chevronView.mouseEntered.addListener(weakOwner: self) { [weak self] (_, _) in
+
+            mouseDown.addListener(weakOwner: self) { [weak self] (_, _) in
+                self?.onMouseSelected()
+            }
+        }
+
+        private func _setupMouseForward(_ control: ControlView) {
+            control.mouseEntered.addListener(weakOwner: self) { [weak self] (_, _) in
                 self?.isHighlighted = true
             }
-            _chevronView.mouseExited.addListener(weakOwner: self) { [weak self] (_, _) in
+            control.mouseExited.addListener(weakOwner: self) { [weak self] (_, _) in
                 self?.isHighlighted = false
             }
-            _chevronView.mouseUp.addListener(weakOwner: self) { [weak self] (sender, event) in
+            control.mouseUp.addListener(weakOwner: self) { [weak self] (sender, event) in
                 guard let self = self else { return }
 
                 if !self.bounds.contains(self.convert(point: event.location, from: sender)) {
                     self.isHighlighted = false
                 }
-            }
-
-            mouseDown.addListener(weakOwner: self) { [weak self] (_, _) in
-                self?.onMouseSelected()
             }
         }
 
@@ -617,7 +615,7 @@ public class TreeView: ControlView {
 
             addSubview(_chevronView)
             addSubview(_iconImageView)
-            addSubview(_titleLabelView)
+            addSubview(_titleView)
         }
 
         override func performInternalLayout() {
@@ -627,7 +625,10 @@ public class TreeView: ControlView {
         }
 
         private func _doLayout(size: UISize) {
-            var properBounds = UIRectangle(location: .zero, size: size).inset(_contentInset)
+            _titleView.layoutToFit(size: .zero)
+            let minimumHeight = max(_imageHeight, _titleView.bounds.height, size.height)
+
+            var properBounds = UIRectangle(location: .zero, size: UISize(width: size.width, height: minimumHeight)).inset(_contentInset)
             properBounds.x += leftIndentationSpace
 
             let hasChevron = reserveChevronSpace || isChevronVisible
@@ -657,9 +658,9 @@ public class TreeView: ControlView {
 
             // Title label
             let leftView = hasIcon ? _iconImageView : _chevronView
-            _titleLabelView.location.x = leftView.area.right + 5
-            _titleLabelView.layoutToFit(size: .zero)
-            _titleLabelView.area.centerY = leftView.area.centerY
+            _titleView.location.x = leftView.area.right + 5
+            _titleView.location.y = properBounds.y
+            _titleView.size.height = properBounds.height
         }
 
         override func layoutSizeFitting(size: UISize) -> UISize {
@@ -725,8 +726,85 @@ public class TreeView: ControlView {
 
         private func _applyStyle(_ style: VisualStyle.ItemStyle) {
             viewToHighlight.backColor = style.backgroundColor
-            _titleLabelView.textColor = style.textColor
             _chevronView.foreColor = style.chevronColor
+            _titleView.textColor = style.textColor
+        }
+
+        private class TitleView: ControlView {
+            private let _titleLabelView: Label = Label(textColor: .black)
+            private let _contentInset: UIEdgeInsets = UIEdgeInsets(top: 4, bottom: 4)
+
+            var title: String {
+                get {
+                    return attributedTextTitle.string
+                }
+                set {
+                    attributedTextTitle = AttributedText(newValue)
+                }
+            }
+
+            var textColor: Color {
+                get {
+                    return _titleLabelView.textColor
+                }
+                set {
+                    _titleLabelView.textColor = newValue
+                }
+            }
+
+            var attributedTextTitle: AttributedText {
+                get {
+                    return _titleLabelView.attributedText
+                }
+                set {
+                    _titleLabelView.attributedText = newValue
+                    tooltip = .init(text: newValue)
+                }
+            }
+
+            override var viewForTooltip: View {
+                _titleLabelView
+            }
+
+            override var tooltipCondition: TooltipDisplayCondition {
+                .viewPartiallyOccluded
+            }
+
+            override var preferredTooltipLocation: PreferredTooltipLocation {
+                .inPlace
+            }
+
+            override init() {
+                super.init()
+
+                _titleLabelView.cacheAsBitmap = false
+                _titleLabelView.verticalTextAlignment = .near
+            }
+
+            override func setupHierarchy() {
+                super.setupHierarchy()
+
+                addSubview(_titleLabelView)
+            }
+
+            override func performInternalLayout() {
+                super.performInternalLayout()
+
+                _titleLabelView.location = _contentInset.topLeft
+                _titleLabelView.layoutToFit(size: .zero)
+            }
+
+            override func layoutSizeFitting(size: UISize) -> UISize {
+                _titleLabelView.layoutSizeFitting(size: size) + _contentInset.top + _contentInset.bottom
+            }
+
+            override func canHandle(_ eventRequest: EventRequest) -> Bool {
+                if let mouseEvent = eventRequest as? MouseEventRequest {
+                    return mouseEvent.eventType == MouseEventType.mouseMove
+                }
+
+                return super.canHandle(eventRequest)
+            }
         }
 
         private class ChevronView: ControlView {

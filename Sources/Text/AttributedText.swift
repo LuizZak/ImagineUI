@@ -183,7 +183,7 @@ public struct AttributedText: Equatable {
 
         for (i, segment) in segments.enumerated() {
             if segment.textRange.start >= index {
-                segments[i].textRange = segment.textRange.offseting(by: string.count)
+                segments[i].textRange = segment.textRange.offsetting(by: string.count)
             }
         }
 
@@ -204,13 +204,13 @@ public struct AttributedText: Equatable {
 
         for (i, segment) in segments.enumerated() {
             if segment.textRange.start >= index {
-                segments[i].textRange = segment.textRange.offseting(by: attributed.text.count)
+                segments[i].textRange = segment.textRange.offsetting(by: attributed.text.count)
             }
         }
 
         let newSegments = attributed.segments.map { segment -> TextSegment in
             var segment = segment
-            segment.textRange = segment.textRange.offseting(by: index)
+            segment.textRange = segment.textRange.offsetting(by: index)
             return segment
         }
 

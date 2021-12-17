@@ -8,19 +8,21 @@ public struct UIEdgeInsets: Hashable, Codable {
     public var right: Scalar
     public var bottom: Scalar
 
-    public init() {
-        left = .zero
-        top = .zero
-        right = .zero
-        bottom = .zero
+    public var topLeft: UIVector {
+        .init(x: left, y: top)
+    }
+    public var topRight: UIVector {
+        .init(x: right, y: top)
+    }
+    public var bottomLeft: UIVector {
+        .init(x: left, y: bottom)
+    }
+    public var bottomRight: UIVector {
+        .init(x: right, y: bottom)
     }
 
     @_transparent
-    public init(left: Scalar,
-                top: Scalar,
-                right: Scalar,
-                bottom: Scalar) {
-
+    public init(left: Scalar = 0.0, top: Scalar = 0.0, right: Scalar = 0.0, bottom: Scalar = 0.0) {
         self.left = left
         self.top = top
         self.right = right

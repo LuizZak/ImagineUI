@@ -796,6 +796,41 @@ open class View {
         return bounds.insetBy(x: -inflatingArea.x, y: -inflatingArea.y).intersects(area)
     }
 
+    /// Returns `true` if a given rectangle within this view's local coordinate
+    /// system is fully visible on the top-most view of this view's hierarchy.
+    ///
+    /// Results are invalid if a view is not contained in a hierarchy that is
+    /// associated with a visible window area.
+    open func isFullyVisibleOnScreen(area: UIRectangle) -> Bool {
+        isFullyVisibleOnScreen(area: bounds, spatialReference: self)
+    }
+
+    /// Returns `true` if a given rectangle on another spatial reference is fully
+    /// visible on the top-most view of this view's hierarchy.
+    ///
+    /// If `self.clipToBounds == true`, the rectangle is checked first against
+    /// the bounds of this view.
+    ///
+    /// If the area is contained within this view's visible area, `superview` is
+    /// then queried recursively until a hierarchy's root view is reached. If all
+    /// recursive checks of containment are true, the result is `true`.
+    ///
+    /// Results are invalid if a view is not contained in a hierarchy that is
+    /// associated with a visible window area.
+    open func isFullyVisibleOnScreen(area: UIRectangle, spatialReference: SpatialReferenceType) -> Bool {
+        let converted = convert(bounds: area, from: spatialReference)
+
+        guard !clipToBounds || bounds.contains(converted) else {
+            return false
+        }
+
+        if let superview = superview {
+            return superview.isFullyVisibleOnScreen(area: area, spatialReference: spatialReference)
+        }
+
+        return true
+    }
+
     // MARK: - Content Compression/Hugging configuration
 
     /// Sets the content compression resistance of this view on a given orientation.

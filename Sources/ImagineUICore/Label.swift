@@ -23,6 +23,8 @@ open class Label: View {
         return InnerLabelTextLayout(label: self)
     }
 
+    // TODO: Account for vertical alignments other than `.near` when computing
+    // TODO: the baseline height for constraint layout
     var baselineHeight: Double {
         return Double(minimalTextLayout.baselineHeightForLine(atIndex: 0))
     }

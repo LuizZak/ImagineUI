@@ -425,6 +425,11 @@ public extension UIRectangle {
         point >= minimum && point <= maximum
     }
 
+    /// Returns `true` if a given rectangle's area can be fully contained within
+    /// this rectangle.
+    ///
+    /// Check is inclusive, so rectangle edges that match exactly are considered
+    /// contained.
     @_transparent
     func contains(_ rect: Self) -> Bool {
         rect.minimum >= minimum && rect.maximum <= maximum
