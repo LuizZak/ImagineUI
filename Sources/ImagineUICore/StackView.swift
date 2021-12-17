@@ -10,7 +10,7 @@ open class StackView: View {
     private(set) public var arrangedSubviews: [View] = []
 
     public override var intrinsicSize: UISize? {
-        return arrangedSubviews.isEmpty ? .zero : nil
+        return .zero
     }
 
     open var spacing: Double = 0 {
