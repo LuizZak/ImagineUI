@@ -1,5 +1,5 @@
 import XCTest
-@testable import ImagineUI
+@testable import ImagineUICore
 import Geometry
 import TestUtils
 import Blend2DRenderer
@@ -34,11 +34,10 @@ extension SnapshotTestCase {
             throw SnapshotError.emptyViewBounds
         }
         
-        let region = BLRegion(rectangle: BLRectI(rounding: bounds.asBLRect))
-        
         let image = BLImage(width: Int(ceil(bounds.width)),
                             height: Int(ceil(bounds.height)),
                             format: .prgb32)
+        /*
         let ctx = BLContext(image: image)!
         ctx.clearAll()
         
@@ -46,9 +45,11 @@ extension SnapshotTestCase {
         
         let renderer = Blend2DRenderer(context: ctx)
         
+        let region = BLRegion(rectangle: BLRectI(rounding: bounds.asBLRect))
         view.renderRecursive(in: renderer, screenRegion: Blend2DClipRegion(region: region))
         
         ctx.end()
+        */
         
         return image
     }

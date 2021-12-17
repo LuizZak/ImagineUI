@@ -56,7 +56,7 @@ open class RadioButton: ControlView {
         return label
     }
 
-    open override func renderForeground(in renderer: Renderer, screenRegion: ClipRegion) {
+    open override func renderForeground(in renderer: Renderer, screenRegion: ClipRegionType) {
         super.renderForeground(in: renderer, screenRegion: screenRegion)
 
         drawRadioButton(renderer)

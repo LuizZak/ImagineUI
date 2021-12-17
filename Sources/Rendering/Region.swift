@@ -1,3 +1,4 @@
+/*
 /// Represents a collection of Rectangle objects that can be combine using boolean
 /// operators.
 public protocol Region {
@@ -19,3 +20,4 @@ public enum RegionOperator {
     case or
     case xor
 }
+*/

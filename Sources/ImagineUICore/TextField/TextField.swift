@@ -599,13 +599,13 @@ open class TextField: ControlView {
 
     // MARK: - Rendering
 
-    open override func renderBackground(in renderer: Renderer, screenRegion: ClipRegion) {
+    open override func renderBackground(in renderer: Renderer, screenRegion: ClipRegionType) {
         super.renderBackground(in: renderer, screenRegion: screenRegion)
 
         renderSelection(in: renderer)
     }
 
-    open override func renderForeground(in renderer: Renderer, screenRegion: ClipRegion) {
+    open override func renderForeground(in renderer: Renderer, screenRegion: ClipRegionType) {
         super.renderForeground(in: renderer, screenRegion: screenRegion)
 
         if isFirstResponder {

@@ -153,6 +153,11 @@ public struct UIRectangle: Hashable, Codable {
     }
 
     @_transparent
+    public var area: Scalar {
+        width * height
+    }
+
+    @_transparent
     public var topLeft: UIPoint {
         .init(x: left, y: top)
     }

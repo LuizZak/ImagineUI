@@ -36,10 +36,10 @@ class TextLayoutRendererTests: SnapshotTestCase {
         
         let (img, ctx) = makeImageContext(for: sut.textLayout)
 
-        ctx.compOp = .sourceCopy
+        ctx.compOp = .srcCopy
         ctx.setFillStyle(BLRgba32.transparentBlack)
         ctx.fillAll()
-        ctx.compOp = .sourceOver
+        ctx.compOp = .srcOver
         ctx.setFillStyle(BLRgba32.black)
         
         sut.render(in: ctx, location: .zero)
@@ -71,10 +71,10 @@ class TextLayoutRendererTests: SnapshotTestCase {
 
         let (img, ctx) = makeImageContext(for: sut.textLayout)
 
-        ctx.compOp = .sourceCopy
+        ctx.compOp = .srcCopy
         ctx.setFillStyle(BLRgba32.transparentBlack)
         ctx.fillAll()
-        ctx.compOp = .sourceOver
+        ctx.compOp = .srcOver
         ctx.setFillStyle(BLRgba32.black)
         
         sut.render(in: ctx, location: .zero)
@@ -102,10 +102,10 @@ class TextLayoutRendererTests: SnapshotTestCase {
         
         let (img, ctx) = makeImageContext(for: sut.textLayout)
 
-        ctx.compOp = .sourceCopy
+        ctx.compOp = .srcCopy
         ctx.setFillStyle(BLRgba32.transparentBlack)
         ctx.fillAll()
-        ctx.compOp = .sourceOver
+        ctx.compOp = .srcOver
         
         sut.render(in: ctx, location: .zero)
         
@@ -130,10 +130,10 @@ class TextLayoutRendererTests: SnapshotTestCase {
         
         let (img, ctx) = makeImageContext(for: sut.textLayout)
 
-        ctx.compOp = .sourceCopy
+        ctx.compOp = .srcCopy
         ctx.setFillStyle(BLRgba32.transparentBlack)
         ctx.fillAll()
-        ctx.compOp = .sourceOver
+        ctx.compOp = .srcOver
         
         sut.render(in: ctx, location: .zero)
         
@@ -162,10 +162,10 @@ class TextLayoutRendererTests: SnapshotTestCase {
         
         let (img, ctx) = makeImageContext(for: sut.textLayout)
 
-        ctx.compOp = .sourceCopy
+        ctx.compOp = .srcCopy
         ctx.setFillStyle(BLRgba32.transparentBlack)
         ctx.fillAll()
-        ctx.compOp = .sourceOver
+        ctx.compOp = .srcOver
         
         sut.render(in: ctx, location: .zero)
         
@@ -190,10 +190,10 @@ class TextLayoutRendererTests: SnapshotTestCase {
         
         let (img, ctx) = makeImageContext(for: sut.textLayout)
 
-        ctx.compOp = .sourceCopy
+        ctx.compOp = .srcCopy
         ctx.setFillStyle(BLRgba32.transparentBlack)
         ctx.fillAll()
-        ctx.compOp = .sourceOver
+        ctx.compOp = .srcOver
         
         sut.render(in: ctx, location: .zero)
         
@@ -222,10 +222,10 @@ class TextLayoutRendererTests: SnapshotTestCase {
         
         let (img, ctx) = makeImageContext(for: sut.textLayout)
 
-        ctx.compOp = .sourceCopy
+        ctx.compOp = .srcCopy
         ctx.setFillStyle(BLRgba32.transparentBlack)
         ctx.fillAll()
-        ctx.compOp = .sourceOver
+        ctx.compOp = .srcOver
         
         sut.render(in: ctx, location: .zero)
         

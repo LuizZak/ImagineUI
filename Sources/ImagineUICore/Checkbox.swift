@@ -69,7 +69,7 @@ open class Checkbox: ControlView {
         return label
     }
 
-    open override func renderForeground(in renderer: Renderer, screenRegion: ClipRegion) {
+    open override func renderForeground(in renderer: Renderer, screenRegion: ClipRegionType) {
         super.renderForeground(in: renderer, screenRegion: screenRegion)
 
         drawCheckBox(state: checkboxState, renderer)

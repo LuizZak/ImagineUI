@@ -17,6 +17,9 @@ class TestFont: Font {
     var matrix: FontMatrix {
         return font.matrix
     }
+    var fontFace: FontFace {
+        return font.fontFace
+    }
     
     init(size: Float) {
         let face = try! BLFontFace(fromFile: TestPaths.pathToTestFontFace())

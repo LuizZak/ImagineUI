@@ -11,7 +11,4 @@ public protocol RenderContext {
     /// Creates an empty image renderer context with the given dimensions.
     /// The pixels of the image are pre-filled with (alpha: 0, red: 0, green: 0, blue: 0).
     func createImageRenderer(width: Int, height: Int) -> ImageRenderContext
-    
-    /// Creates an empty region object
-    func createRegion() -> Region
 }

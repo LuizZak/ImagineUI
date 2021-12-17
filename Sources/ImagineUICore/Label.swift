@@ -133,7 +133,7 @@ open class Label: View {
         super.init()
     }
 
-    open override func render(in renderer: Renderer, screenRegion: ClipRegion) {
+    open override func render(in renderer: Renderer, screenRegion: ClipRegionType) {
         super.render(in: renderer, screenRegion: screenRegion)
 
         _bitmapCache.isCachingEnabled = cacheAsBitmap ?? Label.globallyCacheAsBitmap

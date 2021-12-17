@@ -525,7 +525,7 @@ public class ScrollBarControl: ControlView {
         isHighlighted = false
     }
 
-    public override func renderForeground(in context: Renderer, screenRegion: ClipRegion) {
+    public override func renderForeground(in context: Renderer, screenRegion: ClipRegionType) {
         super.renderForeground(in: context, screenRegion: screenRegion)
 
         let barArea = scrollBarBounds()

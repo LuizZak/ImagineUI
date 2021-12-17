@@ -37,7 +37,7 @@ public protocol ImagineUIContentType: AnyObject {
     ///
     /// A redraw clipping region is specified to inform the content of areas
     /// where re-rendering is not required.
-    func render(renderer: Renderer, renderScale: UIVector, clipRegion: ClipRegion)
+    func render(renderer: Renderer, renderScale: UIVector, clipRegion: ClipRegionType)
 
     /// Called to notify of mouse down events.
     ///

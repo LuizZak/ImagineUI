@@ -1,6 +1,6 @@
 import XCTest
 import Geometry
-@testable import ImagineUI
+@testable import ImagineUICore
 
 class ViewTests: XCTestCase {
     func testLayoutWithNoSuperview() {
@@ -218,7 +218,7 @@ class ViewTests: XCTestCase {
         let guide = LayoutGuide()
         view.addLayoutGuide(guide)
         
-        view.removeLayoutGuide(guide)
+        guide.removeFromSuperview()
         
         XCTAssertNil(guide.owningView)
         XCTAssert(view.layoutGuides.isEmpty)

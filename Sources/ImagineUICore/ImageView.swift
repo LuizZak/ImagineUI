@@ -36,7 +36,7 @@ public class ImageView: View {
         super.init()
     }
 
-    public override func render(in renderer: Renderer, screenRegion: ClipRegion) {
+    public override func render(in renderer: Renderer, screenRegion: ClipRegionType) {
         super.render(in: renderer, screenRegion: screenRegion)
 
         guard let image = image else {

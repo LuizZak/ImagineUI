@@ -834,7 +834,7 @@ public class TreeView: ControlView {
                 invalidateControlGraphics()
             }
 
-            override func renderForeground(in renderer: Renderer, screenRegion: ClipRegion) {
+            override func renderForeground(in renderer: Renderer, screenRegion: ClipRegionType) {
                 var color = foreColor
 
                 switch controlState {

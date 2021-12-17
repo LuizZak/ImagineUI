@@ -1,5 +1,5 @@
 import XCTest
-@testable import ImagineUI
+@testable import ImagineUICore
 import Blend2DRenderer
 import TestUtils
 

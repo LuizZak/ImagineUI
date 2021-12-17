@@ -169,13 +169,13 @@ public class Window: RootView {
         }
     }
 
-    public override func renderBackground(in renderer: Renderer, screenRegion: ClipRegion) {
+    public override func renderBackground(in renderer: Renderer, screenRegion: ClipRegionType) {
         super.renderBackground(in: renderer, screenRegion: screenRegion)
 
         drawWindowBackground(renderer)
     }
 
-    public override func renderForeground(in context: Renderer, screenRegion: ClipRegion) {
+    public override func renderForeground(in context: Renderer, screenRegion: ClipRegionType) {
         super.renderForeground(in: context, screenRegion: screenRegion)
 
         if screenRegion.hitTest(titleBarArea.transformedBounds(absoluteTransform())) != .out {

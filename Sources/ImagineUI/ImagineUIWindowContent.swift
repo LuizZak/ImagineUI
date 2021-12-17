@@ -148,7 +148,7 @@ open class ImagineUIWindowContent: ImagineUIContentType, DefaultControlSystemDel
         }
     }
 
-    open func render(renderer: Renderer, renderScale: UIVector, clipRegion: ClipRegion) {
+    open func render(renderer: Renderer, renderScale: UIVector, clipRegion: ClipRegionType) {
         renderer.scale(by: renderScale)
 
         if let backgroundColor = backgroundColor {

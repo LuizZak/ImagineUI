@@ -21,7 +21,7 @@ public class ProgressBar: ControlView {
         foreColor = .royalBlue
     }
 
-    public override func renderBackground(in context: Renderer, screenRegion: ClipRegion) {
+    public override func renderBackground(in context: Renderer, screenRegion: ClipRegionType) {
         let rect = progressBarRoundRect()
 
         context.setFill(backColor)

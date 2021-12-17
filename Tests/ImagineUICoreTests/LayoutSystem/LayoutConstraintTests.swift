@@ -1,5 +1,5 @@
 import XCTest
-@testable import ImagineUI
+@testable import ImagineUICore
 
 class LayoutConstraintTests: XCTestCase {
     func testCreateConstraintSingleView() {
@@ -28,7 +28,7 @@ class LayoutConstraintTests: XCTestCase {
         let result = LayoutConstraint.update(first: view.layout.width,
                                              relationship: .equal,
                                              offset: 100,
-                                             priority: 1000)
+                                             priority: 999)
         
         XCTAssertEqual(constraint, result)
         XCTAssertEqual(view.constraints, [result])
@@ -36,7 +36,7 @@ class LayoutConstraintTests: XCTestCase {
         XCTAssertEqual(view.constraints.first?.relationship, .equal)
         XCTAssertEqual(view.constraints.first?.offset, 100)
         XCTAssertEqual(view.constraints.first?.multiplier, 1)
-        XCTAssertEqual(view.constraints.first?.priority, 1000)
+        XCTAssertEqual(view.constraints.first?.priority, 999)
     }
     
     func testCreateConstraintTwoViews() {
@@ -81,7 +81,7 @@ class LayoutConstraintTests: XCTestCase {
                                              relationship: .equal,
                                              offset: 100,
                                              multiplier: 3,
-                                             priority: 1000)
+                                             priority: 999)
         
         XCTAssertEqual(constraint, result)
         XCTAssertEqual(view1.constraints, [constraint])
@@ -91,6 +91,6 @@ class LayoutConstraintTests: XCTestCase {
         XCTAssertEqual(view1.constraints.first?.relationship, .equal)
         XCTAssertEqual(view1.constraints.first?.offset, 100)
         XCTAssertEqual(view1.constraints.first?.multiplier, 3)
-        XCTAssertEqual(view1.constraints.first?.priority, 1000)
+        XCTAssertEqual(view1.constraints.first?.priority, 999)
     }
 }

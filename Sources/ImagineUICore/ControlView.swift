@@ -294,7 +294,7 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
     // MARK: - Rendering
 
     /// Paints this control view on a given render context
-    public final override func render(in renderer: Renderer, screenRegion: ClipRegion) {
+    public final override func render(in renderer: Renderer, screenRegion: ClipRegionType) {
         super.render(in: renderer, screenRegion: screenRegion)
 
         renderer.withTemporaryState {
@@ -311,7 +311,7 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
     }
 
     /// Renders this view's background
-    open func renderBackground(in renderer: Renderer, screenRegion: ClipRegion) {
+    open func renderBackground(in renderer: Renderer, screenRegion: ClipRegionType) {
         let bounds = boundsForFillOrStroke()
 
         // Fill
@@ -339,7 +339,7 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
     }
 
     /// Renders this view's foreground content (not drawn on top of child views)
-    open func renderForeground(in renderer: Renderer, screenRegion: ClipRegion) {
+    open func renderForeground(in renderer: Renderer, screenRegion: ClipRegionType) {
 
     }
 

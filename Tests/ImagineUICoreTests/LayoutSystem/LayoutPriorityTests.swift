@@ -1,6 +1,6 @@
 import XCTest
 import CassowarySwift
-@testable import ImagineUI
+@testable import ImagineUICore
 
 class LayoutPriorityTests: XCTestCase {
     func testCassowaryStrength_cassowaryEquivalence() {

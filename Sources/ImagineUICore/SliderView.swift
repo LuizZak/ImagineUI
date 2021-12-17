@@ -233,7 +233,7 @@ public class SliderView: ControlView {
         return value
     }
 
-    public override func renderBackground(in renderer: Renderer, screenRegion: ClipRegion) {
+    public override func renderBackground(in renderer: Renderer, screenRegion: ClipRegionType) {
         super.renderBackground(in: renderer, screenRegion: screenRegion)
 
         let line = sliderLine()
@@ -248,7 +248,7 @@ public class SliderView: ControlView {
                             end: line.end + UIVector(x: 0, y: endsHeight))
     }
 
-    public override func renderForeground(in renderer: Renderer, screenRegion: ClipRegion) {
+    public override func renderForeground(in renderer: Renderer, screenRegion: ClipRegionType) {
         super.renderForeground(in: renderer, screenRegion: screenRegion)
 
         renderKnob(in: renderer)

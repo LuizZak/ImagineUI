@@ -73,7 +73,7 @@ public class Panel: ControlView {
         }
     }
 
-    public override func renderBackground(in context: Renderer, screenRegion: ClipRegion) {
+    public override func renderBackground(in context: Renderer, screenRegion: ClipRegionType) {
         super.renderBackground(in: context, screenRegion: screenRegion)
 
         renderBorder(in: context)
@@ -100,17 +100,17 @@ public class Panel: ControlView {
         }
 
         // Create a clipping region for the borders
-        var region = renderer.context.createRegion()
+        let region = UIRegion()
 
-        region.combine(boundsForRedraw().inflatedBy(x: 1, y: 1), operation: .or)
+        region.addRectangle(boundsForRedraw().inflatedBy(x: 1, y: 1), operation: .add)
 
         // Subtract from the borders region the bounds for the label
-        region.combine(labelBounds, operation: .subtract)
+        region.addRectangle(labelBounds, operation: .subtract)
 
         // Use the region scans from the clipping region to clip the borders as
         // we draw them. This should result in a complete border around the view
         // which clips under the label
-        for scan in region.scans() {
+        for scan in region.allRectangles() {
             renderer.clip(scan)
             renderer.stroke(roundRect)
             renderer.restoreClipping()

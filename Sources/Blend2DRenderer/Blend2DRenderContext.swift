@@ -23,8 +23,4 @@ public class Blend2DRendererContext: RenderContext {
     public func createImageRenderer(width: Int, height: Int) -> ImageRenderContext {
         return Blend2DImageRenderContext(width: width, height: height)
     }
-    
-    public func createRegion() -> Region {
-        return Blend2DRegion()
-    }
 }

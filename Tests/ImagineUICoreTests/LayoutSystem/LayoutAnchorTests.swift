@@ -1,5 +1,5 @@
 import XCTest
-@testable import ImagineUI
+@testable import ImagineUICore
 
 class LayoutAnchorTests: XCTestCase {
     func testCreateConstraints() {

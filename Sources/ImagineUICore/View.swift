@@ -252,7 +252,7 @@ open class View {
         setupConstraints()
     }
 
-    public final func renderRecursive(in renderer: Renderer, screenRegion: ClipRegion) {
+    public final func renderRecursive(in renderer: Renderer, screenRegion: ClipRegionType) {
         if !isVisible {
             return
         }
@@ -275,7 +275,7 @@ open class View {
         }
     }
 
-    open func render(in context: Renderer, screenRegion: ClipRegion) {
+    open func render(in context: Renderer, screenRegion: ClipRegionType) {
 
     }
 
