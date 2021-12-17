@@ -59,6 +59,10 @@ public class Panel: ControlView {
         updateConstraints()
     }
 
+    public override func boundsForRedraw() -> UIRectangle {
+        bounds.inflatedBy(x: 2, y: 2)
+    }
+
     private func updateConstraints() {
         containerLayoutGuide.layout.remakeConstraints { make in
             if isTitleVisible {
@@ -102,7 +106,7 @@ public class Panel: ControlView {
         // Create a clipping region for the borders
         let region = UIRegion()
 
-        region.addRectangle(boundsForRedraw().inflatedBy(x: 1, y: 1), operation: .add)
+        region.addRectangle(bounds.inflatedBy(x: 1, y: 1), operation: .add)
 
         // Subtract from the borders region the bounds for the label
         region.addRectangle(labelBounds, operation: .subtract)

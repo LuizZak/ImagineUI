@@ -510,8 +510,7 @@ open class View {
             return
         }
 
-        superview.subviews.remove(at: index)
-        superview.subviews.append(self)
+        superview.subviews.swapAt(index, superview.subviews.endIndex - 1)
 
         invalidate()
     }

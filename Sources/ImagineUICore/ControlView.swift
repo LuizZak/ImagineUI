@@ -8,6 +8,11 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
     /// This increases memory usage and reduces quality of controls in scaled
     /// scenarios, but reduces CPU usage when re-rendering controls that had no
     /// state change.
+    ///
+    /// Controls that have caching enabled only invalidate the cached bitmap via
+    /// `ControlView.invalidateControlGraphics()`.
+    ///
+    /// Can be overridden on a per-instance basis with `ControlView.cacheAsBitmap`.
     public static var globallyCacheAsBitmap: Bool = true
 
     private let _stateManager = StateManager()
@@ -30,6 +35,9 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
     /// specified boolean value. If `nil`, the global value is used, instead.
     ///
     /// Defaults to `nil` on creation.
+    ///
+    /// Controls that have caching enabled only invalidate the cached bitmap via
+    /// `ControlView.invalidateControlGraphics()`.
     open var cacheAsBitmap: Bool? = nil {
         didSet {
             guard cacheAsBitmap != oldValue else { return }
@@ -371,6 +379,9 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
 
         return result
     }
+
+    // TODO: Consider overriding View.invalidate(bounds:spatialReference:) here
+    // TODO: to allow regular invalidation calls to affect the bitmap cache.
 
     open func invalidateControlGraphics() {
         _updateCacheBounds()
