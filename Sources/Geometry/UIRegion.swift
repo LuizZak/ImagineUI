@@ -263,8 +263,8 @@ public class UIRegion {
                         }
                     }
 
-                    // Attempt to merge rectangles that are side-by-side in the
-                    // same row
+                    // Attempt to merge rectangles that have equal height and are
+                    // side-by-side
                     if let prev = currentLine.last {
                         if prev.right == rect.left && prev.top == rect.top && prev.bottom == rect.bottom {
                             currentLine.append(currentLine.removeLast().union(rect))
