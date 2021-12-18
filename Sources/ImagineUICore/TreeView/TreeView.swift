@@ -166,7 +166,7 @@ public class TreeView: ControlView {
 
             // Do a second pass to assign the largest width to all visible items
             for item in _visibleItems {
-                item.size.width = totalArea.width
+                item.layoutToFit(size: UISize(width: totalArea.width, height: 0))
             }
 
             _content.size = totalArea.size
@@ -670,7 +670,7 @@ public class TreeView: ControlView {
                 _doLayout(size: size)
 
                 var totalArea = UIRectangle.union(subviews.map(\.area))
-                totalArea.left = 0
+                totalArea = totalArea.stretchingLeft(to: 0)
                 totalArea = totalArea.inset(-_contentInset)
 
                 snapshot.restore()
@@ -794,8 +794,14 @@ public class TreeView: ControlView {
                 _titleLabelView.layoutToFit(size: .zero)
             }
 
+            override func layoutToFit(size: UISize) {
+                withSuspendedLayout(setNeedsLayout: false) {
+                    self.size = max(layoutSizeFitting(size: size), size)
+                }
+            }
+
             override func layoutSizeFitting(size: UISize) -> UISize {
-                _titleLabelView.layoutSizeFitting(size: size) + _contentInset.top + _contentInset.bottom
+                _titleLabelView.layoutSizeFitting(size: size) + UISize(width: 0, height: _contentInset.top + _contentInset.bottom)
             }
 
             override func canHandle(_ eventRequest: EventRequest) -> Bool {
