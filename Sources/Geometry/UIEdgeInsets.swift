@@ -57,6 +57,22 @@ extension UIEdgeInsets: ExpressibleByIntegerLiteral {
 
 public extension UIEdgeInsets {
     @_transparent
+    static func + (lhs: Self, rhs: Self) -> Self {
+        Self(
+            left: lhs.left + rhs.left,
+            top: lhs.top + rhs.top,
+            right: lhs.right + rhs.right,
+            bottom: lhs.bottom + rhs.bottom
+        )
+    }
+
+
+    @_transparent
+    static func - (lhs: Self, rhs: Self) -> Self {
+        lhs + (-rhs)
+    }
+
+    @_transparent
     static prefix func - (value: Self) -> Self {
         Self(left: -value.left, top: -value.top, right: -value.right, bottom: -value.bottom)
     }
