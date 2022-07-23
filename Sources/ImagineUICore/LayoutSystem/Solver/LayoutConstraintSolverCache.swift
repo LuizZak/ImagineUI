@@ -392,7 +392,11 @@ fileprivate class _LayoutConstraintSolverCache {
             }
         }
 
+        #endif // DUMP_CONSTRAINTS_TO_DESKTOP
+
         try transaction.apply()
+
+        #if DUMP_CONSTRAINTS_TO_DESKTOP // For debugging purposes
 
         do {
             var variables: [Variable] = []
@@ -415,10 +419,6 @@ fileprivate class _LayoutConstraintSolverCache {
                 FileManager.default.createFile(atPath: pathVariables.path, contents: newFile)
             }
         }
-
-        #else // DUMP_CONSTRAINTS_TO_DESKTOP
-
-        try transaction.apply()
 
         #endif // DUMP_CONSTRAINTS_TO_DESKTOP
     }
