@@ -61,7 +61,6 @@ public struct LayoutAnchorEdges {
         self.layout = layout
     }
 
-    @discardableResult
     @LayoutResultBuilder
     public func equalTo(_ other: LayoutAnchorsContainer,
                         inset: UIEdgeInsets = .zero,
@@ -105,7 +104,6 @@ public struct LayoutAnchorSize {
         self.layout = layout
     }
 
-    @discardableResult
     @LayoutResultBuilder
     public func equalTo(_ other: LayoutAnchorsContainer,
                         multiplier: Double = 1,
@@ -124,7 +122,6 @@ public struct LayoutAnchorSize {
         )
     }
 
-    @discardableResult
     @LayoutResultBuilder
     public func equalTo(_ size: UISize, priority: LayoutPriority = .required) -> LayoutConstraintDefinitions {
         .create(

@@ -1,14 +1,12 @@
 import Geometry
 
 extension LayoutAnchor {
-    @discardableResult
     public func equalTo(_ value: Double,
                         priority: LayoutPriority = .required) -> LayoutConstraintDefinition {
 
         .create(first: self, offset: value, priority: priority)
     }
 
-    @discardableResult
     public func equalTo(_ other: LayoutAnchor<T>,
                         offset: Double = 0,
                         multiplier: Double = 1,
@@ -22,7 +20,6 @@ extension LayoutAnchor {
         )
     }
 
-    @discardableResult
     public func equalTo(_ other: LayoutAnchorsContainer,
                         offset: Double = 0,
                         multiplier: Double = 1,
@@ -36,7 +33,6 @@ extension LayoutAnchor {
         )
     }
 
-    @discardableResult
     public func lessThanOrEqualTo(_ value: Double,
                                   priority: LayoutPriority = .required) -> LayoutConstraintDefinition {
         .create(
@@ -47,7 +43,6 @@ extension LayoutAnchor {
         )
     }
 
-    @discardableResult
     public func lessThanOrEqualTo(_ other: LayoutAnchor<T>,
                                   offset: Double = 0,
                                   multiplier: Double = 1,
@@ -62,7 +57,6 @@ extension LayoutAnchor {
         )
     }
 
-    @discardableResult
     public func lessThanOrEqualTo(_ other: LayoutAnchorsContainer,
                                   offset: Double = 0,
                                   multiplier: Double = 1,
@@ -77,7 +71,6 @@ extension LayoutAnchor {
         )
     }
 
-    @discardableResult
     public func greaterThanOrEqualTo(_ value: Double,
                                      priority: LayoutPriority = .required) -> LayoutConstraintDefinition {
         .create(
@@ -88,7 +81,6 @@ extension LayoutAnchor {
         )
     }
 
-    @discardableResult
     public func greaterThanOrEqualTo(_ other: LayoutAnchor<T>,
                                      offset: Double = 0,
                                      multiplier: Double = 1,
@@ -103,7 +95,6 @@ extension LayoutAnchor {
         )
     }
 
-    @discardableResult
     public func greaterThanOrEqualTo(_ other: LayoutAnchorsContainer,
                                      offset: Double = 0,
                                      multiplier: Double = 1,
@@ -114,6 +105,40 @@ extension LayoutAnchor {
             relationship: .greaterThanOrEqual,
             offset: offset,
             multiplier: multiplier,
+            priority: priority
+        )
+    }
+}
+
+public extension LayoutAnchorSize {
+    @LayoutResultBuilder
+    func greaterThanOrEqualTo(_ size: UISize, priority: LayoutPriority = .required) -> LayoutConstraintDefinitions {
+        .create(
+            first: layout.width,
+            relationship: .greaterThanOrEqual,
+            offset: size.width,
+            priority: priority
+        );
+        .create(
+            first: layout.height,
+            relationship: .greaterThanOrEqual,
+            offset: size.height,
+            priority: priority
+        )
+    }
+
+    @LayoutResultBuilder
+    func lessThanOrEqualTo(_ size: UISize, priority: LayoutPriority = .required) -> LayoutConstraintDefinitions {
+        .create(
+            first: layout.width,
+            relationship: .lessThanOrEqual,
+            offset: size.width,
+            priority: priority
+        );
+        .create(
+            first: layout.height,
+            relationship: .lessThanOrEqual,
+            offset: size.height,
             priority: priority
         )
     }
