@@ -199,6 +199,38 @@ open class View {
         }
     }
 
+    /// Changes the alpha value of this view, which affects the base transparency
+    /// of its entire view hierarchy.
+    ///
+    /// A value of 1.0 indicates a fully opaque view, while 0.0 indicates a fully
+    /// transparent view.
+    ///
+    /// Views with transparency still render on screen, but the renderer context
+    /// is automatically set to a lower global alpha, according to the alpha
+    /// of the view's hierarchy.
+    ///
+    /// Value is capped to be within (0.0, 1.0) range, inclusive.
+    open var alpha: Double = 1.0 {
+        didSet {
+            alpha = min(1.0, max(0.0, alpha))
+
+            if isVisible && alpha != oldValue {
+                invalidate()
+            }
+        }
+    }
+
+    /// For rendering purposes
+    var effectiveAlpha: Double {
+        var result = 1.0
+
+        visitingSuperviews { view in
+            result *= view.alpha
+        }        
+
+        return result
+    }
+
     // MARK: -
 
     /// A list of constraints that affect this view, or other subviews in the
@@ -266,6 +298,7 @@ open class View {
             if clipToBounds {
                 renderer.clip(boundsForRedraw())
             }
+            renderer.setGlobalAlpha(effectiveAlpha)
 
             render(in: renderer, screenRegion: screenRegion)
 

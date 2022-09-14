@@ -233,6 +233,12 @@ public class Blend2DRenderer: Renderer {
         _context.restoreClipping()
     }
 
+    // MARK: - Global alpha
+
+    public func setGlobalAlpha(_ alpha: Double) {
+        _context.globalAlpha = alpha
+    }
+
     // MARK: - State
 
     @discardableResult

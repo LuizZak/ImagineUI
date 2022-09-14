@@ -169,6 +169,17 @@ public protocol Renderer {
     /// Restores the clipping of this Renderer back
     func restoreClipping()
 
+    // MARK: - Global alpha
+
+    /// Sets the global alpha for this renderer.
+    ///
+    /// Subsequent rendering operations will have their fill/stroke colors be
+    /// multiplied by this alpha value before their effective rendering.
+    ///
+    /// Values of 1.0 indicate fully opaque global alpha, while 0.0 indicate a
+    /// fully transparent global alpha.
+    func setGlobalAlpha(_ alpha: Double)
+
     // MARK: - Save/Restore State
 
     /// Saves the current renderer state and returns a token that when passed to
