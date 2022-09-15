@@ -706,9 +706,11 @@ open class View {
 
         // Search children first
         for baseView in subviews.reversed() {
-            if let ht = baseView.viewUnder(point: baseView.transform.inverted().transform(point),
-                                           inflatingArea: inflatingArea,
-                                           predicate: predicate) {
+            if let ht = baseView.viewUnder(
+                point: baseView.transform.inverted().transform(point),
+                inflatingArea: inflatingArea,
+                predicate: predicate
+            ) {
                 return ht
             }
         }

@@ -238,6 +238,43 @@ open class ImagineUIWindowContent: ImagineUIContentType, DefaultControlSystemDel
         return nil
     }
 
+    open func controlViewUnder(
+        point: UIVector,
+        forEventRequest eventRequest: EventRequest,
+        controlKinds: ControlKinds
+    ) -> ControlView? {
+
+        let enabledOnly = !controlKinds.contains(.disabledFlag)
+
+        if controlKinds.contains(.tooltips) {
+            let converted = _tooltipContainer.convertFromScreen(point)
+
+            if let view = _tooltipContainer.hitTestControl(
+                converted,
+                forEventRequest: eventRequest,
+                enabledOnly: enabledOnly
+            ) {
+                return view
+            }
+        }
+
+        if controlKinds.contains(.controls) {
+            for rootView in _rootViews.reversed() where rootView != _tooltipContainer {
+                let converted = rootView.convertFromScreen(point)
+                
+                if let view = rootView.hitTestControl(
+                    converted,
+                    forEventRequest: eventRequest,
+                    enabledOnly: enabledOnly
+                ) {
+                    return view
+                }
+            }
+        }
+
+        return nil
+    }
+
     open func setMouseCursor(_ cursor: MouseCursorKind) {
         delegate?.setMouseCursor(self, cursor: cursor)
     }

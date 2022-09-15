@@ -49,20 +49,6 @@ public class DefaultControlSystem: ControlSystemType {
     }
 
     public func onMouseDown(_ event: MouseEventArgs) {
-        // Find control
-        guard let control = delegate?.controlViewUnder(point: event.location, controlKinds: .controls) else {
-            _firstResponder?.resignFirstResponder()
-            return
-        }
-
-        hideTooltip()
-
-        // Request that the given root view be brought to the front of the views
-        // list to be rendered on top of all other views.
-        if let rootView = control.rootView {
-            bringRootViewToFront(rootView)
-        }
-
         // TODO: Consider registering double clicks on mouse down on Windows
         // TODO: as a response to events WM_LBUTTONDOWN, WM_LBUTTONUP,
         // TODO: WM_LBUTTONDBLCLK, and WM_LBUTTONUP, as per Win32 documentation:
@@ -77,6 +63,24 @@ public class DefaultControlSystem: ControlSystemType {
             if handler !== self._firstResponder && handler.canBecomeFirstResponder {
                 self._firstResponder?.resignFirstResponder()
             }
+        }
+
+        // Find control
+        guard let control = delegate?.controlViewUnder(
+            point: event.location,
+            forEventRequest: request,
+            controlKinds: .controls
+        ) else {
+            _firstResponder?.resignFirstResponder()
+            return
+        }
+
+        hideTooltip()
+
+        // Request that the given root view be brought to the front of the views
+        // list to be rendered on top of all other views.
+        if let rootView = control.rootView {
+            bringRootViewToFront(rootView)
         }
 
         control.handleOrPass(request)
@@ -100,13 +104,17 @@ public class DefaultControlSystem: ControlSystemType {
 
         // Figure out if it's a click or mouse up event
         // Click events fire when mouseDown + mouseUp occur over the same element
-        if let control = delegate?.controlViewUnder(point: event.location, controlKinds: .controls) {
-            let request = InnerMouseEventRequest(event: event, eventType: .mouseClick) { clickHandler in
-                if clickHandler === handler {
-                    clickHandler.onMouseClick(event.convertLocation(handler: clickHandler))
-                }
+        let request = InnerMouseEventRequest(event: event, eventType: .mouseClick) { clickHandler in
+            if clickHandler === handler {
+                clickHandler.onMouseClick(event.convertLocation(handler: clickHandler))
             }
+        }
 
+        if let control = delegate?.controlViewUnder(
+            point: event.location,
+            forEventRequest: request,
+            controlKinds: .controls
+        ) {
             control.handleOrPass(request)
         }
 
@@ -118,10 +126,6 @@ public class DefaultControlSystem: ControlSystemType {
     }
 
     public func onMouseWheel(_ event: MouseEventArgs) {
-        guard let control = delegate?.controlViewUnder(point: event.location, controlKinds: .controls) else {
-            return
-        }
-
         // Make request
         let request = InnerMouseEventRequest(event: event, eventType: .mouseWheel) { handler in
             if let mouse = self._mouseDownTarget {
@@ -129,6 +133,14 @@ public class DefaultControlSystem: ControlSystemType {
             } else {
                 handler.onMouseWheel(event.convertLocation(handler: handler))
             }
+        }
+
+        guard let control = delegate?.controlViewUnder(
+            point: event.location,
+            forEventRequest: request,
+            controlKinds: .controls
+        ) else {
+            return
         }
 
         control.handleOrPass(request)
@@ -209,10 +221,6 @@ public class DefaultControlSystem: ControlSystemType {
             self.hideTooltip()
         }
 
-        guard let control = delegate?.controlViewUnder(point: event.location, controlKinds: .controls) else {
-            return bailOut()
-        }
-
         // Make request
         let request = InnerMouseEventRequest(event: event, eventType: eventType) { handler in
             if self._mouseHoverTarget !== handler {
@@ -240,6 +248,14 @@ public class DefaultControlSystem: ControlSystemType {
                     self.startHoverTimer(provider: tooltipProvider)
                 }
             }
+        }
+
+        guard let control = delegate?.controlViewUnder(
+            point: event.location,
+            forEventRequest: request,
+            controlKinds: .controls
+        ) else {
+            return bailOut()
         }
 
         control.handleOrPass(request)
@@ -537,7 +553,12 @@ private class InnerMouseEventRequest: InnerEventRequest<MouseEventHandler>, Mous
     var eventType: MouseEventType
     var modifiers: KeyboardModifier
 
-    convenience init(event: MouseEventArgs, eventType: MouseEventType, onAccept: @escaping (MouseEventHandler) -> Void) {
+    convenience init(
+        event: MouseEventArgs,
+        eventType: MouseEventType,
+        onAccept: @escaping (MouseEventHandler) -> Void
+    ) {
+
         self.init(
             screenLocation: event.location,
             buttons: event.buttons,
@@ -549,13 +570,15 @@ private class InnerMouseEventRequest: InnerEventRequest<MouseEventHandler>, Mous
         )
     }
 
-    init(screenLocation: UIVector,
-         buttons: MouseButton,
-         delta: UIVector,
-         clicks: Int,
-         modifiers: KeyboardModifier,
-         eventType: MouseEventType,
-         onAccept: @escaping (MouseEventHandler) -> Void) {
+    init(
+        screenLocation: UIVector,
+        buttons: MouseButton,
+        delta: UIVector,
+        clicks: Int,
+        modifiers: KeyboardModifier,
+        eventType: MouseEventType,
+        onAccept: @escaping (MouseEventHandler) -> Void
+    ) {
 
         self.screenLocation = screenLocation
         self.buttons = buttons
@@ -571,7 +594,11 @@ private class InnerMouseEventRequest: InnerEventRequest<MouseEventHandler>, Mous
 private class InnerKeyboardEventRequest: InnerEventRequest<KeyboardEventHandler>, KeyboardEventRequest {
     var eventType: KeyboardEventType
 
-    init(eventType: KeyboardEventType, onAccept: @escaping (KeyboardEventHandler) -> Void) {
+    init(
+        eventType: KeyboardEventType,
+        onAccept: @escaping (KeyboardEventHandler) -> Void
+    ) {
+
         self.eventType = eventType
         super.init(onAccept: onAccept)
     }

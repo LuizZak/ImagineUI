@@ -549,6 +549,44 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
         return controlView as? ControlView
     }
 
+    /// Returns the first control view under a given point on this control view
+    /// which is willing to respond to a given event request.
+    ///
+    /// Controls found are queried with `ControlView.canHandle` before being
+    /// accepted.
+    ///
+    /// Note: Controls should not accept the passed event request at the point
+    /// of this query, as this is handled by the control system after que hit
+    /// test query is completed.
+    ///
+    /// Returns nil, if no control was found.
+    ///
+    /// - Parameter point: Point to hit-test against, in local coordinates of
+    /// this `ControlView`
+    /// - Parameter eventRequest: The event request associated with this hit test.
+    /// Usually associated with a mouse event request.
+    /// - Parameter enabledOnly: Whether to only consider views that have
+    /// interactivity enabled. See `interactionEnabled`
+    public func hitTestControl(
+        _ point: UIVector,
+        forEventRequest eventRequest: EventRequest,
+        enabledOnly: Bool = true
+    ) -> ControlView? {
+
+        let controlView = viewUnder(point: point) { view -> Bool in
+            guard let control = view as? ControlView else {
+                return false
+            }
+            guard control.canHandle(eventRequest) else {
+                return false
+            }
+
+            return control.isRecursivelyVisible && (!enabledOnly || control.isRecursivelyInteractiveEnabled)
+        }
+
+        return controlView as? ControlView
+    }
+
     /// Traverses the hierarchy of a given view, returning the first `T`-based
     /// view that the method finds.
     ///
