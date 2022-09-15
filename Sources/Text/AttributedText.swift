@@ -92,13 +92,12 @@ public struct AttributedText: Equatable {
         segments.append(contentsOf: attributedText.segments.map { seg in
             var seg = seg
 
-            let range = TextRange(start: seg.textRange.start + newLimit,
-                                  length: seg.textRange.length)
-
-            seg.textRange = range
+            seg.textRange.start += newLimit
 
             return seg
         })
+
+        text += attributedText.text
 
         mergeSegments()
     }
@@ -428,6 +427,10 @@ extension AttributedText: ExpressibleByStringInterpolation {
         }
 
         public mutating func appendLiteral(_ literal: String) {
+            output.append(literal)
+        }
+
+        public mutating func appendInterpolation(_ literal: AttributedText) {
             output.append(literal)
         }
 

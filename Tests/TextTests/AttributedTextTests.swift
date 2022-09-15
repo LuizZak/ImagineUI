@@ -16,12 +16,10 @@ class AttributedTextTests: XCTestCase {
 
         sut.append("abc")
 
-        let segments = sut.textSegments
-
         XCTAssertEqual(3, sut.length)
         XCTAssertEqual("abc", sut.string)
         XCTAssertFalse(sut.hasAttributes)
-        
+        let segments = sut.textSegments
         XCTAssertEqual(1, segments.count)
         XCTAssertEqual("abc", segments[0].text)
         XCTAssertEqual(TextRange(start: 0, length: 3), segments[0].textRange)
@@ -34,12 +32,10 @@ class AttributedTextTests: XCTestCase {
         sut.append("abc")
         sut.append("def")
 
-        let segments = sut.textSegments
-
         XCTAssertEqual(6, sut.length)
         XCTAssertEqual("abcdef", sut.string)
         XCTAssertFalse(sut.hasAttributes)
-
+        let segments = sut.textSegments
         XCTAssertEqual(1, segments.count)
         XCTAssertEqual("abcdef", segments[0].text)
         XCTAssertEqual(TextRange(start: 0, length: 6), segments[0].textRange)
@@ -51,12 +47,11 @@ class AttributedTextTests: XCTestCase {
 
         sut.append("abc", attributes: ["test": TestAttribute()])
 
+        XCTAssertEqual(sut.string, "abctest")
         let segments = sut.textSegments
-
         XCTAssertEqual(3, sut.length)
         XCTAssertEqual("abc", sut.string)
         XCTAssert(sut.hasAttributes)
-
         XCTAssertEqual(1, segments.count)
         XCTAssertEqual("abc", segments[0].text)
         XCTAssertEqual(TextRange(start: 0, length: 3), segments[0].textRange)
@@ -69,12 +64,11 @@ class AttributedTextTests: XCTestCase {
 
         sut.append("abc", attributes: ["test": TestAttribute(), "test2": TestAttribute2()])
 
+        XCTAssertEqual(sut.string, "abctest")
         let segments = sut.textSegments
-
         XCTAssertEqual(3, sut.length)
         XCTAssertEqual("abc", sut.string)
         XCTAssert(sut.hasAttributes)
-
         XCTAssertEqual(1, segments.count)
         XCTAssertEqual("abc", segments[0].text)
         XCTAssertEqual(TextRange(start: 0, length: 3), segments[0].textRange)
@@ -89,6 +83,7 @@ class AttributedTextTests: XCTestCase {
         
         sut.append(attributed)
         
+        XCTAssertEqual(sut.string, "abcdef")
         let segments = sut.textSegments
         XCTAssertEqual(segments.count, 2)
         XCTAssertEqual(segments[0].text, "abc")
