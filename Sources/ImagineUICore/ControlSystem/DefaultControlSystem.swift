@@ -405,7 +405,13 @@ public class DefaultControlSystem: ControlSystemType {
         }
 
         _tooltipWrapper.setHover(provider: provider) {
-            self.showTooltip(for: provider)
+            let obj = provider as AnyObject
+            if self._mouseHoverTarget === obj {
+                self.showTooltip(for: provider)
+            } else {
+                self.hideTooltip()
+                self._tooltipWrapper.setHidden()
+            }
         }
     }
 
@@ -473,7 +479,8 @@ public class DefaultControlSystem: ControlSystemType {
 
         func setHover(provider: TooltipProvider, defaultDelay: TimeInterval = 0.5, callback: @escaping () -> Void) {
             _currentUpdateEvent = nil
-
+            state.invalidateTimer()
+            
             let delay = provider.tooltipDelay ?? defaultDelay
 
             if delay <= 0.0 {
