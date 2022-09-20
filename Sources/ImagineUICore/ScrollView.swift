@@ -314,8 +314,8 @@ open class ScrollView: ControlView {
             return
         }
 
-        let horizontalBarVisible = horizontalBar.contentSize >= horizontalBar.visibleSize
-        let verticalBarVisible = verticalBar.contentSize >= verticalBar.visibleSize
+        let horizontalBarVisible = horizontalBar.contentSize > horizontalBar.visibleSize
+        let verticalBarVisible = verticalBar.contentSize > verticalBar.visibleSize
 
         horizontalBar.isVisible = horizontalBarVisible && scrollBarsMode.contains(.horizontal)
         verticalBar.isVisible = verticalBarVisible && scrollBarsMode.contains(.vertical)
