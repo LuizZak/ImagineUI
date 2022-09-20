@@ -8,7 +8,13 @@ public class TreeView: ControlView {
     private let _subItemInset: Double = 5.0
 
     private var _expanded: Set<ItemIndex> = []
-    private var _selected: Set<ItemIndex> = []
+    private var _selected: Set<ItemIndex> = [] {
+        didSet {
+            if _selected != oldValue {
+                _raiseSelectionChangeEvent(oldValue, _selected)
+            }
+        }
+    }
     private var _visibleItems: [ItemView] = []
 
     private var _lastSize: UISize? = nil
@@ -29,6 +35,10 @@ public class TreeView: ControlView {
     /// be deselected.
     @CancellableActionEventWithSender<TreeView, Set<ItemIndex>>
     public var willDeselect
+
+    /// Event raised after selection changes to this tree view.
+    @ValueChangedEventWithSender<TreeView, Set<ItemIndex>>
+    public var didChangeSelection
 
     @EventWithSender<TreeView, ItemIndex>
     public var mouseRightClickedItem
@@ -423,6 +433,10 @@ public class TreeView: ControlView {
         }
 
         return cancel
+    }
+
+    private func _raiseSelectionChangeEvent(_ oldSelection: Set<ItemIndex>, _ newSelection: Set<ItemIndex>) {
+        _didChangeSelection(sender: self, old: oldSelection, new: newSelection)
     }
 
     private func _raiseRightMouseClick(_ index: ItemIndex) {
