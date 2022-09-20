@@ -14,80 +14,91 @@ struct BoxLayout {
         // TODO: Improve handling of mixed flexible/extensible view layouts under
         // TODO: compression scenarios.
 
-        // Find available length for flexible views
-        let fixedLength = entries.reduce(0.0) {
-            switch $1 {
-            case .fixed(_, let length, let spacing):
-                return $0 + length + spacing
+        /// Caches the minimal size of extensible entries by index.
+        /// Entries that are not extensible have a size cache entry of zero.
+        let extensibleMinimalSizeCache: [Double] = entries.map { entry in
+            switch entry {
+            case .fixed:
+                return 0
 
-            case .flexible(_, let spacing):
-                return $0 + spacing
+            case .flexible:
+                return 0
 
-            case .extensible(let view, let length, let spacing):
-                if let length = length {
-                    return length + spacing
+            case .extensible(let view, let minimumLength, let spacingAfter):
+                if let minimumLength = minimumLength {
+                    return minimumLength + spacingAfter
                 }
 
                 let minimal = view.layoutSizeFitting(size: .zero)
-                return orientation[axisOf: minimal] + spacing
+                return orientation[axisOf: minimal] + spacingAfter
+            }
+        }
+
+        // Find available length for flexible views
+        let fixedLength = entries.enumerated().reduce(0.0) {
+            let accum = $0
+            let index = $1.offset
+            let entry = $1.element
+
+            switch entry {
+            case .fixed(_, let length, let spacingAfter):
+                return accum + length + spacingAfter
+
+            case .flexible(_, let spacingAfter):
+                return accum + spacingAfter
+
+            case .extensible:
+                return accum + extensibleMinimalSizeCache[index]
             }
         }
 
         let flexibleSpace = availableLength - fixedLength
-        let flexibleViewCount = entries.reduce(0.0) {
-            switch $1 {
-            case .fixed:
-                return $0
-            case .flexible:
-                return $0 + 1
-            case .extensible(let view, let length, let spacing):
-                let minimal: Double
-                if let length = length {
-                    minimal = length + spacing
-                } else {
-                    let size = view.layoutSizeFitting(size: .zero)
-                    minimal = orientation[axisOf: size] + spacing
-                }
+        let flexibleViewCount = entries.enumerated().reduce(0.0) {
+            let accum = $0
+            let index = $1.offset
+            let entry = $1.element
 
-                return flexibleSpace > minimal ? $0 + 1 : $0
+            switch entry {
+            case .fixed:
+                return accum
+
+            case .flexible:
+                return accum + 1
+
+            case .extensible:
+                return flexibleSpace > extensibleMinimalSizeCache[index] ? accum + 1 : accum
             }
         }
 
         let flexibleSpacePerView = flexibleViewCount > 0 ? flexibleSpace / flexibleViewCount : 0
 
         var current = orientation[axisOf: origin]
-        for entry in entries {
+        for (index, entry) in entries.enumerated() {
             switch entry {
-            case .fixed(let view, let length, let spacing):
+            case .fixed(let view, let length, let spacingAfter):
                 orientation[location: view] = current
                 orientation[size: view] = length
 
-                current += length + spacing
+                current += length + spacingAfter
 
-            case .flexible(let view, let spacing):
+            case .flexible(let view, let spacingAfter):
                 orientation[location: view] = current
                 orientation[size: view] = flexibleSpacePerView
 
-                current += flexibleSpacePerView + spacing
+                current += flexibleSpacePerView + spacingAfter
 
-            case .extensible(let view, let length, let spacing):
-                let minimal: Double
-                if let length = length {
-                    minimal = length + spacing
-                } else {
-                    let size = view.layoutSizeFitting(size: .zero)
-                    minimal = orientation[axisOf: size] + spacing
-                }
+            case .extensible(let view, _, _):
+                let minimal = extensibleMinimalSizeCache[index]
 
                 orientation[location: view] = current
 
                 if flexibleSpacePerView > minimal {
                     orientation[size: view] = flexibleSpacePerView
+                    current += flexibleSpacePerView
                 } else {
                     orientation[size: view] = minimal
+                    current += minimal
                 }
-
-                current += spacing
             }
         }
 
@@ -124,12 +135,12 @@ struct BoxLayout {
         /// other fixed-sized views.
         case flexible(View, spacingAfter: Double)
 
-        /// Represents a view that can be stretched beyond its minimal size, but
-        /// cannot be compressed past it.
+        /// Represents a view that can be stretched beyond a minimal size, but
+        /// cannot be compressed further than it.
         ///
-        /// If `length` is `nil`, minimal size is derived from
+        /// If `minimumLength` is `nil`, minimal size is derived from
         /// `view.layoutSizeFitting(size: .zero)`
-        case extensible(View, length: Double? = nil, spacingAfter: Double)
+        case extensible(View, minimumLength: Double? = nil, spacingAfter: Double)
 
         var view: View {
             switch self {
