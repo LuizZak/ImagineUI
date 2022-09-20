@@ -13,13 +13,22 @@ public class TreeView: ControlView {
 
     private var _lastSize: UISize? = nil
 
+    /// Event raised when an item within this tree view is about to be expanded.
     @CancellableActionEventWithSender<TreeView, ItemIndex>
     public var willExpand
+    
+    /// Event raised when an item within this tree view is about to be collapsed.
     @CancellableActionEventWithSender<TreeView, ItemIndex>
     public var willCollapse
 
+    /// Event raised when an item within this tree view is about to be selected.
     @CancellableActionEventWithSender<TreeView, ItemIndex>
     public var willSelect
+
+    /// Event raised when one or more items within this tree view are about to
+    /// be deselected.
+    @CancellableActionEventWithSender<TreeView, Set<ItemIndex>>
+    public var willDeselect
 
     @EventWithSender<TreeView, ItemIndex>
     public var mouseRightClickedItem
@@ -28,6 +37,22 @@ public class TreeView: ControlView {
 
     public override var canBecomeFirstResponder: Bool {
         return true
+    }
+
+    /// If `true`, items can be deselected by clicking on empty spaces with no
+    /// tree view items within the bounds of this tree view control.
+    ///
+    /// Defaults to `false`.
+    public var canDeselectItemsOnEmptySpaces: Bool = true
+
+    /// A percentage of the display height of the tree view that the scroll view
+    /// is padded at the bottom in order to create an empty space past the end
+    /// of the list of items.
+    ///
+    /// - seealso: ``ScrollView.overScrollFactor``
+    public var overScrollFactor: Double {
+        get { _scrollView.overScrollFactor }
+        set { _scrollView.overScrollFactor = newValue }
     }
 
     /// Specifies the visual style of this tree view.
@@ -52,6 +77,8 @@ public class TreeView: ControlView {
 
         addSubview(_scrollView)
         _scrollView.addSubview(_content)
+
+        _configureView()
     }
 
     public override func setupConstraints() {
@@ -79,6 +106,14 @@ public class TreeView: ControlView {
         }
     }
 
+    private func _configureView() {
+        _scrollView.mouseClicked.addListener(weakOwner: self) { [weak self] (_, _) in
+            guard let self = self else { return }
+
+            self._raiseDeselectEvent(self._selected)
+        }
+    }
+
     // MARK: - Events
 
     public override func canHandle(_ eventRequest: EventRequest) -> Bool {
@@ -96,6 +131,14 @@ public class TreeView: ControlView {
 
         if _handleKeyDown(event.keyCode, event.modifiers) {
             event.handled = true
+        }
+    }
+
+    public override func onMouseClick(_ event: MouseEventArgs) {
+        super.onMouseClick(event)
+
+        if canDeselectItemsOnEmptySpaces {
+            _raiseDeselectEvent(_selected)
         }
     }
 
@@ -366,6 +409,22 @@ public class TreeView: ControlView {
         return cancel
     }
 
+    @discardableResult
+    private func _raiseDeselectEvent(_ items: Set<ItemIndex>) -> Bool {
+        let filtered = items.filter(self._isSelected(index:))
+
+        if filtered.isEmpty {
+            return true
+        }
+
+        let cancel = _willDeselect(sender: self, value: filtered)
+        if !cancel {
+            _deselectItemViews(filtered)
+        }
+
+        return cancel
+    }
+
     private func _raiseRightMouseClick(_ index: ItemIndex) {
         _mouseRightClickedItem(sender: self, index)
     }
@@ -384,6 +443,17 @@ public class TreeView: ControlView {
         _selected = [itemView.itemIndex]
 
         itemView.isSelected = true
+    }
+
+    /// Deselects all item views currently selected.
+    private func _deselectItemViews(_ items: Set<ItemIndex>) {
+        for index in items {
+            if let view = _visibleItem(withIndex: index) {
+                view.isSelected = false
+            }
+        }
+
+        _selected.subtract(items)
     }
 
     private func _visibleItem(forHierarchyIndex index: HierarchyIndex) -> ItemView? {
@@ -450,6 +520,9 @@ public class TreeView: ControlView {
 
             _visibleItems.append(itemView)
             _content.addSubview(itemView)
+
+            // NOTE: Debug change
+            //_expanded.insert(itemIndex)
 
             if _isExpanded(index: itemIndex) && dataSource.hasSubItems(at: itemIndex) {
                 _recursiveAddItems(

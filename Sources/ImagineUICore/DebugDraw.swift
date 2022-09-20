@@ -2,9 +2,12 @@ import Geometry
 import Rendering
 
 public enum DebugDraw {
-    public static func debugDrawRecursive(_ view: View,
-                                          flags: Set<DebugDrawFlags>,
-                                          in renderer: Renderer) {
+    public static func debugDrawRecursive(
+        _ view: View,
+        flags: Set<DebugDrawFlags>,
+        in renderer: Renderer
+    ) {
+
         if flags.isEmpty {
             return
         }
@@ -26,10 +29,12 @@ public enum DebugDraw {
 }
 
 extension DebugDraw {
-    private static func internalDebugDrawRecursive(_ view: View,
-                                                   flags: Set<DebugDrawFlags>,
-                                                   to renderer: Renderer,
-                                                   state: State) {
+    private static func internalDebugDrawRecursive(
+        _ view: View,
+        flags: Set<DebugDrawFlags>,
+        to renderer: Renderer,
+        state: State
+    ) {
         
         if flags.isEmpty {
             return
@@ -42,10 +47,12 @@ extension DebugDraw {
         traveler.travelThrough(view: view)
     }
     
-    private static func debugDraw(_ view: View,
-                                  flags: Set<DebugDrawFlags>,
-                                  to renderer: Renderer,
-                                  state: State) {
+    private static func debugDraw(
+        _ view: View,
+        flags: Set<DebugDrawFlags>,
+        to renderer: Renderer,
+        state: State
+    ) {
         
         if flags.contains(.viewBounds) {
             drawBounds(view, to: renderer)
@@ -90,24 +97,30 @@ extension DebugDraw {
         renderer.restoreState(cookie)
     }
     
-    private static func drawConstraint(_ constraint: LayoutConstraint,
-                                       to renderer: Renderer,
-                                       state: State) {
+    private static func drawConstraint(
+        _ constraint: LayoutConstraint,
+        to renderer: Renderer,
+        state: State
+    ) {
         
         if let second = constraint.secondCast {
-            drawDualAnchorConstraint(constraint,
-                                     first: constraint.firstCast,
-                                     second: second,
-                                     to: renderer,
-                                     state: state)
+            drawDualAnchorConstraint(
+                constraint,
+                first: constraint.firstCast,
+                second: second,
+                to: renderer,
+                state: state
+            )
         } else {
             drawSingleAnchorConstraint(constraint, to: renderer, state: state)
         }
     }
     
-    private static func drawSingleAnchorConstraint(_ constraint: LayoutConstraint,
-                                                   to renderer: Renderer,
-                                                   state: State) {
+    private static func drawSingleAnchorConstraint(
+        _ constraint: LayoutConstraint,
+        to renderer: Renderer,
+        state: State
+    ) {
         
         guard let view = constraint.firstCast._owner else { return }
         let bounds = state.boundsForRedrawOnScreen(for: view)
@@ -118,25 +131,33 @@ extension DebugDraw {
             let right = bounds.bottomRight + UIVector(x: 0, y: 2)
             
             drawLine(start: left, end: right, tangentLength: 3, to: renderer)
-            drawRelationship(relationship: constraint.relationship, at: (left + right) / 2, to: renderer)
+            drawRelationship(
+                relationship: constraint.relationship,
+                at: (left + right) / 2, to: renderer
+            )
             
         case .height:
             let top = bounds.topRight + UIVector(x: 2, y: 0)
             let bottom = bounds.bottomRight + UIVector(x: 2, y: 0)
             
             drawLine(start: top, end: bottom, tangentLength: 3, to: renderer)
-            drawRelationship(relationship: constraint.relationship, at: (top + bottom) / 2, to: renderer)
+            drawRelationship(
+                relationship: constraint.relationship,
+                at: (top + bottom) / 2, to: renderer
+            )
             
         default:
             break
         }
     }
     
-    private static func drawDualAnchorConstraint(_ constraint: LayoutConstraint,
-                                                 first: AnyLayoutAnchor,
-                                                 second: AnyLayoutAnchor,
-                                                 to renderer: Renderer,
-                                                 state: State) {
+    private static func drawDualAnchorConstraint(
+        _ constraint: LayoutConstraint,
+        first: AnyLayoutAnchor,
+        second: AnyLayoutAnchor,
+        to renderer: Renderer,
+        state: State
+    ) {
         
         guard let firstOwner = first._owner else { return }
         guard let secondOwner = second._owner else { return }
@@ -151,15 +172,19 @@ extension DebugDraw {
             let secondEdge = extractEdge(secondBounds, edge: second.kind)
             
             if firstEdge.topLeft.x < secondEdge.topLeft.x {
-                connectHorizontalEdges(edge1: (topLeft: firstEdge.topLeft, height: firstEdge.length),
-                                       edge2: (topLeft: secondEdge.topLeft, height: secondEdge.length),
-                                       relationship: constraint.relationship,
-                                       renderer: renderer)
+                connectHorizontalEdges(
+                    edge1: (topLeft: firstEdge.topLeft, height: firstEdge.length),
+                    edge2: (topLeft: secondEdge.topLeft, height: secondEdge.length),
+                    relationship: constraint.relationship,
+                    renderer: renderer
+                )
             } else {
-                connectHorizontalEdges(edge1: (topLeft: secondEdge.topLeft, height: secondEdge.length),
-                                       edge2: (topLeft: firstEdge.topLeft, height: firstEdge.length),
-                                       relationship: constraint.relationship,
-                                       renderer: renderer)
+                connectHorizontalEdges(
+                    edge1: (topLeft: secondEdge.topLeft, height: secondEdge.length),
+                    edge2: (topLeft: firstEdge.topLeft, height: firstEdge.length),
+                    relationship: constraint.relationship,
+                    renderer: renderer
+                )
             }
             
         // Vertical constraints
@@ -168,15 +193,19 @@ extension DebugDraw {
             let secondEdge = extractEdge(secondBounds, edge: second.kind)
             
             if firstEdge.topLeft.y < secondEdge.topLeft.y {
-                connectVerticalEdges(edge1: (topLeft: firstEdge.topLeft, width: firstEdge.length),
-                                     edge2: (topLeft: secondEdge.topLeft, width: secondEdge.length),
-                                     relationship: constraint.relationship,
-                                     renderer: renderer)
+                connectVerticalEdges(
+                    edge1: (topLeft: firstEdge.topLeft, width: firstEdge.length),
+                    edge2: (topLeft: secondEdge.topLeft, width: secondEdge.length),
+                    relationship: constraint.relationship,
+                    renderer: renderer
+                )
             } else {
-                connectVerticalEdges(edge1: (topLeft: secondEdge.topLeft, width: secondEdge.length),
-                                     edge2: (topLeft: firstEdge.topLeft, width: firstEdge.length),
-                                     relationship: constraint.relationship,
-                                     renderer: renderer)
+                connectVerticalEdges(
+                    edge1: (topLeft: secondEdge.topLeft, width: secondEdge.length),
+                    edge2: (topLeft: firstEdge.topLeft, width: firstEdge.length),
+                    relationship: constraint.relationship,
+                    renderer: renderer
+                )
             }
             
         case (.centerX, .centerX):
@@ -190,10 +219,12 @@ extension DebugDraw {
         }
     }
     
-    private static func connectHorizontalEdges(edge1: (topLeft: UIVector, height: Double),
-                                               edge2: (topLeft: UIVector, height: Double),
-                                               relationship: Relationship,
-                                               renderer: Renderer) {
+    private static func connectHorizontalEdges(
+        edge1: (topLeft: UIVector, height: Double),
+        edge2: (topLeft: UIVector, height: Double),
+        relationship: Relationship,
+        renderer: Renderer
+    ) {
         
         let center2 = edge2.topLeft.y + edge2.height / 2
         
@@ -205,29 +236,37 @@ extension DebugDraw {
         // Only draw first edge if the horizontal line to be drawn is outside the
         // range of the boundary
         if center2 < edge1.topLeft.y || center2 > edge1.topLeft.y + edge1.height {
-            drawLine(start: UIVector(x: edge1.topLeft.x, y: edge1Top),
-                     end: UIVector(x: edge1.topLeft.x, y: edge1Bottom),
-                     tangentLength: 0,
-                     to: renderer)
+            drawLine(
+                start: UIVector(x: edge1.topLeft.x, y: edge1Top),
+                end: UIVector(x: edge1.topLeft.x, y: edge1Bottom),
+                tangentLength: 0,
+                to: renderer
+            )
         }
         
         let start = UIVector(x: edge1.topLeft.x, y: center2)
         let end = UIVector(x: edge2.topLeft.x, y: center2)
         
-        drawLine(start: start,
-                 end: end,
-                 tangentLength: 3,
-                 to: renderer)
+        drawLine(
+            start: start,
+            end: end,
+            tangentLength: 3,
+            to: renderer
+        )
         
-        drawRelationship(relationship: relationship,
-                         at: (start + end) / 2,
-                         to: renderer)
+        drawRelationship(
+            relationship: relationship,
+            at: (start + end) / 2,
+            to: renderer
+        )
     }
     
-    private static func connectVerticalEdges(edge1: (topLeft: UIVector, width: Double),
-                                             edge2: (topLeft: UIVector, width: Double),
-                                             relationship: Relationship,
-                                             renderer: Renderer) {
+    private static func connectVerticalEdges(
+        edge1: (topLeft: UIVector, width: Double),
+        edge2: (topLeft: UIVector, width: Double),
+        relationship: Relationship,
+        renderer: Renderer
+    ) {
         
         let center2 = edge2.topLeft.x + edge2.width / 2
         
@@ -239,28 +278,36 @@ extension DebugDraw {
         // Only draw first edge if the vertical line to be drawn is outside the
         // range of the boundary
         if center2 < edge1.topLeft.x || center2 > edge1.topLeft.x + edge1.width {
-            drawLine(start: UIVector(x: edge1Left, y: edge1.topLeft.y),
-                     end: UIVector(x: edge1Right, y: edge1.topLeft.y),
-                     tangentLength: 0,
-                     to: renderer)
+            drawLine(
+                start: UIVector(x: edge1Left, y: edge1.topLeft.y),
+                end: UIVector(x: edge1Right, y: edge1.topLeft.y),
+                tangentLength: 0,
+                to: renderer
+            )
         }
         
         let start = UIVector(x: center2, y: edge1.topLeft.y)
         let end = UIVector(x: center2, y: edge2.topLeft.y)
         
-        drawLine(start: start,
-                 end: end,
-                 tangentLength: 3,
-                 to: renderer)
+        drawLine(
+            start: start,
+            end: end,
+            tangentLength: 3,
+            to: renderer
+        )
         
-        drawRelationship(relationship: relationship,
-                         at: (start + end) / 2,
-                         to: renderer)
+        drawRelationship(
+            relationship: relationship,
+            at: (start + end) / 2,
+            to: renderer
+        )
     }
     
-    private static func connectCenterX(_ rect1: UIRectangle,
-                                       _ rect2: UIRectangle,
-                                       renderer: Renderer) {
+    private static func connectCenterX(
+        _ rect1: UIRectangle,
+        _ rect2: UIRectangle,
+        renderer: Renderer
+    ) {
         
         prepareStroke(in: renderer)
         
@@ -300,9 +347,11 @@ extension DebugDraw {
         renderer.strokeLine(start: lineStart, end: lineEnd)
     }
     
-    private static func connectCenterY(_ rect1: UIRectangle,
-                                       _ rect2: UIRectangle,
-                                       renderer: Renderer) {
+    private static func connectCenterY(
+        _ rect1: UIRectangle,
+        _ rect2: UIRectangle,
+        renderer: Renderer
+    ) {
         
         prepareStroke(in: renderer)
         
@@ -342,7 +391,11 @@ extension DebugDraw {
         renderer.strokeLine(start: lineStart, end: lineEnd)
     }
     
-    private static func extractEdge(_ rectangle: UIRectangle, edge: AnchorKind) -> (topLeft: UIVector, length: Double) {
+    private static func extractEdge(
+        _ rectangle: UIRectangle,
+        edge: AnchorKind
+    ) -> (topLeft: UIVector, length: Double) {
+        
         switch edge {
         case .left:
             return (topLeft: rectangle.topLeft, length: rectangle.height)
@@ -357,7 +410,13 @@ extension DebugDraw {
         }
     }
     
-    private static func drawLine(start: UIVector, end: UIVector, tangentLength: Double, to renderer: Renderer) {
+    private static func drawLine(
+        start: UIVector,
+        end: UIVector,
+        tangentLength: Double,
+        to renderer: Renderer
+    ) {
+
         prepareStroke(in: renderer)
         
         renderer.strokeLine(start: start, end: end)
@@ -373,9 +432,11 @@ extension DebugDraw {
         }
     }
     
-    private static func drawRelationship(relationship: Relationship,
-                                         at point: UIVector,
-                                         to renderer: Renderer) {
+    private static func drawRelationship(
+        relationship: Relationship,
+        at point: UIVector,
+        to renderer: Renderer
+    ) {
         
         guard relationship != .equal else { return }
         
@@ -386,7 +447,10 @@ extension DebugDraw {
         renderer.stroke(circle)
         
         // Draw '<' or '>'
-        var triangle = UITriangle.unitEquilateral.offsetBy(point - UIPoint(x: 0, y: 1)).scaledBy(x: 3, y: 4)
+        var triangle = UITriangle
+            .unitEquilateral
+            .offsetBy(point - UIPoint(x: 0, y: 1))
+            .scaledBy(x: 3, y: 4)
         
         switch relationship {
         case .equal:

@@ -1,16 +1,21 @@
 import Geometry
 
 extension LayoutAnchor {
-    public func equalTo(_ value: Double,
-                        priority: LayoutPriority = .required) -> LayoutConstraintDefinition {
+    public func equalTo(
+        _ value: Double,
+        priority: LayoutPriority = .required
+    ) -> LayoutConstraintDefinition {
 
         .create(first: self, offset: value, priority: priority)
     }
 
-    public func equalTo(_ other: LayoutAnchor<T>,
-                        offset: Double = 0,
-                        multiplier: Double = 1,
-                        priority: LayoutPriority = .required) -> LayoutConstraintDefinition {
+    public func equalTo(
+        _ other: LayoutAnchor<T>,
+        offset: Double = 0,
+        multiplier: Double = 1,
+        priority: LayoutPriority = .required
+    ) -> LayoutConstraintDefinition {
+
         .create(
             first: self,
             second: other,
@@ -20,10 +25,13 @@ extension LayoutAnchor {
         )
     }
 
-    public func equalTo(_ other: LayoutAnchorsContainer,
-                        offset: Double = 0,
-                        multiplier: Double = 1,
-                        priority: LayoutPriority = .required) -> LayoutConstraintDefinition {
+    public func equalTo(
+        _ other: LayoutAnchorsContainer,
+        offset: Double = 0,
+        multiplier: Double = 1,
+        priority: LayoutPriority = .required
+    ) -> LayoutConstraintDefinition {
+
         ._create(
             first: self.toInternalLayoutAnchor(),
             second: anchorOnOtherContainer(self.kind, other),
@@ -33,8 +41,11 @@ extension LayoutAnchor {
         )
     }
 
-    public func lessThanOrEqualTo(_ value: Double,
-                                  priority: LayoutPriority = .required) -> LayoutConstraintDefinition {
+    public func lessThanOrEqualTo(
+        _ value: Double,
+        priority: LayoutPriority = .required
+    ) -> LayoutConstraintDefinition {
+
         .create(
             first: self,
             relationship: .lessThanOrEqual,
@@ -43,10 +54,13 @@ extension LayoutAnchor {
         )
     }
 
-    public func lessThanOrEqualTo(_ other: LayoutAnchor<T>,
-                                  offset: Double = 0,
-                                  multiplier: Double = 1,
-                                  priority: LayoutPriority = .required) -> LayoutConstraintDefinition {
+    public func lessThanOrEqualTo(
+        _ other: LayoutAnchor<T>,
+        offset: Double = 0,
+        multiplier: Double = 1,
+        priority: LayoutPriority = .required
+    ) -> LayoutConstraintDefinition {
+
         .create(
             first: self,
             second: other,
@@ -57,10 +71,13 @@ extension LayoutAnchor {
         )
     }
 
-    public func lessThanOrEqualTo(_ other: LayoutAnchorsContainer,
-                                  offset: Double = 0,
-                                  multiplier: Double = 1,
-                                  priority: LayoutPriority = .required) -> LayoutConstraintDefinition {
+    public func lessThanOrEqualTo(
+        _ other: LayoutAnchorsContainer,
+        offset: Double = 0,
+        multiplier: Double = 1,
+        priority: LayoutPriority = .required
+    ) -> LayoutConstraintDefinition {
+
         ._create(
             first: self.toInternalLayoutAnchor(),
             second: anchorOnOtherContainer(self.kind, other),
@@ -71,8 +88,11 @@ extension LayoutAnchor {
         )
     }
 
-    public func greaterThanOrEqualTo(_ value: Double,
-                                     priority: LayoutPriority = .required) -> LayoutConstraintDefinition {
+    public func greaterThanOrEqualTo(
+        _ value: Double,
+        priority: LayoutPriority = .required
+    ) -> LayoutConstraintDefinition {
+
         .create(
             first: self,
             relationship: .greaterThanOrEqual,
@@ -81,10 +101,13 @@ extension LayoutAnchor {
         )
     }
 
-    public func greaterThanOrEqualTo(_ other: LayoutAnchor<T>,
-                                     offset: Double = 0,
-                                     multiplier: Double = 1,
-                                     priority: LayoutPriority = .required) -> LayoutConstraintDefinition {
+    public func greaterThanOrEqualTo(
+        _ other: LayoutAnchor<T>,
+        offset: Double = 0,
+        multiplier: Double = 1,
+        priority: LayoutPriority = .required
+    ) -> LayoutConstraintDefinition {
+
         .create(
             first: self,
             second: other,
@@ -95,10 +118,13 @@ extension LayoutAnchor {
         )
     }
 
-    public func greaterThanOrEqualTo(_ other: LayoutAnchorsContainer,
-                                     offset: Double = 0,
-                                     multiplier: Double = 1,
-                                     priority: LayoutPriority = .required) -> LayoutConstraintDefinition {
+    public func greaterThanOrEqualTo(
+        _ other: LayoutAnchorsContainer,
+        offset: Double = 0,
+        multiplier: Double = 1,
+        priority: LayoutPriority = .required
+    ) -> LayoutConstraintDefinition {
+        
         ._create(
             first: self.toInternalLayoutAnchor(),
             second: anchorOnOtherContainer(self.kind, other),

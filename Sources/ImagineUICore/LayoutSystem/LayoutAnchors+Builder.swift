@@ -8,8 +8,10 @@ public extension LayoutAnchors {
     /// `areaIntoConstraintsMask` of this layout anchor's view to allow constraints
     /// to affect the view correctly.
     @discardableResult
-    func makeConstraints(updateAreaIntoConstraintsMask: Bool = true,
-                         @LayoutResultBuilder _ builder: (LayoutAnchors) -> LayoutConstraintDefinitions) -> [LayoutConstraint] {
+    func makeConstraints(
+        updateAreaIntoConstraintsMask: Bool = true,
+        @LayoutResultBuilder _ builder: (LayoutAnchors) -> LayoutConstraintDefinitions
+    ) -> [LayoutConstraint] {
 
         if updateAreaIntoConstraintsMask, let view = container as? View {
             view.areaIntoConstraintsMask = []
@@ -26,8 +28,10 @@ public extension LayoutAnchors {
     /// `areaIntoConstraintsMask` of this layout anchor's view to allow constraints
     /// to affect the view correctly.
     @discardableResult
-    func remakeConstraints(updateAreaIntoConstraintsMask: Bool = true,
-                           @LayoutResultBuilder _ builder: (LayoutAnchors) -> LayoutConstraintDefinitions) -> [LayoutConstraint] {
+    func remakeConstraints(
+        updateAreaIntoConstraintsMask: Bool = true,
+        @LayoutResultBuilder _ builder: (LayoutAnchors) -> LayoutConstraintDefinitions
+    ) -> [LayoutConstraint] {
 
         for constraint in container.constraints {
             constraint.removeConstraint()
@@ -49,7 +53,10 @@ public extension LayoutAnchors {
     /// `areaIntoConstraintsMask` of this layout anchor's view to allow constraints
     /// to affect the view correctly.
     @discardableResult
-    func updateConstraints(@LayoutResultBuilder _ builder: (LayoutAnchors) -> LayoutConstraintDefinitions) -> [LayoutConstraint] {
+    func updateConstraints(
+        @LayoutResultBuilder _ builder: (LayoutAnchors) -> LayoutConstraintDefinitions
+    ) -> [LayoutConstraint] {
+
         let definitions = builder(self)
 
         return definitions.update()
@@ -58,33 +65,41 @@ public extension LayoutAnchors {
 
 extension LayoutAnchors {
     @discardableResult
-    public func left(of other: LayoutAnchorsContainer,
-                     offset: Double = 0,
-                     priority: LayoutPriority = .required) -> LayoutConstraintDefinition {
+    public func left(
+        of other: LayoutAnchorsContainer,
+        offset: Double = 0,
+        priority: LayoutPriority = .required
+    ) -> LayoutConstraintDefinition {
 
         return right.equalTo(other.layout.left, offset: offset, priority: priority)
     }
 
     @discardableResult
-    public func right(of other: LayoutAnchorsContainer,
-                      offset: Double = 0,
-                      priority: LayoutPriority = .required) -> LayoutConstraintDefinition {
+    public func right(
+        of other: LayoutAnchorsContainer,
+        offset: Double = 0,
+        priority: LayoutPriority = .required
+    ) -> LayoutConstraintDefinition {
 
         return left.equalTo(other.layout.right, offset: offset, priority: priority)
     }
 
     @discardableResult
-    public func over(_ other: LayoutAnchorsContainer,
-                      offset: Double = 0,
-                      priority: LayoutPriority = .required) -> LayoutConstraintDefinition {
+    public func over(
+        _ other: LayoutAnchorsContainer,
+        offset: Double = 0,
+        priority: LayoutPriority = .required
+    ) -> LayoutConstraintDefinition {
 
         return bottom.equalTo(other.layout.top, offset: offset, priority: priority)
     }
 
     @discardableResult
-    public func under(_ other: LayoutAnchorsContainer,
-                      offset: Double = 0,
-                      priority: LayoutPriority = .required) -> LayoutConstraintDefinition {
+    public func under(
+        _ other: LayoutAnchorsContainer,
+        offset: Double = 0,
+        priority: LayoutPriority = .required
+    ) -> LayoutConstraintDefinition {
 
         return top.equalTo(other.layout.bottom, offset: offset, priority: priority)
     }

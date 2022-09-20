@@ -4,13 +4,11 @@ import Rendering
 
 open class ScrollView: ControlView {
     private let _contentView: ContentView = ContentView()
-    private var _contentWidthConstraint: LayoutConstraint?
-    private var _contentHeightConstraint: LayoutConstraint?
+    private var _contentWidthConstraints: [LayoutConstraint] = []
+    private var _contentHeightConstraints: [LayoutConstraint] = []
 
-    private let _widthView: View = View()
-    private let _heightView: View = View()
-
-    private let scrollBarSize: Double = 10
+    private let scrollBarSize: Double = 12
+    private var scrollAcceleration: Double = 1.0
 
     internal var contentOffset: UIVector = .zero
     internal var targetContentOffset: UIVector = .zero
@@ -18,10 +16,6 @@ open class ScrollView: ControlView {
     public var contentView: View {
         return _contentView
     }
-
-    /// If enabled, over-scrolling results in an elastic effect which bounces the
-    /// scroll back to the scroll limits when the user lets go of the view
-    public var bounceEnabled: Bool = false
 
     public var scrollBarsMode: ScrollBarsVisibility {
         didSet {
@@ -45,7 +39,7 @@ open class ScrollView: ControlView {
     public var contentSize: UISize? {
         didSet {
             if contentSize != oldValue {
-                didUpdateContentSize(oldValue: oldValue)
+                didUpdateContentSize()
             }
         }
     }
@@ -72,6 +66,32 @@ open class ScrollView: ControlView {
         size.height = max(1, size.height)
 
         return size
+    }
+
+    /// If enabled, over-scrolling results in an elastic effect which bounces the
+    /// scroll back to the scroll limits when the user lets go of the view
+    public var bounceEnabled: Bool = false
+
+    /// A flat multiplier applied to mouse wheel scrolling amounts in order to
+    /// change the scrolling speed of this scroll view.
+    public var scrollFactor: Double = 2.0
+
+    /// A multiplier that accumulates on repeated mouse wheel scroll events that
+    /// temporarily increases the rate of scrolling.
+    ///
+    /// Acceleration decays over a short period of time and only begins affecting
+    /// after the second repeated mouse scroll event after it has fully decayed.
+    public var maxScrollAcceleration: Double = 5.0
+
+    /// A percentage of the display height of the scroll view that is padded at
+    /// the bottom in order to create an empty space past the end of the list
+    /// of items.
+    ///
+    /// Defaults to `0.0`.
+    public var overScrollFactor: Double = 0.0 {
+        didSet {
+            overScrollFactor = max(0.0, overScrollFactor)
+        }
     }
 
     public let horizontalBar = ScrollBarControl(orientation: .horizontal)
@@ -102,7 +122,7 @@ open class ScrollView: ControlView {
         }
 
         updateScrollBarConstraints()
-        didUpdateContentSize(oldValue: nil)
+        didUpdateContentSize()
 
         Scheduler.instance.fixedFrameEvent.addListener(weakOwner: self) { [weak self] interval in
             self?.onFixedFrame(interval: interval)
@@ -112,28 +132,9 @@ open class ScrollView: ControlView {
     open override func setupHierarchy() {
         super.setupHierarchy()
 
-        super.addSubview(_widthView)
-        super.addSubview(_heightView)
         super.addSubview(contentView)
         super.addSubview(horizontalBar)
         super.addSubview(verticalBar)
-    }
-
-    open override func setupConstraints() {
-        super.setupConstraints()
-
-        _widthView.layout.makeConstraints { make in
-            make.left == self
-            make.top == self
-            make.height == 1
-        }
-        _heightView.layout.makeConstraints { make in
-            make.left == self
-            make.top == self
-            make.width == 1
-        }
-
-        //recreateSizeViewConstraints()
     }
 
     open override func addSubview(_ view: View) {
@@ -155,30 +156,43 @@ open class ScrollView: ControlView {
     }
 
     internal func onFixedFrame(interval: TimeInterval) {
+        let nextContentOffset: UIVector
+        
         if contentOffset.distance(to: targetContentOffset) > 0.1 {
-            contentOffset += (targetContentOffset - contentOffset) * 0.7
+            nextContentOffset = contentOffset + (targetContentOffset - contentOffset) * 0.7
         } else {
-            contentOffset = targetContentOffset
+            nextContentOffset = targetContentOffset
         }
 
         // Handle over-scrolling
         targetContentOffset += (limitOffsetVector(targetContentOffset) - targetContentOffset) * 0.97
 
-        if contentView.location != contentOffset {
-            contentView.location = contentOffset
+        // Avoid propagating non-changes to UI
+        if nextContentOffset != contentOffset {
+            contentOffset = nextContentOffset
+
+            if contentView.location != contentOffset {
+                contentView.location = contentOffset
+            }
+
+            horizontalBar.scroll = -contentOffset.x
+            verticalBar.scroll = -contentOffset.y
         }
 
-        horizontalBar.scroll = -contentOffset.x
-        verticalBar.scroll = -contentOffset.y
+        // Handle scroll acceleration decay
+        if scrollAcceleration > 1.01 {
+            scrollAcceleration += (1.0 - scrollAcceleration) * 0.3
+        } else {
+            scrollAcceleration = 1.0
+        }
     }
 
     public override func performInternalLayout() {
         super.performInternalLayout()
 
         contentView.location = contentOffset
-        horizontalBar.visibleSize = bounds.width
-        verticalBar.visibleSize = bounds.height
 
+        updateScrollBarSizes()
         updateScrollBarVisibility()
         limitTargetContentOffset()
         updateScrollBarSizes()
@@ -188,9 +202,8 @@ open class ScrollView: ControlView {
         super.onResize(event)
 
         contentView.location = contentOffset
-        horizontalBar.visibleSize = bounds.width
-        verticalBar.visibleSize = bounds.height
 
+        updateScrollBarSizes()
         updateScrollBarVisibility()
         limitTargetContentOffset()
         updateScrollBarSizes()
@@ -214,45 +227,49 @@ open class ScrollView: ControlView {
         }
 
         // Scroll contents a fixed amount
-        incrementContentOffset(event.delta)
+        incrementContentOffset(event.delta * scrollFactor * scrollAcceleration)
+
+        // Change scroll acceleration
+        scrollAcceleration += (maxScrollAcceleration - scrollAcceleration) * 0.7
     }
 
-    private func didUpdateContentSize(oldValue: UISize?) {
-        // TODO: Avoid removing constraints when content size remains the same
-        // TODO: across value changes.
-
+    private func didUpdateContentSize() {
         // Width
-        _contentWidthConstraint?.removeConstraint()
-        _contentWidthConstraint = nil
+        _contentWidthConstraints.forEach {
+            $0.removeConstraint()
+        }
 
         if let width = contentSize?.width, width > 0 {
-            _contentWidthConstraint =
-            LayoutConstraint.create(first: _contentView.layout.width,
-                                    relationship: .equal,
-                                    offset: width)
+            _contentWidthConstraints =
+                _contentView.layout
+                .makeConstraints(updateAreaIntoConstraintsMask: false) { make in
+                    make.width == width
+                }
         } else {
-            _contentWidthConstraint =
-            LayoutConstraint.create(first: _contentView.layout.width,
-                                    second: _widthView.layout.width,
-                                    relationship: .greaterThanOrEqual,
-                                    priority: .high)
+            _contentWidthConstraints =
+                _contentView.layout
+                .makeConstraints(updateAreaIntoConstraintsMask: false) { make in
+                    (make.width == 0) | LayoutPriority.low
+                }
         }
 
         // Height
-        _contentHeightConstraint?.removeConstraint()
-        _contentHeightConstraint = nil
+        _contentHeightConstraints.forEach {
+            $0.removeConstraint()
+        }
 
         if let height = contentSize?.height, height > 0 {
-            _contentHeightConstraint =
-            LayoutConstraint.create(first: _contentView.layout.height,
-                                    relationship: .equal,
-                                    offset: height)
+            _contentHeightConstraints =
+                _contentView.layout
+                .makeConstraints(updateAreaIntoConstraintsMask: false) { make in
+                    make.height == height
+                }
         } else {
-            _contentHeightConstraint =
-            LayoutConstraint.create(first: _contentView.layout.height,
-                                    second: _heightView.layout.height,
-                                    relationship: .greaterThanOrEqual,
-                                    priority: .high)
+            _contentHeightConstraints =
+                _contentView.layout
+                .makeConstraints(updateAreaIntoConstraintsMask: false) { make in
+                    (make.height == 0) | LayoutPriority.low
+                }
         }
     }
 
@@ -279,9 +296,13 @@ open class ScrollView: ControlView {
     /// Limits an offset vector (like `contentOffset` or `targetContentOffset`)
     /// to always be within the scrollable limits of this scroll view.
     private func limitOffsetVector(_ offset: UIVector) -> UIVector {
-        let contentOffsetClip = UIRectangle(minimum: -(effectiveContentSize().asUIPoint - visibleContentBounds.size.asUIPoint), maximum: .zero)
+        let maximum = effectiveContentSize().asUIPoint - visibleContentBounds.size.asUIPoint
+        let minimum = UIVector.zero
 
-        return min(contentOffsetClip.maximum, max(contentOffsetClip.minimum, offset))
+        return min(
+            -minimum,
+            max(-maximum, offset)
+        )
     }
 
     func updateScrollBarVisibility() {
@@ -335,28 +356,17 @@ open class ScrollView: ControlView {
                 make.height == scrollBarSize
             }
         }
-
-        recreateSizeViewConstraints()
-    }
-
-    private func recreateSizeViewConstraints() {
-        _widthView.layout.makeConstraints { make in
-            make.left(of: verticalBar, offset: -1)
-        }
-        _heightView.layout.makeConstraints { make in
-            make.over(horizontalBar, offset: -1)
-        }
     }
 
     func updateScrollBarSizes() {
         let visibleSize = visibleContentBounds.size
-        let contentSize = effectiveContentSize()
+        let totalSize = effectiveContentSize()
 
         horizontalBar.visibleSize = visibleSize.width
         verticalBar.visibleSize = visibleSize.height
 
-        horizontalBar.contentSize = contentSize.width
-        verticalBar.contentSize = contentSize.height
+        horizontalBar.contentSize = totalSize.width
+        verticalBar.contentSize = totalSize.height
     }
 
     /// Gets the effective content size.
@@ -369,6 +379,10 @@ open class ScrollView: ControlView {
             size.width  = contentSize.width  > 0 ? contentSize.width  : size.width
             size.height = contentSize.height > 0 ? contentSize.height : size.height
         }
+        
+        // Add over scroll amount
+        let bottomPadding = visibleContentBounds.height * overScrollFactor
+        size.height += bottomPadding
 
         return max(.one, size)
     }
