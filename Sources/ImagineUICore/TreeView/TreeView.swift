@@ -106,6 +106,29 @@ public class TreeView: ControlView {
         }
     }
 
+    private func _layoutItemViews() {
+        withSuspendedLayout(setNeedsLayout: true) {
+            var totalArea: UIRectangle = .zero
+            var currentY: Double = 0.0
+
+            for item in _visibleItems.sorted(by: { $0.itemIndex < $1.itemIndex }) {
+                item.location.y = currentY
+                item.layoutToFit(size: UISize(width: _scrollView.visibleContentBounds.size.width, height: 0))
+                currentY += item.area.height
+
+                totalArea = UIRectangle.union(totalArea, item.area)
+            }
+
+            // Do a second pass to assign the largest width to all visible items
+            for item in _visibleItems {
+                item.layoutToFit(size: UISize(width: totalArea.width, height: 0))
+            }
+
+            _content.size = totalArea.size
+            _lastSize = size
+        }
+    }
+
     private func _configureView() {
         _scrollView.mouseClicked.addListener(weakOwner: self) { [weak self] (_, _) in
             guard let self = self else { return }
@@ -191,29 +214,6 @@ public class TreeView: ControlView {
 
         for visible in _visibleItems {
             visible.style = style
-        }
-    }
-
-    private func _layoutItemViews() {
-        withSuspendedLayout(setNeedsLayout: true) {
-            var totalArea: UIRectangle = .zero
-            var currentY: Double = 0.0
-
-            for item in _visibleItems.sorted(by: { $0.itemIndex < $1.itemIndex }) {
-                item.location.y = currentY
-                item.layoutToFit(size: UISize(width: _scrollView.visibleContentBounds.size.width, height: 0))
-                currentY += item.area.height
-
-                totalArea = UIRectangle.union(totalArea, item.area)
-            }
-
-            // Do a second pass to assign the largest width to all visible items
-            for item in _visibleItems {
-                item.layoutToFit(size: UISize(width: totalArea.width, height: 0))
-            }
-
-            _content.size = totalArea.size
-            _lastSize = size
         }
     }
 
