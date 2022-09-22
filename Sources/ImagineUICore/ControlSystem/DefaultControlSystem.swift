@@ -231,7 +231,10 @@ public class DefaultControlSystem: ControlSystemType {
                 self._mouseHoverTarget = handler
                 self._mouseHoverPoint = event.convertLocation(handler: handler).location
 
-                if let tooltipProvider = handler as? TooltipProvider {
+                if
+                    event.buttons.isEmpty || self._mouseDownTarget == nil,
+                    let tooltipProvider = handler as? TooltipProvider
+                {
                     self.startHoverTimer(provider: tooltipProvider)
                 }
             } else {
@@ -244,7 +247,10 @@ public class DefaultControlSystem: ControlSystemType {
                 self._mouseHoverPoint = converted.location
                 self._mouseHoverTarget?.onMouseMove(converted)
 
-                if let tooltipProvider = handler as? TooltipProvider, !self.isTooltipVisible() {
+                if
+                    event.buttons.isEmpty || self._mouseDownTarget == nil,
+                    let tooltipProvider = handler as? TooltipProvider, !self.isTooltipVisible()
+                {
                     self.startHoverTimer(provider: tooltipProvider)
                 }
             }
@@ -472,6 +478,8 @@ public class DefaultControlSystem: ControlSystemType {
         }
 
         func setDisplay(provider: TooltipProvider, onUpdate: @escaping (Tooltip?) -> Void) {
+            state.invalidateTimer()
+
             state = .displayed(provider: provider)
 
             _currentUpdateEvent = provider.tooltipUpdated.addListener(weakOwner: self, onUpdate)
@@ -496,6 +504,7 @@ public class DefaultControlSystem: ControlSystemType {
 
         func setHidden() {
             _currentUpdateEvent = nil
+            state.invalidateTimer()
             state = .none
         }
 

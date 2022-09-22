@@ -44,6 +44,11 @@ public struct UIIntPoint: Hashable, Codable {
 
         return dx * dx + dy * dy
     }
+
+    @_transparent
+    public func distance(to other: Self) -> Double {
+        return Double(distanceSquared(to: other)).squareRoot()
+    }
 }
 
 // MARK: Addition

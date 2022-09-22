@@ -278,7 +278,9 @@ open class ScrollView: ControlView {
             return
         }
 
-        targetContentOffset += offset
+        targetContentOffset +=
+            offset *
+            UIVector(x: -1, y: 1) // Invert X axis to scroll in the expected direction
 
         if !bounceEnabled {
             limitTargetContentOffset()
