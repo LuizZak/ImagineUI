@@ -1,22 +1,29 @@
 import XCTest
-@testable import ImagineUICore
 import Geometry
 import TestUtils
 import Blend2DRenderer
 
+@testable import ImagineUICore
+
 extension SnapshotTestCase {
-    func recordSnapshot(_ view: View, testName: String = #function,
-                        file: StaticString = #file,
-                        line: UInt = #line) throws {
+    func recordSnapshot(
+        _ view: View,
+        testName: String = #function,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) throws {
         
         let img = try produceSnapshot(view)
         
         try recordImage(img, testName, file: file, line: line)
     }
     
-    func matchSnapshot(_ view: View, testName: String = #function,
-                       file: StaticString = #file,
-                       line: UInt = #line) throws {
+    func matchSnapshot(
+        _ view: View,
+        testName: String = #function,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) throws {
         
         if forceRecordMode {
             try recordSnapshot(view, testName: testName, file: file, line: line)
@@ -34,10 +41,12 @@ extension SnapshotTestCase {
             throw SnapshotError.emptyViewBounds
         }
         
-        let image = BLImage(width: Int(ceil(bounds.width)),
-                            height: Int(ceil(bounds.height)),
-                            format: .prgb32)
-        /*
+        let image = BLImage(
+            width: Int(ceil(bounds.width)),
+            height: Int(ceil(bounds.height)),
+            format: .prgb32
+        )
+        
         let ctx = BLContext(image: image)!
         ctx.clearAll()
         
@@ -45,11 +54,10 @@ extension SnapshotTestCase {
         
         let renderer = Blend2DRenderer(context: ctx)
         
-        let region = BLRegion(rectangle: BLRectI(rounding: bounds.asBLRect))
-        view.renderRecursive(in: renderer, screenRegion: Blend2DClipRegion(region: region))
+        let region = UIRegion(rectangle: bounds)
+        view.renderRecursive(in: renderer, screenRegion: UIRegionClipRegion(region: region))
         
         ctx.end()
-        */
         
         return image
     }

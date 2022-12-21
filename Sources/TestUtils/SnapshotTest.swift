@@ -8,11 +8,11 @@ import LibPNG
 
 open class SnapshotTestCase: XCTestCase {
     open var snapshotPath: String {
-        fatalError("Should be overriden by subclasses")
+        fatalError("Should be overridden by subclasses")
     }
     
     open var snapshotFailuresPath: String {
-        fatalError("Should be overriden by subclasses")
+        fatalError("Should be overridden by subclasses")
     }
     
     /// Forces all `assertImageMatch` invocations to record images instead of
@@ -65,7 +65,7 @@ open class SnapshotTestCase: XCTestCase {
                                  line: UInt = #line) throws {
         
         if record || forceRecordMode {
-            recordImage(image, testName, file: file, line: line)
+            try recordImage(image, testName, file: file, line: line)
             return
         }
         
@@ -150,6 +150,8 @@ open class SnapshotTestCase: XCTestCase {
     }
     
     func attach(imageFile: String, keepFile: Bool) {
+        #if os(macOS)
+
         guard let image = NSImage(contentsOfFile: imageFile) else {
             return
         }
@@ -159,6 +161,8 @@ open class SnapshotTestCase: XCTestCase {
         attachment.name = URL(fileURLWithPath: imageFile).lastPathComponent
         
         add(attachment)
+
+        #endif
     }
 }
 
@@ -204,11 +208,11 @@ func copyFile(source: String, dest: String) throws {
 
 open class SnapshotTestCase: XCTestCase {
     open var snapshotPath: String {
-        fatalError("Should be overriden by subclasses")
+        fatalError("Should be overridden by subclasses")
     }
     
     open var snapshotFailuresPath: String {
-        fatalError("Should be overriden by subclasses")
+        fatalError("Should be overridden by subclasses")
     }
     
     public var forceRecordMode = false

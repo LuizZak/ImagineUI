@@ -118,32 +118,28 @@
 	"settings": {
 		"files.eol": "\n",
 		"commentAnchors.workspace.excludeFiles": "**/{node_modules,.git,.idea,target,out,build,vendor,.build,.swiftpm}/**/*",
-		"commentAnchors.tags.list": [
-			{
-				"tag": "MARK",
+		"commentAnchors.tags.anchors": {
+			"MARK:": {
 				"iconColor": "default",
 				"highlightColor": "#A8C023",
-				"scope": "file"
+				"scope": "file",
 			},
-			{
-				"tag": "TODO",
+			"TODO:": {
 				"iconColor": "blue",
 				"highlightColor": "#3ea8ff",
-				"scope": "workspace"
+				"scope": "workspace",
 			},
-			{
-				"tag": "FIXME",
+			"FIXME:": {
 				"iconColor": "red",
 				"highlightColor": "#F44336",
-				"scope": "workspace"
+				"scope": "workspace",
 			},
-			{
-				"tag": "NOTE",
+			"NOTE:": {
 				"iconColor": "orange",
 				"highlightColor": "#FFB300",
-				"scope": "file"
+				"scope": "file",
 			},
-		],
+		},
 		"files.exclude": {
 			".git": true,
 			".build": true,
@@ -157,6 +153,7 @@
 			"subviews",
 			"Superview"
 		],
+		"swift.buildArguments": []
 	},
 	"extensions": {
 		"recommendations": [

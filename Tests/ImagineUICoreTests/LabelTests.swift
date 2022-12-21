@@ -5,11 +5,11 @@ import TestUtils
 
 class LabelTests: SnapshotTestCase {
     override var snapshotPath: String {
-        return TestPaths.pathToSnapshots(testTarget: "ImagineUITests")
+        return TestPaths.pathToSnapshots(testTarget: "ImagineUICoreTests")
     }
     
     override var snapshotFailuresPath: String {
-        return TestPaths.pathToSnapshotFailures(testTarget: "ImagineUITests")
+        return TestPaths.pathToSnapshotFailures(testTarget: "ImagineUICoreTests")
     }
     
     override func setUpWithError() throws {

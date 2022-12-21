@@ -59,10 +59,12 @@ class WindowTests: XCTestCase {
         sut.performLayout()
 
         // MARK: Assert
+        let expected = UIRectangle(x: -1.5, y: -1.5, width: 303.0, height: 303.0)
 
         XCTAssertEqual(sut.size, .init(width: 300, height: 300))
-        XCTAssertNotEqual(dummyDelegate.rootViewInvalidateRectCalls.count, 0)
-        XCTAssertTrue(dummyDelegate.rootViewInvalidateRectCalls.contains { $0.1 == .init(x: -2.5, y: -2.5, width: 305.0, height: 305.0) })
+        let areas = dummyDelegate.rootViewInvalidateRectCalls.map(\.rect)
+        XCTAssertNotEqual(areas.count, 0)
+        XCTAssertTrue(areas.contains(expected), "\(areas)")
     }
 
     func testTargetSizeChange_triggersSetNeedsLayout() {
