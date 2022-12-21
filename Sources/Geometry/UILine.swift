@@ -26,6 +26,33 @@ public struct UILine: Hashable, Codable {
     public func length() -> Scalar {
         start.distance(to: end)
     }
+
+    @_transparent
+    public func lengthSquared() -> Scalar {
+        start.distanceSquared(to: end)
+    }
+
+    @inlinable
+    public func distance(to point: UIPoint) -> Double {
+        distanceSquared(to: point).squareRoot()
+    }
+
+    @inlinable
+    public func distanceSquared(to point: UIPoint) -> Double {
+        let projected = project(point)
+
+        return projected.distanceSquared(to: point)
+    }
+
+    @inlinable
+    func project(_ point: UIPoint) -> UIPoint {
+        let relEnd = end - start
+        let relVec = point - start
+        
+        let proj = relVec.dot(relEnd) / relEnd.lengthSquared()
+        
+        return start + relEnd * proj
+    }
 }
 
 public extension UILine {

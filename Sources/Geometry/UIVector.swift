@@ -10,6 +10,11 @@ public extension UIVector {
 
     @_transparent
     func length() -> Scalar {
+        lengthSquared().squareRoot()
+    }
+
+    @_transparent
+    func lengthSquared() -> Scalar {
         dot(self)
     }
 

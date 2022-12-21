@@ -232,6 +232,8 @@ class TextLayoutRendererTests: SnapshotTestCase {
         ctx.end()
         try assertImageMatch(img)
     }
+
+    // MARK: - Test internals
     
     func makeSut(text: String) -> TextLayoutRenderer {
         let font = makeFont(size: 20)
@@ -259,9 +261,11 @@ class TextLayoutRendererTests: SnapshotTestCase {
     }
 
     func makeImageContext(with size: UISize) -> (BLImage, BLContext) {
-        let img = BLImage(width: Int(size.width),
-                          height: Int(size.height),
-                          format: .prgb32)
+        let img = BLImage(
+            width: Int(size.width),
+            height: Int(size.height),
+            format: .prgb32
+        )
         
         return (img, BLContext(image: img)!)
     }

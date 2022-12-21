@@ -149,6 +149,10 @@
 		"ShortcutMenuBar.userButton01Command": "workbench.action.tasks.runTask|Build (debug)",
 		"ShortcutMenuBar.userButton02Command": "workbench.action.tasks.runTask|Test",
 		"cSpell.words": [
+			"Bezier",
+			"Bézier",
+			"lerp",
+			"polyline",
 			"subview",
 			"subviews",
 			"Superview"

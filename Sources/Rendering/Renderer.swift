@@ -61,6 +61,9 @@ public protocol Renderer {
     /// Fills a given triangle with the current fill style
     func fill(_ triangle: UITriangle)
 
+    /// Fills a given bezier with the current fill style.
+    func fill(_ bezier: UIBezier)
+
     /// Fills a given arc as a chord with the current fill style
     func fill(chord: UIArc)
 
@@ -92,6 +95,9 @@ public protocol Renderer {
 
     /// Strokes a given arc with the current stroke style
     func stroke(_ arc: UIArc)
+
+    /// Strokes a given bezier with the current stroke style.
+    func stroke(_ bezier: UIBezier)
 
     /// Strokes a given arc as a chord with the current stroke style
     func stroke(chord: UIArc)

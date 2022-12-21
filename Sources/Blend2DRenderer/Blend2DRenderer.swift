@@ -100,6 +100,12 @@ public class Blend2DRenderer: Renderer {
         _context.fillTriangle(triangle.asBLTriangle)
     }
 
+    public func fill(_ bezier: UIBezier) {
+        let path = bezier.drawOperations().toBLPath()
+
+        _context.fillPath(path)
+    }
+
     public func fill(chord: UIArc) {
         _context.fillChord(chord.asBLArc)
     }
@@ -148,6 +154,12 @@ public class Blend2DRenderer: Renderer {
 
     public func stroke(_ arc: UIArc) {
         _context.strokeArc(arc.asBLArc)
+    }
+
+    public func stroke(_ bezier: UIBezier) {
+        let path = bezier.drawOperations().toBLPath()
+
+        _context.strokePath(path)
     }
 
     public func stroke(chord: UIArc) {

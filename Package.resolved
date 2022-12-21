@@ -11,6 +11,15 @@
         }
       },
       {
+        "package": "swift-bezier",
+        "repositoryURL": "https://github.com/LuizZak/swift-bezier.git",
+        "state": {
+          "branch": "main",
+          "revision": "89476e6c309df5fd09640457ee01ef8e20e3ab51",
+          "version": null
+        }
+      },
+      {
         "package": "SwiftBlend2D",
         "repositoryURL": "https://github.com/LuizZak/swift-blend2d.git",
         "state": {

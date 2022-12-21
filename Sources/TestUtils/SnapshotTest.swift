@@ -36,10 +36,12 @@ open class SnapshotTestCase: XCTestCase {
         return "\(folder)/\(formattedTestName)"
     }
     
-    public func recordImage(_ image: BLImage,
-                            _ testName: String = #function,
-                            file: StaticString = #file,
-                            line: UInt = #line) throws {
+    public func recordImage(
+        _ image: BLImage,
+        _ testName: String = #function,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) throws {
         
         let formattedTestName = prepareTestName(testName)
         let folderName = "\(type(of: self))"
@@ -58,11 +60,13 @@ open class SnapshotTestCase: XCTestCase {
         XCTFail("Successfully recorded snapshot for \(formattedTestName)", file: file, line: line)
     }
     
-    public func assertImageMatch(_ image: BLImage,
-                                 _ testName: String = #function,
-                                 record: Bool = false,
-                                 file: StaticString = #file,
-                                 line: UInt = #line) throws {
+    public func assertImageMatch(
+        _ image: BLImage,
+        _ testName: String = #function,
+        record: Bool = false,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) throws {
         
         if record || forceRecordMode {
             try recordImage(image, testName, file: file, line: line)
@@ -84,7 +88,23 @@ open class SnapshotTestCase: XCTestCase {
         if !pathExists(snapshotPath, isDirectory: &isDirectory) {
             try createDirectory(atPath: snapshotPath)
         } else if !isDirectory {
-            XCTFail("Path to save snapshots to '\(snapshotPath)' exists but is a file, not a folder.")
+            XCTFail(
+                "Path to save snapshots to '\(snapshotPath)' exists but is a file, not a folder.",
+                file: file,
+                line: line
+            )
+            return
+        }
+
+        if !FileManager.default.fileExists(atPath: recordPath) {
+            XCTFail(
+                """
+                Could not find recorded snapshot to compare against at expected path \(recordPath)
+                Consider recording an expected image with 'recordImage()' prior to using assertImageMatch().
+                """,
+                file: file,
+                line: line
+            )
             return
         }
 
@@ -92,7 +112,11 @@ open class SnapshotTestCase: XCTestCase {
         let actualData = pngFileFromImage(image)
 
         if recordedData != actualData {
-            XCTFail("Snapshot \(formattedTestName) did not match recorded data. Please inspect image at \(failurePath) for further information.", file: file, line: line)
+            XCTFail(
+                "Snapshot \(formattedTestName) did not match recorded data. Please inspect image at \(failurePath) for further information.",
+                file: file,
+                line: line
+            )
             
             try createDirectory(atPath: failureFolderPath)
             
@@ -171,9 +195,10 @@ func pngFileFromImage(_ image: BLImage) -> PNGFile {
     
     assert(data.format == BLFormat.prgb32.rawValue)
     
-    let bytes =
-        UnsafeBufferPointer<UInt32>(start: data.pixelData.assumingMemoryBound(to: UInt32.self),
-                                    count: data.stride * Int(data.size.h))
+    let bytes = UnsafeBufferPointer<UInt32>(
+        start: data.pixelData.assumingMemoryBound(to: UInt32.self),
+        count: data.stride * Int(data.size.h)
+    )
     
     return PNGFile.fromArgb(bytes, width: image.width, height: image.height)
 }
@@ -192,9 +217,11 @@ func pathExists(_ path: String, isDirectory: inout Bool) -> Bool {
 }
 
 func createDirectory(atPath path: String) throws {
-    try FileManager.default.createDirectory(at: URL(fileURLWithPath: path),
-                                            withIntermediateDirectories: true,
-                                            attributes: nil)
+    try FileManager.default.createDirectory(
+        at: URL(fileURLWithPath: path),
+        withIntermediateDirectories: true,
+        attributes: nil
+    )
 }
 
 func copyFile(source: String, dest: String) throws {
@@ -217,19 +244,23 @@ open class SnapshotTestCase: XCTestCase {
     
     public var forceRecordMode = false
     
-    public func recordImage(_ image: BLImage,
-                            _ testName: String = #function,
-                            file: StaticString = #file,
-                            line: UInt = #line) throws {
+    public func recordImage(
+        _ image: BLImage,
+        _ testName: String = #function,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) throws {
         
         throw SnapshotError.platformNotSupported
     }
     
-    public func assertImageMatch(_ image: BLImage,
-                                 _ testName: String = #function,
-                                 record: Bool = false,
-                                 file: StaticString = #file,
-                                 line: UInt = #line) throws {
+    public func assertImageMatch(
+        _ image: BLImage,
+        _ testName: String = #function,
+        record: Bool = false,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) throws {
         
         throw SnapshotError.platformNotSupported
     }

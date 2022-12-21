@@ -49,10 +49,7 @@ public struct UIPoint: Hashable, Codable {
 
     @_transparent
     public func distanceSquared(to other: Self) -> Scalar {
-        let dx = x - other.x
-        let dy = y - other.y
-
-        return dx * dx + dy * dy
+        (self - other).lengthSquared()
     }
 
     @_transparent

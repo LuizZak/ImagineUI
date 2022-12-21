@@ -5,7 +5,8 @@ import PackageDescription
 
 var dependencies: [Package.Dependency] = [
     .package(url: "https://github.com/LuizZak/CassowarySwift.git", .branch("cassowary-swift-optimizations")),
-    .package(url: "https://github.com/LuizZak/swift-blend2d.git", .branch("master"))
+    .package(url: "https://github.com/LuizZak/swift-blend2d.git", .branch("master")),
+    .package(url: "https://github.com/LuizZak/swift-bezier.git", .branch("main"))
 ]
 
 let testUtilsTarget: Target = .target(
@@ -43,7 +44,8 @@ let package = Package(
         testUtilsTarget,
         
         .target(
-            name: "Geometry"),
+            name: "Geometry",
+            dependencies: ["SwiftBezier"]),
         .target(
             name: "Text",
             dependencies: ["Geometry"]),

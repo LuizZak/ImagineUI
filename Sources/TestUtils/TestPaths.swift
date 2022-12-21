@@ -12,7 +12,13 @@ public extension TestPaths {
         let file = #filePath
         let fileUrl = URL(fileURLWithPath: file)
 
-        return cdToParentPath(fileUrl, count: 3)
+        let root = cdToParentPath(fileUrl, count: 3)
+
+        // Sanitize this is the appropriate path
+        let pkgPath = root.appendingPathComponent("Package.swift")
+        assert(FileManager.default.fileExists(atPath: pkgPath.path), "\(#function) navigated to a non-package folder \(root.path)")
+
+        return root
     }
 
     static func testFolderURL(testTarget: String) -> URL {
@@ -56,7 +62,7 @@ public extension TestPaths {
     static func cdToParentPath(_ path: URL, count: Int) -> URL {
         var newPath = path
         for _ in 0..<count {
-        newPath.deleteLastPathComponent()
+            newPath.deleteLastPathComponent()
         }
 
         return newPath
@@ -83,9 +89,11 @@ public extension TestPaths {
     }
 
     static func createDirectory(atPath path: String) throws {
-        try FileManager.default.createDirectory(at: URL(fileURLWithPath: path),
-                                                withIntermediateDirectories: true,
-                                                attributes: nil)
+        try FileManager.default.createDirectory(
+            at: URL(fileURLWithPath: path),
+            withIntermediateDirectories: true,
+            attributes: nil
+        )
     }
 
     static func copyFile(source: String, dest: String) throws {
