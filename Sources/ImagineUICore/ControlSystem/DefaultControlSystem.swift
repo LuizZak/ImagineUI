@@ -75,7 +75,7 @@ public class DefaultControlSystem: ControlSystemType {
             return
         }
 
-        hideTooltip()
+        hideTooltip(stopTimers: true)
 
         // Request that the given root view be brought to the front of the views
         // list to be rendered on top of all other views.
@@ -159,7 +159,7 @@ public class DefaultControlSystem: ControlSystemType {
             return
         }
 
-        hideTooltip()
+        hideTooltip(stopTimers: true)
 
         let request = InnerKeyboardEventRequest(eventType: .keyDown) { handler in
             handler.onKeyDown(event)
@@ -173,7 +173,7 @@ public class DefaultControlSystem: ControlSystemType {
             return
         }
 
-        hideTooltip()
+        hideTooltip(stopTimers: true)
 
         let request = InnerKeyboardEventRequest(eventType: .keyUp) { handler in
             handler.onKeyUp(event)
@@ -187,7 +187,7 @@ public class DefaultControlSystem: ControlSystemType {
             return
         }
 
-        hideTooltip()
+        hideTooltip(stopTimers: true)
 
         let request = InnerKeyboardEventRequest(eventType: .keyPress) { handler in
             handler.onKeyPress(event)
@@ -201,7 +201,7 @@ public class DefaultControlSystem: ControlSystemType {
             return
         }
 
-        hideTooltip()
+        hideTooltip(stopTimers: true)
 
         let request = InnerKeyboardEventRequest(eventType: .previewKeyDown) { handler in
             handler.onPreviewKeyDown(event)
@@ -218,7 +218,7 @@ public class DefaultControlSystem: ControlSystemType {
             self._mouseHoverTarget = nil
             self._mouseHoverPoint = .zero
 
-            self.hideTooltip()
+            self.hideTooltip(stopTimers: true)
         }
 
         // Make request
@@ -235,7 +235,7 @@ public class DefaultControlSystem: ControlSystemType {
                     event.buttons.isEmpty || self._mouseDownTarget == nil,
                     let tooltipProvider = handler as? TooltipProvider
                 {
-                    self.startHoverTimer(provider: tooltipProvider)
+                    self.startTooltipHoverTimer(provider: tooltipProvider)
                 }
             } else {
                 let converted = event.convertLocation(handler: handler)
@@ -251,7 +251,7 @@ public class DefaultControlSystem: ControlSystemType {
                     event.buttons.isEmpty || self._mouseDownTarget == nil,
                     let tooltipProvider = handler as? TooltipProvider, !self.isTooltipVisible()
                 {
-                    self.startHoverTimer(provider: tooltipProvider)
+                    self.startTooltipHoverTimer(provider: tooltipProvider)
                 }
             }
         }
@@ -342,7 +342,11 @@ public class DefaultControlSystem: ControlSystemType {
     }
 
     /// Hides any currently visible tooltip.
-    public func hideTooltip() {
+    public func hideTooltip(stopTimers: Bool = false) {
+        if stopTimers {
+            stopTooltipHoverTimer()
+        }
+
         guard isTooltipVisible() else {
             return
         }
@@ -401,7 +405,7 @@ public class DefaultControlSystem: ControlSystemType {
         tooltipsManager?.showTooltip(tooltip, view: tooltipProvider.viewForTooltip, location: tooltipProvider.preferredTooltipLocation)
     }
 
-    private func startHoverTimer(provider: TooltipProvider) {
+    private func startTooltipHoverTimer(provider: TooltipProvider) {
         guard !isTooltipVisible() else {
             return
         }
@@ -419,6 +423,15 @@ public class DefaultControlSystem: ControlSystemType {
                 self._tooltipWrapper.setHidden()
             }
         }
+    }
+
+    /// Stops any tooltip hover timer that is ongoing.
+    private func stopTooltipHoverTimer() {
+        guard _tooltipWrapper.isHoverTimerRunning() else {
+            return
+        }
+
+        _tooltipWrapper.setHidden()
     }
 
     private func updateTooltipContents(_ tooltip: Tooltip) {
@@ -467,6 +480,14 @@ public class DefaultControlSystem: ControlSystemType {
 
         func isVisible() -> Bool {
             if case .displayed = state {
+                return true
+            }
+
+            return false
+        }
+
+        func isHoverTimerRunning() -> Bool {
+            if case .hovered = state {
                 return true
             }
 

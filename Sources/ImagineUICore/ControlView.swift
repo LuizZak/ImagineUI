@@ -171,11 +171,6 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
     @EventWithSender<ControlView, MouseEventArgs>
     public var mouseClicked
 
-    /// Event raised when the user scrolls the mouse wheel while on top of this
-    /// control
-    @EventWithSender<ControlView, MouseEventArgs>
-    public var mouseWheelScrolled
-
     /// Event raised whenever the user holds down on this control view with any
     /// mouse button
     @EventWithSender<ControlView, MouseEventArgs>
@@ -190,6 +185,11 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
     /// area
     @EventWithSender<ControlView, MouseEventArgs>
     public var mouseMoved
+
+    /// Event raised when the user scrolls the mouse wheel while on top of this
+    /// control
+    @EventWithSender<ControlView, MouseEventArgs>
+    public var mouseWheelScrolled
 
     /// Event raised whenever the user enters this control view's area with the
     /// mouse cursor
