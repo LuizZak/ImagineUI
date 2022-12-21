@@ -84,6 +84,13 @@ public struct UIPoint: Hashable, Codable {
     public func floor() -> Self {
         rounded(.down)
     }
+
+    /// Performs a linear interpolation between `start` and `end` using a ratio
+    /// of `factor`.
+    @inlinable
+    public static func lerp(_ start: UIPoint, _ end: UIPoint, factor: Double) -> UIPoint {
+        return start * (factor - 1) + end * factor
+    }
 }
 
 // MARK: Addition
@@ -308,6 +315,23 @@ public func min(_ lhs: UIPoint, _ rhs: UIPoint) -> UIPoint {
     .pointwiseMin(lhs, rhs)
 }
 @_transparent
+public func min(_ v1: UIPoint, _ v2: UIPoint, _ v3: UIPoint) -> UIPoint {
+    min(min(v1, v2), v3)
+}
+@_transparent
+public func min(_ v1: UIPoint, _ v2: UIPoint, _ v3: UIPoint, _ v4: UIPoint) -> UIPoint {
+    min(min(v1, v2, v3), v4)
+}
+
+@_transparent
 public func max(_ lhs: UIPoint, _ rhs: UIPoint) -> UIPoint {
     .pointwiseMax(lhs, rhs)
+}
+@_transparent
+public func max(_ v1: UIPoint, _ v2: UIPoint, _ v3: UIPoint) -> UIPoint {
+    max(max(v1, v2), v3)
+}
+@_transparent
+public func max(_ v1: UIPoint, _ v2: UIPoint, _ v3: UIPoint, _ v4: UIPoint) -> UIPoint {
+    max(max(v1, v2, v3), v4)
 }
