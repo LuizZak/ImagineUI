@@ -543,7 +543,39 @@ open class View {
             return
         }
 
-        superview.subviews.swapAt(index, superview.subviews.endIndex - 1)
+        superview.subviews.remove(at: index)
+        superview.subviews.append(self)
+
+        invalidate()
+    }
+
+    /// Brings this view to be one subview higher than another sibling view in
+    /// their common superview's subviews list.
+    ///
+    /// Has implications for display and user interactions, as views that are
+    /// last on the subviews list get rendered on top, and receive priority for
+    /// mouse events as a consequence.
+    ///
+    /// If this view has no superview, or it does not share a common superview
+    /// with `siblingView`, nothing is done.
+    open func bringInFrontOfSiblingView(_ siblingView: View) {
+        guard let superview = superview, siblingView.superview == superview else {
+            return
+        }
+        guard let index = superview.subviews.firstIndex(of: self) else {
+            return
+        }
+
+        superview.subviews.remove(at: index)
+
+        guard let siblingIndex = superview.subviews.firstIndex(of: siblingView) else {
+            // View is sibling but has no index in superview?
+            // Re-insert self and quit.
+            superview.subviews.insert(self, at: index)
+            return
+        }
+
+        superview.subviews.insert(self, at: siblingIndex + 1)
 
         invalidate()
     }
