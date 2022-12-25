@@ -26,6 +26,17 @@ public enum DebugDraw {
             to: renderer,
             state: state)
     }
+    
+    public enum DebugDrawFlags: Hashable {
+        /// Render view bounds as a red rectangle
+        case viewBounds
+        
+        /// Render layout guide bounds as an orange rectangle
+        case layoutGuideBounds
+        
+        /// Render constraints
+        case constraints
+    }
 }
 
 extension DebugDraw {
@@ -494,17 +505,6 @@ extension DebugDraw {
     
     private static func prepareFill(in renderer: Renderer) {
         renderer.setFill(Color.lightBlue.faded(towards: .white, factor: 0.5))
-    }
-    
-    public enum DebugDrawFlags {
-        /// Render view bounds as a red rectangle
-        case viewBounds
-        
-        /// Render layout guide bounds as an orange rectangle
-        case layoutGuideBounds
-        
-        /// Render constraints
-        case constraints
     }
     
     /// A small stateful container that is passed around the inner debug draw
