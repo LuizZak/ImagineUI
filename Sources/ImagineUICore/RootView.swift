@@ -20,7 +20,7 @@ open class RootView: ControlView {
         }
         set {
             // If this root view has an independent layout system, changes to
-            // its location only do not affect its internal layout.
+            // its location only affect its internal layout.
             if _hasIndependentInternalLayout {
                 withSuspendedLayout(setNeedsLayout: false) {
                     super.location = newValue

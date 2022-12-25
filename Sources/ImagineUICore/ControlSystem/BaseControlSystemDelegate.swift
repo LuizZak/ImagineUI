@@ -1,6 +1,6 @@
 import Geometry
 
-public protocol DefaultControlSystemDelegate: AnyObject {
+public protocol BaseControlSystemDelegate: AnyObject {
     func bringRootViewToFront(_ rootView: RootView)
     
     func controlViewUnder(point: UIVector, controlKinds: ControlKinds) -> ControlView?

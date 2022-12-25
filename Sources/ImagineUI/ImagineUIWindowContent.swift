@@ -3,7 +3,7 @@ import ImagineUICore
 
 /// A base class containing the required boilerplate for implementing an ImagineUI
 /// user interface.
-open class ImagineUIWindowContent: ImagineUIContentType, DefaultControlSystemDelegate, RootViewRedrawInvalidationDelegate, WindowDelegate {
+open class ImagineUIWindowContent: ImagineUIContentType, BaseControlSystemDelegate, RootViewRedrawInvalidationDelegate, WindowDelegate {
     private var _lastFrame: TimeInterval = 0
     private var _bounds: UIRectangle
 
@@ -197,7 +197,7 @@ open class ImagineUIWindowContent: ImagineUIContentType, DefaultControlSystemDel
         controlSystem.onKeyPress(event)
     }
 
-    // MARK: - DefaultControlSystemDelegate
+    // MARK: - BaseControlSystemDelegate
 
     open func bringRootViewToFront(_ rootView: RootView) {
         if !_rootViews.contains(rootView) {

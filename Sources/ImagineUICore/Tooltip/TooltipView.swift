@@ -30,6 +30,9 @@ public class TooltipView: ControlView {
 
         _label.setContentCompressionResistance(.horizontal, .required)
         _label.setContentCompressionResistance(.vertical, .required)
+        _label.setContentHuggingPriority(.horizontal, 900)
+        _label.setContentHuggingPriority(.vertical, 900)
+        
         _label.layout.makeConstraints { make in
             make.edges.equalTo(self, inset: contentInset)
         }

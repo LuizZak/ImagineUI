@@ -4,7 +4,7 @@ import Geometry
 // TODO: Consider making Window also a control system of its own, to enable
 // TODO: window-specific interception of inputs to better support tasks like
 // TODO: resizing detection with the mouse within the client area.
-public class DefaultControlSystem: ControlSystemType {
+public class DefaultControlSystem: BaseControlSystem {
     /// Wrapper for timed tooltip display operations.
     private let _tooltipWrapper: TooltipDisplayWrapper = TooltipDisplayWrapper()
 
@@ -27,28 +27,20 @@ public class DefaultControlSystem: ControlSystemType {
         delegate?.tooltipsManager()
     }
 
-    public weak var delegate: DefaultControlSystemDelegate?
+    override public init() {
 
-    public init() {
-
-    }
-
-    // MARK: - Window management
-
-    public func bringRootViewToFront(_ rootView: RootView) {
-        delegate?.bringRootViewToFront(rootView)
     }
 
     // MARK: - Mouse Events
 
-    public func onMouseLeave(_ event: MouseEventArgs) {
+    public override func onMouseLeave(_ event: MouseEventArgs) {
         if _mouseHoverTarget != nil {
             _mouseHoverTarget?.onMouseLeave()
             _mouseHoverTarget = nil
         }
     }
 
-    public func onMouseDown(_ event: MouseEventArgs) {
+    public override func onMouseDown(_ event: MouseEventArgs) {
         // TODO: Consider registering double clicks on mouse down on Windows
         // TODO: as a response to events WM_LBUTTONDOWN, WM_LBUTTONUP,
         // TODO: WM_LBUTTONDBLCLK, and WM_LBUTTONUP, as per Win32 documentation:
@@ -86,7 +78,7 @@ public class DefaultControlSystem: ControlSystemType {
         control.handleOrPass(request)
     }
 
-    public func onMouseMove(_ event: MouseEventArgs) {
+    public override func onMouseMove(_ event: MouseEventArgs) {
         // Fixed mouse-over on control that was pressed down
         if let mouseDownTarget = _mouseDownTarget {
             mouseDownTarget.onMouseMove(event.convertLocation(handler: mouseDownTarget))
@@ -95,7 +87,7 @@ public class DefaultControlSystem: ControlSystemType {
         }
     }
 
-    public func onMouseUp(_ event: MouseEventArgs) {
+    public override func onMouseUp(_ event: MouseEventArgs) {
         guard let handler = _mouseDownTarget else {
             return
         }
@@ -125,7 +117,7 @@ public class DefaultControlSystem: ControlSystemType {
         updateMouseOver(event: event, eventType: .mouseMove)
     }
 
-    public func onMouseWheel(_ event: MouseEventArgs) {
+    public override func onMouseWheel(_ event: MouseEventArgs) {
         // Make request
         let request = InnerMouseEventRequest(event: event, eventType: .mouseWheel) { handler in
             if let mouse = self._mouseDownTarget {
@@ -154,7 +146,7 @@ public class DefaultControlSystem: ControlSystemType {
 
     // MARK: - Keyboard Events
 
-    public func onKeyDown(_ event: KeyEventArgs) {
+    public override func onKeyDown(_ event: KeyEventArgs) {
         guard let responder = _firstResponder else {
             return
         }
@@ -168,7 +160,7 @@ public class DefaultControlSystem: ControlSystemType {
         responder.handleOrPass(request)
     }
 
-    public func onKeyUp(_ event: KeyEventArgs) {
+    public override func onKeyUp(_ event: KeyEventArgs) {
         guard let responder = _firstResponder else {
             return
         }
@@ -182,7 +174,7 @@ public class DefaultControlSystem: ControlSystemType {
         responder.handleOrPass(request)
     }
 
-    public func onKeyPress(_ event: KeyPressEventArgs) {
+    public override func onKeyPress(_ event: KeyPressEventArgs) {
         guard let responder = _firstResponder else {
             return
         }
@@ -196,7 +188,7 @@ public class DefaultControlSystem: ControlSystemType {
         responder.handleOrPass(request)
     }
 
-    public func onPreviewKeyDown(_ event: PreviewKeyDownEventArgs) {
+    public override func onPreviewKeyDown(_ event: PreviewKeyDownEventArgs) {
         guard let responder = _firstResponder else {
             return
         }
@@ -273,7 +265,7 @@ public class DefaultControlSystem: ControlSystemType {
 
     // MARK: - View hierarchy changes
 
-    public func viewRemovedFromHierarchy(_ view: View) {
+    public override func viewRemovedFromHierarchy(_ view: View) {
         _=removeAsFirstResponder(anyInHierarchy: view)
         hideTooltipFor(anyInHierarchy: view)
 
@@ -288,7 +280,7 @@ public class DefaultControlSystem: ControlSystemType {
 
     // MARK: - First Responder Management
 
-    public func setAsFirstResponder(_ eventHandler: EventHandler?, force: Bool) -> Bool {
+    public override func setAsFirstResponder(_ eventHandler: EventHandler?, force: Bool) -> Bool {
         guard let firstResponder = eventHandler as? KeyboardEventHandler else {
             return false
         }
@@ -307,7 +299,7 @@ public class DefaultControlSystem: ControlSystemType {
         return true
     }
 
-    public func removeAsFirstResponder(_ eventHandler: EventHandler) -> Bool {
+    public override func removeAsFirstResponder(_ eventHandler: EventHandler) -> Bool {
         if isFirstResponder(eventHandler) {
             _firstResponder = nil
             delegate?.firstResponderChanged(_firstResponder)
@@ -317,7 +309,7 @@ public class DefaultControlSystem: ControlSystemType {
         return false
     }
 
-    public func removeAsFirstResponder(anyInHierarchy view: View) -> Bool {
+    public override func removeAsFirstResponder(anyInHierarchy view: View) -> Bool {
         guard let firstResponder = _firstResponder else {
             return false
         }
@@ -330,11 +322,21 @@ public class DefaultControlSystem: ControlSystemType {
         return true
     }
 
-    public func isFirstResponder(_ eventHandler: EventHandler) -> Bool {
+    public override func isFirstResponder(_ eventHandler: EventHandler) -> Bool {
         return _firstResponder === eventHandler
     }
 
     // MARK: - Tooltip
+
+    public override func hideTooltipFor(anyInHierarchy view: View) {
+        guard let tooltipOwnerView = _tooltipWrapper.currentProvider() as? ControlView else {
+            return
+        }
+
+        if tooltipOwnerView.isDescendant(of: view) {
+            hideTooltip(for: tooltipOwnerView)
+        }
+    }
 
     /// Returns `true` if a tooltip is currently visible on screen.
     public func isTooltipVisible() -> Bool {
@@ -356,31 +358,24 @@ public class DefaultControlSystem: ControlSystemType {
         _tooltipWrapper.setHidden()
     }
 
-    public func hideTooltip(for view: ControlView) {
-        guard let current = _tooltipWrapper.currentProvider() else {
-            return
-        }
-        guard let asView = current as? View else {
-            return
-        }
-        guard asView == view else {
-            return
-        }
-
-        hideTooltip()
+    /// Starts a custom tooltip display mode where the caller has exclusive
+    /// access to the tooltip control until it is either revoked or the lifetime
+    /// of the returned `CustomTooltipHandlerType` reaches its end.
+    ///
+    /// Method returns `nil` if another custom tooltip handler is already active.
+    public func beginCustomTooltipLifetime() -> CustomTooltipHandlerType? {
+        return tooltipsManager?.beginCustomTooltipLifetime()
     }
 
-    public func hideTooltipFor(anyInHierarchy view: View) {
-        guard let tooltipView = _tooltipWrapper.currentProvider() as? ControlView else {
-            return
-        }
+    /// Shows a tooltip from a given provider.
+    ///
+    /// Dismisses any currently visible tooltips in the process.
+    public func showTooltip(
+        for tooltipProvider: TooltipProvider,
+        location: PreferredTooltipLocation? = nil
+    ) {
+        guard tooltipsManager?.hasCustomTooltipActive == false else { return }
 
-        if tooltipView.isDescendant(of: view) {
-            hideTooltip(for: tooltipView)
-        }
-    }
-
-    private func showTooltip(for tooltipProvider: TooltipProvider) {
         if isTooltipVisible() {
             hideTooltip()
         }
@@ -402,10 +397,32 @@ public class DefaultControlSystem: ControlSystemType {
             }
         })
 
-        tooltipsManager?.showTooltip(tooltip, view: tooltipProvider.viewForTooltip, location: tooltipProvider.preferredTooltipLocation)
+        tooltipsManager?.showTooltip(
+            tooltip,
+            view: tooltipProvider.viewForTooltip,
+            location: location ?? tooltipProvider.preferredTooltipLocation
+        )
+    }
+
+    public func hideTooltip(for view: ControlView) {
+        guard tooltipsManager?.hasCustomTooltipActive == false else { return }
+
+        guard let current = _tooltipWrapper.currentProvider() else {
+            return
+        }
+        guard let asView = current as? View else {
+            return
+        }
+        guard asView == view else {
+            return
+        }
+
+        hideTooltip()
     }
 
     private func startTooltipHoverTimer(provider: TooltipProvider) {
+        guard tooltipsManager?.hasCustomTooltipActive == false else { return }
+        
         guard !isTooltipVisible() else {
             return
         }
@@ -415,6 +432,8 @@ public class DefaultControlSystem: ControlSystemType {
         }
 
         _tooltipWrapper.setHover(provider: provider) {
+            guard self.tooltipsManager?.hasCustomTooltipActive == false else { return }
+
             let obj = provider as AnyObject
             if self._mouseHoverTarget === obj {
                 self.showTooltip(for: provider)
@@ -435,6 +454,8 @@ public class DefaultControlSystem: ControlSystemType {
     }
 
     private func updateTooltipContents(_ tooltip: Tooltip) {
+        guard tooltipsManager?.hasCustomTooltipActive == false else { return }
+
         tooltipsManager?.updateTooltip(tooltip)
     }
 
@@ -452,11 +473,11 @@ public class DefaultControlSystem: ControlSystemType {
 
     // MARK: - Mouse Cursor
 
-    public func setMouseCursor(_ cursor: MouseCursorKind) {
+    public override func setMouseCursor(_ cursor: MouseCursorKind) {
         delegate?.setMouseCursor(cursor)
     }
 
-    public func setMouseHiddenUntilMouseMoves() {
+    public override func setMouseHiddenUntilMouseMoves() {
         delegate?.setMouseHiddenUntilMouseMoves()
     }
 

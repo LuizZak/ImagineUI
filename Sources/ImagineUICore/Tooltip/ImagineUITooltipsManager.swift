@@ -1,13 +1,15 @@
 /// Manages exhibition of tooltips for a view hierarchy within an ImagineUI
 /// control system.
 public class ImagineUITooltipsManager: TooltipsManagerType {
+    private var _customTooltipState: CustomTooltipState?
+    
     private var _previousConstraints: [LayoutConstraint] = []
 
     private var _mouseLocation: UIPoint = .zero {
         didSet {
             switch _position {
             case .followingMouse:
-                _updateTooltipConstraints()
+                _updateTooltipPosition(.followingMouse)
 
             default:
                 break
@@ -20,69 +22,148 @@ public class ImagineUITooltipsManager: TooltipsManagerType {
 
     /// The container view for the tooltips to be added to.
     private let _container: View
+    /// A view used as a target for the tooltip to attempt to reach if there's
+    /// enough space on screen to do so.
+    private let _tooltipTargetPosition: View
+    private var _position: DisplayPosition = .none
 
     public var isTooltipVisible: Bool {
-        _tooltip.superview != nil
+        _tooltip.isVisible && _tooltip.superview != nil
     }
 
-    private var _position: DisplayPosition = .none
+    public var hasCustomTooltipActive: Bool {
+        _cullCustomTooltipState()
+
+        return _customTooltipState?.isActive ?? false
+    }
 
     public init(container: View) {
         self._container = container
+        self._tooltipTargetPosition = View()
 
         _setupTooltipView()
     }
 
     private func _setupTooltipView() {
-        _tooltip.areaIntoConstraintsMask = []
+        _tooltip.isVisible = false
+
+        _container.addSubview(_tooltip)
+        _container.addSubview(_tooltipTargetPosition)
+
+        // Add default constraints
+        _tooltip.layout.makeConstraints { make in
+            (make.left >= _container) | .high
+            (make.top >= _container) | .high
+            (make.right <= _container) | .medium
+            (make.bottom <= _container) | .medium
+
+            (make.top == _tooltipTargetPosition) | .low
+            (make.left == _tooltipTargetPosition) | .low
+        }
     }
 
     public func isInTooltipView(_ view: View) -> Bool {
-        view.isDescendant(of: view)
+        view.isDescendant(of: _tooltip)
     }
 
     public func hideTooltip() {
-        _tooltip.removeFromSuperview()
-        _position = .none
+        guard !hasCustomTooltipActive else { return }
+
+        internalHideTooltip()
     }
 
-    public func showTooltip(_ tooltip: Tooltip, view: View, location: PreferredTooltipLocation) {
+    public func showTooltip(
+        _ tooltip: Tooltip,
+        view: View,
+        location: PreferredTooltipLocation
+    ) {
+        guard !hasCustomTooltipActive else { return }
+
+        internalShowTooltip(tooltip, view: view, location: location)
+    }
+
+    public func updateTooltip(_ tooltip: Tooltip) {
+        guard !hasCustomTooltipActive else { return }
+        
+        internalUpdateTooltip(tooltip)
+    }
+
+    public func updateTooltipCursorLocation(_ location: UIPoint) {
+        internalUpdateTooltipCursorLocation(location)
+    }
+
+    public func beginCustomTooltipLifetime() -> CustomTooltipHandlerType? {
+        guard !hasCustomTooltipActive else { return nil }
+
+        let lifetime = CustomTooltipState.LifetimeObject()
+
+        let handler = CustomTooltipHandler(lifetimeToken: lifetime, manager: self)
+
+        return handler
+    }
+
+    // MARK: - Internals
+
+    fileprivate func internalHideTooltip() {
+        _tooltip.isVisible = false
+
+        _updateTooltipPosition(.none)
+    }
+
+    fileprivate func internalShowTooltip(
+        _ tooltip: Tooltip,
+        view: View,
+        location: PreferredTooltipLocation
+    ) {
+
         _tooltip.update(tooltip)
 
-        _container.addSubview(_tooltip)
+        _tooltip.isVisible = true
 
         _computePosition(view: view, location: location)
     }
 
-    public func updateTooltipCursorLocation(_ location: UIPoint) {
-        _mouseLocation = location
-    }
-
-    public func updateTooltip(_ tooltip: Tooltip) {
+    fileprivate func internalUpdateTooltip(_ tooltip: Tooltip) {
         _tooltip.update(tooltip)
     }
 
-    func _computePosition(view: View, location: PreferredTooltipLocation) {
+    fileprivate func internalUpdateTooltipCursorLocation(_ location: UIPoint) {
+        _mouseLocation = location
+    }
+
+    fileprivate func endCustomTooltipLifetime(_ handler: CustomTooltipHandler) {
+        guard hasCustomTooltipActive, _customTooltipState?.handler === handler else {
+            return
+        }
+        
+        _customTooltipState = nil
+
+        hideTooltip()
+    }
+
+    private func _computePosition(view: View, location: PreferredTooltipLocation) {
+        let position: DisplayPosition
+
         switch location {
         case .systemDefined:
-            _position = .nextToMouse
+            position = .nextToMouse
         case .right:
-            _position = .rightOf(view)
+            position = .rightOf(view)
         case .left:
-            _position = .leftOf(view)
+            position = .leftOf(view)
         case .top:
-            _position = .rightOf(view)
+            position = .rightOf(view)
         case .bottom:
-            _position = .rightOf(view)
+            position = .rightOf(view)
         case .inPlace:
-            _position = .inPlace(view, _computeInPlacePosition(view))
+            position = .inPlace(view, _computeInPlacePosition(view))
         case .nextToMouse:
-            _position = .nextToMouse
+            position = .nextToMouse
         case .followingMouse:
-            _position = .followingMouse
+            position = .followingMouse
         }
 
-        _updateTooltipConstraints()
+        _updateTooltipPosition(position)
     }
 
     private func _computeInPlacePosition(_ view: View) -> UIPoint {
@@ -94,12 +175,23 @@ public class ImagineUITooltipsManager: TooltipsManagerType {
         return .zero
     }
 
-    private func _updateTooltipConstraints() {
-        let mouseOffset: UIVector = .init(x: 12, y: 5)
-        let mousePosition = _mouseLocation + mouseOffset
+    private func _updateTooltipPosition(_ newPosition: DisplayPosition) {
+        defer { _position = newPosition }
+
         let location: UIPoint
 
-        switch _position {
+        // Figure out if we need to remove auxiliary constraints
+        var shouldRemakeConstraints = false
+        if _position != newPosition {
+            shouldRemakeConstraints = true
+
+            _previousConstraints.forEach {
+                $0.removeConstraint()
+            }
+            _previousConstraints = []
+        }
+
+        switch newPosition {
         case .relative(let view, let point):
             location = _container.convert(point: point, from: view)
 
@@ -107,41 +199,49 @@ public class ImagineUITooltipsManager: TooltipsManagerType {
             location = _container.convert(point: UIPoint(x: view.size.width, y: 0), from: view)
 
         case .leftOf(let view):
-            location = _container.convert(point: .zero, from: view) - _tooltip.size.width
+            location = _container.convert(point: .zero, from: view)
+
+            if shouldRemakeConstraints {
+                _previousConstraints = _tooltip.layout.makeConstraints { make in
+                    (make.right == _tooltipTargetPosition.layout.left) | .medium
+                }
+            }
 
         case .inPlace(let view, let point):
             location = _container.convert(point: point, from: view)
 
-        case .nextToMouse:
-            location = _container.convert(point: mousePosition, from: nil)
-
-        case .followingMouse:
-            location = _container.convert(point: mousePosition, from: nil)
+        case .nextToMouse, .followingMouse:
+            location = _container.convert(
+                point: _locationForMouseTracking(_mouseLocation),
+                from: nil
+            )
 
         case .none:
             location = .zero
         }
 
-        for constraint in _previousConstraints {
-            constraint.removeConstraint()
+        _tooltipTargetPosition.location = location
+    }
+
+    private func _locationForMouseTracking(_ mouseLocation: UIPoint) -> UIPoint {
+        let mouseOffset: UIVector = .init(x: 12, y: 5)
+        let mousePosition = mouseLocation + mouseOffset
+
+        return mousePosition
+    }
+
+    /// Removes the custom tooltip state if its lifetime has expired.
+    private func _cullCustomTooltipState() {
+        guard let state = _customTooltipState else {
+            return
         }
 
-        _previousConstraints = _tooltip.layout.makeConstraints { make in
-            (make.left >= _container) | .high
-            (make.top >= _container) | .high
-            (make.right <= _container) | .medium
-            (make.bottom <= _container) | .medium
-
-            (make.left == location.x) | .low
-            (make.top == location.y) | .low
+        if !state.isActive {
+            _customTooltipState = nil
         }
     }
 
-    private func _updateTooltipPosition() {
-        
-    }
-
-    private enum DisplayPosition {
+    private enum DisplayPosition: Equatable {
         case none
         case relative(View, UIPoint)
         case rightOf(View)
@@ -149,5 +249,90 @@ public class ImagineUITooltipsManager: TooltipsManagerType {
         case inPlace(View, UIPoint)
         case nextToMouse
         case followingMouse
+    }
+
+    private struct CustomTooltipState {
+        weak var handler: CustomTooltipHandler?
+        weak var lifetimeObject: AnyObject?
+
+        var isActive: Bool {
+            handler?.isActive == true && lifetimeObject != nil
+        }
+
+        class LifetimeObject {
+            init() {
+
+            }
+        }
+    }
+}
+
+/// Used to handle custom tooltip lifetimes.
+fileprivate final class CustomTooltipHandler: CustomTooltipHandlerType {
+    /// A lifetime object associated with this tooltip handler that is 
+    var lifetimeToken: AnyObject
+
+    /// The tooltip manager associated with this tooltip lifetime handler.
+    weak var manager: ImagineUITooltipsManager?
+
+    var isActive: Bool = true
+
+    init(lifetimeToken: AnyObject, manager: ImagineUITooltipsManager) {
+        self.lifetimeToken = lifetimeToken
+        self.manager = manager
+    }
+
+    /// Requests that a tooltip be shown at a specified location relative to a
+    /// specified view.
+    public func showTooltip(
+        _ tooltip: Tooltip,
+        view: View,
+        location: PreferredTooltipLocation
+    ) {
+        guard isActive else { return }
+
+        manager?.showTooltip(tooltip, view: view, location: location)
+    }
+
+    /// Requests that a tooltip for a given tooltip provider be shown, optionally
+    /// specifying a custom tooltip location.
+    public func showTooltip(
+        for tooltipProvider: TooltipProvider,
+        location: PreferredTooltipLocation? = nil
+    ) {
+        guard isActive else { return }
+        guard let tooltip = tooltipProvider.tooltip else {
+            return
+        }
+
+        showTooltip(
+            tooltip,
+            view: tooltipProvider.viewForTooltip,
+            location: location ?? tooltipProvider.preferredTooltipLocation
+        )
+    }
+
+    /// Updates the contents of the currently displayed tooltip.
+    /// Does nothing, if 
+    public func updateTooltip(_ tooltip: Tooltip) {
+        guard isActive else { return }
+
+        manager?.updateTooltip(tooltip)
+    }
+
+    /// Hides a tooltip that was previously shown with `showTooltip`
+    public func hideTooltip() {
+        guard isActive else { return }
+
+        manager?.hideTooltip()
+    }
+
+    /// Explicitly requests that the custom lifetime of this tooltip handler be
+    /// ended and tooltip management return to the default behaviour.
+    public func endTooltipLifetime() {
+        guard isActive else { return }
+
+        isActive = false
+        manager?.endCustomTooltipLifetime(self)
     }
 }
