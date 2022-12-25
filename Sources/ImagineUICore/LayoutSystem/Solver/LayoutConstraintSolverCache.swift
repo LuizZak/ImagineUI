@@ -353,6 +353,8 @@ fileprivate class _LayoutConstraintSolverCache {
             }
         }
 
+        transaction.applyPartial()
+
         // Process rest of constraints
         for constDiff in diff.constraintDiffs {
             switch constDiff {
