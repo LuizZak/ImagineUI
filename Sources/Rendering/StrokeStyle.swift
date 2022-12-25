@@ -8,30 +8,36 @@ public struct StrokeStyle {
     public var endCap: CapStyle
     public var joinStyle: JoinStyle
     
-    public init(color: Color,
-                width: Double = 1,
-                dashOffset: Double = 0,
-                dashArray: [Double] = [],
-                startCap: CapStyle = .butt,
-                endCap: CapStyle = .butt,
-                joinStyle: JoinStyle = .miterClip(limit: 4)) {
+    public init(
+        color: Color,
+        width: Double = 1,
+        dashOffset: Double = 0,
+        dashArray: [Double] = [],
+        startCap: CapStyle = .butt,
+        endCap: CapStyle = .butt,
+        joinStyle: JoinStyle = .miterClip(limit: 4)
+    ) {
         
-        self.init(brush: .solid(color),
-                  width: width,
-                  dashOffset: dashOffset,
-                  dashArray: dashArray,
-                  startCap: startCap,
-                  endCap: endCap,
-                  joinStyle: joinStyle)
+        self.init(
+            brush: .solid(color),
+            width: width,
+            dashOffset: dashOffset,
+            dashArray: dashArray,
+            startCap: startCap,
+            endCap: endCap,
+            joinStyle: joinStyle
+        )
     }
     
-    public init(brush: BrushStyle,
-                width: Double = 1,
-                dashOffset: Double = 0,
-                dashArray: [Double] = [],
-                startCap: CapStyle = .butt,
-                endCap: CapStyle = .butt,
-                joinStyle: JoinStyle = .miterClip(limit: 4)) {
+    public init(
+        brush: BrushStyle,
+        width: Double = 1,
+        dashOffset: Double = 0,
+        dashArray: [Double] = [],
+        startCap: CapStyle = .butt,
+        endCap: CapStyle = .butt,
+        joinStyle: JoinStyle = .miterClip(limit: 4)
+    ) {
         
         self.brush = brush
         self.width = width

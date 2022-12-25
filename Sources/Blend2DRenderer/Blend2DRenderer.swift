@@ -18,6 +18,11 @@ public class Blend2DRenderer: Renderer {
     public convenience init(image: BLImage, options: BLContext.CreateOptions? = nil) {
         self.init(context: BLContext(image: image, options: options)!)
     }
+    
+    private func _setStrokeField<Value>(_ keyPath: WritableKeyPath<StrokeStyle, Value>, _ value: Value) {
+        self._stroke[keyPath: keyPath] = value
+        _stroke.setStyle(in: _context)
+    }
 
     // MARK: - Clear
 
@@ -56,16 +61,16 @@ public class Blend2DRenderer: Renderer {
     }
 
     public func setStroke(_ color: Color) {
-        setStroke(StrokeStyle(brush: .solid(color)))
+        _setStrokeField(\.brush, .solid(color))
     }
 
     public func setStroke(_ gradient: Gradient) {
-        setStroke(StrokeStyle(brush: .gradient(gradient)))
+        _setStrokeField(\.brush, .gradient(gradient))
     }
 
     public func setStrokeWidth(_ width: Double) {
         _stroke.width = width
-        _context.setStrokeWidth(width)
+        _setStrokeField(\.width, width)
     }
     
     public func setStrokeDash(dashOffset: Double, dashArray: [Double]) {

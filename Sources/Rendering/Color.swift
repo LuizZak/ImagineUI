@@ -16,6 +16,15 @@ public struct Color: Equatable {
         return Color(alpha: alpha, red: red, green: green, blue: blue)
     }
     
+    public func withTransparency(factor: Float) -> Color {
+        return Color(
+            alpha: Int(255 * factor),
+            red: red,
+            green: green,
+            blue: blue
+        )
+    }
+    
     public func faded(towards otherColor: Color, factor: Float, blendAlpha: Bool = false) -> Color {
         let from = 1 - factor
 
