@@ -177,7 +177,7 @@ open class View {
 
             invalidate()
 
-            if !_skipSetNeedsLayoutOnBounds && areaIntoConstraintsMask.contains(.location) {
+            if !_skipSetNeedsLayoutOnBounds && locationAffectsConstraints() {
                 setNeedsLayout()
             }
         }
@@ -201,7 +201,7 @@ open class View {
 
             invalidate()
 
-            if !_skipSetNeedsLayoutOnBounds && areaIntoConstraintsMask.contains(.size) {
+            if !_skipSetNeedsLayoutOnBounds && sizeAffectsConstraints() {
                 setNeedsLayout()
             }
         }
@@ -1120,6 +1120,14 @@ open class View {
         }
     }
 
+    func locationAffectsConstraints() -> Bool {
+        areaIntoConstraintsMask.contains(.location)
+    }
+
+    func sizeAffectsConstraints() -> Bool {
+        areaIntoConstraintsMask.contains(.size)
+    }
+
     // MARK: LayoutVariablesContainer implementations
     // NOTE: adding the methods here instead of extension bellow to allow overriding.
 
@@ -1217,7 +1225,14 @@ extension View: LayoutVariablesContainer {
     }
 }
 
+/// Used by `View` objects to specify which dimensions it should turn into
+/// constraints implicitly in the constraint system.
 public enum BoundsConstraintMask: CaseIterable {
+    /// Specifies that the location of a view be treated as a set of constraints
+    /// that must be respected during constraint resolution.
     case location
+
+    /// Specifies that the size of a view be treated as a set of constraints that
+    /// must be respected during constraint resolution.
     case size
 }

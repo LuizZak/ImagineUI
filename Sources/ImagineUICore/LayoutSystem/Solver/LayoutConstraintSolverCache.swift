@@ -160,10 +160,12 @@ public class LayoutConstraintSolverCache {
         func visitView(_ view: View, _ collection: inout ConstraintCollection) -> ViewVisitorResult {
             // Ignore fully static views that do not participate in the overall
             // layout system
-            if !(view.areaIntoConstraintsMask == Set(BoundsConstraintMask.allCases) && view.constraints.isEmpty) {
-                collection.affectedLayoutVariables.append(view.layoutVariables)
-            } else {
+            let isFullyStatic = view.areaIntoConstraintsMask == []
+
+            if isFullyStatic && view.constraints.isEmpty {
                 collection.fixedLayoutVariables.append(view.layoutVariables)
+            } else {
+                collection.affectedLayoutVariables.append(view.layoutVariables)
             }
 
             for guide in view.layoutGuides {
@@ -198,7 +200,7 @@ fileprivate class _LayoutConstraintSolverCache {
 
     internal func saveState() {
         _previousConstraintSet = _constraintSet
-        _previousViewConstraintList = _viewConstraintList.mapValues { $0.clone() }
+        _previousViewConstraintList = _viewConstraintList
 
         _constraintSet.removeAll(keepingCapacity: true)
         _viewConstraintList.removeAll(keepingCapacity: true)
@@ -211,8 +213,12 @@ fileprivate class _LayoutConstraintSolverCache {
     ) {
 
         for affectedView in result.affectedLayoutVariables {
-            let viewConstraintList = constraintList(for: affectedView.container, orientations: orientations)
-            affectedView.deriveConstraints(viewConstraintList, rootSpatialReference: rootSpatialReference)
+            withConstraintList(for: affectedView.container, orientations: orientations) {
+                affectedView.deriveConstraints(
+                    &$0,
+                    rootSpatialReference: rootSpatialReference
+                )
+            }
         }
 
         _registerConstraints(result.constraints, orientations: orientations)
@@ -227,14 +233,14 @@ fileprivate class _LayoutConstraintSolverCache {
         // TODO: new state must not replace the old state as it would end up losing
         // TODO: reference to Constraint instance identity.
         for (id, viewList) in _viewConstraintList where _previousViewConstraintList[id] == nil {
-            _previousViewConstraintList[id] = viewList.clone()
+            _previousViewConstraintList[id] = viewList
         }
 
         for (id, viewDiff) in diff.viewStateDiffs {
             _previousViewConstraintList[id]?.apply(diff: viewDiff)
         }
 
-        _viewConstraintList = _previousViewConstraintList.mapValues { $0.clone() }
+        _viewConstraintList = _previousViewConstraintList
         _previousViewConstraintList.removeAll(keepingCapacity: true)
     }
 
@@ -272,16 +278,32 @@ fileprivate class _LayoutConstraintSolverCache {
         return _compareState()
     }
 
-    private func constraintList(for container: LayoutVariablesContainer, orientations: Set<LayoutConstraintOrientation>) -> ViewConstraintList {
+    private func withConstraintList(
+        for container: LayoutVariablesContainer,
+        orientations: Set<LayoutConstraintOrientation>,
+        _ closure: (inout ViewConstraintList) -> Void
+    ) {
+        
         let identifier: LayoutVariables = container.layoutVariables
 
-        if let list = _viewConstraintList[identifier], list.orientations == orientations {
-            return list
+        if var list = _viewConstraintList[identifier], list.orientations == orientations {
+            closure(&list)
+            _viewConstraintList[identifier] = list
+            return
         }
 
-        let list = ViewConstraintList(orientations: orientations)
+        #if DUMP_CONSTRAINTS_TO_DESKTOP // For debugging purposes
+
+        var list = ViewConstraintList(orientations: orientations, container: container)
+
+        #else
+
+        var list = ViewConstraintList(orientations: orientations)
+        
+        #endif // DUMP_CONSTRAINTS_TO_DESKTOP
+
+        closure(&list)
         _viewConstraintList[identifier] = list
-        return list
     }
 
     private func updateSolver(_ diff: CacheStateDiff) throws {

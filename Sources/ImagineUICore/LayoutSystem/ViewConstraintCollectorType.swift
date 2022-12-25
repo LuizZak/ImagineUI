@@ -1,6 +1,16 @@
 import CassowarySwift
 
 protocol ViewConstraintCollectorType {
-    func addConstraint(_ constraint: Constraint, tag: String, orientation: LayoutConstraintOrientation)
-    func suggestValue(_ variable: Variable, value: Double, strength: Double, orientation: LayoutConstraintOrientation)
+    mutating func addConstraint(
+        _ constraint: Constraint,
+        tag: String,
+        orientation: LayoutConstraintOrientation
+    )
+
+    mutating func suggestValue(
+        _ variable: Variable,
+        value: Double,
+        strength: Double,
+        orientation: LayoutConstraintOrientation
+    )
 }

@@ -9,7 +9,7 @@ public struct LayoutPriority: Hashable {
     public static let veryLow = LayoutPriority(150)
     public static let lowest = LayoutPriority(1)
 
-    var value: Int
+    let value: Int
 
     public init(_ value: Int) {
         self.value = min(1000, max(1, value))

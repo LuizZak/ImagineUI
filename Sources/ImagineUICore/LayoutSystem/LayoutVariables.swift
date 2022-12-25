@@ -124,24 +124,36 @@ class LayoutVariables {
         self.baselineHeight = baselineHeight
     }
 
-    func deriveConstraints(_ constraintCollector: ViewConstraintCollectorType, rootSpatialReference: View?) {
+    func deriveConstraints<T: ViewConstraintCollectorType>(
+        _ constraintCollector: inout T,
+        rootSpatialReference: View?
+    ) {
+        let variables = VariablesBroker(layoutVariables: self)
+
         if let view = container as? View {
-            deriveViewConstraints(view, constraintCollector, relativeTo: rootSpatialReference)
+            deriveViewConstraints(
+                view,
+                &constraintCollector,
+                variables,
+                relativeTo: rootSpatialReference
+            )
         }
 
+        variables.markReferenced(.width)
         constraintCollector.addConstraint(
             widthConstraint,
             tag: "width >= 0",
             orientation: .horizontal
         )
 
+        variables.markReferenced(.height)
         constraintCollector.addConstraint(
             heightConstraint,
             tag: "height >= 0",
-            orientation: .horizontal
+            orientation: .vertical
         )
 
-        if container.hasConstraintsOnAnchorKind(.right) {
+        if variables.isReferenced(.right) {
             constraintCollector.addConstraint(
                 right_definition,
                 tag: "right == left + width",
@@ -149,7 +161,7 @@ class LayoutVariables {
             )
         }
 
-        if container.hasConstraintsOnAnchorKind(.bottom) {
+        if variables.isReferenced(.bottom) {
             constraintCollector.addConstraint(
                 bottom_definition,
                 tag: "bottom == top + height",
@@ -157,7 +169,7 @@ class LayoutVariables {
             )
         }
 
-        if constraintsReferencesAnchorKind(.centerX) {
+        if variables.isReferenced(.centerX) {
             constraintCollector.addConstraint(
                 centerX_definition,
                 tag: "centerX",
@@ -165,7 +177,7 @@ class LayoutVariables {
             )
         }
 
-        if constraintsReferencesAnchorKind(.centerY) {
+        if variables.isReferenced(.centerY) {
             constraintCollector.addConstraint(
                 centerY_definition,
                 tag: "centerY",
@@ -173,10 +185,10 @@ class LayoutVariables {
             )
         }
 
-        if constraintsReferencesAnchorKind(.firstBaseline) {
+        if variables.isReferenced(.firstBaseline) {
             if let label = viewForFirstBaseline() as? Label {
                 constraintCollector.suggestValue(
-                    baselineHeight,
+                    variables.baselineHeight,
                     value: label.baselineHeight,
                     strength: Strength.STRONG,
                     orientation: .vertical
@@ -197,40 +209,48 @@ class LayoutVariables {
         }
     }
 
-    private func deriveViewConstraints(_ view: View, _ constraintCollector: ViewConstraintCollectorType, relativeTo spatialReference: View?) {
+    private func deriveViewConstraints<T: ViewConstraintCollectorType>(
+        _ view: View,
+        _ constraintCollector: inout T,
+        _ variables: VariablesBroker,
+        relativeTo spatialReference: View?
+    ) {
+
         let bounds = view.convert(bounds: view.bounds, to: spatialReference)
+        let mask = view.areaIntoConstraintsMask
 
-        if view.areaIntoConstraintsMask.contains(.location) {
-            left.value = bounds.x
-            top.value = bounds.y
-
+        if mask.contains(.location) {
+            variables.left.value = bounds.x
+            variables.top.value = bounds.y
+            
             constraintCollector.suggestValue(
-                left,
+                variables.left,
                 value: bounds.x,
                 strength: Strength.STRONG,
                 orientation: .horizontal
             )
 
             constraintCollector.suggestValue(
-                top,
+                variables.top,
                 value: bounds.y,
                 strength: Strength.STRONG,
                 orientation: .vertical
             )
         }
-        if view.areaIntoConstraintsMask.contains(.size) {
-            width.value = bounds.width
-            height.value = bounds.height
-            
+
+        if mask.contains(.size) {
+            variables.width.value = bounds.width
+            variables.height.value = bounds.height
+
             constraintCollector.suggestValue(
-                width,
+                variables.width,
                 value: bounds.width,
                 strength: Strength.STRONG,
                 orientation: .horizontal
             )
 
             constraintCollector.suggestValue(
-                height,
+                variables.height,
                 value: bounds.height,
                 strength: Strength.STRONG,
                 orientation: .vertical
@@ -238,16 +258,27 @@ class LayoutVariables {
         }
 
         if let intrinsicSize = view._targetLayoutSize ?? view.intrinsicSize {
-            deriveIntrinsicSizeConstraints(view, intrinsicSize: intrinsicSize, constraintCollector)
+            deriveIntrinsicSizeConstraints(
+                view,
+                intrinsicSize: intrinsicSize,
+                &constraintCollector,
+                variables
+            )
         }
     }
 
-    private func deriveIntrinsicSizeConstraints(_ view: View, intrinsicSize: UISize, _ constraintCollector: ViewConstraintCollectorType) {
+    private func deriveIntrinsicSizeConstraints<T: ViewConstraintCollectorType>(
+        _ view: View,
+        intrinsicSize: UISize,
+        _ constraintCollector: inout T,
+        _ variables: VariablesBroker
+    ) {
+
         // Horizontal
         horizontal:
         if view.horizontalCompressResistance != nil || view.horizontalHuggingPriority != nil {
             constraintCollector.suggestValue(
-                intrinsicWidth,
+                variables.intrinsicWidth,
                 value: intrinsicSize.width,
                 strength: Strength.STRONG,
                 orientation: .horizontal
@@ -259,7 +290,7 @@ class LayoutVariables {
                     constraintCollector.addConstraint(
                         $widthAsIntrinsicSizeConstraint(horizontalCompressResistance.cassowaryStrength),
                         tag: "width == intrinsicWidth",
-                        orientation: .vertical
+                        orientation: .horizontal
                     )
                     break horizontal
                 }
@@ -284,7 +315,7 @@ class LayoutVariables {
         vertical:
         if view.verticalCompressResistance != nil || view.verticalHuggingPriority != nil {
             constraintCollector.suggestValue(
-                intrinsicHeight,
+                variables.intrinsicHeight,
                 value: intrinsicSize.height,
                 strength: Strength.STRONG,
                 orientation: .vertical
@@ -344,31 +375,6 @@ class LayoutVariables {
         return nil
     }
 
-    private func constraintsReferencesAnchorKind(_ kind: AnchorKind) -> Bool {
-        // Center X/Y constraints reference width/height, so we must take them
-        // into account as well.
-        // Intrinsic size also references width/height constraints.
-
-        switch kind {
-        case .left, .top, .right, .bottom, .firstBaseline, .centerX, .centerY:
-            return container.hasConstraintsOnAnchorKind(kind)
-
-        case .width:
-            if let view = container as? View, view._targetLayoutSize != nil || view.intrinsicSize != nil {
-                return true
-            }
-
-            return container.hasConstraintsOnAnchorKind(.width) || container.hasConstraintsOnAnchorKind(.centerX)
-
-        case .height:
-            if let view = container as? View, view._targetLayoutSize != nil || view.intrinsicSize != nil {
-                return true
-            }
-
-            return container.hasConstraintsOnAnchorKind(.height) || container.hasConstraintsOnAnchorKind(.centerY)
-        }
-    }
-
     private static func deriveName(_ container: LayoutVariablesContainer) -> String {
         if let view = container as? View {
             return deriveName(view)
@@ -390,6 +396,127 @@ class LayoutVariables {
         let pointer = Unmanaged.passUnretained(guide).toOpaque()
 
         return "\(type(of: guide))_\(pointer)"
+    }
+
+    /// Used to help ensure variable references are taken into account while
+    /// deciding which constraints to report to a `ViewConstraintCollectorType`.
+    private class VariablesBroker {
+        let layoutVariables: LayoutVariables
+        var referencedVariables: Set<LayoutVariable> = []
+
+        var left: Variable { fetchVariable(.left) }
+        var right: Variable { fetchVariable(.right) }
+        var top: Variable { fetchVariable(.top) }
+        var bottom: Variable { fetchVariable(.bottom) }
+        var width: Variable { fetchVariable(.width) }
+        var height: Variable { fetchVariable(.height) }
+        var centerX: Variable { fetchVariable(.centerX) }
+        var centerY: Variable { fetchVariable(.centerY) }
+        var firstBaseline: Variable { fetchVariable(.firstBaseline) }
+        var intrinsicWidth: Variable { fetchVariable(.intrinsicWidth) }
+        var intrinsicHeight: Variable { fetchVariable(.intrinsicHeight) }
+        var baselineHeight: Variable { fetchVariable(.baselineHeight) }
+
+        init(layoutVariables: LayoutVariables) {
+            self.layoutVariables = layoutVariables
+
+            // Pre-fill based on constraints
+            let container = layoutVariables.container
+            
+            if container.hasConstraintsOnAnchorKind(.left) {
+                markReferenced(.left)
+            }
+            if container.hasConstraintsOnAnchorKind(.right) {
+                markReferenced(.right)
+            }
+            if container.hasConstraintsOnAnchorKind(.top) {
+                markReferenced(.top)
+            }
+            if container.hasConstraintsOnAnchorKind(.bottom) {
+                markReferenced(.bottom)
+            }
+            if container.hasConstraintsOnAnchorKind(.width) {
+                markReferenced(.width)
+            }
+            if container.hasConstraintsOnAnchorKind(.height) {
+                markReferenced(.height)
+            }
+            if container.hasConstraintsOnAnchorKind(.centerX) {
+                markReferenced(.centerX)
+            }
+            if container.hasConstraintsOnAnchorKind(.centerY) {
+                markReferenced(.centerY)
+            }
+            if container.hasConstraintsOnAnchorKind(.firstBaseline) {
+                markReferenced(.firstBaseline)
+            }
+
+            if let view = container as? View {
+                let mask = view.areaIntoConstraintsMask
+                if mask != [] || view._targetLayoutSize != nil || view.intrinsicSize != nil {
+                    markReferenced(.left)
+                    markReferenced(.right)
+                    markReferenced(.top)
+                    markReferenced(.bottom)
+                    markReferenced(.width)
+                    markReferenced(.height)
+                }
+            }
+        }
+
+        func isReferenced(_ variable: LayoutVariable) -> Bool {
+            referencedVariables.contains(variable)
+        }
+
+        func markReferenced(_ variable: LayoutVariable) {
+            referencedVariables.insert(variable)
+        }
+
+        func fetchVariable(_ variable: LayoutVariable) -> Variable {
+            markReferenced(variable)
+
+            switch variable {
+            case .left:
+                return layoutVariables.left
+            case .right:
+                return layoutVariables.right
+            case .top:
+                return layoutVariables.top
+            case .bottom:
+                return layoutVariables.bottom
+            case .width:
+                return layoutVariables.width
+            case .height:
+                return layoutVariables.height
+            case .centerX:
+                return layoutVariables.centerX
+            case .centerY:
+                return layoutVariables.centerY
+            case .firstBaseline:
+                return layoutVariables.firstBaseline
+            case .intrinsicWidth:
+                return layoutVariables.intrinsicWidth
+            case .intrinsicHeight:
+                return layoutVariables.intrinsicHeight
+            case .baselineHeight:
+                return layoutVariables.baselineHeight
+            }
+        }
+    }
+
+    private enum LayoutVariable: Hashable {
+        case left
+        case right
+        case top
+        case bottom
+        case width
+        case height
+        case centerX
+        case centerY
+        case firstBaseline
+        case intrinsicWidth
+        case intrinsicHeight
+        case baselineHeight
     }
 }
 

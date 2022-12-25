@@ -1,8 +1,25 @@
 import CassowarySwift
 
-class ViewConstraintList: ViewConstraintCollectorType {
+struct ViewConstraintList: ViewConstraintCollectorType {
     var orientations: Set<LayoutConstraintOrientation>
     var state: State = State()
+
+    #if DUMP_CONSTRAINTS_TO_DESKTOP // For debugging purposes
+    
+    var container: LayoutVariablesContainer
+
+    init(orientations: Set<LayoutConstraintOrientation>, container: LayoutVariablesContainer) {
+        self.orientations = orientations
+        self.container = container
+    }
+
+    fileprivate init(state: State, orientations: Set<LayoutConstraintOrientation>, container: LayoutVariablesContainer) {
+        self.state = state
+        self.orientations = orientations
+        self.container = container
+    }
+
+    #else
 
     init(orientations: Set<LayoutConstraintOrientation>) {
         self.orientations = orientations
@@ -13,14 +30,21 @@ class ViewConstraintList: ViewConstraintCollectorType {
         self.orientations = orientations
     }
 
-    func clone() -> ViewConstraintList {
-        return ViewConstraintList(state: state, orientations: orientations)
+    #endif // DUMP_CONSTRAINTS_TO_DESKTOP
+
+    mutating func ensureUnique() {
+        if !isKnownUniquelyReferenced(&state) {
+            state = state.copy()
+        }
     }
 
     /// Adds a constraint with a given name and strength.
-    func addConstraint(_ constraint: Constraint,
-                       tag: String,
-                       orientation: LayoutConstraintOrientation) {
+    mutating func addConstraint(
+        _ constraint: Constraint,
+        tag: String,
+        orientation: LayoutConstraintOrientation
+    ) {
+        ensureUnique()
 
         if !orientations.contains(orientation) {
             return
@@ -29,10 +53,13 @@ class ViewConstraintList: ViewConstraintCollectorType {
         state.constraints[tag] = constraint
     }
 
-    func suggestValue(_ variable: Variable,
-                      value: Double,
-                      strength: Double,
-                      orientation: LayoutConstraintOrientation) {
+    mutating func suggestValue(
+        _ variable: Variable,
+        value: Double,
+        strength: Double,
+        orientation: LayoutConstraintOrientation
+    ) {
+        ensureUnique()
 
         if !orientations.contains(orientation) {
             return
@@ -41,7 +68,9 @@ class ViewConstraintList: ViewConstraintCollectorType {
         state.suggestedValue[variable] = (value, strength)
     }
 
-    func apply(diff: StateDiff) {
+    mutating func apply(diff: StateDiff) {
+        ensureUnique()
+
         for constraintDiff in diff.constraints {
             switch constraintDiff {
             case let .added(key, constraint):
@@ -68,12 +97,22 @@ class ViewConstraintList: ViewConstraintCollectorType {
             }
         }
     }
-}
+    
+    class State {
+        var constraints: [String: Constraint]
+        var suggestedValue: [Variable: (value: Double, strength: Double)]
 
-extension ViewConstraintList {
-    struct State {
-        var constraints: [String: Constraint] = [:]
-        var suggestedValue: [Variable: (value: Double, strength: Double)] = [:]
+        init(
+            constraints: [String: Constraint] = [:],
+            suggestedValue: [Variable: (value: Double, strength: Double)] = [:]
+        ) {
+            self.constraints = constraints
+            self.suggestedValue = suggestedValue
+        }
+
+        func copy() -> State {
+            State(constraints: constraints, suggestedValue: suggestedValue)
+        }
 
         func makeDiffFromEmpty() -> StateDiff {
             return makeDiff(previous: State())
@@ -84,17 +123,19 @@ extension ViewConstraintList {
         }
 
         func makeDiff(previous: State) -> StateDiff {
-            let constDiff =
-                constraints.makeDifference(
-                    withPrevious: previous.constraints,
-                    areEqual: { $1.hasSameEffects(as: $2) }
-                )
+            let constDiff = constraints.makeDifference(
+                withPrevious: previous.constraints,
+                areEqual: {
+                    $1.hasSameEffects(as: $2)
+                }
+            )
 
-            let suggestedDiff =
-                suggestedValue.makeDifference(
-                    withPrevious: previous.suggestedValue,
-                    areEqual: { $1 == $2 }
-                )
+            let suggestedDiff = suggestedValue.makeDifference(
+                withPrevious: previous.suggestedValue,
+                areEqual: {
+                    $1 == $2
+                }
+            )
 
             return StateDiff(constraints: constDiff, suggestedValues: suggestedDiff)
         }
