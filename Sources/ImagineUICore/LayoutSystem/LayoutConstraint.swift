@@ -510,8 +510,7 @@ public class LayoutConstraint: Hashable {
         }
 
         static func == (lhs: Self, rhs: Self) -> Bool {
-            return lhs._hashValue == rhs._hashValue
-                && lhs.relationship == rhs.relationship
+            return lhs.relationship == rhs.relationship
                 && lhs.offset == rhs.offset
                 && lhs.multiplier == rhs.multiplier
                 && lhs.priority == rhs.priority
