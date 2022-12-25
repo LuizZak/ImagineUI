@@ -33,6 +33,23 @@ public class EventPublisher<T>: EventPublisherType {
         return key
     }
 
+    /// Convenience for:
+    /// 
+    /// ```swift
+    /// addListener(weakOwner: owner) { [weak owner] value in
+    ///     guard let owner else { return }
+    ///     ...
+    /// }
+    /// ```
+    @discardableResult
+    public func addWeakListener<U: AnyObject>(_ weakOwner: U, _ listener: @escaping (U, T) -> Void) -> EventListenerKey {
+        return addListener(weakOwner: weakOwner) { [weak weakOwner] value in
+            guard let owner = weakOwner else { return }
+            
+            listener(owner, value)
+        }
+    }
+
     public func removeListener(forKey key: EventListenerKey) {
         guard key.publisher === self else {
             return
