@@ -1,6 +1,6 @@
 import CassowarySwift
 
-public enum Relationship: CustomStringConvertible {
+public enum Relationship: Hashable, CustomStringConvertible {
     case equal
     case greaterThanOrEqual
     case lessThanOrEqual

@@ -83,13 +83,15 @@ public class LayoutConstraint: Hashable {
         }
     }
 
-    private init(container: LayoutVariablesContainer,
-                 first: AnyLayoutAnchor,
-                 second: AnyLayoutAnchor,
-                 relationship: Relationship,
-                 offset: Double,
-                 multiplier: Double,
-                 priority: LayoutPriority) {
+    private init(
+        container: LayoutVariablesContainer,
+        first: AnyLayoutAnchor,
+        second: AnyLayoutAnchor,
+        relationship: Relationship,
+        offset: Double,
+        multiplier: Double,
+        priority: LayoutPriority
+    ) {
 
         definition = Definition(
             container: container,
@@ -102,11 +104,13 @@ public class LayoutConstraint: Hashable {
         )
     }
 
-    private init(container: LayoutVariablesContainer,
-                 first: AnyLayoutAnchor,
-                 relationship: Relationship,
-                 offset: Double,
-                 priority: LayoutPriority) {
+    private init(
+        container: LayoutVariablesContainer,
+        first: AnyLayoutAnchor,
+        relationship: Relationship,
+        offset: Double,
+        priority: LayoutPriority
+    ) {
 
         definition = Definition(
             container: container,
@@ -142,40 +146,50 @@ public class LayoutConstraint: Hashable {
     }
 
     @discardableResult
-    public static func create<T>(first: LayoutAnchor<T>,
-                                 second: LayoutAnchor<T>,
-                                 relationship: Relationship = .equal,
-                                 offset: Double = 0,
-                                 multiplier: Double = 1,
-                                 priority: LayoutPriority = .required) -> LayoutConstraint {
+    public static func create<T>(
+        first: LayoutAnchor<T>,
+        second: LayoutAnchor<T>,
+        relationship: Relationship = .equal,
+        offset: Double = 0,
+        multiplier: Double = 1,
+        priority: LayoutPriority = .required
+    ) -> LayoutConstraint {
 
-        return _create(first: first.toInternalLayoutAnchor(),
-                       second: second.toInternalLayoutAnchor(),
-                       relationship: relationship,
-                       offset: offset,
-                       multiplier: multiplier,
-                       priority: priority)
+        return _create(
+            first: first.toInternalLayoutAnchor(),
+            second: second.toInternalLayoutAnchor(),
+            relationship: relationship,
+            offset: offset,
+            multiplier: multiplier,
+            priority: priority
+        )
     }
 
     @discardableResult
-    public static func create<T>(first: LayoutAnchor<T>,
-                                 relationship: Relationship = .equal,
-                                 offset: Double = 0,
-                                 priority: LayoutPriority = .required) -> LayoutConstraint {
+    public static func create<T>(
+        first: LayoutAnchor<T>,
+        relationship: Relationship = .equal,
+        offset: Double = 0,
+        priority: LayoutPriority = .required
+    ) -> LayoutConstraint {
 
-        return _create(first: first.toInternalLayoutAnchor(),
-                       relationship: relationship,
-                       offset: offset,
-                       priority: priority)
+        return _create(
+            first: first.toInternalLayoutAnchor(),
+            relationship: relationship,
+            offset: offset,
+            priority: priority
+        )
     }
 
     @discardableResult
-    internal static func _create(first: AnyLayoutAnchor,
-                                 second: AnyLayoutAnchor,
-                                 relationship: Relationship = .equal,
-                                 offset: Double = 0,
-                                 multiplier: Double = 1,
-                                 priority: LayoutPriority = .required) -> LayoutConstraint {
+    internal static func _create(
+        first: AnyLayoutAnchor,
+        second: AnyLayoutAnchor,
+        relationship: Relationship = .equal,
+        offset: Double = 0,
+        multiplier: Double = 1,
+        priority: LayoutPriority = .required
+    ) -> LayoutConstraint {
 
         guard let view1 = first._owner?.viewInHierarchy else {
             if first.owner is LayoutGuide {
@@ -196,14 +210,15 @@ public class LayoutConstraint: Hashable {
             fatalError("Cannot add constraint between two views in two different hierarchies")
         }
 
-        let constraint =
-            LayoutConstraint(container: ancestor,
-                             first: first,
-                             second: second,
-                             relationship: relationship,
-                             offset: offset,
-                             multiplier: multiplier,
-                             priority: priority)
+        let constraint = LayoutConstraint(
+            container: ancestor,
+            first: first,
+            second: second,
+            relationship: relationship,
+            offset: offset,
+            multiplier: multiplier,
+            priority: priority
+        )
 
         ancestor.containedConstraints.append(constraint)
 
@@ -221,21 +236,24 @@ public class LayoutConstraint: Hashable {
     }
 
     @discardableResult
-    internal static func _create(first: AnyLayoutAnchor,
-                                 relationship: Relationship = .equal,
-                                 offset: Double = 0,
-                                 priority: LayoutPriority = .required) -> LayoutConstraint {
+    internal static func _create(
+        first: AnyLayoutAnchor,
+        relationship: Relationship = .equal,
+        offset: Double = 0,
+        priority: LayoutPriority = .required
+    ) -> LayoutConstraint {
 
         guard let container = first._owner else {
             fatalError("Attempting to create constraint with reference to an anchor of a view or layout guide that was already deallocated")
         }
 
-        let constraint =
-            LayoutConstraint(container: container,
-                             first: first,
-                             relationship: relationship,
-                             offset: offset,
-                             priority: priority)
+        let constraint = LayoutConstraint(
+            container: container,
+            first: first,
+            relationship: relationship,
+            offset: offset,
+            priority: priority
+        )
 
         container.viewInHierarchy?.containedConstraints.append(constraint)
         container.constraints.append(constraint)
@@ -248,42 +266,52 @@ public class LayoutConstraint: Hashable {
     }
 
     @discardableResult
-    public static func update<T>(first: LayoutAnchor<T>,
-                                 second: LayoutAnchor<T>,
-                                 relationship: Relationship = .equal,
-                                 offset: Double = 0,
-                                 multiplier: Double = 1,
-                                 priority: LayoutPriority? = nil) -> LayoutConstraint {
+    public static func update<T>(
+        first: LayoutAnchor<T>,
+        second: LayoutAnchor<T>,
+        relationship: Relationship = .equal,
+        offset: Double = 0,
+        multiplier: Double = 1,
+        priority: LayoutPriority? = nil
+    ) -> LayoutConstraint {
 
-        return _update(first: first.toInternalLayoutAnchor(),
-                       second: second.toInternalLayoutAnchor(),
-                       relationship: relationship,
-                       offset: offset,
-                       multiplier: multiplier,
-                       priority: priority)
+        return _update(
+            first: first.toInternalLayoutAnchor(),
+            second: second.toInternalLayoutAnchor(),
+            relationship: relationship,
+            offset: offset,
+            multiplier: multiplier,
+            priority: priority
+        )
     }
 
     @discardableResult
-    public static func update<T>(first: LayoutAnchor<T>,
-                                 relationship: Relationship = .equal,
-                                 offset: Double = 0,
-                                 multiplier: Double = 1,
-                                 priority: LayoutPriority? = nil) -> LayoutConstraint {
+    public static func update<T>(
+        first: LayoutAnchor<T>,
+        relationship: Relationship = .equal,
+        offset: Double = 0,
+        multiplier: Double = 1,
+        priority: LayoutPriority? = nil
+    ) -> LayoutConstraint {
 
-        return _update(first: first.toInternalLayoutAnchor(),
-                       relationship: relationship,
-                       offset: offset,
-                       multiplier: multiplier,
-                       priority: priority)
+        return _update(
+            first: first.toInternalLayoutAnchor(),
+            relationship: relationship,
+            offset: offset,
+            multiplier: multiplier,
+            priority: priority
+        )
     }
 
     @discardableResult
-    internal static func _update(first: AnyLayoutAnchor,
-                                 second: AnyLayoutAnchor,
-                                 relationship: Relationship = .equal,
-                                 offset: Double = 0,
-                                 multiplier: Double = 1,
-                                 priority: LayoutPriority? = nil) -> LayoutConstraint {
+    internal static func _update(
+        first: AnyLayoutAnchor,
+        second: AnyLayoutAnchor,
+        relationship: Relationship = .equal,
+        offset: Double = 0,
+        multiplier: Double = 1,
+        priority: LayoutPriority? = nil
+    ) -> LayoutConstraint {
 
         let constraint = first._owner?.constraints.first {
             $0.firstCast == first
@@ -306,11 +334,13 @@ public class LayoutConstraint: Hashable {
     }
 
     @discardableResult
-    internal static func _update(first: AnyLayoutAnchor,
-                                 relationship: Relationship = .equal,
-                                 offset: Double = 0,
-                                 multiplier: Double = 1,
-                                 priority: LayoutPriority? = nil) -> LayoutConstraint {
+    internal static func _update(
+        first: AnyLayoutAnchor,
+        relationship: Relationship = .equal,
+        offset: Double = 0,
+        multiplier: Double = 1,
+        priority: LayoutPriority? = nil
+    ) -> LayoutConstraint {
 
         let constraint = first._owner?.constraints.first {
             $0.firstCast == first
@@ -366,13 +396,15 @@ public class LayoutConstraint: Hashable {
             }
         }
 
-        init(container: LayoutVariablesContainer,
-             firstCast: AnyLayoutAnchor,
-             secondCast: AnyLayoutAnchor?,
-             relationship: Relationship,
-             offset: Double,
-             multiplier: Double,
-             priority: LayoutPriority) {
+        init(
+            container: LayoutVariablesContainer,
+            firstCast: AnyLayoutAnchor,
+            secondCast: AnyLayoutAnchor?,
+            relationship: Relationship,
+            offset: Double,
+            multiplier: Double,
+            priority: LayoutPriority
+        ) {
 
             self.container = container
             self.firstCast = firstCast
@@ -392,63 +424,68 @@ public class LayoutConstraint: Hashable {
 
             let strength = priority.cassowaryStrength
 
-            let constraint: Constraint?
-            if let secondCast = secondCast,
+            // Next section only applies to constraints with two anchors.
+            guard
+                let secondCast = secondCast,
                 let secondVariable = secondCast.getVariable(),
-                let container = container {
-
-                // Create an expression of the form:
-                //
-                // first [ == | <= | >= ] (second - containerLocation) * multiplier + containerLocation + offset
-                //
-                // The container is a reference to the direct parent of the second
-                // anchor's view, or the second anchor's view itself in case it has
-                // no parents, and is used to apply proper multiplication of the
-                // constraints.
-                // For width/height constraints, containerLocation is zero, for
-                // left/right containerLocation is containerView.layout.left, and
-                // for top/bottom containerLocation is containerView.layout.top.
-                //
-                // Without this relative container offset, multiplicative constraints
-                // would multiply the absolute view locations, resulting in views
-                // that potentially break their parent view's bounds.
-                //
-                //
-                // For non multiplicative constraints (where multiplier == 1),
-                // a simpler solution is used:
-                //
-                // first [ == | <= | >= ] second + offset
-                //
-
-                if multiplier == 1 {
-                    constraint =
-                        relationship
-                            .makeConstraint(left: firstVariable,
-                                            right: secondVariable,
-                                            offset: offset)
-                            .setStrength(strength)
-                } else {
-                    let secondExpr = secondCast.makeExpression(variable: secondVariable,
-                                                            relative: container)
-
-                    let adjustedOffset = secondCast.makeRelativeExpression(relative: container) + offset
-
-                    constraint =
-                        relationship
-                            .makeConstraint(left: firstVariable,
-                                            right: secondExpr,
-                                            offset: adjustedOffset,
-                                            multiplier: multiplier)
-                            .setStrength(strength)
-                }
-            } else {
-                constraint =
-                    relationship
-                        .makeConstraint(left: firstVariable, offset: offset)
-                        .setStrength(strength)
+                let container = container
+            else {
+                return relationship
+                    .makeConstraint(left: firstVariable, offset: offset)
+                    .setStrength(strength)
             }
 
-            return constraint
+            // For constraints with multiplier != 1, create an expression of
+            // the form:
+            //
+            // first [ == | <= | >= ] (second - containerLocation) * multiplier + containerLocation + offset
+            //
+            // The container is a reference to the direct parent of the second
+            // anchor's view, or the second anchor's view itself in case it has
+            // no parents, and is used to apply proper multiplication of the
+            // constraints.
+            // For width/height constraints, containerLocation is zero, for
+            // left/right containerLocation is containerView.layout.left, and
+            // for top/bottom containerLocation is containerView.layout.top.
+            //
+            // Without this relative container offset, multiplicative constraints
+            // would multiply the absolute view locations, resulting in views
+            // that potentially break their parent view's bounds.
+            //
+            //
+            // For non multiplicative constraints (where multiplier == 1),
+            // a simpler solution is used:
+            //
+            // first [ == | <= | >= ] second + offset
+            //
+
+            if multiplier == 1 {
+                return relationship
+                    .makeConstraint(
+                        left: firstVariable,
+                        right: secondVariable,
+                        offset: offset
+                    )
+                    .setStrength(strength)
+            } else {
+                let secondExpr = secondCast.makeExpression(
+                    variable: secondVariable,
+                    relative: container
+                )
+
+                let adjustedOffset = secondCast.makeRelativeExpression(
+                    relative: container
+                ) + offset
+
+                return relationship
+                    .makeConstraint(
+                        left: firstVariable,
+                        right: secondExpr,
+                        offset: adjustedOffset,
+                        multiplier: multiplier
+                    )
+                    .setStrength(strength)
+            }
         }
 
         private mutating func _rehash() {

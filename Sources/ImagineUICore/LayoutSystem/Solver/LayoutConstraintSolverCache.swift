@@ -181,9 +181,9 @@ public class LayoutConstraintSolverCache {
 
 fileprivate class _LayoutConstraintSolverCache {
     private var _constraintSet: [LayoutConstraint: ConstraintState] = [:]
-    private var _previousConstraintSet: [LayoutConstraint: ConstraintState] = [:]
-
     private var _viewConstraintList: [LayoutVariables: ViewConstraintList] = [:]
+
+    private var _previousConstraintSet: [LayoutConstraint: ConstraintState] = [:]
     private var _previousViewConstraintList: [LayoutVariables: ViewConstraintList] = [:]
 
     private let solver: Solver
@@ -204,7 +204,12 @@ fileprivate class _LayoutConstraintSolverCache {
         _viewConstraintList.removeAll(keepingCapacity: true)
     }
 
-    internal func register(result: ConstraintCollection, orientations: Set<LayoutConstraintOrientation>, rootSpatialReference: View?) {
+    internal func register(
+        result: ConstraintCollection,
+        orientations: Set<LayoutConstraintOrientation>,
+        rootSpatialReference: View?
+    ) {
+
         for affectedView in result.affectedLayoutVariables {
             let viewConstraintList = constraintList(for: affectedView.container, orientations: orientations)
             affectedView.deriveConstraints(viewConstraintList, rootSpatialReference: rootSpatialReference)
@@ -435,15 +440,14 @@ fileprivate class _LayoutConstraintSolverCache {
         var updatedList: [(LayoutConstraint, old: ConstraintState, new: ConstraintState)] = []
         var removedList: [(LayoutConstraint, ConstraintState)] = []
 
-        _constraintSet
-            .makeDifference(
-                withPrevious: _previousConstraintSet,
-                addedList: &addedList,
-                updatedList: &updatedList,
-                removedList: &removedList
-            ) { (_, old, new) in
-                return old.definition == new.definition && old.constraint.hasSameEffects(as: new.constraint)
-            }
+        _constraintSet.makeDifference(
+            withPrevious: _previousConstraintSet,
+            addedList: &addedList,
+            updatedList: &updatedList,
+            removedList: &removedList
+        ) { (_, old, new) in
+            return old.definition == new.definition && old.constraint.hasSameEffects(as: new.constraint)
+        }
 
         var constDiff: [KeyedDifference<LayoutConstraint, ConstraintState>] = []
 

@@ -1,10 +1,12 @@
 extension Dictionary {
-    func makeDifference(withPrevious previous: Dictionary,
-                        areEqual: (Key, _ old: Value, _ new: Value) -> Bool) -> [KeyedDifference<Key, Value>] {
+    func makeDifference(
+        withPrevious previous: Dictionary,
+        areEqual: (Key, _ old: Value, _ new: Value) -> Bool
+    ) -> [KeyedDifference<Key, Value>] {
 
         var result: [KeyedDifference<Key, Value>] = []
 
-        for (key, value) in previous where self[key] == nil {
+        for (key, value) in previous where !self.keys.contains(key) {
             result.append(.removed(key, value))
         }
 
@@ -21,13 +23,15 @@ extension Dictionary {
         return result
     }
 
-    func makeDifference(withPrevious previous: Dictionary,
-                        addedList: inout [(Key, Value)],
-                        updatedList: inout [(Key, old: Value, new: Value)],
-                        removedList: inout [(Key, Value)],
-                        areEqual: (Key, _ old: Value, _ new: Value) -> Bool) {
-
-        for (key, value) in previous where self[key] == nil {
+    func makeDifference(
+        withPrevious previous: Dictionary,
+        addedList: inout [(Key, Value)],
+        updatedList: inout [(Key, old: Value, new: Value)],
+        removedList: inout [(Key, Value)],
+        areEqual: (Key, _ old: Value, _ new: Value) -> Bool
+    ) {
+        
+        for (key, value) in previous where !self.keys.contains(key) {
             removedList.append((key, value))
         }
 

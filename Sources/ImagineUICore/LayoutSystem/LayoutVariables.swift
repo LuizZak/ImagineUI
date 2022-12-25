@@ -40,15 +40,22 @@ class LayoutVariables {
     private var centerX_definition: Constraint
     private var centerY_definition: Constraint
 
-    @ParameterizedCachedConstraint private var firstBaseline_definition: (Bool) -> Constraint
+    @ParameterizedCachedConstraint
+    private var firstBaseline_definition: (Bool) -> Constraint
 
-    @ParameterizedCachedConstraint private var widthHuggingConstraint: (Double) -> Constraint
-    @ParameterizedCachedConstraint private var heightHuggingConstraint: (Double) -> Constraint
-    @ParameterizedCachedConstraint private var widthCompressionConstraint: (Double) -> Constraint
-    @ParameterizedCachedConstraint private var heightCompressionConstraint: (Double) -> Constraint
+    @ParameterizedCachedConstraint
+    private var widthHuggingConstraint: (Double) -> Constraint
+    @ParameterizedCachedConstraint
+    private var heightHuggingConstraint: (Double) -> Constraint
+    @ParameterizedCachedConstraint
+    private var widthCompressionConstraint: (Double) -> Constraint
+    @ParameterizedCachedConstraint
+    private var heightCompressionConstraint: (Double) -> Constraint
 
-    @ParameterizedCachedConstraint private var widthAsIntrinsicSizeConstraint: (Double) -> Constraint
-    @ParameterizedCachedConstraint private var heightAsIntrinsicSizeConstraint: (Double) -> Constraint
+    @ParameterizedCachedConstraint
+    private var widthAsIntrinsicSizeConstraint: (Double) -> Constraint
+    @ParameterizedCachedConstraint
+    private var heightAsIntrinsicSizeConstraint: (Double) -> Constraint
 
     init(container: LayoutVariablesContainer) {
         let name = LayoutVariables.deriveName(container)
@@ -68,14 +75,14 @@ class LayoutVariables {
         let intrinsicHeight = Variable("\(name)_intrinsicHeight")
         let baselineHeight = Variable("\(name)_baselineHeight")
 
-        widthConstraint = width >= 0
-        heightConstraint = height >= 0
-        right_definition = right == left + width
-        bottom_definition = bottom == top + height
-        centerX_definition = centerX == left + width / 2
-        centerY_definition = centerY == top + height / 2
+        self.widthConstraint = width >= 0
+        self.heightConstraint = height >= 0
+        self.right_definition = right == left + width
+        self.bottom_definition = bottom == top + height
+        self.centerX_definition = centerX == left + width / 2
+        self.centerY_definition = centerY == top + height / 2
 
-        firstBaseline_definition = { hasLabel in
+        self.firstBaseline_definition = { hasLabel in
             if hasLabel {
                 return firstBaseline == top + baselineHeight
             } else {
@@ -83,23 +90,23 @@ class LayoutVariables {
             }
         }
 
-        widthHuggingConstraint = { strength in
+        self.widthHuggingConstraint = { strength in
             (width <= intrinsicWidth).setStrength(strength)
         }
-        heightHuggingConstraint = { strength in
+        self.heightHuggingConstraint = { strength in
             (height <= intrinsicHeight).setStrength(strength)
         }
-        widthCompressionConstraint = { strength in
+        self.widthCompressionConstraint = { strength in
             (width >= intrinsicWidth).setStrength(strength)
         }
-        heightCompressionConstraint = { strength in
+        self.heightCompressionConstraint = { strength in
             (height >= intrinsicHeight).setStrength(strength)
         }
 
-        widthAsIntrinsicSizeConstraint = { strength in
+        self.widthAsIntrinsicSizeConstraint = { strength in
             (width == intrinsicWidth).setStrength(strength)
         }
-        heightAsIntrinsicSizeConstraint = { strength in
+        self.heightAsIntrinsicSizeConstraint = { strength in
             (height == intrinsicHeight).setStrength(strength)
         }
 

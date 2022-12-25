@@ -1,6 +1,8 @@
 public class LayoutConstraintSolver {
     public func solve(viewHierarchy: View, cache: LayoutConstraintSolverCache? = nil) {
-        let locCache = cache ?? LayoutConstraintSolverCache()
+        let locCache =
+            cache ??
+            LayoutConstraintSolverCache()
 
         do {
             let spatialReference = viewHierarchy.superview
