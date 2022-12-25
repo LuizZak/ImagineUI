@@ -1058,7 +1058,7 @@ open class View {
     open func isFullyVisibleOnScreen(area: UIRectangle, spatialReference: SpatialReferenceType) -> Bool {
         let converted = convert(bounds: area, from: spatialReference)
 
-        guard !clipToBounds || bounds.contains(converted) else {
+        guard !clipToBounds || boundsForRedraw().contains(converted) else {
             return false
         }
 
