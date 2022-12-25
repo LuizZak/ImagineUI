@@ -2,6 +2,10 @@ import Foundation
 import Geometry
 import Rendering
 
+/// Base class for views in ImagineUI.
+///
+/// Can be instantiated and used as container as-is or subclassed to provide
+/// custom behaviour, if required.
 open class View {
     /// If `true`, setting `self.location` or `self.bounds` skips calling `setNeedsLayout`
     /// internally.
@@ -65,6 +69,14 @@ open class View {
 
     public internal(set) var needsLayout: Bool = true
 
+    /// A rotation around the relative transform center of this view, in radians.
+    ///
+    /// This affects the display and hit test of this view's entire hierarchy,
+    /// but might affect constraint resolution in unintuitive ways.
+    ///
+    /// Defaults `U0`.
+    ///
+    /// - seealso: `relativeTransformCenter`
     open var rotation: Double = 0 {
         willSet {
             guard rotation != newValue else { return }
@@ -78,6 +90,15 @@ open class View {
         }
     }
 
+    /// A visual scale for the view relative to the transform center of this
+    /// view.
+    ///
+    /// Affects all of this view's rendering and hit test hierarchy, but might
+    /// affect constraint resolution in unintuitive ways.
+    ///
+    /// Defaults `UIVector(x: 1, y: 1)`.
+    ///
+    /// - seealso: `relativeTransformCenter`
     open var scale: UIVector = UIVector(x: 1, y: 1) {
         willSet {
             guard scale != newValue else { return }
@@ -91,6 +112,11 @@ open class View {
         }
     }
 
+    /// Whether this view naturally clips its rendering area to be within the
+    /// bounds of `boundsForRedraw()` automatically.
+    ///
+    /// This also affects invalidation requests and queries to
+    /// `isFullyVisibleOnScreen()`.
     open var clipToBounds: Bool = true {
         didSet {
             guard clipToBounds != oldValue else { return }
@@ -111,6 +137,10 @@ open class View {
     /// Defaults to `UIVector.zero`.
     open var relativeTransformCenter: UIVector = .zero
 
+    /// Gets the full transform matrix for this view's translation, rotation, and
+    /// scale.
+    ///
+    /// This 
     open var transform: UIMatrix {
         let baseMatrix: UIMatrix = .transformation(
             xScale: scale.x,
@@ -133,6 +163,7 @@ open class View {
         return matrix
     }
 
+    /// Gets or sets the location of this view with respect to its superview.
     public var location: UIVector {
         willSet {
             if location != newValue {
@@ -152,6 +183,10 @@ open class View {
         }
     }
 
+    /// Gets or sets the relative bounds of this view as a `UIRectangle`.
+    /// Since the bounds are always relative to this view's coordinate system,
+    /// its top-left location is always at `UIPoint.zero` and changes to that
+    /// coordinate are ignored.
     open var bounds: UIRectangle {
         willSet {
             if bounds != newValue {
@@ -172,6 +207,7 @@ open class View {
         }
     }
 
+    /// Gets or sets the size of this view's bounds.
     open var size: UISize {
         get {
             return bounds.size
@@ -181,6 +217,11 @@ open class View {
         }
     }
 
+    /// Gets or sets this view's area, affecting both `self.location` and
+    /// `self.size`.
+    ///
+    /// Unlike `self.bounds`, this property supports changes to `self.location`
+    /// by specifying different top-left coordinates for the input rectangle.
     open var area: UIRectangle {
         get {
             return UIRectangle(x: location.x, y: location.y, width: bounds.width, height: bounds.height)
@@ -191,6 +232,11 @@ open class View {
         }
     }
 
+    /// Controls whether this view and its subviews are rendered and interactive
+    /// on screen.
+    ///
+    /// Hidden views do not participate in rendering and are not considered for
+    /// mouse input hit tests.
     open var isVisible: Bool = true {
         didSet {
             if isVisible == oldValue { return }
@@ -241,21 +287,47 @@ open class View {
     /// A list of constraints that are affecting this view.
     internal(set) public var constraints: [LayoutConstraint] = []
 
+    /// This view's intrinsic size.
+    ///
+    /// If non-nil, it indicates to layout systems that this view has a natural
+    /// size that it reports is preferred, and content compression/hugging
+    /// constraints are applied relative to it.
+    ///
+    /// If `nil`, content compression/hugging is ignored during constraint layout.
     open var intrinsicSize: UISize? {
         return nil
     }
 
+    /// Gets the logical superview for this view.
     private(set) public weak var superview: View?
+
+    /// Gets the list of logical subviews for this view.
     private(set) public var subviews: [View] = []
 
+    /// Gets the list of layout guides on this view.
+    ///
+    /// Layout guides can interact with other layout guides and views in the
+    /// same hierarchy.
     internal(set) public var layoutGuides: [LayoutGuide] = []
 
+    /// A set of area components for this view's `self.area` that should be turned
+    /// into constraints, in layout constraint systems.
+    ///
+    /// If a value is specified, the constraint system adds a constraint that
+    /// ties that dimension to the view's current value as if it was an explicit
+    /// constraint.
+    ///
+    /// If not empty, might interact unexpectedly with the constraint system, if
+    /// other constraints affect a dimension of this view that is constrained by
+    /// this property.
     public var areaIntoConstraintsMask: Set<BoundsConstraintMask> = [.location, .size] {
         didSet {
             setNeedsLayout()
         }
     }
 
+    /// If `true`, users can interact with this view or any subview with the mouse,
+    /// in case a `ControlView` lies under the mouse within this view's hierarchy.
     public var isInteractiveEnabled: Bool = true
 
     /// Gets the active control system for the view hierarchy.
@@ -264,6 +336,11 @@ open class View {
         return superview?.controlSystem
     }
 
+    /// If `true`, reports that this view, as well as all superviews, have
+    /// `isInteractiveEnabled` true.
+    ///
+    /// Control views that return `false` for this property are ignored in input
+    /// management as if they where regular views.
     public var isRecursivelyInteractiveEnabled: Bool {
         var view: View? = self
         while let v = view {
@@ -284,6 +361,12 @@ open class View {
         setupConstraints()
     }
 
+    /// Recursively renders this view's hierarchy using a specified renderer
+    /// and clip region.
+    ///
+    /// If this view's `clipToBounds` is `true`, the renderer's clip region is
+    /// clipped further with `self.boundsForRedraw()`, but `screenRegion` is
+    /// unaffected.
     public final func renderRecursive(in renderer: Renderer, screenRegion: ClipRegionType) {
         if !isVisible {
             return
@@ -308,15 +391,35 @@ open class View {
         }
     }
 
+    /// Renders this view's contents on a given renderer.
+    ///
+    /// This pertains to rendering of this view's contents, and not any of its
+    /// subviews.
     open func render(in context: Renderer, screenRegion: ClipRegionType) {
 
     }
 
     // MARK: - Layout
+
+    /// Method automatically called by `View.init()` that can be used to create
+    /// view hierarchies before they are constrained by `View.setupConstraints()`.
+    ///
+    /// Used as a convenience for generating new view subclasses; view hierarchies
+    /// can be changed at any point in a view's lifecycle.
+    /// 
+    /// - seealso: `setupConstraints()`
     open func setupHierarchy() {
 
     }
 
+    /// Method automatically called by `View.init()` that can be used to create
+    /// constraints between subviews in this view's hierarchy after they are
+    /// created by `View.setupHierarchy()`.
+    ///
+    /// Used as a convenience for generating new view subclasses; view constraints
+    /// can be changed at any point in a view's lifecycle.
+    /// 
+    /// - seealso: `setupHierarchy()`
     open func setupConstraints() {
 
     }
@@ -414,6 +517,10 @@ open class View {
         return try block()
     }
 
+    /// Marks this view as requiring a layout pass on the next system's layout
+    /// pass loop.
+    ///
+    /// Also invokes `setNeedsLayout()` on superviews recursively.
     open func setNeedsLayout() {
         guard !_isSizingLayout else { return }
         guard !isLayoutSuspended else { return }
@@ -467,6 +574,11 @@ open class View {
 
     // MARK: - Subviews
 
+    /// Adds a given subview as a direct child of this view's hierarchy.
+    ///
+    /// Views in nested hierarchies inherit coordinate systems of parent views.
+    ///
+    /// - precondition: `view` is not this view, or any superview from this view.
     open func addSubview(_ view: View) {
         if isDescendant(of: view) {
             fatalError("Attempted to add a view as a subview of its own hierarchy: \(self).addSubview(\(view)).")
@@ -491,10 +603,17 @@ open class View {
     }
 
     /// Function called before a view is removed as a subview of this view instance.
+    ///
+    /// - note: Do not add `view` to any other view hierarchy within this method.
     open func willRemoveSubview(_ view: View) {
         controlSystem?.viewRemovedFromHierarchy(view)
     }
 
+    /// Removes this view from its superview's hierarchy.
+    ///
+    /// Constraints that where created that cross the superview's boundaries are
+    /// removed, but not constraints that reference this view and/or one of its
+    /// children exclusively.
     open func removeFromSuperview() {
         guard let superview = superview else {
             return
@@ -590,6 +709,10 @@ open class View {
 
     // MARK: - Layout Guides
 
+    /// Adds a given layout guide to this view's hierarchy.
+    ///
+    /// Layout guides can be used as supporting layout areas for constraining
+    /// views without requiring expensive `View` instances as guides themselves.
     open func addLayoutGuide(_ guide: LayoutGuide) {
         guide.removeFromSuperview()
 
@@ -597,6 +720,9 @@ open class View {
         layoutGuides.append(guide)
     }
 
+    /// Called when a layout guide is being removed from this view's hierarchy.
+    ///
+    /// - note: Do not add `guide` to any other view hierarchy within this method.
     open func willRemoveLayoutGuide(_ guide: LayoutGuide) {
 
     }
@@ -647,6 +773,11 @@ open class View {
         return absoluteTransform().transform(boundsForRedraw())
     }
 
+    /// Gets the absolute transformation matrix that encodes the exact transform
+    /// of this view according to all its parent view's transforms combined.
+    ///
+    /// This matrix can then be used to transform from/to this view's local
+    /// coordinate space.
     open func absoluteTransform() -> UIMatrix {
         var transform = self.transform
         if let superview = superview {
@@ -655,6 +786,11 @@ open class View {
         return transform
     }
 
+    /// Transforms a given point from this view's local coordinate space into
+    /// another spatial reference's coordinate space.
+    ///
+    /// If `other` is `nil`, the final point can be interpreted as screen-space,
+    /// if the root view's (0, 0) coordinate is on the top-left of a window.
     open func convert(point: UIVector, to other: SpatialReferenceType?) -> UIVector {
         var point = point
         point *= absoluteTransform()
@@ -664,6 +800,11 @@ open class View {
         return point
     }
 
+    /// Transforms a given point from another spatial reference's coordinate
+    /// space to this view's local coordinate space.
+    ///
+    /// If `other` is `nil`, the initial point can be interpreted as screen-space,
+    /// if the root view's (0, 0) coordinate is on the top-left of a window.
     open func convert(point: UIVector, from other: SpatialReferenceType?) -> UIVector {
         var point = point
         if let other = other {
@@ -674,6 +815,14 @@ open class View {
         return point
     }
 
+    /// Transforms a given rectangle from this view's local coordinate space into
+    /// another spatial reference's coordinate space.
+    ///
+    /// If rotations where applied to the rectangle, the final rectangle is still
+    /// axis-aligned, but stretched to fit the corners of the rotated rectangle.
+    ///
+    /// If `other` is `nil`, the final rectangle can be interpreted as screen-space,
+    /// if the root view's (0, 0) coordinate is on the top-left of a window.
     open func convert(bounds: UIRectangle, to other: SpatialReferenceType?) -> UIRectangle {
         var bounds = bounds
         bounds = absoluteTransform().transform(bounds)
@@ -683,6 +832,14 @@ open class View {
         return bounds
     }
 
+    /// Transforms a given rectangle from another spatial reference's coordinate
+    /// space to this view's local coordinate space.
+    ///
+    /// If rotations where applied to the rectangle, the final rectangle is still
+    /// axis-aligned, but stretched to fit the corners of the rotated rectangle.
+    ///
+    /// If `other` is `nil`, the initial rectangle can be interpreted as screen-space,
+    /// if the root view's (0, 0) coordinate is on the top-left of a window.
     open func convert(bounds: UIRectangle, from other: SpatialReferenceType?) -> UIRectangle {
         var bounds = bounds
         if let other = other {
@@ -692,6 +849,9 @@ open class View {
         return bounds
     }
 
+    /// Convenience for `convert(point: point, from: nil)`.
+    ///
+    /// - seealso: `convert(point:from:)`.
     open func convertFromScreen(_ point: UIVector) -> UIVector {
         return convert(point: point, from: nil)
     }
@@ -713,8 +873,10 @@ open class View {
 
         // Search children first
         for baseView in subviews.reversed() {
-            if let ht = baseView.viewUnder(point: baseView.transform.inverted().transform(point),
-                                           inflatingArea: inflatingArea) {
+            if let ht = baseView.viewUnder(
+                point: baseView.transform.inverted().transform(point),
+                inflatingArea: inflatingArea
+            ) {
                 return ht
             }
         }
@@ -731,7 +893,12 @@ open class View {
     ///
     /// The `inflatingArea` argument can be used to inflate the area of the views
     /// to perform less precise hit tests.
-    open func viewUnder(point: UIVector, inflatingArea: UIVector = .zero, predicate: (View) -> Bool) -> View? {
+    open func viewUnder(
+        point: UIVector,
+        inflatingArea: UIVector = .zero,
+        predicate: (View) -> Bool
+    ) -> View? {
+        
         guard contains(point: point, inflatingArea: inflatingArea) else {
             return nil
         }
@@ -773,7 +940,12 @@ open class View {
         return views
     }
 
-    private func internalViewsUnder(point: UIVector, _ inflatingArea: UIVector, _ target: inout [View]) {
+    private func internalViewsUnder(
+        point: UIVector,
+        _ inflatingArea: UIVector,
+        _ target: inout [View]
+    ) {
+
         guard contains(point: point, inflatingArea: inflatingArea) else {
             return
         }
@@ -1012,6 +1184,7 @@ extension View: Equatable {
 }
 
 extension View: Hashable {
+    /// Hashes this view as an identity hash, i.e. based on its pointer value.
     public func hash(into hasher: inout Hasher) {
         hasher.combine(ObjectIdentifier(self))
     }
