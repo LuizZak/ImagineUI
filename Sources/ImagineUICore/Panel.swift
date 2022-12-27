@@ -10,9 +10,13 @@ public class Panel: ControlView {
     }
 
     /// Layout guide representing the area of the panel that subviews can be laid
-    /// out safely without colliding with the panel's label
+    /// out safely without colliding with the panel's label.
     public let containerLayoutGuide = LayoutGuide()
 
+    /// A title label that is displayed on the top side of the panel.
+    ///
+    /// Setting this to an empty string hides the label completely and the panel
+    /// takes a solid outline form.
     public var title: String {
         get {
             return label.text

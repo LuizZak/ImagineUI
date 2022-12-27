@@ -2,6 +2,8 @@ import Foundation
 import Geometry
 import Rendering
 
+/// A view that is augmented with the ability to be interacted as a UI element
+/// by an user with mouse and keyboard input.
 open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventHandler {
     /// Whether to cache all controls' contents as a bitmap.
     ///
@@ -46,22 +48,41 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
         }
     }
 
+    /// Returns whether this control is the first responder on the responder
+    /// chain associated with the current control system.
+    ///
+    /// If no control system can be found for this view, this property should
+    /// always returns `false`.
     open var isFirstResponder: Bool {
         return controlSystem?.isFirstResponder(self) ?? false
     }
 
+    /// Returns whether this control view can become first responder, if requested.
+    ///
+    /// Assigning first responder status to controls make it so that they are
+    /// the first event handler for keyboard inputs.
     open var canBecomeFirstResponder: Bool {
         return false
     }
 
+    /// Returns whether this control view can resign its first responder status.
+    ///
+    /// Resigning first responder status resets the first responder chain back to
+    /// the default state, and this control no longer receives keyboard events
+    /// first.
     open var canResignFirstResponder: Bool {
         return true
     }
 
+    /// Returns the next event handler on this control's view hierarchy.
+    /// By default, returns the first superview of `ControlView` type that is
+    /// found, recursively.
     open var next: EventHandler? {
         return ControlView.closestParentViewOfType(self, type: ControlView.self)
     }
 
+    /// Overrides default bounds handling to respond to resize events by
+    /// issuing a resize event and clearing bitmap caches, if available.
     open override var bounds: UIRectangle {
         didSet {
             if bounds.size != oldValue.size {
@@ -73,21 +94,47 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
 
     // MARK: - View states
 
+    /// Gets or sets whether this control is in a "selected" state.
     open var isSelected: Bool {
         get { _stateManager.isSelected }
         set { _stateManager.isSelected = newValue }
     }
 
+    /// Gets or sets whether this control is enabled.
+    ///
+    /// The semantics of what happens when a control is enabled or disabled is
+    /// implemented in a per-control basis, but control systems may use this
+    /// property to decide whether to ignore this control when handling user
+    /// interface events.
     open var isEnabled: Bool {
         get { _stateManager.isEnabled }
         set { _stateManager.isEnabled = newValue }
     }
 
+    /// Gets or sets whether this control is in a highlighted state.
+    ///
+    /// The semantics of a control that is highlighted is implemented on a
+    /// per-control basis. For example, buttons and sliders might respond to mouse
+    /// over events by enabling highlighting to change their display state to
+    /// indicate they are responsive to mouse events.
     open var isHighlighted: Bool {
         get { _stateManager.isHighlighted }
         set { _stateManager.isHighlighted = newValue }
     }
 
+    /// Gets the internally computed control view state.
+    ///
+    /// Control view states are calculated automatically based on
+    /// `self.isHighlighted`, `self.isEnabled`, `self.isHighlighted`, and
+    /// `self.isFirstResponder`, and the final state is computed by a priority
+    /// checklist of states, setting the state based on the first condition on
+    /// the following list that matches, and ignoring subsequent states:
+    ///
+    /// 1. If `isEnabled == false`, returns `.disabled`;
+    /// 2. If `isFirstResponder == true`, returns `.focused`;
+    /// 3. If `isSelected == true`, returns `.selected`;
+    /// 4. If `isHighlighted == true`, returns `.highlighted`;
+    /// 5. Otherwise, returns `.normal`.
     open var controlState: ControlViewState {
         return _stateManager.state
     }
@@ -152,6 +199,7 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
 
     /// Event raised whenever a client requests that this view redraw itself on
     /// screen or to a buffer.
+    ///
     /// This event is raised after the view's contents have been painted.
     @EventWithSender<ControlView, PaintEventArgs>
     public var painted
@@ -167,37 +215,57 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
 
     // MARK: Mouse events
 
-    /// Event raised whenever the user clicks this control view while enabled
+    /// Event raised whenever the user clicks this control view while enabled.
+    ///
+    /// Mouse location in event args is relative to the control view's bounds.
     @EventWithSender<ControlView, MouseEventArgs>
     public var mouseClicked
 
     /// Event raised whenever the user holds down on this control view with any
-    /// mouse button
+    /// mouse button.
+    ///
+    /// Mouse location in event args is relative to the control view's bounds.
     @EventWithSender<ControlView, MouseEventArgs>
     public var mouseDown
 
     /// Event raised whenever the user releases the mouse button they had held
-    /// down previously on top of this control view
+    /// down previously on top of this control view.
+    ///
+    /// Mouse location in event args is relative to the control view's bounds.
     @EventWithSender<ControlView, MouseEventArgs>
     public var mouseUp
 
     /// Event raised whenever the user moves the mouse on top of this control view's
-    /// area
+    /// area.
+    ///
+    /// Mouse location in event args is relative to the control view's bounds.
     @EventWithSender<ControlView, MouseEventArgs>
     public var mouseMoved
 
     /// Event raised when the user scrolls the mouse wheel while on top of this
-    /// control
+    /// control.
+    ///
+    /// Mouse location in event args is relative to the control view's bounds.
     @EventWithSender<ControlView, MouseEventArgs>
     public var mouseWheelScrolled
 
     /// Event raised whenever the user enters this control view's area with the
-    /// mouse cursor
+    /// mouse cursor.
+    ///
+    /// Event may be delayed by a control system if the mouse cursor is entered
+    /// after a mouse button was held down while on top of a different control,
+    /// being raised instantly as soon as the mouse button is released while on
+    /// top of this control.
     @EventWithSender<ControlView, Void>
     public var mouseEntered
 
     /// Event raised whenever the user leaves this control view's area with the
-    /// mouse cursor
+    /// mouse cursor.
+    ///
+    /// Event may be delayed by a control system if the mouse cursor exits after
+    /// pressing a mouse button on top of this control, being raised instantly
+    /// as soon as the mouse button is released while not on top of this control
+    /// anymore.
     @EventWithSender<ControlView, Void>
     public var mouseExited
 
@@ -401,6 +469,13 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
 
     // MARK: - Event Handling / First Responder
 
+    /// Queries whether this control view can handle a given event request, passing
+    /// the event request to `self.next` if it wishes not to handle the event.
+    ///
+    /// This method is called initially by a control system while examining a
+    /// control to respond to an event, and is passed along to `self.next` until
+    /// either a control accepts the event via `eventRequest.accept(handler:)`,
+    /// or the end of the responder chain is reached (`self.next == nil`).
     open func handleOrPass(_ eventRequest: EventRequest) {
         if !isVisible || !isRecursivelyInteractiveEnabled {
             next?.handleOrPass(eventRequest)
@@ -414,6 +489,12 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
         }
     }
 
+    /// Returns whether this control can handle a specified event request.
+    ///
+    /// By default, controls only respond to mouse events, except for mouse wheel,
+    /// and ignore any other event type.
+    ///
+    /// Can be overridden by a subclass to customize event handling behaviour.
     open func canHandle(_ eventRequest: EventRequest) -> Bool {
         // Consume all mouse event requests (except mouse wheel) by default
         if let mouseEvent = eventRequest as? MouseEventRequest {
@@ -423,6 +504,13 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
         return false
     }
 
+    /// Requests that this control view become first responder on the responder
+    /// chain, returning whether the control is successfully a first responder
+    /// after the method returns.
+    ///
+    /// The control checks `self.canBecomeFirstResponder` and later requests
+    /// that it be set as a first responder by an associated control system,
+    /// returning `false` if it fails either query.
     @discardableResult
     open func becomeFirstResponder() -> Bool {
         if isFirstResponder {
@@ -440,6 +528,8 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
         return false
     }
 
+    /// Requests that this control system resign its first responder status by
+    /// requesting resignation from an associated control system.
     open func resignFirstResponder() {
         if controlSystem?.removeAsFirstResponder(self) == true {
             _stateManager.isFirstResponder = false
@@ -448,7 +538,7 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
 
     // MARK: - Mouse Event Handling
 
-    /// Raises the `mouseDown` event
+    /// Raises the `mouseDown` event.
     open func onMouseDown(_ event: MouseEventArgs) {
         _mouseDown(sender: self, event)
 
@@ -458,7 +548,7 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
         }
     }
 
-    /// Raises the `mouseMoved` event
+    /// Raises the `mouseMoved` event.
     open func onMouseMove(_ event: MouseEventArgs) {
         _mouseMoved(sender: self, event)
 
@@ -467,7 +557,7 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
         }
     }
 
-    /// Raises the `mouseUp` event
+    /// Raises the `mouseUp` event.
     open func onMouseUp(_ event: MouseEventArgs) {
         _mouseUp(sender: self, event)
 
@@ -477,7 +567,7 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
         }
     }
 
-    /// Raises the `mouseEntered` event
+    /// Raises the `mouseEntered` event.
     open func onMouseEnter() {
         _mouseEntered(sender: self)
 
@@ -486,7 +576,7 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
         }
     }
 
-    /// Raises the `mouseExited` event
+    /// Raises the `mouseExited` event.
     open func onMouseLeave() {
         _mouseExited(sender: self)
 
@@ -495,24 +585,24 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
         }
     }
 
-    /// Raises the `mouseClicked` event
+    /// Raises the `mouseClicked` event.
     open func onMouseClick(_ event: MouseEventArgs) {
         _mouseClicked(sender: self, event)
     }
 
-    /// Raises the `mouseWheelScrolled` event
+    /// Raises the `mouseWheelScrolled` event.
     open func onMouseWheel(_ event: MouseEventArgs) {
         _mouseWheelScrolled(sender: self, event)
     }
 
     // MARK: - Keyboard Event Handling
 
-    /// Raises the `keyPressed` event
+    /// Raises the `keyPressed` event.
     open func onKeyPress(_ event: KeyPressEventArgs) {
         _keyPressed(sender: self, event)
     }
 
-    /// Raises the `keyDown` event
+    /// Raises the `keyDown` event.
     open func onKeyDown(_ event: KeyEventArgs) {
         _keyDown(sender: self, event)
     }
@@ -522,7 +612,7 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
         _keyUp(sender: self, event)
     }
 
-    /// Raises the `previewKeyDown` event
+    /// Raises the `previewKeyDown` event.
     open func onPreviewKeyDown(_ event: PreviewKeyDownEventArgs) {
         _previewKeyDown(sender: self, event)
     }
@@ -534,9 +624,9 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
     /// Returns nil, if no control was found.
     ///
     /// - Parameter point: Point to hit-test against, in local coordinates of
-    /// this `ControlView`
+    /// this `ControlView`.
     /// - Parameter enabledOnly: Whether to only consider views that have
-    /// interactivity enabled. See `interactionEnabled`
+    /// interactivity enabled. See `interactionEnabled`.
     public func hitTestControl(_ point: UIVector, enabledOnly: Bool = true) -> ControlView? {
         let controlView = viewUnder(point: point) { view -> Bool in
             guard let control = view as? ControlView else {
@@ -562,11 +652,11 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
     /// Returns nil, if no control was found.
     ///
     /// - Parameter point: Point to hit-test against, in local coordinates of
-    /// this `ControlView`
+    /// this `ControlView`.
     /// - Parameter eventRequest: The event request associated with this hit test.
     /// Usually associated with a mouse event request.
     /// - Parameter enabledOnly: Whether to only consider views that have
-    /// interactivity enabled. See `interactionEnabled`
+    /// interactivity enabled. See `interactionEnabled`.
     public func hitTestControl(
         _ point: UIVector,
         forEventRequest eventRequest: EventRequest,
@@ -672,9 +762,10 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
     /// A value store that can store different values depending on the state of
     /// the control.
     ///
-    /// When requesting a value for a state that is not specified, the `ControlViewState.Normal`'s
-    /// version of the value is returned. If that state is not present, the
-    /// default type for T is finally returned instead.
+    /// When requesting a value for a state that is not specified, the
+    /// `ControlViewState.normal`'s version of the value is returned. If that
+    /// state is not present, the default type for `T` is finally returned,
+    /// instead.
     public class StatedValueStore<T> {
         private var _statesMap: [ControlViewState: T] = [:]
 
@@ -700,10 +791,24 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
     }
 }
 
+/// Specifies the state of a control view.
 public enum ControlViewState {
+    /// Default control view state.
     case normal
+
+    /// Specifies control view is highlighted, e.g. by being hovered over by the
+    /// mouse cursor.
     case highlighted
+
+    /// Specifies control view is selected, e.g. by pressing down on the mouse
+    /// within the control's bounds.
     case selected
+
+    /// Specifies control view is disabled, and should not respond to normal
+    /// UI interaction events.
     case disabled
+    
+    /// Specifies control view is focused and receives keyboard events, i.e. it
+    /// is the first responder in the responder chain.
     case focused
 }
