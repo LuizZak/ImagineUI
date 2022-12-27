@@ -33,7 +33,7 @@ public class DefaultControlSystem: BaseControlSystem {
 
     // MARK: - Mouse Events
 
-    public override func onMouseLeave(_ event: MouseEventArgs) {
+    public override func onMouseLeave() {
         if _mouseHoverTarget != nil {
             _mouseHoverTarget?.onMouseLeave()
             _mouseHoverTarget = nil

@@ -17,7 +17,7 @@ open class BaseControlSystem: ControlSystemType {
 
     // MARK: - Mouse Events
 
-    open func onMouseLeave(_ event: MouseEventArgs) {
+    open func onMouseLeave() {
         
     }
 

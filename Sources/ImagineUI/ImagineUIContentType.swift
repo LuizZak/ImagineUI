@@ -39,6 +39,9 @@ public protocol ImagineUIContentType: AnyObject {
     /// where re-rendering is not required.
     func render(renderer: Renderer, renderScale: UIVector, clipRegion: ClipRegionType)
 
+    /// Called to notify that the mouse left the active area this content is on.
+    func mouseLeave()
+
     /// Called to notify of mouse down events.
     ///
     /// Mouse location should be specified relative to this content's bounds

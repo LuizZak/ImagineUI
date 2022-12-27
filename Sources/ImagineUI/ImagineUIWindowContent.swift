@@ -169,6 +169,10 @@ open class ImagineUIWindowContent: ImagineUIContentType, BaseControlSystemDelega
         }
     }
 
+    open func mouseLeave() {
+        controlSystem.onMouseLeave()
+    }
+
     open func mouseDown(event: MouseEventArgs) {
         controlSystem.onMouseDown(event)
     }
