@@ -126,6 +126,8 @@ open class ImagineUIWindowContent: ImagineUIContentType, BaseControlSystemDelega
         for case let window as Window in _rootViews where window.windowState == .maximized {
             window.setNeedsLayout()
         }
+
+        invalidateScreen()
     }
 
     open func invalidateScreen() {

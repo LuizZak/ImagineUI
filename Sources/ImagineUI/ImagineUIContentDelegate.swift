@@ -23,4 +23,11 @@ public protocol ImagineUIContentDelegate: AnyObject {
     /// Called to notify that the preferred render scale of an `ImagineUIContentType`
     /// has changed.
     func preferredRenderScaleChanged(_ content: ImagineUIContentType, renderScale: UIVector)
+
+    /// Called to request the relative DPI scaling factor for the window this
+    /// content is on.
+    ///
+    /// Scales differ from 1.0 when the DPI of the display associated with a
+    /// window changes.
+    func windowDpiScalingFactor(_ content: ImagineUIContentType) -> Double
 }
