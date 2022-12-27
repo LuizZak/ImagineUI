@@ -328,6 +328,7 @@ public extension UIRectangle {
         Self(location: center - size.asUIPoint / 2, size: size)
     }
 
+    /// Convenience for `self.movingCenter(to: UIPoint(x: x, y: y))`.
     @_transparent
     func movingCenter(toX x: Scalar, y: Scalar) -> Self {
         movingCenter(to: .init(x: x, y: y))
@@ -335,6 +336,8 @@ public extension UIRectangle {
 
     /// Returns a new rectangle with the same size as the current instance,
     /// where the center X of the boundaries lay on `center`.
+    ///
+    /// The final rectangle is only translated, and not resized.
     @_transparent
     func movingCenterX(to centerX: Scalar) -> Self {
         movingCenter(to: .init(x: centerX, y: center.y))
@@ -342,6 +345,8 @@ public extension UIRectangle {
 
     /// Returns a new rectangle with the same size as the current instance,
     /// where the center Y of the boundaries lay on `center`.
+    ///
+    /// The final rectangle is only translated, and not resized.
     @_transparent
     func movingCenterY(to centerY: Scalar) -> Self {
         movingCenter(to: .init(x: center.x, y: centerY))
@@ -349,6 +354,8 @@ public extension UIRectangle {
 
     /// Returns a new Rectangle with the same left, right, and height as the current
     /// instance, where the `top` lays on `value`.
+    ///
+    /// The final rectangle is only translated, and not resized.
     @_transparent
     func movingTop(to value: Scalar) -> Self {
         Self(x: left, y: value, width: width, height: height)
@@ -356,12 +363,16 @@ public extension UIRectangle {
 
     /// Returns a new Rectangle with the same top, bottom, and width as the current
     /// instance, where the `left` lays on `value`.
+    ///
+    /// The final rectangle is only translated, and not resized.
     @_transparent
     func movingLeft(to value: Scalar) -> Self {
         Self(x: value, y: top, width: width, height: height)
     }
     /// Returns a new Rectangle with the same top, bottom, and width as the current
     /// instance, where the `right` lays on `value`.
+    ///
+    /// The final rectangle is only translated, and not resized.
     @inlinable
     func movingRight(to value: Scalar) -> Self {
         Self(left: value - width, top: top, right: value, bottom: bottom)
@@ -369,6 +380,8 @@ public extension UIRectangle {
 
     /// Returns a new Rectangle with the same left, right, and height as the current
     /// instance, where the `bottom` lays on `value`.
+    ///
+    /// The final rectangle is only translated, and not resized.
     @inlinable
     func movingBottom(to value: Scalar) -> Self {
         Self(left: left, top: value - height, right: right, bottom: value)
@@ -376,6 +389,10 @@ public extension UIRectangle {
 
     /// Returns a new Rectangle with the same top, bottom, and right as the current
     /// instance, where the `left` lays on `value`.
+    ///
+    /// Can be used to move the left edge of the rectangle while keeping the top,
+    /// right, and bottom fixed in their current position by changing the width
+    /// of the rectangle.
     @inlinable
     func stretchingLeft(to value: Scalar) -> Self {
         Self(left: value, top: top, right: right, bottom: bottom)
@@ -383,6 +400,10 @@ public extension UIRectangle {
 
     /// Returns a new Rectangle with the same left, right, and bottom as the current
     /// instance, where the `top` lays on `value`.
+    ///
+    /// Can be used to move the top edge of the rectangle while keeping the left,
+    /// right, and bottom fixed in their current position by changing the height
+    /// of the rectangle.
     @inlinable
     func stretchingTop(to value: Scalar) -> Self {
         Self(left: left, top: value, right: right, bottom: bottom)
@@ -390,6 +411,10 @@ public extension UIRectangle {
 
     /// Returns a new Rectangle with the same top, bottom, and left as the current
     /// instance, where the `right` lays on `value`.
+    ///
+    /// Can be used to move the right edge of the rectangle while keeping the top,
+    /// left, and bottom fixed in their current position by changing the width
+    /// of the rectangle.
     @inlinable
     func stretchingRight(to value: Scalar) -> Self {
         Self(left: left, top: top, right: value, bottom: bottom)
@@ -397,6 +422,10 @@ public extension UIRectangle {
 
     /// Returns a new Rectangle with the same left, right, and top as the current
     /// instance, where the `bottom` lays on `value`.
+    ///
+    /// Can be used to move the bottom edge of the rectangle while keeping the
+    /// top, left, and right fixed in their current position by changing the
+    /// height of the rectangle.
     @inlinable
     func stretchingBottom(to value: Scalar) -> Self {
         Self(left: left, top: top, right: right, bottom: value)

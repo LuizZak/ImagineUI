@@ -147,6 +147,11 @@ public class UIRegion {
     }
 
     private func _addOp(_ rectangle: UIRectangle, op: Operation) {
+        enum State {
+            case outsideShape
+            case inShape(start: VerticalEdge)
+        }
+
         var horizontals: [HorizontalEdge] = HorizontalEdge.sortedEdges(from: _rectangles)
         var verticals: [VerticalEdge] = VerticalEdge.sortedEdges(from: _rectangles)
 
@@ -279,11 +284,6 @@ public class UIRegion {
 
                 depth += direction.value
             }
-        }
-
-        enum State {
-            case outsideShape
-            case inShape(start: VerticalEdge)
         }
 
         newRectangles.append(contentsOf: previousLine)
