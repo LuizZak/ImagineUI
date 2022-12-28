@@ -14,6 +14,30 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
     /// Can be overridden on a per-instance basis with `ControlView.cacheAsBitmap`.
     public static var globallyCacheAsBitmap: Bool = true
 
+    /// A shared value that is inspected by all `ControlView` instances to control
+    /// how big a cached bitmap can be, in case bitmap caching is enabled via
+    /// `ControlView.cacheAsBitmap` or `ControlView.globallyCacheAsBitmap`.
+    ///
+    /// When a control's bounds exceed this value, the cache is erased and further
+    /// render operations redraw the whole control until its bounds shrink a size
+    /// smaller than this value.
+    ///
+    /// May not take effect until the next time any control view attempts to
+    /// resize its internal bitmap cache.
+    ///
+    /// Defaults to `UIIntSize(width: 4096, height: 4096)`.
+    ///
+    /// Values set to be negative reset the value back to `UIIntSize.zero` and
+    /// issues a runtime warning via ImagineUILogger.
+    public static var maximumCachedBitmapSize = UIIntSize(width: 4096, height: 4096) {
+        didSet {
+            if maximumCachedBitmapSize.width < 0 || maximumCachedBitmapSize.height < 0 {
+                ImagineUILogger.warning("Attempted to set \(ControlView.self).maximumCachedBitmapSize to invalid value \(maximumCachedBitmapSize); it was reset back to UIIntSize.zero")
+                maximumCachedBitmapSize = .zero
+            }
+        }
+    }
+
     private let _stateManager = StateManager()
     private var _isMouseDown: Bool = false
     private var _bitmapCache = ViewBitmapCache(isCachingEnabled: true)
@@ -450,6 +474,7 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
     }
 
     private func _updateCacheBounds() {
+        _bitmapCache.maximumCachedBitmapSize = ControlView.maximumCachedBitmapSize
         _bitmapCache.updateBitmapBounds(boundsForRedraw())
     }
 

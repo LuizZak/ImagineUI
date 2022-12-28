@@ -14,6 +14,39 @@ public class ViewBitmapCache {
         return Int((rectangle.height * scale.y).rounded(.up))
     }
 
+    /// - note: If `self.bitmap == nil`, this property always returns `true`.
+    var isCacheWithinSizeLimit: Bool {
+        guard let bitmap else { return true }
+
+        return
+            bitmap.size.width < maximumCachedBitmapSize.width ||
+            bitmap.size.height > maximumCachedBitmapSize.height
+    }
+
+    /// Controls the maximum size the cached bitmap can have before it can no
+    /// longer be cached, resulting in further `cacheOrRender` operations always
+    /// live rendering the content, as if caching was disabled.
+    ///
+    /// Caching behaviour resumes once the cached bitmap size shrinks to less
+    /// than this value.
+    ///
+    /// When setting, if the currently cached bitmap exceeds these dimensions,
+    /// the cache is invalidated.
+    public var maximumCachedBitmapSize = UIIntSize(width: 4096, height: 4096) {
+        didSet {
+            if maximumCachedBitmapSize.width < 0 || maximumCachedBitmapSize.height < 0 {
+                maximumCachedBitmapSize = .zero
+            }
+
+            if !isCacheWithinSizeLimit {
+                invalidateCache()
+            }
+        }
+    }
+
+    /// Controls whether bitmap caching is currently enabled. Setting this value
+    /// to `false` invalidates the current cached image and releases its memory
+    /// contents.
     public var isCachingEnabled: Bool {
         didSet {
             if !isCachingEnabled {
@@ -21,6 +54,12 @@ public class ViewBitmapCache {
             }
         }
     }
+
+    /// The scale of the internal bitmap used for caching. Values different than
+    /// 1 produce bitmap caches that are that fraction of the size of the cached
+    /// contents.
+    ///
+    /// This invalidates the cache and requires a redraw to refresh.
     public var scale: UIVector = UIVector(repeating: 1) {
         didSet {
             invalidateCache()
@@ -31,19 +70,31 @@ public class ViewBitmapCache {
         self.isCachingEnabled = isCachingEnabled
     }
 
+    /// Requests that the size of the cached bitmap bounds be updated to a
+    /// specified value.
+    ///
+    /// This invalidates the cache and requires a redraw to refresh.
     public func updateBitmapBounds(_ bounds: UIRectangle) {
-        if rectangle != bounds {
-            rectangle = bounds
-            invalidateCache()
+        guard rectangle != bounds else {
+            return
         }
+
+        rectangle = bounds
+        invalidateCache()
     }
 
+    /// Invalidates the cache by releasing the memory associated with its
+    /// current cached image.
     public func invalidateCache() {
         bitmap = nil
     }
 
+    /// Performs a deferred rendering operation that either redraws the cache
+    /// bitmap if it's been invalidated through `closure` and then draws it on
+    /// `renderer`, or if a cached bitmap is already present, draws the cached
+    /// bitmap to `renderer` and skips invoking `closure`. 
     public func cachingOrRendering(_ renderer: Renderer, _ closure: (Renderer) -> Void) {
-        if !isCachingEnabled || bitmapWidth <= 0 || bitmapHeight <= 0 {
+        if !isCachingEnabled || !isCacheWithinSizeLimit || bitmapWidth <= 0 || bitmapHeight <= 0 {
             closure(renderer)
             return
         }
