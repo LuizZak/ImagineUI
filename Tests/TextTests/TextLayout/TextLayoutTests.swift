@@ -114,7 +114,7 @@ class TextLayoutTests: XCTestCase {
         XCTAssertEqual(hitTest.textPosition, 10)
     }
     
-    func testHitTestPoint_manyLineBreaks_performance() {
+    func testPerformance_hitTestPoint_manyLineBreaks() {
         let sut = makeSut(text: loremIpsumLineBreaks)
         
         measure {
@@ -124,7 +124,7 @@ class TextLayoutTests: XCTestCase {
         }
     }
     
-    func testHitTestPoint_longLines_performance() {
+    func testPerformance_hitTestPoint_longLines() {
         let sut = makeSut(text: loremIpsumNoLineBreaks)
         
         measure {
@@ -184,7 +184,7 @@ class TextLayoutTests: XCTestCase {
         ])
     }
     
-    func testBoundsForCharacters_manyLineBreaks_performance() {
+    func testPerformance_boundsForCharacters_manyLineBreaks() {
         let sut = makeSut(text: loremIpsumLineBreaks)
         
         measure {
@@ -194,7 +194,7 @@ class TextLayoutTests: XCTestCase {
         }
     }
     
-    func testBoundsForCharacters_longLines_performance() {
+    func testPerformance_boundsForCharacters_longLines() {
         let sut = makeSut(text: loremIpsumNoLineBreaks)
         
         measure {
