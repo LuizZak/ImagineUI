@@ -1,346 +1,3776 @@
 {
   "warnings": [
     {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Blend2DFontManager.swift",
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Button.swift",
       "line": 5,
-      "symbol": "Blend2DFontManager",
+      "symbol": "Button",
       "symbol_kind": "source.lang.swift.decl.class",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Blend2DFontManager.swift",
-      "line": 6,
-      "symbol": "Blend2DFontManager.init()",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Blend2DImage.swift",
-      "line": 9,
-      "symbol": "Blend2DImage.size",
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Button.swift",
+      "line": 8,
+      "symbol": "Button.label",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Blend2DImage.swift",
-      "line": 13,
-      "symbol": "Blend2DImage.init(image:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Blend2DRenderContext.swift",
-      "line": 4,
-      "symbol": "Blend2DRendererContext",
-      "symbol_kind": "source.lang.swift.decl.class",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Blend2DRenderContext.swift",
-      "line": 9,
-      "symbol": "Blend2DRendererContext.init()",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Blend2DRenderer.swift",
-      "line": 5,
-      "symbol": "Blend2DRenderer",
-      "symbol_kind": "source.lang.swift.decl.class",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Blend2DRenderer.swift",
-      "line": 12,
-      "symbol": "Blend2DRenderer.init(context:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Blend2DRenderer.swift",
-      "line": 18,
-      "symbol": "Blend2DRenderer.init(image:options:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Color+Blend2D.swift",
-      "line": 5,
-      "symbol": "Color.asBLRgba32",
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Button.swift",
+      "line": 10,
+      "symbol": "Button.title",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Color+Blend2D.swift",
-      "line": 11,
-      "symbol": "BLRgba32.asColor",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Geometry+Blend2D.swift",
-      "line": 5,
-      "symbol": "UILine.asBLLine",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Geometry+Blend2D.swift",
-      "line": 11,
-      "symbol": "BLLine.asLine",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Geometry+Blend2D.swift",
-      "line": 17,
-      "symbol": "BLPoint.asVector2",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Geometry+Blend2D.swift",
-      "line": 23,
-      "symbol": "UIVector.asBLPoint",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Geometry+Blend2D.swift",
-      "line": 29,
-      "symbol": "BLPointI.asIntPoint",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Geometry+Blend2D.swift",
-      "line": 35,
-      "symbol": "UIIntPoint.asBLPointI",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Geometry+Blend2D.swift",
-      "line": 41,
-      "symbol": "UIMatrix.asBLMatrix2D",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Geometry+Blend2D.swift",
-      "line": 47,
-      "symbol": "UIRectangle.asBLRect",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Geometry+Blend2D.swift",
-      "line": 53,
-      "symbol": "BLRect.asRectangle",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Geometry+Blend2D.swift",
-      "line": 59,
-      "symbol": "BLBox.asRectangle",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Geometry+Blend2D.swift",
-      "line": 65,
-      "symbol": "BLRectI.asRectangle",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Geometry+Blend2D.swift",
-      "line": 71,
-      "symbol": "BLBoxI.asRectangle",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Geometry+Blend2D.swift",
-      "line": 77,
-      "symbol": "BLRoundRect.asRoundRectangle",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Geometry+Blend2D.swift",
-      "line": 83,
-      "symbol": "UIRoundRectangle.asBLRoundRect",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Geometry+Blend2D.swift",
-      "line": 89,
-      "symbol": "BLCircle.asCircle",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Geometry+Blend2D.swift",
-      "line": 95,
-      "symbol": "UICircle.asBLCircle",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Geometry+Blend2D.swift",
-      "line": 101,
-      "symbol": "BLEllipse.asEllipse",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Geometry+Blend2D.swift",
-      "line": 107,
-      "symbol": "UIEllipse.asBLEllipse",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Geometry+Blend2D.swift",
-      "line": 113,
-      "symbol": "UITriangle.asBLTriangle",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Geometry+Blend2D.swift",
-      "line": 119,
-      "symbol": "UIArc.asBLArc",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Geometry+Blend2D.swift",
-      "line": 130,
-      "symbol": "UIEdgeInsets.inset(rectangle:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Text/Blend2DFont.swift",
-      "line": 4,
-      "symbol": "Blend2DFont",
-      "symbol_kind": "source.lang.swift.decl.class",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Text/Blend2DFont.swift",
-      "line": 5,
-      "symbol": "Blend2DFont.font",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Text/Blend2DFont.swift",
-      "line": 12,
-      "symbol": "Blend2DFont.metrics",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Text/Blend2DFont.swift",
-      "line": 31,
-      "symbol": "Blend2DFont.matrix",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Text/Blend2DFont.swift",
-      "line": 41,
-      "symbol": "Blend2DFont.init(font:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Text/Blend2DFont.swift",
-      "line": 72,
-      "symbol": "Blend2DFont.isEqual(to:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Text/Blend2DFontFace.swift",
-      "line": 4,
-      "symbol": "Blend2DFontFace",
-      "symbol_kind": "source.lang.swift.decl.class",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Text/Blend2DFontFace.swift",
-      "line": 7,
-      "symbol": "Blend2DFontFace.init(fontFace:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Text/Glyph/Blend2DGlyphBuffer.swift",
-      "line": 4,
-      "symbol": "Blend2DGlyphBuffer",
-      "symbol_kind": "source.lang.swift.decl.struct",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Text/Glyph/Blend2DGlyphBuffer.swift",
-      "line": 7,
-      "symbol": "Blend2DGlyphBuffer.makeIterator()",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Text/Glyph/Blend2DGlyphBufferIterator.swift",
-      "line": 4,
-      "symbol": "Blend2DGlyphBufferIterator",
-      "symbol_kind": "source.lang.swift.decl.struct",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Text/Glyph/Blend2DGlyphBufferIterator.swift",
-      "line": 7,
-      "symbol": "Blend2DGlyphBufferIterator.index",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Text/Glyph/Blend2DGlyphBufferIterator.swift",
-      "line": 11,
-      "symbol": "Blend2DGlyphBufferIterator.atEnd",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Text/Glyph/Blend2DGlyphBufferIterator.swift",
-      "line": 15,
-      "symbol": "Blend2DGlyphBufferIterator.hasPlacement",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Text/Glyph/Blend2DGlyphBufferIterator.swift",
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Button.swift",
       "line": 19,
-      "symbol": "Blend2DGlyphBufferIterator.glyphId",
+      "symbol": "Button.contentInset",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Text/Glyph/Blend2DGlyphBufferIterator.swift",
-      "line": 23,
-      "symbol": "Blend2DGlyphBufferIterator.advanceOffset",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Text/Glyph/Blend2DGlyphBufferIterator.swift",
-      "line": 33,
-      "symbol": "Blend2DGlyphBufferIterator.advance()",
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Button.swift",
+      "line": 34,
+      "symbol": "Button.init(title:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Checkbox.swift",
+      "line": 4,
+      "symbol": "CheckboxStateWillChangeEventArgs",
+      "symbol_kind": "source.lang.swift.decl.typealias",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Checkbox.swift",
+      "line": 6,
+      "symbol": "Checkbox",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Checkbox.swift",
+      "line": 8,
+      "symbol": "Checkbox.label",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Checkbox.swift",
+      "line": 10,
+      "symbol": "Checkbox.checkboxState",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Checkbox.swift",
+      "line": 16,
+      "symbol": "Checkbox.title",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Checkbox.swift",
+      "line": 33,
+      "symbol": "Checkbox.init(title:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Checkbox.swift",
+      "line": 170,
+      "symbol": "Checkbox.State",
+      "symbol_kind": "source.lang.swift.decl.enum",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Checkbox.swift",
+      "line": 171,
+      "symbol": "Checkbox.State.unchecked",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Checkbox.swift",
+      "line": 172,
+      "symbol": "Checkbox.State.partial",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Checkbox.swift",
+      "line": 173,
+      "symbol": "Checkbox.State.checked",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ControlSystem/BaseControlSystem.swift",
+      "line": 6,
+      "symbol": "BaseControlSystem.delegate",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ControlSystem/BaseControlSystem.swift",
+      "line": 8,
+      "symbol": "BaseControlSystem.init()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ControlSystem/BaseControlSystem.swift",
+      "line": 14,
+      "symbol": "BaseControlSystem.bringRootViewToFront(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ControlSystem/BaseControlSystem.swift",
+      "line": 20,
+      "symbol": "BaseControlSystem.onMouseLeave()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ControlSystem/BaseControlSystem.swift",
+      "line": 24,
+      "symbol": "BaseControlSystem.onMouseDown(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ControlSystem/BaseControlSystem.swift",
+      "line": 28,
+      "symbol": "BaseControlSystem.onMouseMove(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ControlSystem/BaseControlSystem.swift",
+      "line": 32,
+      "symbol": "BaseControlSystem.onMouseUp(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ControlSystem/BaseControlSystem.swift",
+      "line": 36,
+      "symbol": "BaseControlSystem.onMouseWheel(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ControlSystem/BaseControlSystem.swift",
+      "line": 42,
+      "symbol": "BaseControlSystem.onKeyDown(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ControlSystem/BaseControlSystem.swift",
+      "line": 46,
+      "symbol": "BaseControlSystem.onKeyUp(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ControlSystem/BaseControlSystem.swift",
+      "line": 50,
+      "symbol": "BaseControlSystem.onKeyPress(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ControlSystem/BaseControlSystem.swift",
+      "line": 54,
+      "symbol": "BaseControlSystem.onPreviewKeyDown(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ControlSystem/BaseControlSystemDelegate.swift",
+      "line": 3,
+      "symbol": "BaseControlSystemDelegate",
+      "symbol_kind": "source.lang.swift.decl.protocol",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ControlSystem/BaseControlSystemDelegate.swift",
+      "line": 4,
+      "symbol": "BaseControlSystemDelegate.bringRootViewToFront(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ControlSystem/BaseControlSystemDelegate.swift",
+      "line": 6,
+      "symbol": "BaseControlSystemDelegate.controlViewUnder(point:controlKinds:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ControlSystem/BaseControlSystemDelegate.swift",
+      "line": 7,
+      "symbol": "BaseControlSystemDelegate.controlViewUnder(point:forEventRequest:controlKinds:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ControlSystem/BaseControlSystemDelegate.swift",
+      "line": 13,
+      "symbol": "BaseControlSystemDelegate.setMouseCursor(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ControlSystem/BaseControlSystemDelegate.swift",
+      "line": 14,
+      "symbol": "BaseControlSystemDelegate.setMouseHiddenUntilMouseMoves()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ControlSystem/BaseControlSystemDelegate.swift",
+      "line": 15,
+      "symbol": "BaseControlSystemDelegate.firstResponderChanged(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ControlSystem/DefaultControlSystem.swift",
+      "line": 7,
+      "symbol": "DefaultControlSystem",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ControlSystem/DefaultControlSystem.swift",
+      "line": 30,
+      "symbol": "DefaultControlSystem.init()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ControlSystem/DefaultControlSystem.swift",
+      "line": 36,
+      "symbol": "DefaultControlSystem.onMouseLeave()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ControlSystem/DefaultControlSystem.swift",
+      "line": 43,
+      "symbol": "DefaultControlSystem.onMouseDown(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ControlSystem/DefaultControlSystem.swift",
+      "line": 81,
+      "symbol": "DefaultControlSystem.onMouseMove(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ControlSystem/DefaultControlSystem.swift",
+      "line": 90,
+      "symbol": "DefaultControlSystem.onMouseUp(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ControlSystem/DefaultControlSystem.swift",
+      "line": 120,
+      "symbol": "DefaultControlSystem.onMouseWheel(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ControlSystem/DefaultControlSystem.swift",
+      "line": 149,
+      "symbol": "DefaultControlSystem.onKeyDown(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ControlSystem/DefaultControlSystem.swift",
+      "line": 163,
+      "symbol": "DefaultControlSystem.onKeyUp(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ControlSystem/DefaultControlSystem.swift",
+      "line": 177,
+      "symbol": "DefaultControlSystem.onKeyPress(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ControlSystem/DefaultControlSystem.swift",
+      "line": 191,
+      "symbol": "DefaultControlSystem.onPreviewKeyDown(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ControlSystem/DefaultControlSystem.swift",
+      "line": 268,
+      "symbol": "DefaultControlSystem.viewRemovedFromHierarchy(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ControlSystem/DefaultControlSystem.swift",
+      "line": 283,
+      "symbol": "DefaultControlSystem.setAsFirstResponder(_:force:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ControlSystem/DefaultControlSystem.swift",
+      "line": 302,
+      "symbol": "DefaultControlSystem.removeAsFirstResponder(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ControlSystem/DefaultControlSystem.swift",
+      "line": 312,
+      "symbol": "DefaultControlSystem.removeAsFirstResponder(anyInHierarchy:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ControlSystem/DefaultControlSystem.swift",
+      "line": 325,
+      "symbol": "DefaultControlSystem.isFirstResponder(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ControlSystem/DefaultControlSystem.swift",
+      "line": 331,
+      "symbol": "DefaultControlSystem.hideTooltipFor(anyInHierarchy:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ControlSystem/DefaultControlSystem.swift",
+      "line": 407,
+      "symbol": "DefaultControlSystem.hideTooltip(for:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ControlSystem/DefaultControlSystem.swift",
+      "line": 476,
+      "symbol": "DefaultControlSystem.setMouseCursor(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ControlSystem/DefaultControlSystem.swift",
+      "line": 480,
+      "symbol": "DefaultControlSystem.setMouseHiddenUntilMouseMoves()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ControlView.swift",
+      "line": 366,
+      "symbol": "ControlView.init()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ControlView.swift",
+      "line": 787,
+      "symbol": "ControlView.StatedValueStore.getValue(_:defaultValue:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ControlView.swift",
+      "line": 799,
+      "symbol": "ControlView.StatedValueStore.setValue(_:forState:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ControlView.swift",
+      "line": 803,
+      "symbol": "ControlView.StatedValueStore.removeValueForState(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/DebugDraw.swift",
+      "line": 4,
+      "symbol": "DebugDraw",
+      "symbol_kind": "source.lang.swift.decl.enum",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/DebugDraw.swift",
+      "line": 5,
+      "symbol": "DebugDraw.debugDrawRecursive(_:flags:in:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/DebugDraw.swift",
+      "line": 30,
+      "symbol": "DebugDraw.DebugDrawFlags",
+      "symbol_kind": "source.lang.swift.decl.enum",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Event.swift",
+      "line": 11,
+      "symbol": "Event.wrappedValue",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Event.swift",
+      "line": 15,
+      "symbol": "Event.init()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Event.swift",
+      "line": 19,
+      "symbol": "Event.publishEvent(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Event.swift",
+      "line": 23,
+      "symbol": "Event.callAsFunction(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Event.swift",
+      "line": 29,
+      "symbol": "Event.publishEvent()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Event.swift",
+      "line": 33,
+      "symbol": "Event.callAsFunction()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventArgs/CancellableActionEventArgs.swift",
+      "line": 8,
+      "symbol": "CancellableActionEventArgs.value",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventArgs/CancellableActionEventArgs.swift",
+      "line": 9,
+      "symbol": "CancellableActionEventArgs.cancel",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventArgs/CancellableActionEventArgs.swift",
+      "line": 11,
+      "symbol": "CancellableActionEventArgs.init(value:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventArgs/CancellableActionEventArgs.swift",
+      "line": 18,
+      "symbol": "Event.publishCancellableChangeEvent()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventArgs/CancellableActionEventArgs.swift",
+      "line": 26,
+      "symbol": "Event.publishCancellableChangeEvent(value:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventArgs/CancellableActionEventArgs.swift",
+      "line": 34,
+      "symbol": "Event.callAsFunction()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventArgs/CancellableActionEventArgs.swift",
+      "line": 38,
+      "symbol": "Event.callAsFunction(value:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventArgs/CancellableValueChangedEventArgs.swift",
+      "line": 8,
+      "symbol": "CancellableValueChangedEventArgs.oldValue",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventArgs/CancellableValueChangedEventArgs.swift",
+      "line": 9,
+      "symbol": "CancellableValueChangedEventArgs.newValue",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventArgs/CancellableValueChangedEventArgs.swift",
+      "line": 10,
+      "symbol": "CancellableValueChangedEventArgs.cancel",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventArgs/CancellableValueChangedEventArgs.swift",
+      "line": 12,
+      "symbol": "CancellableValueChangedEventArgs.init(oldValue:newValue:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventArgs/CancellableValueChangedEventArgs.swift",
+      "line": 21,
+      "symbol": "Event.publishCancellableChangeEvent(old:new:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventArgs/CancellableValueChangedEventArgs.swift",
+      "line": 30,
+      "symbol": "Event.callAsFunction(old:new:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventArgs/ValueChangedEventArgs.swift",
+      "line": 6,
+      "symbol": "ValueChangedEventArgs.oldValue",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventArgs/ValueChangedEventArgs.swift",
+      "line": 7,
+      "symbol": "ValueChangedEventArgs.newValue",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventArgs/ValueChangedEventArgs.swift",
+      "line": 9,
+      "symbol": "ValueChangedEventArgs.init(oldValue:newValue:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventArgs/ValueChangedEventArgs.swift",
+      "line": 16,
+      "symbol": "Event.publishChangeEvent(old:new:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventArgs/ValueChangedEventArgs.swift",
+      "line": 20,
+      "symbol": "Event.callAsFunction(old:new:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventHandler.swift",
+      "line": 43,
+      "symbol": "EventHandler.handleOrPass(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventListenerKey.swift",
+      "line": 1,
+      "symbol": "EventListenerKey",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventPublisher.swift",
+      "line": 1,
+      "symbol": "EventPublisherType",
+      "symbol_kind": "source.lang.swift.decl.protocol",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventPublisher.swift",
+      "line": 13,
+      "symbol": "EventPublisher.publish(value:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventPublisher.swift",
+      "line": 27,
+      "symbol": "EventPublisher.addListener(weakOwner:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventPublisher.swift",
+      "line": 66,
+      "symbol": "EventPublisher.removeAll(fromOwner:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventPublisher.swift",
+      "line": 70,
+      "symbol": "EventPublisher.makeEventSource()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventSource.swift",
+      "line": 1,
+      "symbol": "EventSource",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventSource.swift",
+      "line": 26,
+      "symbol": "EventSource.removeListener(forKey:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventSource.swift",
+      "line": 30,
+      "symbol": "EventSource.removeAll(fromOwner:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventWithSender/CancellableActionEventWithSender.swift",
+      "line": 6,
+      "symbol": "Event.publishCancellableChangeEvent(sender:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventWithSender/CancellableActionEventWithSender.swift",
+      "line": 14,
+      "symbol": "Event.publishCancellableChangeEvent(sender:value:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventWithSender/CancellableActionEventWithSender.swift",
+      "line": 22,
+      "symbol": "Event.callAsFunction(sender:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventWithSender/CancellableActionEventWithSender.swift",
+      "line": 26,
+      "symbol": "Event.callAsFunction(sender:value:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventWithSender/CancellableValueChangeEventWithSender.swift",
+      "line": 6,
+      "symbol": "Event.publishCancellableChangeEvent(sender:old:new:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventWithSender/CancellableValueChangeEventWithSender.swift",
+      "line": 15,
+      "symbol": "Event.callAsFunction(sender:old:new:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventWithSender/SenderEventArgs.swift",
+      "line": 5,
+      "symbol": "Event.publishEvent(sender:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventWithSender/SenderEventArgs.swift",
+      "line": 9,
+      "symbol": "Event.publishEvent(sender:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventWithSender/SenderEventArgs.swift",
+      "line": 13,
+      "symbol": "Event.callAsFunction(sender:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventWithSender/SenderEventArgs.swift",
+      "line": 17,
+      "symbol": "Event.callAsFunction(sender:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventWithSender/ValueChangedEventWithSender.swift",
+      "line": 5,
+      "symbol": "Event.publishChangeEvent(sender:old:new:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventWithSender/ValueChangedEventWithSender.swift",
+      "line": 9,
+      "symbol": "Event.callAsFunction(sender:old:new:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Keyboard/KeyEventArgs.swift",
+      "line": 1,
+      "symbol": "KeyEventArgs",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Keyboard/KeyEventArgs.swift",
+      "line": 2,
+      "symbol": "KeyEventArgs.keyCode",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Keyboard/KeyEventArgs.swift",
+      "line": 3,
+      "symbol": "KeyEventArgs.keyChar",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Keyboard/KeyEventArgs.swift",
+      "line": 4,
+      "symbol": "KeyEventArgs.modifiers",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Keyboard/KeyEventArgs.swift",
+      "line": 5,
+      "symbol": "KeyEventArgs.handled",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Keyboard/KeyEventArgs.swift",
+      "line": 7,
+      "symbol": "KeyEventArgs.init(keyCode:keyChar:modifiers:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Keyboard/KeyPressEventArgs.swift",
+      "line": 1,
+      "symbol": "KeyPressEventArgs",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Keyboard/KeyPressEventArgs.swift",
+      "line": 2,
+      "symbol": "KeyPressEventArgs.keyChar",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Keyboard/KeyPressEventArgs.swift",
+      "line": 3,
+      "symbol": "KeyPressEventArgs.modifiers",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Keyboard/KeyPressEventArgs.swift",
+      "line": 4,
+      "symbol": "KeyPressEventArgs.handled",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Keyboard/KeyPressEventArgs.swift",
+      "line": 6,
+      "symbol": "KeyPressEventArgs.init(keyChar:modifiers:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Keyboard/KeyboardEventHandler.swift",
+      "line": 1,
+      "symbol": "KeyboardEventHandler",
+      "symbol_kind": "source.lang.swift.decl.protocol",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Keyboard/KeyboardEventHandler.swift",
+      "line": 2,
+      "symbol": "KeyboardEventHandler.onKeyPress(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Keyboard/KeyboardEventHandler.swift",
+      "line": 3,
+      "symbol": "KeyboardEventHandler.onKeyDown(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Keyboard/KeyboardEventHandler.swift",
+      "line": 4,
+      "symbol": "KeyboardEventHandler.onKeyUp(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Keyboard/KeyboardEventHandler.swift",
+      "line": 5,
+      "symbol": "KeyboardEventHandler.onPreviewKeyDown(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Keyboard/KeyboardEventHandler.swift",
+      "line": 8,
+      "symbol": "KeyboardEventHandler",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Keyboard/KeyboardEventHandler.swift",
+      "line": 9,
+      "symbol": "KeyboardEventHandler.onKeyPress(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Keyboard/KeyboardEventHandler.swift",
+      "line": 10,
+      "symbol": "KeyboardEventHandler.onKeyDown(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Keyboard/KeyboardEventHandler.swift",
+      "line": 11,
+      "symbol": "KeyboardEventHandler.onKeyUp(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Keyboard/KeyboardEventHandler.swift",
+      "line": 12,
+      "symbol": "KeyboardEventHandler.onPreviewKeyDown(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Keyboard/KeyboardEventRequest.swift",
+      "line": 1,
+      "symbol": "KeyboardEventRequest",
+      "symbol_kind": "source.lang.swift.decl.protocol",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Keyboard/KeyboardEventRequest.swift",
+      "line": 2,
+      "symbol": "KeyboardEventRequest.eventType",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Keyboard/KeyboardEventType.swift",
+      "line": 1,
+      "symbol": "KeyboardEventType",
+      "symbol_kind": "source.lang.swift.decl.enum",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Keyboard/KeyboardEventType.swift",
+      "line": 2,
+      "symbol": "KeyboardEventType.keyDown",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Keyboard/KeyboardEventType.swift",
+      "line": 3,
+      "symbol": "KeyboardEventType.keyPress",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Keyboard/KeyboardEventType.swift",
+      "line": 4,
+      "symbol": "KeyboardEventType.keyUp",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Keyboard/KeyboardEventType.swift",
+      "line": 5,
+      "symbol": "KeyboardEventType.previewKeyDown",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Keyboard/PreviewKeyDownEventArgs.swift",
+      "line": 1,
+      "symbol": "PreviewKeyDownEventArgs",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Keyboard/PreviewKeyDownEventArgs.swift",
+      "line": 2,
+      "symbol": "PreviewKeyDownEventArgs.modifiers",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Mouse/MouseButton.swift",
+      "line": 1,
+      "symbol": "MouseButton",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Mouse/MouseButton.swift",
+      "line": 8,
+      "symbol": "MouseButton.none",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Mouse/MouseButton.swift",
+      "line": 9,
+      "symbol": "MouseButton.left",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Mouse/MouseButton.swift",
+      "line": 10,
+      "symbol": "MouseButton.right",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Mouse/MouseButton.swift",
+      "line": 11,
+      "symbol": "MouseButton.middle",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Mouse/MouseEventArgs.swift",
+      "line": 3,
+      "symbol": "MouseEventArgs",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Mouse/MouseEventArgs.swift",
+      "line": 4,
+      "symbol": "MouseEventArgs.location",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Mouse/MouseEventArgs.swift",
+      "line": 5,
+      "symbol": "MouseEventArgs.buttons",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Mouse/MouseEventArgs.swift",
+      "line": 6,
+      "symbol": "MouseEventArgs.delta",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Mouse/MouseEventArgs.swift",
+      "line": 7,
+      "symbol": "MouseEventArgs.clicks",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Mouse/MouseEventArgs.swift",
+      "line": 8,
+      "symbol": "MouseEventArgs.modifiers",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Mouse/MouseEventArgs.swift",
+      "line": 10,
+      "symbol": "MouseEventArgs.init(location:buttons:delta:clicks:modifiers:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Mouse/MouseEventHandler.swift",
+      "line": 1,
+      "symbol": "MouseEventHandler",
+      "symbol_kind": "source.lang.swift.decl.protocol",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Mouse/MouseEventHandler.swift",
+      "line": 2,
+      "symbol": "MouseEventHandler.onMouseDown(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Mouse/MouseEventHandler.swift",
+      "line": 3,
+      "symbol": "MouseEventHandler.onMouseMove(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Mouse/MouseEventHandler.swift",
+      "line": 4,
+      "symbol": "MouseEventHandler.onMouseUp(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Mouse/MouseEventHandler.swift",
+      "line": 6,
+      "symbol": "MouseEventHandler.onMouseLeave()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Mouse/MouseEventHandler.swift",
+      "line": 7,
+      "symbol": "MouseEventHandler.onMouseEnter()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Mouse/MouseEventHandler.swift",
+      "line": 9,
+      "symbol": "MouseEventHandler.onMouseClick(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Mouse/MouseEventHandler.swift",
+      "line": 10,
+      "symbol": "MouseEventHandler.onMouseWheel(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Mouse/MouseEventRequest.swift",
+      "line": 5,
+      "symbol": "MouseEventRequest.eventType",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Mouse/MouseEventRequest.swift",
+      "line": 6,
+      "symbol": "MouseEventRequest.screenLocation",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Mouse/MouseEventRequest.swift",
+      "line": 7,
+      "symbol": "MouseEventRequest.buttons",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Mouse/MouseEventRequest.swift",
+      "line": 8,
+      "symbol": "MouseEventRequest.delta",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Mouse/MouseEventRequest.swift",
+      "line": 9,
+      "symbol": "MouseEventRequest.clicks",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Mouse/MouseEventRequest.swift",
+      "line": 10,
+      "symbol": "MouseEventRequest.modifiers",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Mouse/MouseEventType.swift",
+      "line": 1,
+      "symbol": "MouseEventType",
+      "symbol_kind": "source.lang.swift.decl.enum",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Mouse/MouseEventType.swift",
+      "line": 2,
+      "symbol": "MouseEventType.mouseDown",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Mouse/MouseEventType.swift",
+      "line": 3,
+      "symbol": "MouseEventType.mouseMove",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Mouse/MouseEventType.swift",
+      "line": 4,
+      "symbol": "MouseEventType.mouseUp",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Mouse/MouseEventType.swift",
+      "line": 5,
+      "symbol": "MouseEventType.mouseClick",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Mouse/MouseEventType.swift",
+      "line": 6,
+      "symbol": "MouseEventType.mouseDoubleClick",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Mouse/MouseEventType.swift",
+      "line": 7,
+      "symbol": "MouseEventType.mouseWheel",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/StatefulEvent.swift",
+      "line": 12,
+      "symbol": "StatefulEvent.init(wrappedValue:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/StatefulEvent.swift",
+      "line": 18,
+      "symbol": "StatefulEvent.publishEvent(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/StatefulEvent.swift",
+      "line": 24,
+      "symbol": "StatefulEvent.callAsFunction(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Fonts.swift",
+      "line": 4,
+      "symbol": "Fonts",
+      "symbol_kind": "source.lang.swift.decl.enum",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Fonts.swift",
+      "line": 9,
+      "symbol": "Fonts.fontFilePath",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Fonts.swift",
+      "line": 11,
+      "symbol": "Fonts.defaultFont(size:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Geometry/UIVector+Ext.swift",
+      "line": 5,
+      "symbol": "UIVector.formPerpendicular()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Geometry/UIVector+Ext.swift",
+      "line": 10,
+      "symbol": "UIVector.perpendicular()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Geometry/UIVector+Ext.swift",
+      "line": 15,
+      "symbol": "UIVector.leftRotated()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Geometry/UIVector+Ext.swift",
+      "line": 20,
+      "symbol": "UIVector.formLeftRotated()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Geometry/UIVector+Ext.swift",
+      "line": 25,
+      "symbol": "UIVector.rightRotated()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Geometry/UIVector+Ext.swift",
+      "line": 30,
+      "symbol": "UIVector.formRightRotated()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ImageView.swift",
+      "line": 6,
+      "symbol": "ImageView.image",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ImageView.swift",
+      "line": 33,
+      "symbol": "ImageView.init(image:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Keyboard/KeyboardModifier.swift",
+      "line": 1,
+      "symbol": "KeyboardModifier",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Keyboard/KeyboardModifier.swift",
+      "line": 8,
+      "symbol": "KeyboardModifier.none",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Keyboard/KeyboardModifier.swift",
+      "line": 9,
+      "symbol": "KeyboardModifier.shift",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Keyboard/KeyboardModifier.swift",
+      "line": 10,
+      "symbol": "KeyboardModifier.control",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Keyboard/KeyboardModifier.swift",
+      "line": 11,
+      "symbol": "KeyboardModifier.alt",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Keyboard/KeyboardModifier.swift",
+      "line": 27,
+      "symbol": "KeyboardModifier",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Keyboard/Keys.swift",
+      "line": 1,
+      "symbol": "Keys",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Keyboard/Keys.swift",
+      "line": 2,
+      "symbol": "Keys.rawValue",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Keyboard/Keys.swift",
+      "line": 4,
+      "symbol": "Keys.init(rawValue:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Keyboard/Keys.swift",
+      "line": 8,
+      "symbol": "Keys.hasModifier(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Keyboard/Keys.swift",
+      "line": 12,
+      "symbol": "Keys.hasModifier(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Keyboard/Keys.swift",
+      "line": 17,
+      "symbol": "Keys",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Keyboard/Keys.swift",
+      "line": 610,
+      "symbol": "Keys",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Label.swift",
+      "line": 5,
+      "symbol": "Label",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Label.swift",
+      "line": 63,
+      "symbol": "Label.text",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Label.swift",
+      "line": 72,
+      "symbol": "Label.attributedText",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Label.swift",
+      "line": 82,
+      "symbol": "Label.textColor",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Label.swift",
+      "line": 104,
+      "symbol": "Label.horizontalTextAlignment",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Label.swift",
+      "line": 112,
+      "symbol": "Label.verticalTextAlignment",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Label.swift",
+      "line": 120,
+      "symbol": "Label.init(textColor:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Label.swift",
+      "line": 128,
+      "symbol": "Label.init(textColor:font:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutGuide.swift",
+      "line": 13,
+      "symbol": "LayoutGuide.owningView",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutGuide.swift",
+      "line": 15,
+      "symbol": "LayoutGuide.area",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutGuide.swift",
+      "line": 17,
+      "symbol": "LayoutGuide.init()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutGuide.swift",
+      "line": 21,
+      "symbol": "LayoutGuide.removeFromSuperview()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutGuide.swift",
+      "line": 75,
+      "symbol": "LayoutGuide.absoluteTransform()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/AnchorKind.swift",
+      "line": 1,
+      "symbol": "AnchorKind",
+      "symbol_kind": "source.lang.swift.decl.enum",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/AnchorKind.swift",
+      "line": 2,
+      "symbol": "AnchorKind.width",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/AnchorKind.swift",
+      "line": 3,
+      "symbol": "AnchorKind.height",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/AnchorKind.swift",
+      "line": 4,
+      "symbol": "AnchorKind.left",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/AnchorKind.swift",
+      "line": 5,
+      "symbol": "AnchorKind.top",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/AnchorKind.swift",
+      "line": 6,
+      "symbol": "AnchorKind.right",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/AnchorKind.swift",
+      "line": 7,
+      "symbol": "AnchorKind.bottom",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/AnchorKind.swift",
+      "line": 8,
+      "symbol": "AnchorKind.centerX",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/AnchorKind.swift",
+      "line": 9,
+      "symbol": "AnchorKind.centerY",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/AnchorKind.swift",
+      "line": 10,
+      "symbol": "AnchorKind.firstBaseline",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/Builder/LayoutConstraintDefinition.swift",
+      "line": 1,
+      "symbol": "LayoutConstraintDefinition",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/Builder/LayoutConstraintDefinition.swift",
+      "line": 84,
+      "symbol": "LayoutConstraintDefinition.create(first:second:relationship:offset:multiplier:priority:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/Builder/LayoutConstraintDefinition.swift",
+      "line": 103,
+      "symbol": "LayoutConstraintDefinition.create(first:relationship:offset:priority:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/Builder/LayoutConstraintDefinition.swift",
+      "line": 155,
+      "symbol": "LayoutConstraintDefinition",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/Builder/LayoutConstraintDefinition.swift",
+      "line": 156,
+      "symbol": "LayoutConstraintDefinition.|(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/Builder/LayoutConstraintDefinitions.swift",
+      "line": 30,
+      "symbol": "LayoutConstraintDefinitions.|(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/Builder/LayoutResultBuilder.swift",
+      "line": 2,
+      "symbol": "LayoutResultBuilder",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/Builder/LayoutResultBuilder.swift",
+      "line": 3,
+      "symbol": "LayoutResultBuilder.buildExpression(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/Builder/LayoutResultBuilder.swift",
+      "line": 7,
+      "symbol": "LayoutResultBuilder.buildExpression(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/Builder/LayoutResultBuilder.swift",
+      "line": 11,
+      "symbol": "LayoutResultBuilder.buildExpression(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/Builder/LayoutResultBuilder.swift",
+      "line": 15,
+      "symbol": "LayoutResultBuilder.buildExpression(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/Builder/LayoutResultBuilder.swift",
+      "line": 19,
+      "symbol": "LayoutResultBuilder.buildEither(first:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/Builder/LayoutResultBuilder.swift",
+      "line": 23,
+      "symbol": "LayoutResultBuilder.buildEither(second:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/Builder/LayoutResultBuilder.swift",
+      "line": 27,
+      "symbol": "LayoutResultBuilder.buildLimitedAvailability(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/Builder/LayoutResultBuilder.swift",
+      "line": 31,
+      "symbol": "LayoutResultBuilder.buildArray(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/Builder/LayoutResultBuilder.swift",
+      "line": 35,
+      "symbol": "LayoutResultBuilder.buildArray(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/Builder/LayoutResultBuilder.swift",
+      "line": 39,
+      "symbol": "LayoutResultBuilder.buildOptional(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/Builder/LayoutResultBuilder.swift",
+      "line": 47,
+      "symbol": "LayoutResultBuilder.buildBlock()",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/Builder/LayoutResultBuilder.swift",
+      "line": 51,
+      "symbol": "LayoutResultBuilder.buildBlock(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/Builder/LayoutResultBuilder.swift",
+      "line": 55,
+      "symbol": "LayoutResultBuilder.buildBlock(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/Builder/LayoutResultBuilder.swift",
+      "line": 59,
+      "symbol": "LayoutResultBuilder.buildFinalResult(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+Builder.swift",
+      "line": 4,
+      "symbol": "LayoutAnchor.equalTo(_:priority:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+Builder.swift",
+      "line": 12,
+      "symbol": "LayoutAnchor.equalTo(_:offset:multiplier:priority:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+Builder.swift",
+      "line": 28,
+      "symbol": "LayoutAnchor.equalTo(_:offset:multiplier:priority:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+Builder.swift",
+      "line": 44,
+      "symbol": "LayoutAnchor.lessThanOrEqualTo(_:priority:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+Builder.swift",
+      "line": 57,
+      "symbol": "LayoutAnchor.lessThanOrEqualTo(_:offset:multiplier:priority:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+Builder.swift",
+      "line": 74,
+      "symbol": "LayoutAnchor.lessThanOrEqualTo(_:offset:multiplier:priority:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+Builder.swift",
+      "line": 91,
+      "symbol": "LayoutAnchor.greaterThanOrEqualTo(_:priority:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+Builder.swift",
+      "line": 104,
+      "symbol": "LayoutAnchor.greaterThanOrEqualTo(_:offset:multiplier:priority:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+Builder.swift",
+      "line": 121,
+      "symbol": "LayoutAnchor.greaterThanOrEqualTo(_:offset:multiplier:priority:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+Builder.swift",
+      "line": 141,
+      "symbol": "LayoutAnchorSize.greaterThanOrEqualTo(_:priority:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+Builder.swift",
+      "line": 157,
+      "symbol": "LayoutAnchorSize.lessThanOrEqualTo(_:priority:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+Operators.swift",
+      "line": 4,
+      "symbol": "LayoutAnchor.==(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+Operators.swift",
+      "line": 7,
+      "symbol": "LayoutAnchor.==(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+Operators.swift",
+      "line": 10,
+      "symbol": "LayoutAnchor.==(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+Operators.swift",
+      "line": 14,
+      "symbol": "LayoutAnchor.<=(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+Operators.swift",
+      "line": 17,
+      "symbol": "LayoutAnchor.<=(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+Operators.swift",
+      "line": 20,
+      "symbol": "LayoutAnchor.<=(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+Operators.swift",
+      "line": 24,
+      "symbol": "LayoutAnchor.>=(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+Operators.swift",
+      "line": 27,
+      "symbol": "LayoutAnchor.>=(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+Operators.swift",
+      "line": 30,
+      "symbol": "LayoutAnchor.>=(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+Operators.swift",
+      "line": 36,
+      "symbol": "LayoutAnchorEdges.==(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+Operators.swift",
+      "line": 42,
+      "symbol": "LayoutAnchorSize.==(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+Operators.swift",
+      "line": 46,
+      "symbol": "LayoutAnchorSize.==(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+Operators.swift",
+      "line": 50,
+      "symbol": "LayoutAnchorSize.==(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+Operators.swift",
+      "line": 54,
+      "symbol": "LayoutAnchorSize.<=(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+Operators.swift",
+      "line": 57,
+      "symbol": "LayoutAnchorSize.<=(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+Operators.swift",
+      "line": 61,
+      "symbol": "LayoutAnchorSize.>=(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+Operators.swift",
+      "line": 64,
+      "symbol": "LayoutAnchorSize.>=(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+Operators.swift",
+      "line": 72,
+      "symbol": "LayoutAnchor.==(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+Operators.swift",
+      "line": 75,
+      "symbol": "LayoutAnchor.==(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+Operators.swift",
+      "line": 79,
+      "symbol": "LayoutAnchor.<=(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+Operators.swift",
+      "line": 82,
+      "symbol": "LayoutAnchor.<=(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+Operators.swift",
+      "line": 86,
+      "symbol": "LayoutAnchor.>=(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+Operators.swift",
+      "line": 89,
+      "symbol": "LayoutAnchor.>=(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+Operators.swift",
+      "line": 95,
+      "symbol": "LayoutAnchorEdges.==(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+Operators.swift",
+      "line": 101,
+      "symbol": "LayoutAnchor.+(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+Operators.swift",
+      "line": 105,
+      "symbol": "LayoutAnchor.-(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+Operators.swift",
+      "line": 111,
+      "symbol": "LayoutAnchorsContainer.+(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+Operators.swift",
+      "line": 115,
+      "symbol": "LayoutAnchorsContainer.-(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+Operators.swift",
+      "line": 120,
+      "symbol": "LayoutAnchorsContainerWithOffset",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+Operators.swift",
+      "line": 125,
+      "symbol": "LayoutAnchorWithOffset",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+TupleOperators.swift",
+      "line": 4,
+      "symbol": "==(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.free",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+TupleOperators.swift",
+      "line": 10,
+      "symbol": "==(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.free",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+TupleOperators.swift",
+      "line": 17,
+      "symbol": "==(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.free",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+TupleOperators.swift",
+      "line": 25,
+      "symbol": "<=(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.free",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+TupleOperators.swift",
+      "line": 31,
+      "symbol": "<=(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.free",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+TupleOperators.swift",
+      "line": 38,
+      "symbol": "<=(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.free",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+TupleOperators.swift",
+      "line": 46,
+      "symbol": ">=(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.free",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+TupleOperators.swift",
+      "line": 52,
+      "symbol": ">=(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.free",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+TupleOperators.swift",
+      "line": 59,
+      "symbol": ">=(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.free",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+TupleOperators.swift",
+      "line": 69,
+      "symbol": "==(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.free",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+TupleOperators.swift",
+      "line": 75,
+      "symbol": "==(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.free",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor+TupleOperators.swift",
+      "line": 82,
+      "symbol": "==(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.free",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor.swift",
+      "line": 1,
+      "symbol": "LayoutAnchor",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor.swift",
+      "line": 3,
+      "symbol": "LayoutAnchor",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor.swift",
+      "line": 3,
+      "symbol": "LayoutAnchor",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor.swift",
+      "line": 3,
+      "symbol": "LayoutAnchor.owner",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor.swift",
+      "line": 4,
+      "symbol": "LayoutAnchor.kind",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor.swift",
+      "line": 6,
+      "symbol": "LayoutAnchor.orientation",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor.swift",
+      "line": 71,
+      "symbol": "LayoutAnchor",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchor.swift",
+      "line": 100,
+      "symbol": "LayoutAnchor",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchorOrientation.swift",
+      "line": 1,
+      "symbol": "LayoutAnchorOrientation",
+      "symbol_kind": "source.lang.swift.decl.enum",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchorOrientation.swift",
+      "line": 2,
+      "symbol": "LayoutAnchorOrientation.horizontal",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchorOrientation.swift",
+      "line": 3,
+      "symbol": "LayoutAnchorOrientation.vertical",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchorType.swift",
+      "line": 1,
+      "symbol": "LayoutAnchorType",
+      "symbol_kind": "source.lang.swift.decl.protocol",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchorType.swift",
+      "line": 2,
+      "symbol": "LayoutAnchorType.kind",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchorType.swift",
+      "line": 3,
+      "symbol": "LayoutAnchorType.owner",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchors+Builder.swift",
+      "line": 68,
+      "symbol": "LayoutAnchors.left(of:offset:priority:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchors+Builder.swift",
+      "line": 78,
+      "symbol": "LayoutAnchors.right(of:offset:priority:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchors+Builder.swift",
+      "line": 88,
+      "symbol": "LayoutAnchors.over(_:offset:priority:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchors+Builder.swift",
+      "line": 98,
+      "symbol": "LayoutAnchors.under(_:offset:priority:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchors.swift",
+      "line": 1,
+      "symbol": "LayoutAnchorsContainer",
+      "symbol_kind": "source.lang.swift.decl.protocol",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchors.swift",
+      "line": 2,
+      "symbol": "LayoutAnchorsContainer.layout",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchors.swift",
+      "line": 3,
+      "symbol": "LayoutAnchors",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchors.swift",
+      "line": 5,
+      "symbol": "LayoutAnchors",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchors.swift",
+      "line": 8,
+      "symbol": "LayoutAnchors.width",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchors.swift",
+      "line": 9,
+      "symbol": "LayoutAnchors.height",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchors.swift",
+      "line": 10,
+      "symbol": "LayoutAnchors.left",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchors.swift",
+      "line": 11,
+      "symbol": "LayoutAnchors.right",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchors.swift",
+      "line": 12,
+      "symbol": "LayoutAnchors.top",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchors.swift",
+      "line": 13,
+      "symbol": "LayoutAnchors.bottom",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchors.swift",
+      "line": 14,
+      "symbol": "LayoutAnchors.centerX",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchors.swift",
+      "line": 15,
+      "symbol": "LayoutAnchors.centerY",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchors.swift",
+      "line": 16,
+      "symbol": "LayoutAnchors.firstBaseline",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchors.swift",
+      "line": 18,
+      "symbol": "LayoutAnchors.edges",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchors.swift",
+      "line": 19,
+      "symbol": "LayoutAnchors.size",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchors.swift",
+      "line": 35,
+      "symbol": "LayoutAnchorEdges",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchors.swift",
+      "line": 41,
+      "symbol": "LayoutAnchorSize",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchors.swift",
+      "line": 42,
+      "symbol": "View.layout",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchors.swift",
+      "line": 48,
+      "symbol": "LayoutGuide.layout",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchors.swift",
+      "line": 53,
+      "symbol": "XLayoutAnchor",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchors.swift",
+      "line": 54,
+      "symbol": "YLayoutAnchor",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchors.swift",
+      "line": 55,
+      "symbol": "DimensionLayoutAnchor",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchors.swift",
+      "line": 57,
+      "symbol": "LayoutAnchorEdges",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchors.swift",
+      "line": 65,
+      "symbol": "LayoutAnchorEdges.equalTo(_:inset:multiplier:priority:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchors.swift",
+      "line": 66,
+      "symbol": "LayoutAnchors",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchors.swift",
+      "line": 94,
+      "symbol": "LayoutAnchorEdges",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchors.swift",
+      "line": 103,
+      "symbol": "LayoutAnchorSize",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchors.swift",
+      "line": 110,
+      "symbol": "LayoutAnchorsContainer",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchors.swift",
+      "line": 111,
+      "symbol": "LayoutAnchorSize.equalTo(_:multiplier:priority:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchors.swift",
+      "line": 132,
+      "symbol": "LayoutAnchorSize.equalTo(_:priority:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutAnchors.swift",
+      "line": 139,
+      "symbol": "LayoutAnchorSize",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutConstraint.swift",
+      "line": 3,
+      "symbol": "LayoutConstraint",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutConstraint.swift",
+      "line": 43,
+      "symbol": "LayoutConstraint.first",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutConstraint.swift",
+      "line": 46,
+      "symbol": "LayoutConstraint.second",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutConstraint.swift",
+      "line": 50,
+      "symbol": "LayoutConstraint.relationship",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutConstraint.swift",
+      "line": 54,
+      "symbol": "LayoutConstraint.offset",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutConstraint.swift",
+      "line": 59,
+      "symbol": "LayoutConstraint.multiplier",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutConstraint.swift",
+      "line": 64,
+      "symbol": "LayoutConstraint.priority",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutConstraint.swift",
+      "line": 78,
+      "symbol": "LayoutConstraint.isEnabled",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutConstraint.swift",
+      "line": 149,
+      "symbol": "LayoutConstraint.create(first:second:relationship:offset:multiplier:priority:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutConstraint.swift",
+      "line": 169,
+      "symbol": "LayoutConstraint.create(first:relationship:offset:priority:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutConstraint.swift",
+      "line": 269,
+      "symbol": "LayoutConstraint.update(first:second:relationship:offset:multiplier:priority:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutConstraint.swift",
+      "line": 289,
+      "symbol": "LayoutConstraint.update(first:relationship:offset:multiplier:priority:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutConstraint.swift",
+      "line": 523,
+      "symbol": "LayoutConstraint",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutConstraint.swift",
+      "line": 549,
+      "symbol": "Sequence.setPriority(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutPriority.swift",
+      "line": 5,
+      "symbol": "LayoutPriority.required",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutPriority.swift",
+      "line": 6,
+      "symbol": "LayoutPriority.high",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutPriority.swift",
+      "line": 7,
+      "symbol": "LayoutPriority.medium",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutPriority.swift",
+      "line": 8,
+      "symbol": "LayoutPriority.low",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutPriority.swift",
+      "line": 9,
+      "symbol": "LayoutPriority.veryLow",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutPriority.swift",
+      "line": 10,
+      "symbol": "LayoutPriority.lowest",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/LayoutPriority.swift",
+      "line": 14,
+      "symbol": "LayoutPriority.init(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/Relationship.swift",
+      "line": 3,
+      "symbol": "Relationship",
+      "symbol_kind": "source.lang.swift.decl.enum",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/Relationship.swift",
+      "line": 4,
+      "symbol": "Relationship.equal",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/Relationship.swift",
+      "line": 5,
+      "symbol": "Relationship.greaterThanOrEqual",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/Relationship.swift",
+      "line": 6,
+      "symbol": "Relationship.lessThanOrEqual",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/Solver/LayoutConstraintSolver.swift",
+      "line": 1,
+      "symbol": "LayoutConstraintSolver",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/Solver/LayoutConstraintSolver.swift",
+      "line": 2,
+      "symbol": "LayoutConstraintSolver.solve(viewHierarchy:cache:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/Solver/LayoutConstraintSolverCache.swift",
+      "line": 4,
+      "symbol": "LayoutConstraintSolverCache",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/Solver/LayoutConstraintSolverCache.swift",
+      "line": 7,
+      "symbol": "LayoutConstraintSolverCache.init()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Logging/ImagineUILogger.swift",
+      "line": 6,
+      "symbol": "ImagineUILogger.logger",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Logging/ImagineUILogger.swift",
+      "line": 8,
+      "symbol": "ImagineUILogger.info(_:file:function:line:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Logging/ImagineUILogger.swift",
+      "line": 22,
+      "symbol": "ImagineUILogger.warning(_:file:function:line:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Logging/ImagineUILogger.swift",
+      "line": 36,
+      "symbol": "ImagineUILogger.error(_:file:function:line:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Logging/ImagineUILogger.swift",
+      "line": 50,
+      "symbol": "ImagineUILogger.critical(_:file:function:line:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Logging/ImagineUILoggerType.swift",
+      "line": 3,
+      "symbol": "ImagineUILoggerType.info(_:file:function:line:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Logging/ImagineUILoggerType.swift",
+      "line": 10,
+      "symbol": "ImagineUILoggerType.warning(_:file:function:line:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Logging/ImagineUILoggerType.swift",
+      "line": 17,
+      "symbol": "ImagineUILoggerType.error(_:file:function:line:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Logging/ImagineUILoggerType.swift",
+      "line": 24,
+      "symbol": "ImagineUILoggerType.critical(_:file:function:line:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Logging/ImagineUILoggerType.swift",
+      "line": 33,
+      "symbol": "ImagineUILoggerType.info(_:file:function:line:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Logging/ImagineUILoggerType.swift",
+      "line": 47,
+      "symbol": "ImagineUILoggerType.warning(_:file:function:line:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Logging/ImagineUILoggerType.swift",
+      "line": 61,
+      "symbol": "ImagineUILoggerType.error(_:file:function:line:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Logging/ImagineUILoggerType.swift",
+      "line": 75,
+      "symbol": "ImagineUILoggerType.critical(_:file:function:line:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/MouseCursorKind.swift",
+      "line": 1,
+      "symbol": "MouseCursorKind",
+      "symbol_kind": "source.lang.swift.decl.enum",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Observable/Observable.swift",
+      "line": 22,
+      "symbol": "Observable.init(wrappedValue:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Panel.swift",
+      "line": 40,
+      "symbol": "Panel.init(title:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ProgressBar.swift",
+      "line": 4,
+      "symbol": "ProgressBar",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ProgressBar.swift",
+      "line": 5,
+      "symbol": "ProgressBar.progress",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ProgressBar.swift",
+      "line": 16,
+      "symbol": "ProgressBar.init()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/RadioButton.swift",
+      "line": 4,
+      "symbol": "RadioButton",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/RadioButton.swift",
+      "line": 5,
+      "symbol": "RadioButton.label",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/RadioButton.swift",
+      "line": 12,
+      "symbol": "RadioButton.title",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/RadioButton.swift",
+      "line": 21,
+      "symbol": "RadioButton.init(title:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/RootView.swift",
+      "line": 8,
+      "symbol": "RootView.invalidationDelegate",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/RootView.swift",
+      "line": 9,
+      "symbol": "RootView.rootControlSystem",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Scheduling/Scheduler.swift",
+      "line": 66,
+      "symbol": "SchedulerTimerType",
+      "symbol_kind": "source.lang.swift.decl.protocol",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ScrollView.swift",
+      "line": 5,
+      "symbol": "ScrollView",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ScrollView.swift",
+      "line": 16,
+      "symbol": "ScrollView.contentView",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ScrollView.swift",
+      "line": 20,
+      "symbol": "ScrollView.scrollBarsMode",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ScrollView.swift",
+      "line": 26,
+      "symbol": "ScrollView.scrollBarsAlwaysVisible",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ScrollView.swift",
+      "line": 47,
+      "symbol": "ScrollView.contentBounds",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ScrollView.swift",
+      "line": 97,
+      "symbol": "ScrollView.horizontalBar",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ScrollView.swift",
+      "line": 98,
+      "symbol": "ScrollView.verticalBar",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ScrollView.swift",
+      "line": 100,
+      "symbol": "ScrollView.init(scrollBarsMode:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ScrollView.swift",
+      "line": 392,
+      "symbol": "ScrollView.ScrollBarsVisibility",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ScrollView.swift",
+      "line": 398,
+      "symbol": "ScrollView.ScrollBarsVisibility.none",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ScrollView.swift",
+      "line": 399,
+      "symbol": "ScrollView.ScrollBarsVisibility.horizontal",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ScrollView.swift",
+      "line": 400,
+      "symbol": "ScrollView.ScrollBarsVisibility.vertical",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ScrollView.swift",
+      "line": 401,
+      "symbol": "ScrollView.ScrollBarsVisibility.both",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ScrollView.swift",
+      "line": 417,
+      "symbol": "ScrollBarControl",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ScrollView.swift",
+      "line": 420,
+      "symbol": "ScrollBarControl.orientation",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ScrollView.swift",
+      "line": 465,
+      "symbol": "ScrollBarControl.init(orientation:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ScrollView.swift",
+      "line": 618,
+      "symbol": "ScrollBarControl.Orientation",
+      "symbol_kind": "source.lang.swift.decl.enum",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ScrollView.swift",
+      "line": 619,
+      "symbol": "ScrollBarControl.Orientation.horizontal",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ScrollView.swift",
+      "line": 620,
+      "symbol": "ScrollBarControl.Orientation.vertical",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/SliderView.swift",
+      "line": 4,
+      "symbol": "SliderView",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/SliderView.swift",
+      "line": 15,
+      "symbol": "SliderView.minimumValue",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/SliderView.swift",
+      "line": 31,
+      "symbol": "SliderView.maximumValue",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/SliderView.swift",
+      "line": 62,
+      "symbol": "SliderView.value",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/SliderView.swift",
+      "line": 104,
+      "symbol": "SliderView.init()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/SliderView.swift",
+      "line": 154,
+      "symbol": "SliderView.onValueChanged(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/SpatialReferenceType.swift",
+      "line": 6,
+      "symbol": "SpatialReferenceType.absoluteTransform()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/SpatialReferenceType.swift",
+      "line": 8,
+      "symbol": "SpatialReferenceType.convert(point:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/SpatialReferenceType.swift",
+      "line": 9,
+      "symbol": "SpatialReferenceType.convert(point:from:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/SpatialReferenceType.swift",
+      "line": 10,
+      "symbol": "SpatialReferenceType.convert(bounds:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/SpatialReferenceType.swift",
+      "line": 11,
+      "symbol": "SpatialReferenceType.convert(bounds:from:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/SpatialReferenceType.swift",
+      "line": 15,
+      "symbol": "SpatialReferenceType.convert(point:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/SpatialReferenceType.swift",
+      "line": 24,
+      "symbol": "SpatialReferenceType.convert(point:from:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/SpatialReferenceType.swift",
+      "line": 34,
+      "symbol": "SpatialReferenceType.convert(bounds:to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/SpatialReferenceType.swift",
+      "line": 43,
+      "symbol": "SpatialReferenceType.convert(bounds:from:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Text/Caret.swift",
+      "line": 52,
+      "symbol": "CaretPosition.start",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Text/Caret.swift",
+      "line": 53,
+      "symbol": "CaretPosition.end",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Text/TextClipboard.swift",
+      "line": 1,
+      "symbol": "globalTextClipboard",
+      "symbol_kind": "source.lang.swift.decl.var.global",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Text/TextEngine.swift",
+      "line": 666,
+      "symbol": "TextDeleteUndo.init(textEngine:beforeCaret:deletedRange:text:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/TextField/TextField+VisualStyle.swift",
+      "line": 9,
+      "symbol": "TextField.VisualStyle.textColor",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/TextField/TextField+VisualStyle.swift",
+      "line": 10,
+      "symbol": "TextField.VisualStyle.placeholderTextColor",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/TextField/TextField+VisualStyle.swift",
+      "line": 11,
+      "symbol": "TextField.VisualStyle.backgroundColor",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/TextField/TextField+VisualStyle.swift",
+      "line": 12,
+      "symbol": "TextField.VisualStyle.strokeColor",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/TextField/TextField+VisualStyle.swift",
+      "line": 13,
+      "symbol": "TextField.VisualStyle.strokeWidth",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/TextField/TextField+VisualStyle.swift",
+      "line": 14,
+      "symbol": "TextField.VisualStyle.caretColor",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/TextField/TextField+VisualStyle.swift",
+      "line": 15,
+      "symbol": "TextField.VisualStyle.selectionColor",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/TextField/TextField+VisualStyle.swift",
+      "line": 17,
+      "symbol": "TextField.VisualStyle.init(textColor:placeholderTextColor:backgroundColor:strokeColor:strokeWidth:caretColor:selectionColor:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/TextField/TextField+VisualStyle.swift",
+      "line": 34,
+      "symbol": "TextField.VisualStyle.defaultDarkStyle()",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/TextField/TextField+VisualStyle.swift",
+      "line": 71,
+      "symbol": "TextField.VisualStyle.defaultLightStyle()",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/TextField/TextField.swift",
+      "line": 1,
+      "symbol": "TextField",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/TextField/TextField.swift",
+      "line": 3,
+      "symbol": "TextField",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/TextField/TextField.swift",
+      "line": 8,
+      "symbol": "TextField",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/TextField/TextField.swift",
+      "line": 44,
+      "symbol": "TextField.textColor",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/TextField/TextField.swift",
+      "line": 107,
+      "symbol": "TextField.contentInset",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/TextField/TextField.swift",
+      "line": 119,
+      "symbol": "TextField.init()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/TextField/TextField.swift",
+      "line": 896,
+      "symbol": "TextFieldTextChangedEventArgs",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/TextField/TextField.swift",
+      "line": 897,
+      "symbol": "TextFieldTextChangedEventArgs.text",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Tooltip/CustomTooltipHandlerType.swift",
+      "line": 1,
+      "symbol": "CustomTooltipHandlerType",
+      "symbol_kind": "source.lang.swift.decl.protocol",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Tooltip/CustomTooltipHandlerType.swift",
+      "line": 29,
+      "symbol": "CustomTooltipHandlerType",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Tooltip/ImagineUITooltipsManager.swift",
+      "line": 40,
+      "symbol": "ImagineUITooltipsManager.init(container:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Tooltip/ImagineUITooltipsManager.swift",
+      "line": 91,
+      "symbol": "ImagineUITooltipsManager.updateTooltipCursorLocation(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Tooltip/Tooltip.swift",
+      "line": 3,
+      "symbol": "Tooltip.text",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Tooltip/Tooltip.swift",
+      "line": 4,
+      "symbol": "Tooltip.backColor",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Tooltip/Tooltip.swift",
+      "line": 5,
+      "symbol": "Tooltip.borderColor",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Tooltip/Tooltip.swift",
+      "line": 7,
+      "symbol": "Tooltip.init(text:backColor:borderColor:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Tooltip/Tooltip.swift",
+      "line": 13,
+      "symbol": "Tooltip.init(text:backColor:borderColor:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Tooltip/TooltipView.swift",
+      "line": 14,
+      "symbol": "TooltipView.init()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Tooltip/TooltipView.swift",
+      "line": 41,
+      "symbol": "TooltipView.update(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/TreeView/TreeView+ItemIndex.swift",
+      "line": 12,
+      "symbol": "TreeView.HierarchyIndex.subscript(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.subscript",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/TreeView/TreeView+ItemIndex.swift",
+      "line": 40,
+      "symbol": "TreeView.HierarchyIndex.init(indices:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/TreeView/TreeView+ItemIndex.swift",
+      "line": 87,
+      "symbol": "TreeView.ItemIndex",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/TreeView/TreeView+ItemIndex.swift",
+      "line": 94,
+      "symbol": "TreeView.ItemIndex.init(parent:index:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/TreeView/TreeView+VisualStyle.swift",
+      "line": 4,
+      "symbol": "TreeView.VisualStyle",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/TreeView/TreeView+VisualStyle.swift",
+      "line": 8,
+      "symbol": "TreeView.VisualStyle.defaultDarkStyle()",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/TreeView/TreeView+VisualStyle.swift",
+      "line": 31,
+      "symbol": "TreeView.VisualStyle.defaultLightStyle()",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/TreeView/TreeView+VisualStyle.swift",
+      "line": 54,
+      "symbol": "TreeView.VisualStyle.ItemStyle",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/TreeView/TreeView.swift",
+      "line": 1,
+      "symbol": "TreeView",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/TreeView/TreeView.swift",
+      "line": 3,
+      "symbol": "TreeView",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/TreeView/TreeView.swift",
+      "line": 3,
+      "symbol": "TreeView",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/TreeView/TreeView.swift",
+      "line": 44,
+      "symbol": "TreeView.mouseRightClickedItem",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/TreeView/TreeView.swift",
+      "line": 46,
+      "symbol": "TreeView.dataSource",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/TreeView/TreeView.swift",
+      "line": 75,
+      "symbol": "TreeView.init()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/TreeView/TreeViewDataSource.swift",
+      "line": 3,
+      "symbol": "TreeViewDataSource",
+      "symbol_kind": "source.lang.swift.decl.protocol",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/TreeView/TreeViewDataSource.swift",
+      "line": 19,
+      "symbol": "TreeViewDataSource",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/UISettings.swift",
+      "line": 34,
+      "symbol": "UISettings.initialize(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/UISettings.swift",
+      "line": 45,
+      "symbol": "UISettings.Configuration",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/UISettings.swift",
+      "line": 46,
+      "symbol": "UISettings.Configuration.fontManager",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/UISettings.swift",
+      "line": 47,
+      "symbol": "UISettings.Configuration.defaultFontPath",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/UISettings.swift",
+      "line": 48,
+      "symbol": "UISettings.Configuration.timeInSecondsFunction",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/UISettings.swift",
+      "line": 50,
+      "symbol": "UISettings.Configuration.init(fontManager:defaultFontPath:timeInSecondsFunction:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/View.swift",
+      "line": 70,
+      "symbol": "View.needsLayout",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/View.swift",
+      "line": 356,
+      "symbol": "View.init()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ViewBitmapCache.swift",
+      "line": 67,
+      "symbol": "ViewBitmapCache.init(isCachingEnabled:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ViewVisitor/ClosureViewVisitor.swift",
+      "line": 1,
+      "symbol": "ClosureViewVisitor",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ViewVisitor/ClosureViewVisitor.swift",
+      "line": 2,
+      "symbol": "ClosureViewVisitor.State",
+      "symbol_kind": "source.lang.swift.decl.typealias",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ViewVisitor/ClosureViewVisitor.swift",
+      "line": 5,
+      "symbol": "ClosureViewVisitor.init(visitor:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ViewVisitor/ClosureViewVisitor.swift",
+      "line": 9,
+      "symbol": "ClosureViewVisitor.init(visitor:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ViewVisitor/ClosureViewVisitor.swift",
+      "line": 13,
+      "symbol": "ClosureViewVisitor.onVisitorEnter(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ViewVisitor/ClosureViewVisitor.swift",
+      "line": 17,
+      "symbol": "ClosureViewVisitor.visitView(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ViewVisitor/ClosureViewVisitor.swift",
+      "line": 22,
+      "symbol": "ClosureViewVisitor.shouldVisitView(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ViewVisitor/ClosureViewVisitor.swift",
+      "line": 26,
+      "symbol": "ClosureViewVisitor.onVisitorExit(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ViewVisitor/SkippableClosureViewVisitor.swift",
+      "line": 4,
+      "symbol": "SkippableClosureViewVisitor.State",
+      "symbol_kind": "source.lang.swift.decl.typealias",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ViewVisitor/SkippableClosureViewVisitor.swift",
+      "line": 8,
+      "symbol": "SkippableClosureViewVisitor.init(visitor:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ViewVisitor/SkippableClosureViewVisitor.swift",
+      "line": 12,
+      "symbol": "SkippableClosureViewVisitor.init(visitor:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ViewVisitor/SkippableClosureViewVisitor.swift",
+      "line": 16,
+      "symbol": "SkippableClosureViewVisitor.onVisitorEnter(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ViewVisitor/SkippableClosureViewVisitor.swift",
+      "line": 20,
+      "symbol": "SkippableClosureViewVisitor.visitView(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ViewVisitor/SkippableClosureViewVisitor.swift",
+      "line": 33,
+      "symbol": "SkippableClosureViewVisitor.shouldVisitView(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ViewVisitor/SkippableClosureViewVisitor.swift",
+      "line": 37,
+      "symbol": "SkippableClosureViewVisitor.onVisitorExit(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ViewVisitor/ViewTraveler.swift",
+      "line": 1,
+      "symbol": "ViewTraveler",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ViewVisitor/ViewTraveler.swift",
+      "line": 5,
+      "symbol": "ViewTraveler.init(state:visitor:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ViewVisitor/ViewTraveler.swift",
+      "line": 10,
+      "symbol": "ViewTraveler.init(visitor:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ViewVisitor/ViewTraveler.swift",
+      "line": 14,
+      "symbol": "ViewTraveler.travelThrough(view:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ViewVisitor/ViewVisitor.swift",
+      "line": 1,
+      "symbol": "ViewVisitor",
+      "symbol_kind": "source.lang.swift.decl.protocol",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ViewVisitor/ViewVisitor.swift",
+      "line": 2,
+      "symbol": "ViewVisitor.State",
+      "symbol_kind": "source.lang.swift.decl.associatedtype",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ViewVisitor/ViewVisitor.swift",
+      "line": 4,
+      "symbol": "ViewVisitor.onVisitorEnter(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ViewVisitor/ViewVisitor.swift",
+      "line": 5,
+      "symbol": "ViewVisitor.visitView(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ViewVisitor/ViewVisitor.swift",
+      "line": 6,
+      "symbol": "ViewVisitor.shouldVisitView(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ViewVisitor/ViewVisitor.swift",
+      "line": 7,
+      "symbol": "ViewVisitor.onVisitorExit(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ViewVisitor/ViewVisitor.swift",
+      "line": 10,
+      "symbol": "ViewVisitor",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ViewVisitor/ViewVisitor.swift",
+      "line": 11,
+      "symbol": "ViewVisitor.onVisitorEnter(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ViewVisitor/ViewVisitor.swift",
+      "line": 15,
+      "symbol": "ViewVisitor.shouldVisitView(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ViewVisitor/ViewVisitor.swift",
+      "line": 19,
+      "symbol": "ViewVisitor.onVisitorExit(_:_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ViewVisitor/ViewVisitorResult.swift",
+      "line": 1,
+      "symbol": "ViewVisitorResult",
+      "symbol_kind": "source.lang.swift.decl.enum",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ViewVisitor/ViewVisitorResult.swift",
+      "line": 2,
+      "symbol": "ViewVisitorResult.visitChildren",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/ViewVisitor/ViewVisitorResult.swift",
+      "line": 3,
+      "symbol": "ViewVisitorResult.skipChildren",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Window/Window.swift",
+      "line": 5,
+      "symbol": "Window",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Window/Window.swift",
+      "line": 43,
+      "symbol": "Window.contentsLayoutArea",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Window/Window.swift",
+      "line": 44,
+      "symbol": "Window.titleBarLayoutArea",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Window/Window.swift",
+      "line": 46,
+      "symbol": "Window.title",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Window/Window.swift",
+      "line": 51,
+      "symbol": "Window.titleFont",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Window/Window.swift",
+      "line": 66,
+      "symbol": "Window.windowState",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Window/Window.swift",
+      "line": 68,
+      "symbol": "Window.delegate",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Window/Window.swift",
+      "line": 70,
+      "symbol": "Window.init(area:title:titleFont:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Window/Window.swift",
+      "line": 103,
+      "symbol": "Window.setShouldCompress(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Window/Window.swift",
+      "line": 112,
+      "symbol": "Window.setWindowState(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Window/Window.swift",
+      "line": 476,
+      "symbol": "Window",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Window/Window.swift",
+      "line": 539,
+      "symbol": "Window",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Window/Window.swift",
+      "line": 540,
+      "symbol": "Window.WindowState",
+      "symbol_kind": "source.lang.swift.decl.enum",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Window/Window.swift",
+      "line": 541,
+      "symbol": "Window.WindowState.normal",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Window/Window.swift",
+      "line": 542,
+      "symbol": "Window.WindowState.maximized",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Window/Window.swift",
+      "line": 543,
+      "symbol": "Window.WindowState.minimized",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Window/WindowDelegate.swift",
+      "line": 3,
+      "symbol": "WindowDelegate",
+      "symbol_kind": "source.lang.swift.decl.protocol",
       "warning": "undocumented"
     }
   ],

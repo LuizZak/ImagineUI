@@ -1,0 +1,1769 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>TextField Class Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset="utf-8">
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+    <script src="../js/lunr.min.js" defer></script>
+    <script src="../js/typeahead.jquery.js" defer></script>
+    <script src="../js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+
+    <a name="//apple_ref/swift/Class/TextField" class="dashAnchor"></a>
+
+    <a title="TextField Class Reference"></a>
+
+    <header class="header">
+      <p class="header-col header-col--primary">
+        <a class="header-link" href="../index.html">
+          ImagineUICore Docs
+        </a>
+         (60% documented)
+      </p>
+    
+      <div class="header-col--secondary">
+        <form role="search" action="../search.json">
+          <input type="text" placeholder="Search documentation" data-typeahead>
+        </form>
+      </div>
+    
+    
+    </header>
+
+    <p class="breadcrumbs">
+      <a class="breadcrumb" href="../index.html">ImagineUICore Reference</a>
+      <img class="carat" src="../img/carat.png" alt=""/>
+      TextField Class Reference
+    </p>
+
+    <div class="content-wrapper">
+      <nav class="navigation">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Guides.html">Guides</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../changelog.html">CHANGELOG</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../readme.html">README</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/BaseControlSystem.html">BaseControlSystem</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/Button.html">Button</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/CancellableActionEventArgs.html">CancellableActionEventArgs</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/CancellableValueChangedEventArgs.html">CancellableValueChangedEventArgs</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/Checkbox.html">Checkbox</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/Checkbox/State.html">– State</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/ClosureViewVisitor.html">ClosureViewVisitor</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/ControlView.html">ControlView</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/ControlView/StatedValueStore.html">– StatedValueStore</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/DefaultControlSystem.html">DefaultControlSystem</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/Event.html">Event</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/EventPublisher.html">EventPublisher</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/GroupUndoTask.html">GroupUndoTask</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/ImageView.html">ImageView</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/ImageView/ImageScale.html">– ImageScale</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/ImagineUITooltipsManager.html">ImagineUITooltipsManager</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/KeyEventArgs.html">KeyEventArgs</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/KeyPressEventArgs.html">KeyPressEventArgs</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/Label.html">Label</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/LayoutConstraint.html">LayoutConstraint</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/LayoutConstraintSolver.html">LayoutConstraintSolver</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/LayoutConstraintSolverCache.html">LayoutConstraintSolverCache</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/LayoutGuide.html">LayoutGuide</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/Observable.html">Observable</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/Panel.html">Panel</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/ProgressBar.html">ProgressBar</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/RadioButton.html">RadioButton</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/RootView.html">RootView</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/Scheduler.html">Scheduler</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/ScrollBarControl.html">ScrollBarControl</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/ScrollBarControl/Orientation.html">– Orientation</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/ScrollView.html">ScrollView</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/ScrollView/ScrollBarsVisibility.html">– ScrollBarsVisibility</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/SkippableClosureViewVisitor.html">SkippableClosureViewVisitor</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/SliderView.html">SliderView</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/StackView.html">StackView</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/StackView/Orientation.html">– Orientation</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/StackView/Alignment.html">– Alignment</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/StatefulEvent.html">StatefulEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/TextDeleteUndo.html">TextDeleteUndo</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/TextField.html">TextField</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/TextField/KeyMap.html">– KeyMap</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/TextField/VisualStyle.html">– VisualStyle</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/TooltipView.html">TooltipView</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/TreeView.html">TreeView</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/TreeView/HierarchyIndex.html">– HierarchyIndex</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/TreeView/ItemIndex.html">– ItemIndex</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/TreeView/VisualStyle.html">– VisualStyle</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/View.html">View</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/ViewBitmapCache.html">ViewBitmapCache</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/ViewTraveler.html">ViewTraveler</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/Window.html">Window</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/Window/WindowState.html">– WindowState</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Global%20Variables.html">Global Variables</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Global%20Variables.html#/s:13ImagineUICore19globalTextClipboardAA0dE0_pSgvp">globalTextClipboard</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Enums.html">Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/AnchorKind.html">AnchorKind</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/BoundsConstraintMask.html">BoundsConstraintMask</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/CaretPosition.html">CaretPosition</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/ControlViewState.html">ControlViewState</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/DebugDraw.html">DebugDraw</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/DebugDraw/DebugDrawFlags.html">– DebugDrawFlags</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/Fonts.html">Fonts</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/ImagineUILogger.html">ImagineUILogger</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/KeyboardEventType.html">KeyboardEventType</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/LayoutAnchorOrientation.html">LayoutAnchorOrientation</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/MouseCursorKind.html">MouseCursorKind</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/MouseEventType.html">MouseEventType</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/PreferredTooltipLocation.html">PreferredTooltipLocation</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/Relationship.html">Relationship</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/TooltipDisplayCondition.html">TooltipDisplayCondition</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/UISettings.html">UISettings</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/UISettings/Configuration.html">– Configuration</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Enums/ViewVisitorResult.html">ViewVisitorResult</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Extensions.html">Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/Sequence.html">Sequence</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Extensions/UIVector.html">UIVector</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Functions.html">Functions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Functions.html#/s:13ImagineUICore2leoiyAA27LayoutConstraintDefinitionsVAA0D6AnchorVyxG_AFyq_GAFyq0_GAFyq1_Gt_AA0D16AnchorsContainer_ptr2_lF">&lt;=(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Functions.html#/s:13ImagineUICore2leoiyAA27LayoutConstraintDefinitionsVAA0D6AnchorVyxG_AFyq_GAFyq0_Gt_AA0D16AnchorsContainer_ptr1_lF">&lt;=(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Functions.html#/s:13ImagineUICore2leoiyAA27LayoutConstraintDefinitionsVAA0D6AnchorVyxG_AFyq_Gt_AA0D16AnchorsContainer_ptr0_lF">&lt;=(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Functions.html#/s:13ImagineUICore2eeoiyAA27LayoutConstraintDefinitionsVAA0D6AnchorVyxG_AFyq_GAFyq0_GAFyq1_Gt_AA0D16AnchorsContainer_ptr2_lF">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Functions.html#/s:13ImagineUICore2eeoiyAA27LayoutConstraintDefinitionsVAA0D6AnchorVyxG_AFyq_GAFyq0_GAFyq1_Gt_Sdtr2_lF">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Functions.html#/s:13ImagineUICore2eeoiyAA27LayoutConstraintDefinitionsVAA0D6AnchorVyxG_AFyq_GAFyq0_Gt_AA0D16AnchorsContainer_ptr1_lF">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Functions.html#/s:13ImagineUICore2eeoiyAA27LayoutConstraintDefinitionsVAA0D6AnchorVyxG_AFyq_GAFyq0_Gt_Sdtr1_lF">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Functions.html#/s:13ImagineUICore2eeoiyAA27LayoutConstraintDefinitionsVAA0D6AnchorVyxG_AFyq_Gt_AA0D16AnchorsContainer_ptr0_lF">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Functions.html#/s:13ImagineUICore2eeoiyAA27LayoutConstraintDefinitionsVAA0D6AnchorVyxG_AFyq_Gt_Sdtr0_lF">==(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Functions.html#/s:13ImagineUICore2geoiyAA27LayoutConstraintDefinitionsVAA0D6AnchorVyxG_AFyq_GAFyq0_GAFyq1_Gt_AA0D16AnchorsContainer_ptr2_lF">&gt;=(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Functions.html#/s:13ImagineUICore2geoiyAA27LayoutConstraintDefinitionsVAA0D6AnchorVyxG_AFyq_GAFyq0_Gt_AA0D16AnchorsContainer_ptr1_lF">&gt;=(_:_:)</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Functions.html#/s:13ImagineUICore2geoiyAA27LayoutConstraintDefinitionsVAA0D6AnchorVyxG_AFyq_Gt_AA0D16AnchorsContainer_ptr0_lF">&gt;=(_:_:)</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/BaseControlSystemDelegate.html">BaseControlSystemDelegate</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ControlSystemType.html">ControlSystemType</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/CustomTooltipHandlerType.html">CustomTooltipHandlerType</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/EventHandler.html">EventHandler</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/EventPublisherType.html">EventPublisherType</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/EventRequest.html">EventRequest</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ImagineUILoggerType.html">ImagineUILoggerType</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/KeyboardEventHandler.html">KeyboardEventHandler</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/KeyboardEventRequest.html">KeyboardEventRequest</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/LayoutAnchorType.html">LayoutAnchorType</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/LayoutAnchorsContainer.html">LayoutAnchorsContainer</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/MouseEventHandler.html">MouseEventHandler</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/MouseEventRequest.html">MouseEventRequest</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/RadioButtonManagerType.html">RadioButtonManagerType</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/RootViewRedrawInvalidationDelegate.html">RootViewRedrawInvalidationDelegate</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/SchedulerTimerType.html">SchedulerTimerType</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/SpatialReferenceType.html">SpatialReferenceType</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/TextClipboard.html">TextClipboard</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/TextEngineType.html">TextEngineType</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/TooltipProvider.html">TooltipProvider</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/TooltipsManagerType.html">TooltipsManagerType</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/TreeViewDataSource.html">TreeViewDataSource</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/UndoTask.html">UndoTask</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/ViewVisitor.html">ViewVisitor</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Protocols/WindowDelegate.html">WindowDelegate</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Structs.html">Structures</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/Caret.html">Caret</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/ControlKinds.html">ControlKinds</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs.html#/s:13ImagineUICore21DimensionLayoutAnchorV">DimensionLayoutAnchor</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/EventListenerKey.html">EventListenerKey</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/EventSource.html">EventSource</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/KeyboardModifier.html">KeyboardModifier</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/Keys.html">Keys</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/LayoutAnchor.html">LayoutAnchor</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/LayoutAnchorEdges.html">LayoutAnchorEdges</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/LayoutAnchorSize.html">LayoutAnchorSize</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs.html#/s:13ImagineUICore22LayoutAnchorWithOffsetV">LayoutAnchorWithOffset</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/LayoutAnchors.html">LayoutAnchors</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs.html#/s:13ImagineUICore32LayoutAnchorsContainerWithOffsetV">LayoutAnchorsContainerWithOffset</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/LayoutConstraintDefinition.html">LayoutConstraintDefinition</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/LayoutConstraintDefinitions.html">LayoutConstraintDefinitions</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/LayoutPriority.html">LayoutPriority</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/LayoutResultBuilder.html">LayoutResultBuilder</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/MouseButton.html">MouseButton</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/MouseEventArgs.html">MouseEventArgs</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/PreviewKeyDownEventArgs.html">PreviewKeyDownEventArgs</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/TextFieldTextChangedEventArgs.html">TextFieldTextChangedEventArgs</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/Tooltip.html">Tooltip</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/UndoEventArgs.html">UndoEventArgs</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs/ValueChangedEventArgs.html">ValueChangedEventArgs</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs.html#/s:13ImagineUICore13XLayoutAnchorV">XLayoutAnchor</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Structs.html#/s:13ImagineUICore13YLayoutAnchorV">YLayoutAnchor</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="../Typealiases.html">Type Aliases</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Typealiases.html#/s:13ImagineUICore22CancellableActionEventa">CancellableActionEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Typealiases.html#/s:13ImagineUICore32CancellableActionEventWithSendera">CancellableActionEventWithSender</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Typealiases.html#/s:13ImagineUICore27CancellableValueChangeEventa">CancellableValueChangeEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Typealiases.html#/s:13ImagineUICore37CancellableValueChangeEventWithSendera">CancellableValueChangeEventWithSender</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Typealiases.html#/s:13ImagineUICore32CheckboxStateWillChangeEventArgsa">CheckboxStateWillChangeEventArgs</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Typealiases.html#/s:13ImagineUICore21EventSourceWithSendera">EventSourceWithSender</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Typealiases.html#/s:13ImagineUICore15EventWithSendera">EventWithSender</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Typealiases.html#/s:13ImagineUICore14PaintEventArgsa">PaintEventArgs</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Typealiases.html#/s:13ImagineUICore15SenderEventArgsa">SenderEventArgs</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Typealiases.html#/s:13ImagineUICore21TimeInSecondsFunctiona">TimeInSecondsFunction</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Typealiases.html#/s:13ImagineUICore17ValueChangedEventa">ValueChangedEvent</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Typealiases.html#/s:13ImagineUICore27ValueChangedEventWithSendera">ValueChangedEventWithSender</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+
+        <section class="section">
+          <div class="section-content top-matter">
+            <h1>TextField</h1>
+              <div class="declaration">
+                <div class="language">
+                  
+                  <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">class</span> <span class="kt">TextField</span> <span class="p">:</span> <span class="kt"><a href="../Classes/ControlView.html">ControlView</a></span></code></pre>
+
+                </div>
+              </div>
+            <p>Undocumented</p>
+
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-content">
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13ImagineUICore9TextFieldC11textChangedAA11EventSourceVyAC6sender_AA0cdcfG4ArgsV4argstGvp"></a>
+                    <a name="//apple_ref/swift/Property/textChanged" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13ImagineUICore9TextFieldC11textChangedAA11EventSourceVyAC6sender_AA0cdcfG4ArgsV4argstGvp">textChanged</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Event fired whenever the text contents of this text field are updated.</p>
+
+<p>This event is not raised if a client sets this text field&rsquo;s <code><a href="../Classes/TextField.html#/s:13ImagineUICore9TextFieldC4textSSvp">text</a></code> property
+directly.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd"><a href="../Typealiases.html#/s:13ImagineUICore15EventWithSendera">@EventWithSender</a></span>
+<span class="o">&lt;</span><span class="kt">TextField</span><span class="p">,</span> <span class="kt"><a href="../Structs/TextFieldTextChangedEventArgs.html">TextFieldTextChangedEventArgs</a></span><span class="o">&gt;</span> <span class="kd">public</span> <span class="k">var</span> <span class="nv">textChanged</span><span class="p">:</span> <span class="kt"><a href="../Structs/EventSource.html">EventSource</a></span><span class="o">&lt;</span><span class="kt"><a href="../Typealiases.html#/s:13ImagineUICore15SenderEventArgsa">SenderEventArgs</a></span><span class="o">&lt;</span><span class="kt">TextField</span><span class="p">,</span> <span class="kt"><a href="../Structs/TextFieldTextChangedEventArgs.html">TextFieldTextChangedEventArgs</a></span><span class="o">&gt;&gt;</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13ImagineUICore9TextFieldC12caretChangedAA11EventSourceVyAC6sender_AA05ValuefG4ArgsVyAA5CaretVG4argstGvp"></a>
+                    <a name="//apple_ref/swift/Property/caretChanged" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13ImagineUICore9TextFieldC12caretChangedAA11EventSourceVyAC6sender_AA05ValuefG4ArgsVyAA5CaretVG4argstGvp">caretChanged</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Event fired whenever the caret for this text field changes position or
+selection range.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd"><a href="../Typealiases.html#/s:13ImagineUICore27ValueChangedEventWithSendera">@ValueChangedEventWithSender</a></span>
+<span class="o">&lt;</span><span class="kt">TextField</span><span class="p">,</span> <span class="kt"><a href="../Structs/Caret.html">Caret</a></span><span class="o">&gt;</span> <span class="kd">public</span> <span class="k">var</span> <span class="nv">caretChanged</span><span class="p">:</span> <span class="kt"><a href="../Structs/EventSource.html">EventSource</a></span><span class="o">&lt;</span><span class="kt"><a href="../Typealiases.html#/s:13ImagineUICore15SenderEventArgsa">SenderEventArgs</a></span><span class="o">&lt;</span><span class="kt">TextField</span><span class="p">,</span> <span class="kt"><a href="../Structs/ValueChangedEventArgs.html">ValueChangedEventArgs</a></span><span class="o">&lt;</span><span class="kt"><a href="../Structs/Caret.html">Caret</a></span><span class="o">&gt;&gt;&gt;</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13ImagineUICore9TextFieldC8enterKeyAA11EventSourceVyAC6sender_yt4argstGvp"></a>
+                    <a name="//apple_ref/swift/Property/enterKey" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13ImagineUICore9TextFieldC8enterKeyAA11EventSourceVyAC6sender_yt4argstGvp">enterKey</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Event fired whenever the user presses down the Enter key while
+<code><a href="../Classes/TextField.html#/s:13ImagineUICore9TextFieldC15acceptsEnterKeySbvp">acceptsEnterKey</a></code> is true.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd"><a href="../Typealiases.html#/s:13ImagineUICore15EventWithSendera">@EventWithSender</a></span>
+<span class="o">&lt;</span><span class="kt">TextField</span><span class="p">,</span> <span class="kt">Void</span><span class="o">&gt;</span> <span class="kd">public</span> <span class="k">var</span> <span class="nv">enterKey</span><span class="p">:</span> <span class="kt"><a href="../Structs/EventSource.html">EventSource</a></span><span class="o">&lt;</span><span class="kt"><a href="../Typealiases.html#/s:13ImagineUICore15SenderEventArgsa">SenderEventArgs</a></span><span class="o">&lt;</span><span class="kt">TextField</span><span class="p">,</span> <span class="kt">Void</span><span class="o">&gt;&gt;</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13ImagineUICore9TextFieldC9textColor9Rendering0F0Vvp"></a>
+                    <a name="//apple_ref/swift/Property/textColor" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13ImagineUICore9TextFieldC9textColor9Rendering0F0Vvp">textColor</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="k">var</span> <span class="nv">textColor</span><span class="p">:</span> <span class="kt">Color</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13ImagineUICore9TextFieldC15acceptsEnterKeySbvp"></a>
+                    <a name="//apple_ref/swift/Property/acceptsEnterKey" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13ImagineUICore9TextFieldC15acceptsEnterKeySbvp">acceptsEnterKey</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>If true, when the enter key is pressed an <code>EnterKey</code> event is raised for
+this text field.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="k">var</span> <span class="nv">acceptsEnterKey</span><span class="p">:</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13ImagineUICore9TextFieldC15allowLineBreaksSbvp"></a>
+                    <a name="//apple_ref/swift/Property/allowLineBreaks" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13ImagineUICore9TextFieldC15allowLineBreaksSbvp">allowLineBreaks</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Whether to allow line breaks when pressing the enter key.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="k">var</span> <span class="nv">allowLineBreaks</span><span class="p">:</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13ImagineUICore9TextFieldC8editableSbvp"></a>
+                    <a name="//apple_ref/swift/Property/editable" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13ImagineUICore9TextFieldC8editableSbvp">editable</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Gets or sets a value specifying whether the string contents of this
+<code>TextField</code> are editable.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="k">var</span> <span class="nv">editable</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13ImagineUICore9TextFieldC4textSSvp"></a>
+                    <a name="//apple_ref/swift/Property/text" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13ImagineUICore9TextFieldC4textSSvp">text</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Gets or sets the text of this text field.</p>
+
+<p>As keyboard input is received, this value is updated accordingly.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="k">var</span> <span class="nv">text</span><span class="p">:</span> <span class="kt">String</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13ImagineUICore9TextFieldC011placeholderC0SSSgvp"></a>
+                    <a name="//apple_ref/swift/Property/placeholderText" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13ImagineUICore9TextFieldC011placeholderC0SSSgvp">placeholderText</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>An optional placeholder text which is printed when the text field&rsquo;s
+contents are empty.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="k">var</span> <span class="nv">placeholderText</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13ImagineUICore9TextFieldC010horizontalC9Alignment0C0010HorizontalcF0Ovp"></a>
+                    <a name="//apple_ref/swift/Property/horizontalTextAlignment" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13ImagineUICore9TextFieldC010horizontalC9Alignment0C0010HorizontalcF0Ovp">horizontalTextAlignment</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Gets or sets the horizontal text alignment for both the input text and
+placeholder labels</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="k">var</span> <span class="nv">horizontalTextAlignment</span><span class="p">:</span> <span class="kt">HorizontalTextAlignment</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13ImagineUICore9TextFieldC5caretAA5CaretVvp"></a>
+                    <a name="//apple_ref/swift/Property/caret" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13ImagineUICore9TextFieldC5caretAA5CaretVvp">caret</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Gets or sets the caret position for this text field.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="k">var</span> <span class="nv">caret</span><span class="p">:</span> <span class="kt"><a href="../Structs/Caret.html">Caret</a></span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13ImagineUICore9TextFieldC12contentInset8Geometry12UIEdgeInsetsVvp"></a>
+                    <a name="//apple_ref/swift/Property/contentInset" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13ImagineUICore9TextFieldC12contentInset8Geometry12UIEdgeInsetsVvp">contentInset</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="k">var</span> <span class="nv">contentInset</span><span class="p">:</span> <span class="kt">UIEdgeInsets</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13ImagineUICore9TextFieldC5styleAC11VisualStyleVvp"></a>
+                    <a name="//apple_ref/swift/Property/style" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13ImagineUICore9TextFieldC5styleAC11VisualStyleVvp">style</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Gets the current active style for this text field.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">private(set)</span> <span class="k">var</span> <span class="nv">style</span><span class="p">:</span> <span class="kt"><a href="../Classes/TextField/VisualStyle.html">VisualStyle</a></span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13ImagineUICore9TextFieldC23canBecomeFirstResponderSbvp"></a>
+                    <a name="//apple_ref/swift/Property/canBecomeFirstResponder" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13ImagineUICore9TextFieldC23canBecomeFirstResponderSbvp">canBecomeFirstResponder</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="k">override</span> <span class="k">var</span> <span class="nv">canBecomeFirstResponder</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13ImagineUICore9TextFieldCACycfc"></a>
+                    <a name="//apple_ref/swift/Method/init()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13ImagineUICore9TextFieldCACycfc">init()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">override</span> <span class="nf">init</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Events"></a>
+                <a name="//apple_ref/swift/Section/Events" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Events"></a>
+                  <h3 class="section-name"><span>Events</span>
+</h3>
+                </div>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13ImagineUICore9TextFieldC02onC7ChangedyyF"></a>
+                    <a name="//apple_ref/swift/Method/onTextChanged()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13ImagineUICore9TextFieldC02onC7ChangedyyF">onTextChanged()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Raises the <code><a href="../Classes/TextField.html#/s:13ImagineUICore9TextFieldC11textChangedAA11EventSourceVyAC6sender_AA0cdcfG4ArgsV4argstGvp">textChanged</a></code> event</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">func</span> <span class="nf">onTextChanged</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13ImagineUICore9TextFieldC14onCaretChangedyyAA05ValueG9EventArgsVyAA0F0VGF"></a>
+                    <a name="//apple_ref/swift/Method/onCaretChanged(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13ImagineUICore9TextFieldC14onCaretChangedyyAA05ValueG9EventArgsVyAA0F0VGF">onCaretChanged(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Raises the <code><a href="../Classes/TextField.html#/s:13ImagineUICore9TextFieldC12caretChangedAA11EventSourceVyAC6sender_AA05ValuefG4ArgsVyAA5CaretVG4argstGvp">caretChanged</a></code> event</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">func</span> <span class="nf">onCaretChanged</span><span class="p">(</span><span class="n">_</span> <span class="nv">event</span><span class="p">:</span> <span class="kt"><a href="../Structs/ValueChangedEventArgs.html">ValueChangedEventArgs</a></span><span class="o">&lt;</span><span class="kt"><a href="../Structs/Caret.html">Caret</a></span><span class="o">&gt;</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13ImagineUICore9TextFieldC8onResizeyyAA21ValueChangedEventArgsVy8Geometry6UISizeVGF"></a>
+                    <a name="//apple_ref/swift/Method/onResize(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13ImagineUICore9TextFieldC8onResizeyyAA21ValueChangedEventArgsVy8Geometry6UISizeVGF">onResize(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="k">override</span> <span class="kd">func</span> <span class="nf">onResize</span><span class="p">(</span><span class="n">_</span> <span class="nv">event</span><span class="p">:</span> <span class="kt"><a href="../Structs/ValueChangedEventArgs.html">ValueChangedEventArgs</a></span><span class="o">&lt;</span><span class="kt">UISize</span><span class="o">&gt;</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13ImagineUICore9TextFieldC14onStateChangedyyAA05ValueG9EventArgsVyAA011ControlViewF0OGF"></a>
+                    <a name="//apple_ref/swift/Method/onStateChanged(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13ImagineUICore9TextFieldC14onStateChangedyyAA05ValueG9EventArgsVyAA011ControlViewF0OGF">onStateChanged(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="k">override</span> <span class="kd">func</span> <span class="nf">onStateChanged</span><span class="p">(</span><span class="n">_</span> <span class="nv">event</span><span class="p">:</span> <span class="kt"><a href="../Structs/ValueChangedEventArgs.html">ValueChangedEventArgs</a></span><span class="o">&lt;</span><span class="kt"><a href="../Enums/ControlViewState.html">ControlViewState</a></span><span class="o">&gt;</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Visual%20Style%20Settings"></a>
+                <a name="//apple_ref/swift/Section/Visual Style Settings" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Visual%20Style%20Settings"></a>
+                  <h3 class="section-name"><span>Visual Style Settings</span>
+</h3>
+                </div>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13ImagineUICore9TextFieldC8setStyle_8forStateyAC06VisualF0V_AA011ControlViewH0OtF"></a>
+                    <a name="//apple_ref/swift/Method/setStyle(_:forState:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13ImagineUICore9TextFieldC8setStyle_8forStateyAC06VisualF0V_AA011ControlViewH0OtF">setStyle(_:<wbr>forState:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Sets the visual style of this text field when it&rsquo;s under a given view
+state.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">func</span> <span class="nf">setStyle</span><span class="p">(</span><span class="n">_</span> <span class="nv">style</span><span class="p">:</span> <span class="kt"><a href="../Classes/TextField/VisualStyle.html">VisualStyle</a></span><span class="p">,</span> <span class="n">forState</span> <span class="nv">state</span><span class="p">:</span> <span class="kt"><a href="../Enums/ControlViewState.html">ControlViewState</a></span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13ImagineUICore9TextFieldC11removeStyle8forStateyAA011ControlViewH0O_tF"></a>
+                    <a name="//apple_ref/swift/Method/removeStyle(forState:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13ImagineUICore9TextFieldC11removeStyle8forStateyAA011ControlViewH0O_tF">removeStyle(forState:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Removes the special style for a given control view state.</p>
+
+<p>Note that <code><a href="../Enums/ControlViewState.html#/s:13ImagineUICore16ControlViewStateO6normalyA2CmF">ControlViewState.normal</a></code> styles are the default styles and
+cannot be removed.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">func</span> <span class="nf">removeStyle</span><span class="p">(</span><span class="n">forState</span> <span class="nv">state</span><span class="p">:</span> <span class="kt"><a href="../Enums/ControlViewState.html">ControlViewState</a></span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13ImagineUICore9TextFieldC8getStyle8forStateAC06VisualF0VAA011ControlViewH0O_tF"></a>
+                    <a name="//apple_ref/swift/Method/getStyle(forState:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13ImagineUICore9TextFieldC8getStyle8forStateAC06VisualF0VAA011ControlViewH0O_tF">getStyle(forState:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Gets the visual style for a given state.</p>
+
+<p>If no custom visual style is specified for the state, the normal state
+style is returned instead.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">func</span> <span class="nf">getStyle</span><span class="p">(</span><span class="n">forState</span> <span class="nv">state</span><span class="p">:</span> <span class="kt"><a href="../Enums/ControlViewState.html">ControlViewState</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Classes/TextField/VisualStyle.html">VisualStyle</a></span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Mouse%20Handlers"></a>
+                <a name="//apple_ref/swift/Section/Mouse Handlers" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Mouse%20Handlers"></a>
+                  <h3 class="section-name"><span>Mouse Handlers</span>
+</h3>
+                </div>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13ImagineUICore9TextFieldC11onMouseDownyyAA0F9EventArgsVF"></a>
+                    <a name="//apple_ref/swift/Method/onMouseDown(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13ImagineUICore9TextFieldC11onMouseDownyyAA0F9EventArgsVF">onMouseDown(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="k">override</span> <span class="kd">func</span> <span class="nf">onMouseDown</span><span class="p">(</span><span class="n">_</span> <span class="nv">event</span><span class="p">:</span> <span class="kt"><a href="../Structs/MouseEventArgs.html">MouseEventArgs</a></span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13ImagineUICore9TextFieldC12onMouseEnteryyF"></a>
+                    <a name="//apple_ref/swift/Method/onMouseEnter()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13ImagineUICore9TextFieldC12onMouseEnteryyF">onMouseEnter()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="k">override</span> <span class="kd">func</span> <span class="nf">onMouseEnter</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13ImagineUICore9TextFieldC12onMouseLeaveyyF"></a>
+                    <a name="//apple_ref/swift/Method/onMouseLeave()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13ImagineUICore9TextFieldC12onMouseLeaveyyF">onMouseLeave()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="k">override</span> <span class="kd">func</span> <span class="nf">onMouseLeave</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13ImagineUICore9TextFieldC11onMouseMoveyyAA0F9EventArgsVF"></a>
+                    <a name="//apple_ref/swift/Method/onMouseMove(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13ImagineUICore9TextFieldC11onMouseMoveyyAA0F9EventArgsVF">onMouseMove(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="k">override</span> <span class="kd">func</span> <span class="nf">onMouseMove</span><span class="p">(</span><span class="n">_</span> <span class="nv">event</span><span class="p">:</span> <span class="kt"><a href="../Structs/MouseEventArgs.html">MouseEventArgs</a></span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13ImagineUICore9TextFieldC9onMouseUpyyAA0F9EventArgsVF"></a>
+                    <a name="//apple_ref/swift/Method/onMouseUp(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13ImagineUICore9TextFieldC9onMouseUpyyAA0F9EventArgsVF">onMouseUp(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="k">override</span> <span class="kd">func</span> <span class="nf">onMouseUp</span><span class="p">(</span><span class="n">_</span> <span class="nv">event</span><span class="p">:</span> <span class="kt"><a href="../Structs/MouseEventArgs.html">MouseEventArgs</a></span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Keyboard"></a>
+                <a name="//apple_ref/swift/Section/Keyboard" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Keyboard"></a>
+                  <h3 class="section-name"><span>Keyboard</span>
+</h3>
+                </div>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13ImagineUICore9TextFieldC9onKeyDownyyAA0F9EventArgsCF"></a>
+                    <a name="//apple_ref/swift/Method/onKeyDown(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13ImagineUICore9TextFieldC9onKeyDownyyAA0F9EventArgsCF">onKeyDown(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="k">override</span> <span class="kd">func</span> <span class="nf">onKeyDown</span><span class="p">(</span><span class="n">_</span> <span class="nv">event</span><span class="p">:</span> <span class="kt"><a href="../Classes/KeyEventArgs.html">KeyEventArgs</a></span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13ImagineUICore9TextFieldC10onKeyPressyyAA0fG9EventArgsCF"></a>
+                    <a name="//apple_ref/swift/Method/onKeyPress(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13ImagineUICore9TextFieldC10onKeyPressyyAA0fG9EventArgsCF">onKeyPress(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="k">override</span> <span class="kd">func</span> <span class="nf">onKeyPress</span><span class="p">(</span><span class="n">_</span> <span class="nv">event</span><span class="p">:</span> <span class="kt"><a href="../Classes/KeyPressEventArgs.html">KeyPressEventArgs</a></span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Rendering"></a>
+                <a name="//apple_ref/swift/Section/Rendering" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Rendering"></a>
+                  <h3 class="section-name"><span>Rendering</span>
+</h3>
+                </div>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13ImagineUICore9TextFieldC16renderBackground2in12screenRegiony9Rendering8Renderer_p_AG04ClipI4Type_ptF"></a>
+                    <a name="//apple_ref/swift/Method/renderBackground(in:screenRegion:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13ImagineUICore9TextFieldC16renderBackground2in12screenRegiony9Rendering8Renderer_p_AG04ClipI4Type_ptF">renderBackground(in:<wbr>screenRegion:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="k">override</span> <span class="kd">func</span> <span class="nf">renderBackground</span><span class="p">(</span><span class="k">in</span> <span class="nv">renderer</span><span class="p">:</span> <span class="kt">Renderer</span><span class="p">,</span> <span class="nv">screenRegion</span><span class="p">:</span> <span class="kt">ClipRegionType</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13ImagineUICore9TextFieldC16renderForeground2in12screenRegiony9Rendering8Renderer_p_AG04ClipI4Type_ptF"></a>
+                    <a name="//apple_ref/swift/Method/renderForeground(in:screenRegion:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13ImagineUICore9TextFieldC16renderForeground2in12screenRegiony9Rendering8Renderer_p_AG04ClipI4Type_ptF">renderForeground(in:<wbr>screenRegion:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="k">override</span> <span class="kd">func</span> <span class="nf">renderForeground</span><span class="p">(</span><span class="k">in</span> <span class="nv">renderer</span><span class="p">:</span> <span class="kt">Renderer</span><span class="p">,</span> <span class="nv">screenRegion</span><span class="p">:</span> <span class="kt">ClipRegionType</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13ImagineUICore9TextFieldC9canHandleySbAA12EventRequest_pF"></a>
+                    <a name="//apple_ref/swift/Method/canHandle(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13ImagineUICore9TextFieldC9canHandleySbAA12EventRequest_pF">canHandle(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="k">override</span> <span class="kd">func</span> <span class="nf">canHandle</span><span class="p">(</span><span class="n">_</span> <span class="nv">eventRequest</span><span class="p">:</span> <span class="kt"><a href="../Protocols/EventRequest.html">EventRequest</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/First%20responder%20status"></a>
+                <a name="//apple_ref/swift/Section/First responder status" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/First%20responder%20status"></a>
+                  <h3 class="section-name"><span>First responder status</span>
+</h3>
+                </div>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13ImagineUICore9TextFieldC20becomeFirstResponderSbyF"></a>
+                    <a name="//apple_ref/swift/Method/becomeFirstResponder()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13ImagineUICore9TextFieldC20becomeFirstResponderSbyF">becomeFirstResponder()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="k">override</span> <span class="kd">func</span> <span class="nf">becomeFirstResponder</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13ImagineUICore9TextFieldC20resignFirstResponderyyF"></a>
+                    <a name="//apple_ref/swift/Method/resignFirstResponder()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13ImagineUICore9TextFieldC20resignFirstResponderyyF">resignFirstResponder()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="k">override</span> <span class="kd">func</span> <span class="nf">resignFirstResponder</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Layout"></a>
+                <a name="//apple_ref/swift/Section/Layout" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Layout"></a>
+                  <h3 class="section-name"><span>Layout</span>
+</h3>
+                </div>
+              </div>
+              <ul class="item-container">
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13ImagineUICore9TextFieldC13performLayoutyyF"></a>
+                    <a name="//apple_ref/swift/Method/performLayout()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13ImagineUICore9TextFieldC13performLayoutyyF">performLayout()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="k">override</span> <span class="kd">func</span> <span class="nf">performLayout</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13ImagineUICore9TextFieldC9selectAllyyF"></a>
+                    <a name="//apple_ref/swift/Method/selectAll()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13ImagineUICore9TextFieldC9selectAllyyF">selectAll()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Selects the entire text available on this text field</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">selectAll</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13ImagineUICore9TextFieldC9clearUndoyyF"></a>
+                    <a name="//apple_ref/swift/Method/clearUndo()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13ImagineUICore9TextFieldC9clearUndoyyF">clearUndo()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Clears all undo/redo history for this text field.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">clearUndo</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13ImagineUICore9TextFieldC03setC8WithUndoyySSF"></a>
+                    <a name="//apple_ref/swift/Method/setTextWithUndo(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13ImagineUICore9TextFieldC03setC8WithUndoyySSF">setTextWithUndo(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Updates the text buffer to a specified string while recording an undo
+for the action.</p>
+
+<p>To the text engine, this is essentially the same as selecting all text
+and replacing with the given string.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">setTextWithUndo</span><span class="p">(</span><span class="n">_</span> <span class="nv">empty</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13ImagineUICore9TextFieldC6KeyMapO"></a>
+                    <a name="//apple_ref/swift/Enum/KeyMap" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13ImagineUICore9TextFieldC6KeyMapO">KeyMap</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Defines the keys and modifiers to listen, based on OS-settings.</p>
+
+                        <a href="../Classes/TextField/KeyMap.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">enum</span> <span class="kt">KeyMap</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13ImagineUICore9TextFieldC11VisualStyleV"></a>
+                    <a name="//apple_ref/swift/Struct/VisualStyle" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13ImagineUICore9TextFieldC11VisualStyleV">VisualStyle</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Specifies the presentation style for a text field.</p>
+
+<p>Used to specify separate visual styles depending on the first-responding
+state of the text field.</p>
+
+                        <a href="../Classes/TextField/VisualStyle.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">VisualStyle</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+      </article>
+    </div>
+    <section class="footer">
+      <p>&copy; 2022 <a class="link" href="" target="_blank" rel="external noopener"></a>. All rights reserved. (Last updated: 2022-12-28)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.3</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
+    </section>
+  </body>
+</html>
