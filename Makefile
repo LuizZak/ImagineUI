@@ -3,6 +3,7 @@ BUNDLE = bundle exec
 doc:
 	@$(BUNDLE) jazzy \
 		--min-acl public \
+		--module ImagineUICore \
 		--no-hide-documentation-coverage \
 		--theme fullwidth \
 		--output ./docs \
