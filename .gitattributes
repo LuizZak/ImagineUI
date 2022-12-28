@@ -1,4 +1,0 @@
-*.swift text eol=lf
-Package.resolved text eol=lf
-*.md text eol=lf
-.gitattributes text eol=lf
