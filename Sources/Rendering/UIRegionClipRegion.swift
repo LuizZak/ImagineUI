@@ -2,18 +2,17 @@ import Geometry
 
 /// A clipping region backed by a `UIRegion` instance.
 public class UIRegionClipRegion: ClipRegionType {
+    private let _bounds: UIRectangle
     private let _region: UIRegion
 
     public init(region: UIRegion) {
         self._region = region
+
+        _bounds = _region.isEmpty ? .zero : UIRectangle.union(_region.allRectangles())
     }
 
     public func bounds() -> UIRectangle {
-        if _region.isEmpty {
-            return .zero
-        }
-
-        return UIRectangle.union(_region.allRectangles())
+        _bounds
     }
 
     public func hitTest(_ rect: UIRectangle) -> HitTestResult {
@@ -26,5 +25,9 @@ public class UIRegionClipRegion: ClipRegionType {
         }
 
         return .out
+    }
+
+    public func contains(_ point: UIPoint) -> Bool {
+        _region.contains(point)
     }
 }

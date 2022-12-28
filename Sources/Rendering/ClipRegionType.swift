@@ -9,6 +9,9 @@ public protocol ClipRegionType {
     /// If this clip region is empty, `UIRectangle.zero` is returned, instead.
     func bounds() -> UIRectangle
 
-    /// Performs a hit test of a rectangle against this clip region 
+    /// Performs a hit test of a rectangle against this clip region.
     func hitTest(_ rect: UIRectangle) -> HitTestResult
+
+    /// Returns `true` if a given point is contained within this clip region.
+    func contains(_ point: UIPoint) -> Bool
 }
