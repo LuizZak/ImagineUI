@@ -1,0 +1,348 @@
+{
+  "warnings": [
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Blend2DFontManager.swift",
+      "line": 5,
+      "symbol": "Blend2DFontManager",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Blend2DFontManager.swift",
+      "line": 6,
+      "symbol": "Blend2DFontManager.init()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Blend2DImage.swift",
+      "line": 9,
+      "symbol": "Blend2DImage.size",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Blend2DImage.swift",
+      "line": 13,
+      "symbol": "Blend2DImage.init(image:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Blend2DRenderContext.swift",
+      "line": 4,
+      "symbol": "Blend2DRendererContext",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Blend2DRenderContext.swift",
+      "line": 9,
+      "symbol": "Blend2DRendererContext.init()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Blend2DRenderer.swift",
+      "line": 5,
+      "symbol": "Blend2DRenderer",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Blend2DRenderer.swift",
+      "line": 12,
+      "symbol": "Blend2DRenderer.init(context:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Blend2DRenderer.swift",
+      "line": 18,
+      "symbol": "Blend2DRenderer.init(image:options:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Color+Blend2D.swift",
+      "line": 5,
+      "symbol": "Color.asBLRgba32",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Color+Blend2D.swift",
+      "line": 11,
+      "symbol": "BLRgba32.asColor",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Geometry+Blend2D.swift",
+      "line": 5,
+      "symbol": "UILine.asBLLine",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Geometry+Blend2D.swift",
+      "line": 11,
+      "symbol": "BLLine.asLine",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Geometry+Blend2D.swift",
+      "line": 17,
+      "symbol": "BLPoint.asVector2",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Geometry+Blend2D.swift",
+      "line": 23,
+      "symbol": "UIVector.asBLPoint",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Geometry+Blend2D.swift",
+      "line": 29,
+      "symbol": "BLPointI.asIntPoint",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Geometry+Blend2D.swift",
+      "line": 35,
+      "symbol": "UIIntPoint.asBLPointI",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Geometry+Blend2D.swift",
+      "line": 41,
+      "symbol": "UIMatrix.asBLMatrix2D",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Geometry+Blend2D.swift",
+      "line": 47,
+      "symbol": "UIRectangle.asBLRect",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Geometry+Blend2D.swift",
+      "line": 53,
+      "symbol": "BLRect.asRectangle",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Geometry+Blend2D.swift",
+      "line": 59,
+      "symbol": "BLBox.asRectangle",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Geometry+Blend2D.swift",
+      "line": 65,
+      "symbol": "BLRectI.asRectangle",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Geometry+Blend2D.swift",
+      "line": 71,
+      "symbol": "BLBoxI.asRectangle",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Geometry+Blend2D.swift",
+      "line": 77,
+      "symbol": "BLRoundRect.asRoundRectangle",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Geometry+Blend2D.swift",
+      "line": 83,
+      "symbol": "UIRoundRectangle.asBLRoundRect",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Geometry+Blend2D.swift",
+      "line": 89,
+      "symbol": "BLCircle.asCircle",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Geometry+Blend2D.swift",
+      "line": 95,
+      "symbol": "UICircle.asBLCircle",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Geometry+Blend2D.swift",
+      "line": 101,
+      "symbol": "BLEllipse.asEllipse",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Geometry+Blend2D.swift",
+      "line": 107,
+      "symbol": "UIEllipse.asBLEllipse",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Geometry+Blend2D.swift",
+      "line": 113,
+      "symbol": "UITriangle.asBLTriangle",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Geometry+Blend2D.swift",
+      "line": 119,
+      "symbol": "UIArc.asBLArc",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Geometry+Blend2D.swift",
+      "line": 130,
+      "symbol": "UIEdgeInsets.inset(rectangle:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Text/Blend2DFont.swift",
+      "line": 4,
+      "symbol": "Blend2DFont",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Text/Blend2DFont.swift",
+      "line": 5,
+      "symbol": "Blend2DFont.font",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Text/Blend2DFont.swift",
+      "line": 12,
+      "symbol": "Blend2DFont.metrics",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Text/Blend2DFont.swift",
+      "line": 31,
+      "symbol": "Blend2DFont.matrix",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Text/Blend2DFont.swift",
+      "line": 41,
+      "symbol": "Blend2DFont.init(font:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Text/Blend2DFont.swift",
+      "line": 72,
+      "symbol": "Blend2DFont.isEqual(to:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Text/Blend2DFontFace.swift",
+      "line": 4,
+      "symbol": "Blend2DFontFace",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Text/Blend2DFontFace.swift",
+      "line": 7,
+      "symbol": "Blend2DFontFace.init(fontFace:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Text/Glyph/Blend2DGlyphBuffer.swift",
+      "line": 4,
+      "symbol": "Blend2DGlyphBuffer",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Text/Glyph/Blend2DGlyphBuffer.swift",
+      "line": 7,
+      "symbol": "Blend2DGlyphBuffer.makeIterator()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Text/Glyph/Blend2DGlyphBufferIterator.swift",
+      "line": 4,
+      "symbol": "Blend2DGlyphBufferIterator",
+      "symbol_kind": "source.lang.swift.decl.struct",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Text/Glyph/Blend2DGlyphBufferIterator.swift",
+      "line": 7,
+      "symbol": "Blend2DGlyphBufferIterator.index",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Text/Glyph/Blend2DGlyphBufferIterator.swift",
+      "line": 11,
+      "symbol": "Blend2DGlyphBufferIterator.atEnd",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Text/Glyph/Blend2DGlyphBufferIterator.swift",
+      "line": 15,
+      "symbol": "Blend2DGlyphBufferIterator.hasPlacement",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Text/Glyph/Blend2DGlyphBufferIterator.swift",
+      "line": 19,
+      "symbol": "Blend2DGlyphBufferIterator.glyphId",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Text/Glyph/Blend2DGlyphBufferIterator.swift",
+      "line": 23,
+      "symbol": "Blend2DGlyphBufferIterator.advanceOffset",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/Blend2DRenderer/Text/Glyph/Blend2DGlyphBufferIterator.swift",
+      "line": 33,
+      "symbol": "Blend2DGlyphBufferIterator.advance()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    }
+  ],
+  "source_directory": "/Users/runner/work/ImagineUI/ImagineUI"
+}
