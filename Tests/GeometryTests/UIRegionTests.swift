@@ -328,6 +328,31 @@ class UIRegionTests: XCTestCase {
         // 45                 +-------·-------·-------·-------+ 
     }
 
+    func testAddRectangle_complex_subtract_xor_intersect() {
+        let sut = UIRegion()
+        let rect1 = UIRectangle(left: 0, top: 0, right: 40, bottom: 30)
+        let rect2 = UIRectangle(left: 20, top: 15, right: 60, bottom: 45)
+        let rect3 = UIRectangle(left: 10, top: 10, right: 50, bottom: 40)
+        let rect4 = UIRectangle(left: 20, top: -10, right: 40, bottom: 55)
+        let rect5 = UIRectangle(left: 5, top: -5, right: 55, bottom: 50)
+
+        sut.addRectangle(rect1, operation: .add)
+        sut.addRectangle(rect2, operation: .add)
+        sut.addRectangle(rect3, operation: .subtract)
+        sut.addRectangle(rect4, operation: .xor)
+        sut.addRectangle(rect5, operation: .intersect)
+
+        assertEquals(Set(sut.allRectangles()), [
+            .init(left: 20.0, top: -5.0, right: 40.0, bottom: 0.0),
+            .init(left: 5.0, top: 0.0, right: 20.0, bottom: 10.0),
+            .init(left: 5.0, top: 10.0, right: 10.0, bottom: 30.0),
+            .init(left: 20.0, top: 10.0, right: 40.0, bottom: 40.0),
+            .init(left: 50.0, top: 15.0, right: 55.0, bottom: 40.0),
+            .init(left: 40.0, top: 40.0, right: 55.0, bottom: 45.0),
+            .init(left: 20.0, top: 45.0, right: 40.0, bottom: 50.0),
+        ])
+    }
+
     func testAddRectangle_repeatedComplexSlicing() {
         // Re-use same setup as testAddRectangle_complex but repeat the operations
         // circling around the origin
@@ -527,6 +552,39 @@ class UIRegionTests: XCTestCase {
                 sut.addRectangle(rect1t, operation: .add)
                 sut.addRectangle(rect2t, operation: .add)
                 sut.addRectangle(rect3t, operation: .subtract)
+            }
+        }
+    }
+
+    func testPerformance_repeatedComplexSlicing_subtract_xor_intersect() {
+        let rect1 = UIRectangle(left: 0, top: 0, right: 40, bottom: 30)
+        let rect2 = UIRectangle(left: 20, top: 15, right: 60, bottom: 45)
+        let rect3 = UIRectangle(left: 10, top: 10, right: 50, bottom: 40)
+        let rect4 = UIRectangle(left: 20, top: -10, right: 40, bottom: 55)
+        let rect5 = UIRectangle(left: 5, top: -5, right: 55, bottom: 50)
+
+        doPerformanceTest(repeatCount: 5) {
+            let sut = UIRegion()
+
+            for index in 0..<60 {
+                let t = Double(index)
+                let r = (t * 14) * (.pi / 360)
+                let dx = cos(r) * 20
+                let dy = sin(r) * 20
+
+                let offset = UIVector(x: dx, y: dy)
+                
+                let rect1t = rect1.offsetBy(offset)
+                let rect2t = rect2.offsetBy(offset)
+                let rect3t = rect3.offsetBy(offset)
+                let rect4t = rect4.offsetBy(offset)
+                let rect5t = rect5.offsetBy(offset)
+
+                sut.addRectangle(rect1t, operation: .add)
+                sut.addRectangle(rect2t, operation: .add)
+                sut.addRectangle(rect3t, operation: .subtract)
+                sut.addRectangle(rect4t, operation: .xor)
+                sut.addRectangle(rect5t, operation: .intersect)
             }
         }
     }

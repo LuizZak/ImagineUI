@@ -229,9 +229,10 @@ public class UIRegion {
 
                 #endif
 
-                // Keep state in case the next range fails to produce a valid
-                // list of rectangles (can happen when two rectangles touch
-                // vertically, resulting in 0-length vertical runs).
+                // Keep empty line states in case the next range fails to produce
+                // a valid list of rectangles (can happen when two rectangles
+                // touch vertically, resulting in 0-length vertical runs that are
+                // skipped).
                 if !currentLine.isEmpty {
                     newRectangles.append(contentsOf: previousLine)
                     previousLine = currentLine
@@ -242,17 +243,30 @@ public class UIRegion {
             let top = horizontals[i]
             let bot = horizontals[i + 1]
 
-            /// Current depth into or out of shapes. outside shape: <0,
+            // Skip opposite edges that overlap exactly on the same coordinate,
+            // as they would essentially be cancelled out anyway and this can
+            // save some time computing clippings of vertical edges below
+            if top.y == bot.y && top.direction == bot.direction.reversed {
+                continue
+            }
+
+            /// Current depth into or out of shapes. outside shape: 0,
             /// in shape: >1, initial state: 0
             var depth: Int = 0
             var state: State = .outsideShape
 
             var xorState: EdgeDirection = .in
-            let split = verticals.edgesClippedBetween(top: top, bottom: bot)
 
-            for vi in 0..<split.count {
-                let current = split[vi]
+            for vi in 0..<verticals.count {
+                guard let current = verticals[vi].clipped(top: top.y, bottom: bot.y) else {
+                    continue
+                }
+
                 var direction = current.direction
+
+                defer {
+                    depth += direction.value
+                }
                 
                 // xor: Flip the in and out of the row to effectively cancel out
                 // an entrance in the first rectangle with an entrance to the second
@@ -307,17 +321,16 @@ public class UIRegion {
                     // side-by-side
                     if let prev = currentLine.last {
                         if prev.right == rect.left && prev.top == rect.top && prev.bottom == rect.bottom {
-                            currentLine.append(currentLine.removeLast().union(rect))
-                            break
+                            rect = currentLine.removeLast().union(rect)
                         }
                     }
 
-                    currentLine.append(rect)
+                    if rect.area != 0 {
+                        currentLine.append(rect)
+                    }
                 default:
                     break
                 }
-
-                depth += direction.value
             }
         }
 
@@ -343,6 +356,12 @@ private struct HorizontalEdge: Hashable, Comparable {
 
     var length: Double {
         right - left
+    }
+
+    var reversed: Self {
+        var copy = self
+        copy.direction = copy.direction.reversed
+        return copy
     }
 
     init(y: Double, left: Double, right: Double, direction: EdgeDirection) {
@@ -371,12 +390,6 @@ private struct HorizontalEdge: Hashable, Comparable {
         max(self.left, left) < min(self.right, right)
     }
 
-    func reversed() -> Self {
-        var copy = self
-        copy.direction = copy.direction.reversed
-        return copy
-    }
-
     static func sortedEdges<S: Sequence>(from rectangles: S) -> [Self] where S.Element == UIRectangle {
         var edges: [Self] = []
 
@@ -401,6 +414,12 @@ private struct VerticalEdge: Hashable, Comparable {
 
     var length: Double {
         bottom - top
+    }
+
+    var reversed: Self {
+        var copy = self
+        copy.direction = copy.direction.reversed
+        return copy
     }
 
     init(x: Double, top: Double, bottom: Double, direction: EdgeDirection) {
@@ -429,12 +448,6 @@ private struct VerticalEdge: Hashable, Comparable {
         max(self.top, top) < min(self.bottom, bottom)
     }
 
-    func reversed() -> Self {
-        var copy = self
-        copy.direction = copy.direction.reversed
-        return copy
-    }
-
     static func sortedEdges<S: Sequence>(from rectangles: S) -> [Self] where S.Element == UIRectangle {
         var edges: [Self] = []
 
@@ -452,30 +465,10 @@ private struct VerticalEdge: Hashable, Comparable {
 }
 
 private extension Array {
-    func reverseEdges() -> [Element] where Element == HorizontalEdge {
-        map { $0.reversed() }
-    }
-
-    func reverseEdges() -> [Element] where Element == VerticalEdge {
-        map { $0.reversed() }
-    }
-
-    func edgesClippedBetween(left: VerticalEdge, right: VerticalEdge) -> [Element] where Element == HorizontalEdge {
-        compactMap {
-            $0.clipped(left: left.x, right: right.x)
-        }
-    }
-
-    func edgesClippedBetween(top: HorizontalEdge, bottom: HorizontalEdge) -> [Element] where Element == VerticalEdge {
-        compactMap {
-            $0.clipped(top: top.y, bottom: bottom.y)
-        }
-    }
-
     mutating func append(edges rect: UIRectangle, reversed: Bool = false) where Element == HorizontalEdge {
         if reversed {
-            append(rect.topEdge.reversed())
-            append(rect.bottomEdge.reversed())
+            append(rect.topEdge.reversed)
+            append(rect.bottomEdge.reversed)
         } else {
             append(rect.topEdge)
             append(rect.bottomEdge)
@@ -484,8 +477,8 @@ private extension Array {
 
     mutating func append(edges rect: UIRectangle, reversed: Bool = false) where Element == VerticalEdge {
         if reversed {
-            append(rect.leftEdge.reversed())
-            append(rect.rightEdge.reversed())
+            append(rect.leftEdge.reversed)
+            append(rect.rightEdge.reversed)
         } else {
             append(rect.leftEdge)
             append(rect.rightEdge)
