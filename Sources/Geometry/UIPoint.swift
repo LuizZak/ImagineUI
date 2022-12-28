@@ -33,6 +33,11 @@ public struct UIPoint: Hashable, Codable {
     }
 
     @_transparent
+    public init<Integer: BinaryInteger>(repeating value: Integer) {
+        self.init(repeating: Scalar(value))
+    }
+
+    @_transparent
     public init(_ point: UIIntPoint) {
         self.init(x: Scalar(point.x), y: Scalar(point.y))
     }
@@ -177,6 +182,40 @@ public extension UIPoint {
     }
 }
 
+// MARK: Addition - Binary integers
+
+public extension UIPoint {
+    @_transparent
+    static func + <Integer: BinaryInteger>(lhs: Self, rhs: Integer) -> Self {
+        lhs + Self(repeating: .init(rhs))
+    }
+
+    @_transparent
+    static func - <Integer: BinaryInteger>(lhs: Self, rhs: Integer) -> Self {
+        lhs - Self(repeating: rhs)
+    }
+
+    @_transparent
+    static func + <Integer: BinaryInteger>(lhs: Integer, rhs: Self) -> Self {
+        Self(repeating: lhs) + rhs
+    }
+
+    @_transparent
+    static func - <Integer: BinaryInteger>(lhs: Integer, rhs: Self) -> Self {
+        Self(repeating: lhs) - rhs
+    }
+
+    @_transparent
+    static func += <Integer: BinaryInteger>(lhs: inout Self, rhs: Integer) {
+        lhs = lhs + Self(repeating: rhs)
+    }
+
+    @_transparent
+    static func -= <Integer: BinaryInteger>(lhs: inout Self, rhs: Integer) {
+        lhs = lhs - Self(repeating: rhs)
+    }
+}
+
 // MARK: Multiplication
 
 public extension UIPoint {
@@ -231,6 +270,40 @@ public extension UIPoint {
 
     @_transparent
     static func /= (lhs: inout Self, rhs: Scalar) {
+        lhs = lhs / Self(repeating: rhs)
+    }
+}
+
+// MARK: Multiplication - Binary integers
+
+public extension UIPoint {
+    @_transparent
+    static func * <Integer: BinaryInteger>(lhs: Self, rhs: Integer) -> Self {
+        lhs * Self(repeating: rhs)
+    }
+
+    @_transparent
+    static func / <Integer: BinaryInteger>(lhs: Self, rhs: Integer) -> Self {
+        lhs / Self(repeating: rhs)
+    }
+
+    @_transparent
+    static func * <Integer: BinaryInteger>(lhs: Integer, rhs: Self) -> Self {
+        Self(repeating: lhs) * rhs
+    }
+
+    @_transparent
+    static func / <Integer: BinaryInteger>(lhs: Integer, rhs: Self) -> Self {
+        Self(repeating: lhs) / rhs
+    }
+
+    @_transparent
+    static func *= <Integer: BinaryInteger>(lhs: inout Self, rhs: Integer) {
+        lhs = lhs * Self(repeating: rhs)
+    }
+
+    @_transparent
+    static func /= <Integer: BinaryInteger>(lhs: inout Self, rhs: Integer) {
         lhs = lhs / Self(repeating: rhs)
     }
 }
@@ -303,6 +376,20 @@ public extension UIPoint {
 
     @_transparent
     static func != (lhs: Self, rhs: Scalar) -> Bool {
+        lhs != .init(repeating: rhs)
+    }
+}
+
+// MARK: Comparison - Binary integers
+
+public extension UIPoint {
+    @_transparent
+    static func == <Integer: BinaryInteger>(lhs: Self, rhs: Integer) -> Bool {
+        lhs == .init(repeating: rhs)
+    }
+
+    @_transparent
+    static func != <Integer: BinaryInteger>(lhs: Self, rhs: Integer) -> Bool {
         lhs != .init(repeating: rhs)
     }
 }

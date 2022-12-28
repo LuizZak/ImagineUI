@@ -283,6 +283,21 @@ public extension UIRectangle {
         insetBy(.init(repeating: value))
     }
 
+    @_transparent
+    func scaledBy(_ factor: UIVector) -> Self {
+        Self(location: location, size: size * factor.asUISize)
+    }
+
+    @_transparent
+    func scaledBy(x: Scalar, y: Scalar) -> Self {
+        scaledBy(.init(x: x, y: y))
+    }
+
+    @_transparent
+    func scaledBy(_ value: Scalar) -> Self {
+        self.scaledBy(.init(repeating: value))
+    }
+
     /// Returns a rectangle where each coordinate is rounded such that the rectangle
     /// with the maximal possible bounds is returned.
     @_transparent
@@ -469,9 +484,18 @@ public extension UIRectangle {
         rect.minimum >= minimum && rect.maximum <= maximum
     }
 
+    /// Performs an intersection test and return whether `self` and `other`
+    /// intersect, including if the edges touch or corners share a common point.
     @_transparent
     func intersects(_ other: Self) -> Bool {
         minimum <= other.maximum && maximum >= other.minimum
+    }
+
+    /// Performs an intersection test and return whether `self` and `other`
+    /// overlap such that the area they share is non-empty.
+    @_transparent
+    func overlaps(_ other: Self) -> Bool {
+        minimum < other.maximum && maximum > other.minimum
     }
 }
 
@@ -486,6 +510,11 @@ public extension UIRectangle {
     @inlinable
     func intersection(_ other: Self) -> Self? {
         Self.intersect(self, other)
+    }
+
+    @inlinable
+    func overlap(_ other: Self) -> Self? {
+        Self.overlap(self, other)
     }
 
     @_transparent
@@ -528,6 +557,20 @@ public extension UIRectangle {
         let y2 = min(a.bottom, b.bottom)
 
         if x2 >= x1 && y2 >= y1 {
+            return Self(left: x1, top: y1, right: x2, bottom: y2)
+        }
+
+        return nil
+    }
+
+    @inlinable
+    static func overlap(_ a: Self, _ b: Self) -> Self? {
+        let x1 = max(a.left, b.left)
+        let x2 = min(a.right, b.right)
+        let y1 = max(a.top, b.top)
+        let y2 = min(a.bottom, b.bottom)
+
+        if x2 > x1 && y2 > y1 {
             return Self(left: x1, top: y1, right: x2, bottom: y2)
         }
 
