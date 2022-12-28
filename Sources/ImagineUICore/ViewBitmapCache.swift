@@ -1,6 +1,8 @@
 import Geometry
 import Rendering
 
+// TODO: Provide an abstract view cache API to support custom cache implementations from clients
+
 /// Utility class used to cache view bitmaps.
 /// Used primarily by `ControlView`
 public class ViewBitmapCache {
@@ -14,13 +16,9 @@ public class ViewBitmapCache {
         return Int((rectangle.height * scale.y).rounded(.up))
     }
 
-    /// - note: If `self.bitmap == nil`, this property always returns `true`.
     var isCacheWithinSizeLimit: Bool {
-        guard let bitmap else { return true }
-
-        return
-            bitmap.size.width < maximumCachedBitmapSize.width ||
-            bitmap.size.height > maximumCachedBitmapSize.height
+        return bitmapWidth < maximumCachedBitmapSize.width
+            || bitmapHeight > maximumCachedBitmapSize.height
     }
 
     /// Controls the maximum size the cached bitmap can have before it can no
