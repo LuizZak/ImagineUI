@@ -378,7 +378,7 @@ class UIRegionTests: XCTestCase {
             sut.addRectangle(rect3t, operation: .subtract)
         }
 
-        assertEquals(Set(sut.allRectangles()), [
+        assertEquals(accuracy: 1e-10, Set(sut.allRectangles()), [
             .init(left: -1.3951294748825116, top: -19.696155060244163, right: 43.4729635533386, bottom: -19.63254366895328),
             .init(left: -1.3951294748825116, top: -19.951281005196485, right: 41.04671912485888, bottom: -19.696155060244163),
             .init(left: -10.5983852846641, top: -15.760215072134436, right: 52.31322950651317, bottom: -15.542919229139411),
@@ -620,12 +620,13 @@ class UIRegionTests: XCTestCase {
 }
 
 private func assertEquals<C: Collection>(
+    accuracy: UIRectangle.Scalar? = nil,
     _ actual: C,
     _ expected: C,
     line: UInt = #line
 ) where C.Element == UIRectangle, C: Equatable & ExpressibleByArrayLiteral {
 
-    guard actual != expected else {
+    if matchUnordered(actual, expected, predicate: { areEqual(accuracy: accuracy, $0, $1) }) {
         return
     }
 
@@ -652,4 +653,58 @@ private func assertEquals<C: Collection>(
         """,
         line: line
     )
+}
+
+private func matchUnordered<C: Collection>(
+    _ lhs: C,
+    _ rhs: C,
+    predicate: (C.Element, C.Element) -> Bool
+) -> Bool where C.Element == UIRectangle, C: Equatable & ExpressibleByArrayLiteral {
+
+    guard lhs.count == rhs.count else {
+        return false
+    }
+
+    var remaining = Array(lhs)
+    var onRhs = 0
+
+    mainLoop:
+    while let next = remaining.last {
+        for value in rhs {
+            if predicate(next, value) {
+                onRhs += 1
+                remaining.removeLast()
+                continue mainLoop
+            }
+        }
+
+        return false
+    }
+
+    return remaining.isEmpty && onRhs == rhs.count
+}
+
+private func areEqual(
+    accuracy: UIRectangle.Scalar? = nil,
+    _ lhs: UIRectangle,
+    _ rhs: UIRectangle
+) -> Bool {
+
+    return areEqual(accuracy: accuracy, lhs.left, rhs.left)
+        && areEqual(accuracy: accuracy, lhs.right, rhs.right)
+        && areEqual(accuracy: accuracy, lhs.top, rhs.top)
+        && areEqual(accuracy: accuracy, lhs.bottom, rhs.bottom)
+}
+
+private func areEqual<T: FloatingPoint>(
+    accuracy: T? = nil,
+    _ lhs: T,
+    _ rhs: T
+) -> Bool {
+
+    if let accuracy = accuracy {
+        return (lhs - rhs).magnitude < accuracy
+    }
+
+    return lhs == rhs
 }
