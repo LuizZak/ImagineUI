@@ -35,12 +35,23 @@ public class UIRegion {
     /// Returns a list of scan rectangles that encompass the area that a given
     /// rectangle overlaps on this UIRegion.
     public func intersectionsFor(area: UIRectangle) -> [UIRectangle] {
-        return _rectangles.compactMap { $0.intersection(area) }.filter { $0.area > 0 }
+        return _rectangles.compactMap { $0.overlap(area) }
     }
     
     /// Returns `true` if a given rectangle intersects this region.
+    ///
+    /// Rectangle intersection can occur when rectangles share an edge, but do
+    /// not need to share a non-zero area with other rectangles.
     public func intersects(_ rectangle: UIRectangle) -> Bool {
         return _rectangles.contains(where: { r in r.intersects(rectangle) })
+    }
+    
+    /// Returns `true` if a given rectangle overlaps this region.
+    ///
+    /// Rectangle overlapping can only occur when the shared area between two
+    /// rectangles is non-zero.
+    public func overlaps(_ rectangle: UIRectangle) -> Bool {
+        return _rectangles.contains(where: { r in r.overlaps(rectangle) })
     }
     
     /// Returns `true` if a given rectangle is fully contained in this region.
