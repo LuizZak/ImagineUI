@@ -57,6 +57,10 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
     /// Overrides the default `ControlView.globallyCacheAsBitmap` value with a
     /// specified boolean value. If `nil`, the global value is used, instead.
     ///
+    /// Bitmap caching only stores the contents produced by `renderBackground()`
+    /// and `renderForeground()`, ignoring any subview content, and the size used
+    /// is the size returned by `boundsForRedraw()`.
+    ///
     /// Defaults to `nil` on creation.
     open var cacheAsBitmap: Bool? = nil {
         didSet {
@@ -401,7 +405,7 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
             }
         }
 
-        _painted(sender: self, renderer)
+        _painted(sender: self, (renderer, screenRegion))
     }
 
     /// Renders this view's background

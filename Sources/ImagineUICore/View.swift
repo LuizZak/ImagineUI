@@ -362,7 +362,8 @@ open class View {
     }
 
     /// Recursively renders this view's hierarchy using a specified renderer
-    /// and clip region.
+    /// and screen-space clip region that can be queried to check the screen-space
+    /// areas that are being redrawn.
     ///
     /// If this view's `clipToBounds` is `true`, the renderer's clip region is
     /// clipped further with `self.boundsForRedraw()`, but `screenRegion` is
