@@ -5,7 +5,7 @@ public class ProgressBar: ControlView {
     public var progress: Double = 0 {
         didSet {
             progress = min(1, max(0, progress))
-            invalidateControlGraphics()
+            invalidate()
         }
     }
 

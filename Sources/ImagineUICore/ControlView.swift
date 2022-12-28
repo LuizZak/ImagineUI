@@ -11,9 +11,6 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
     /// scenarios, but reduces CPU usage when re-rendering controls that had no
     /// state change.
     ///
-    /// Controls that have caching enabled only invalidate the cached bitmap via
-    /// `ControlView.invalidateControlGraphics()`.
-    ///
     /// Can be overridden on a per-instance basis with `ControlView.cacheAsBitmap`.
     public static var globallyCacheAsBitmap: Bool = true
 
@@ -37,14 +34,11 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
     /// specified boolean value. If `nil`, the global value is used, instead.
     ///
     /// Defaults to `nil` on creation.
-    ///
-    /// Controls that have caching enabled only invalidate the cached bitmap via
-    /// `ControlView.invalidateControlGraphics()`.
     open var cacheAsBitmap: Bool? = nil {
         didSet {
             guard cacheAsBitmap != oldValue else { return }
 
-            invalidateControlGraphics()
+            invalidate()
         }
     }
 
@@ -156,28 +150,28 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
     /// This view's neutral background color.
     open var backColor: Color = .transparentBlack { // TODO: Should be KnownColor.Control
         didSet {
-            invalidateControlGraphics()
+            invalidate()
         }
     }
 
     /// This view's foreground color.
     open var foreColor: Color = .black {
         didSet {
-            invalidateControlGraphics()
+            invalidate()
         }
     }
 
     /// Corner radius for this control's corners (does not affect clipping region).
     open var cornerRadius: Double = 0 {
         didSet {
-            invalidateControlGraphics()
+            invalidate()
         }
     }
 
     /// Stroke color around the bounds of the control view.
     open var strokeColor: Color = .transparentBlack {
         didSet {
-            invalidateControlGraphics()
+            invalidate()
         }
     }
 
@@ -185,12 +179,12 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
     open var strokeWidth: Double = 0 {
         willSet {
             if strokeWidth != newValue {
-                invalidateControlGraphics()
+                invalidate()
             }
         }
         didSet {
             if strokeWidth != oldValue {
-                invalidateControlGraphics()
+                invalidate()
             }
         }
     }
@@ -364,7 +358,7 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
     open override func bringToFrontOfSuperview() {
         super.bringToFrontOfSuperview()
 
-        invalidateControlGraphics()
+        invalidate()
     }
 
     // MARK: - Rendering
@@ -448,19 +442,11 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
         return result
     }
 
-    // TODO: Consider overriding View.invalidate(bounds:spatialReference:) here
-    // TODO: to allow regular invalidation calls to affect the bitmap cache.
-
-    open func invalidateControlGraphics() {
+    internal override func invalidate(bounds: UIRectangle, spatialReference: SpatialReferenceType) {
         _updateCacheBounds()
-
-        invalidateControlGraphics(bounds: boundsForRedraw())
-    }
-
-    open func invalidateControlGraphics(bounds: UIRectangle) {
-        invalidate(bounds: bounds)
-
         _bitmapCache.invalidateCache()
+
+        super.invalidate(bounds: bounds, spatialReference: spatialReference)
     }
 
     private func _updateCacheBounds() {

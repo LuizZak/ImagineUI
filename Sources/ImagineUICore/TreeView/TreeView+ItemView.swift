@@ -337,7 +337,7 @@ extension TreeView {
             var isExpanded: Bool = false {
                 didSet {
                     if isExpanded != oldValue {
-                        invalidateControlGraphics()
+                        invalidate()
                     }
                 }
             }
@@ -357,7 +357,7 @@ extension TreeView {
             override func onStateChanged(_ event: ValueChangedEventArgs<ControlViewState>) {
                 super.onStateChanged(event)
 
-                invalidateControlGraphics()
+                invalidate()
             }
 
             override func renderForeground(in renderer: Renderer, screenRegion: ClipRegionType) {

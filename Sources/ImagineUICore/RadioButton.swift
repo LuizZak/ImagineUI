@@ -34,7 +34,7 @@ open class RadioButton: ControlView {
     open override func onStateChanged(_ event: ValueChangedEventArgs<ControlViewState>) {
         super.onStateChanged(event)
 
-        invalidateControlGraphics()
+        invalidate()
     }
 
     open override func setupConstraints() {

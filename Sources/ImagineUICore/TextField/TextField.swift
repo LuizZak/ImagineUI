@@ -650,11 +650,11 @@ open class TextField: ControlView {
     }
 
     private func invalidateCaret() {
-        invalidateControlGraphics(bounds: getCaretBounds().roundedToLargest())
+        invalidate(bounds: getCaretBounds().roundedToLargest())
     }
 
     private func invalidateCaret(at offset: Int) {
-        invalidateControlGraphics(bounds: getCaretBounds(at: offset).roundedToLargest())
+        invalidate(bounds: getCaretBounds(at: offset).roundedToLargest())
     }
 
     private func getCaretBounds() -> UIRectangle {

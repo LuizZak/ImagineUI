@@ -51,7 +51,7 @@ open class Button: ControlView {
     open override func onStateChanged(_ event: ValueChangedEventArgs<ControlViewState>) {
         super.onStateChanged(event)
 
-        invalidateControlGraphics()
+        invalidate()
     }
 
     open override func setupHierarchy() {
@@ -82,7 +82,7 @@ open class Button: ControlView {
         _backColor.setValue(color, forState: state)
         
         if state == controlState {
-            invalidateControlGraphics()
+            invalidate()
         }
     }
     

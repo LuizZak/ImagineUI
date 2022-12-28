@@ -25,7 +25,7 @@ public class SliderView: ControlView {
             value = limitValue(value)
             updateLabels()
 
-            invalidateControlGraphics()
+            invalidate()
         }
     }
     public var maximumValue: Double = 1 {
@@ -41,7 +41,7 @@ public class SliderView: ControlView {
             value = limitValue(value)
             updateLabels()
 
-            invalidateControlGraphics()
+            invalidate()
         }
     }
 
@@ -55,7 +55,7 @@ public class SliderView: ControlView {
     public var stepValue: Double = 0 {
         didSet {
             value = limitValue(value)
-            invalidateControlGraphics()
+            invalidate()
         }
     }
 
@@ -69,7 +69,7 @@ public class SliderView: ControlView {
 
             onValueChanged(.init(oldValue: oldValue, newValue: value))
 
-            invalidateControlGraphics()
+            invalidate()
         }
     }
 
@@ -81,7 +81,7 @@ public class SliderView: ControlView {
             updateLabels()
             updateLabelConstraints()
             setNeedsLayout()
-            invalidateControlGraphics()
+            invalidate()
         }
     }
 
@@ -158,7 +158,7 @@ public class SliderView: ControlView {
     public override func onStateChanged(_ event: ValueChangedEventArgs<ControlViewState>) {
         super.onStateChanged(event)
 
-        invalidateControlGraphics()
+        invalidate()
     }
 
     public override func onMouseMove(_ event: MouseEventArgs) {
