@@ -1,5 +1,5 @@
-/// A mutable structure that represents an area created by combining rectangles
-/// using addition, subtraction, intersection and xor-ing.
+/// A mutable structure that represents an area composed by rectangles using
+/// addition, subtraction, intersection and xor-ing.
 public class UIRegion {
     private var _rectangles: [UIRectangle]
 
@@ -32,17 +32,10 @@ public class UIRegion {
         return _rectangles
     }
 
-    /// Returns a series of `UIRectangle` instances that approximate the redraw
-    /// region of this `UIRegion`, truncated to be within the given
-    /// rectangle area.
+    /// Returns a list of scan rectangles that encompass the area that a given
+    /// rectangle overlaps on this UIRegion.
     public func intersectionsFor(area: UIRectangle) -> [UIRectangle] {
         return _rectangles.compactMap { $0.intersection(area) }.filter { $0.area > 0 }
-        
-        /* TODO: Re-enable rectangle merging
-        let clipped = _rectangles.compactMap { r in r.intersection(area) }
-
-        return mergeRectangles(clipped)
-        */
     }
     
     /// Returns `true` if a given rectangle intersects this region.
@@ -146,15 +139,56 @@ public class UIRegion {
         _addOp(rectangle, op: .xor)
     }
 
-    // TODO: Improve quadratic behaviour of this function.
+    private func _addEdges(from rectangle: UIRectangle, op: Operation) {
+        var horizontals = HorizontalEdge.sortedEdges(from: _rectangles)
+        var verticals = VerticalEdge.sortedEdges(from: _rectangles)
+
+        switch op {
+        case .add, .intersect, .xor:
+            horizontals.append(edges: rectangle)
+            verticals.append(edges: rectangle)
+
+        case .subtract:
+            horizontals.append(edges: rectangle, reversed: true)
+            verticals.append(edges: rectangle, reversed: true)
+        }
+
+        horizontals.sort()
+        verticals.sort()
+    }
+
     private func _addOp(_ rectangle: UIRectangle, op: Operation) {
+        // Filter out rectangles that will not be participating in the merge
+        // operation meaningfully.
+
+        let firstIntersecting = _rectangles.partition(by: { $0.intersects(rectangle) })
+        let nonIntersecting = _rectangles[..<firstIntersecting]
+        let intersecting = _rectangles[firstIntersecting...]
+
+        switch op {
+        case .add, .subtract, .xor:
+            let result = Self._mergeOp(rectangle, rectangles: intersecting, op: op)
+            _rectangles = nonIntersecting + result
+        
+        case .intersect:
+            let result = Self._mergeOp(rectangle, rectangles: intersecting, op: op)
+            _rectangles = result
+        }
+    }
+
+    private static func _mergeOp(
+        _ rectangle: UIRectangle,
+        rectangles: any Collection<UIRectangle>,
+        op: Operation
+    ) -> [UIRectangle] {
+
         enum State {
             case outsideShape
             case inShape(start: VerticalEdge)
         }
 
-        var horizontals = HorizontalEdge.sortedEdges(from: _rectangles)
-        var verticals = VerticalEdge.sortedEdges(from: _rectangles)
+        var horizontals = HorizontalEdge.sortedEdges(from: rectangles)
+        var verticals = VerticalEdge.sortedEdges(from: rectangles)
 
         switch op {
         case .add, .intersect, .xor:
@@ -289,7 +323,7 @@ public class UIRegion {
 
         newRectangles.append(contentsOf: previousLine)
 
-        _rectangles = newRectangles
+        return newRectangles
     }
     
     /// Describes the operation to use when adding elements to a `UIRegion`.
