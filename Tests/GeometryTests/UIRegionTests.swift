@@ -597,7 +597,7 @@ class UIRegionTests: XCTestCase {
         run block: @escaping () -> Void
     ) {
 
-        measure(file: file, line: line) {
+        let closure: () -> Void = {
             var repeatCount = repeatCount
             
             while repeatCount > 0 {
@@ -606,6 +606,16 @@ class UIRegionTests: XCTestCase {
                 block()
             }
         }
+
+        #if os(macOS)
+
+        measure(closure)
+
+        #else
+
+        measure(file: file, line: line, block: closure)
+
+        #endif
     }
 }
 
