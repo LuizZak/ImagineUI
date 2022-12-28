@@ -146,14 +146,15 @@ public class UIRegion {
         _addOp(rectangle, op: .xor)
     }
 
+    // TODO: Improve quadratic behaviour of this function.
     private func _addOp(_ rectangle: UIRectangle, op: Operation) {
         enum State {
             case outsideShape
             case inShape(start: VerticalEdge)
         }
 
-        var horizontals: [HorizontalEdge] = HorizontalEdge.sortedEdges(from: _rectangles)
-        var verticals: [VerticalEdge] = VerticalEdge.sortedEdges(from: _rectangles)
+        var horizontals = HorizontalEdge.sortedEdges(from: _rectangles)
+        var verticals = VerticalEdge.sortedEdges(from: _rectangles)
 
         switch op {
         case .add, .intersect, .xor:
@@ -346,8 +347,8 @@ private struct HorizontalEdge: Hashable, Comparable {
         var edges: [Self] = []
 
         for rect in rectangles {
-            edges.append(rect.edges.top)
-            edges.append(rect.edges.bottom)
+            edges.append(rect.topEdge)
+            edges.append(rect.bottomEdge)
         }
 
         return edges.sorted()
@@ -404,8 +405,8 @@ private struct VerticalEdge: Hashable, Comparable {
         var edges: [Self] = []
 
         for rect in rectangles {
-            edges.append(rect.edges.left)
-            edges.append(rect.edges.right)
+            edges.append(rect.leftEdge)
+            edges.append(rect.rightEdge)
         }
 
         return edges.sorted()
@@ -439,21 +440,21 @@ private extension Array {
 
     mutating func append(edges rect: UIRectangle, reversed: Bool = false) where Element == HorizontalEdge {
         if reversed {
-            append(rect.edges.top.reversed())
-            append(rect.edges.bottom.reversed())
+            append(rect.topEdge.reversed())
+            append(rect.bottomEdge.reversed())
         } else {
-            append(rect.edges.top)
-            append(rect.edges.bottom)
+            append(rect.topEdge)
+            append(rect.bottomEdge)
         }
     }
 
     mutating func append(edges rect: UIRectangle, reversed: Bool = false) where Element == VerticalEdge {
         if reversed {
-            append(rect.edges.left.reversed())
-            append(rect.edges.right.reversed())
+            append(rect.leftEdge.reversed())
+            append(rect.rightEdge.reversed())
         } else {
-            append(rect.edges.left)
-            append(rect.edges.right)
+            append(rect.leftEdge)
+            append(rect.rightEdge)
         }
     }
 }
@@ -484,13 +485,17 @@ private enum EdgeDirection {
 }
 
 private extension UIRectangle {
-    var edges: (left: VerticalEdge, top: HorizontalEdge, right: VerticalEdge, bottom: HorizontalEdge) {
-        (
-            .init(x: left, top: top, bottom: bottom, direction: .in),
-            .init(y: top, left: left, right: right, direction: .in),
-            .init(x: right, top: top, bottom: bottom, direction: .out),
-            .init(y: bottom, left: left, right: right, direction: .out)
-        )
+    var leftEdge: VerticalEdge {
+        .init(x: left, top: top, bottom: bottom, direction: .in)
+    }
+    var topEdge: HorizontalEdge {
+        .init(y: top, left: left, right: right, direction: .in)
+    }
+    var rightEdge: VerticalEdge {
+        .init(x: right, top: top, bottom: bottom, direction: .out)
+    }
+    var bottomEdge: HorizontalEdge {
+        .init(y: bottom, left: left, right: right, direction: .out)
     }
 
     init(_ left: VerticalEdge, _ top: HorizontalEdge, _ right: VerticalEdge, _ bottom: HorizontalEdge) {
