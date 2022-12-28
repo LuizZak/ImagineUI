@@ -2,6 +2,7 @@ BUNDLE = bundle exec
 
 doc:
 	@$(BUNDLE) jazzy \
+		--swift-build-tool spm \
 		--min-acl public \
 		--module ImagineUICore \
 		--no-hide-documentation-coverage \
