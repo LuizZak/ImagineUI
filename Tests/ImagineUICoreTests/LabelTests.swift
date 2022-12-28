@@ -1,7 +1,8 @@
 import XCTest
-import ImagineUI
 import Blend2DRenderer
 import TestUtils
+
+@testable import ImagineUICore
 
 class LabelTests: SnapshotTestCase {
     override var snapshotPath: String {

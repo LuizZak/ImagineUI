@@ -1,7 +1,8 @@
 import XCTest
 import Blend2DRenderer
-import ImagineUI
 import TestUtils
+
+@testable import ImagineUICore
 
 class UISettingsTests: XCTestCase {
     func testInitialize() throws {
