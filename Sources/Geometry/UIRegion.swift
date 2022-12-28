@@ -187,16 +187,17 @@ public class UIRegion {
         }
     }
 
-    private static func _mergeOp(
-        _ rectangle: UIRectangle,
-        rectangles: any Collection<UIRectangle>,
-        op: Operation
-    ) -> [UIRectangle] {
+    // Used by `_mergeOp(_:rectangles:op:)`
+    private enum State {
+        case outsideShape
+        case inShape(start: VerticalEdge)
+    }
 
-        enum State {
-            case outsideShape
-            case inShape(start: VerticalEdge)
-        }
+    private static func _mergeOp<C: Collection>(
+        _ rectangle: UIRectangle,
+        rectangles: C,
+        op: Operation
+    ) -> [UIRectangle] where C.Element == UIRectangle {
 
         var horizontals = HorizontalEdge.sortedEdges(from: rectangles)
         var verticals = VerticalEdge.sortedEdges(from: rectangles)
