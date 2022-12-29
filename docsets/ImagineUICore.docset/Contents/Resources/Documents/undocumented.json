@@ -3047,7 +3047,7 @@
     },
     {
       "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Text/TextEngine.swift",
-      "line": 666,
+      "line": 676,
       "symbol": "TextDeleteUndo.init(textEngine:beforeCaret:deletedRange:text:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
