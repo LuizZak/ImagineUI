@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           ImagineUICore Docs
         </a>
-         (60% documented)
+         (63% documented)
       </p>
     
       <div class="header-col--secondary">
@@ -579,7 +579,7 @@ exposing a <code>cancel</code> that can be changed by clients to cancel the stat
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>A copy of the old value that was changed.</p>
 
                       </div>
                       <div class="declaration">
@@ -606,7 +606,7 @@ exposing a <code>cancel</code> that can be changed by clients to cancel the stat
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>A copy of the new value that is being changed into.</p>
 
                       </div>
                       <div class="declaration">
@@ -633,7 +633,17 @@ exposing a <code>cancel</code> that can be changed by clients to cancel the stat
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Variable that event handlers can use to mark this change event as
+&lsquo;canceled&rsquo;.</p>
+
+<p>The semantics of a canceled value change event are handled by the event
+publisher, but is usually implied to cancel the change of the associated
+state to <code><a href="../Classes/CancellableValueChangedEventArgs.html#/s:13ImagineUICore32CancellableValueChangedEventArgsC03newD0xvp">newValue</a></code>.</p>
+
+<p>Multiple event listeners may toggle this value on and off as they take
+turns handling the event that this argument object accompanies, but only
+the last value <code>cancel</code> was attributed to is seen by event publishers
+upstream.</p>
 
                       </div>
                       <div class="declaration">

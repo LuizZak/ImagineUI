@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           ImagineUICore Docs
         </a>
-         (60% documented)
+         (63% documented)
       </p>
     
       <div class="header-col--secondary">
@@ -579,7 +579,7 @@ exposing a <code>cancel</code> that can be changed by clients to cancel the acti
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>The associated event arguments for this event object.</p>
 
                       </div>
                       <div class="declaration">
@@ -606,7 +606,16 @@ exposing a <code>cancel</code> that can be changed by clients to cancel the acti
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Variable that event handlers can use to mark this event as &lsquo;canceled&rsquo;.</p>
+
+<p>The semantics of a canceled event are handled by the event publisher,
+and can be used to monitor and cancel UI events such as a tree view
+expansion or check box toggle.</p>
+
+<p>Multiple event listeners may toggle this value on and off as they take
+turns handling the event that this argument object accompanies, but only
+the last value <code>cancel</code> was attributed to is seen by event publishers
+upstream.</p>
 
                       </div>
                       <div class="declaration">

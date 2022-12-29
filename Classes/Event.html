@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           ImagineUICore Docs
         </a>
-         (60% documented)
+         (63% documented)
       </p>
     
       <div class="header-col--secondary">
@@ -560,8 +560,9 @@
             <p>Property wrapper that can be used to define an event publisher/source pair
 using a single property.</p>
 
-<p>Events can be registered to with <code>someEvent.addListener()</code>, and published
-with <code>_someEvent(&lt;eventValue&gt;)</code>.</p>
+<p>When used as a property wrapper, events can be registered to with
+<code>someEvent.addListener()</code>, and published with
+<code>_someEvent.publishEvent(&lt;eventValue&gt;)</code> or <code>_someEvent(&lt;eventValue&gt;)</code>.</p>
 
 <p>Warning: Not thread-safe.</p>
 
@@ -585,7 +586,8 @@ with <code>_someEvent(&lt;eventValue&gt;)</code>.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Gets the event source interface that clients can register event listeners
+on.</p>
 
                       </div>
                       <div class="declaration">
@@ -639,7 +641,8 @@ with <code>_someEvent(&lt;eventValue&gt;)</code>.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Synchronously publishes an event with a given value to all event listeners
+currently active.</p>
 
                       </div>
                       <div class="declaration">
@@ -666,7 +669,8 @@ with <code>_someEvent(&lt;eventValue&gt;)</code>.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Convenience for invoking <code><a href="../Classes/Event.html#/s:13ImagineUICore5EventC07publishC0yyxF">publishEvent(_:)</a></code> by calling the event variable
+itself directly.</p>
 
                       </div>
                       <div class="declaration">
@@ -693,7 +697,13 @@ with <code>_someEvent(&lt;eventValue&gt;)</code>.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Convenience for:</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">event</span> <span class="o">=</span> <span class="kt">CancellableActionEventArgs</span><span class="p">(</span><span class="nv">value</span><span class="p">:</span> <span class="p">())</span>
+<span class="k">self</span><span class="o">.</span><span class="nf">publishEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+</code></pre>
+
+<p>Returns the final value of <code>event.cancel</code> after publishing the event to
+listeners.</p>
 
                       </div>
                       <div class="declaration">
@@ -720,7 +730,13 @@ with <code>_someEvent(&lt;eventValue&gt;)</code>.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Convenience for:</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">event</span> <span class="o">=</span> <span class="kt">CancellableActionEventArgs</span><span class="p">(</span><span class="nv">value</span><span class="p">:</span> <span class="n">value</span><span class="p">)</span>
+<span class="k">self</span><span class="o">.</span><span class="nf">publishEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+</code></pre>
+
+<p>Returns the final value of <code>event.cancel</code> after publishing the event to
+listeners.</p>
 
                       </div>
                       <div class="declaration">
@@ -747,7 +763,8 @@ with <code>_someEvent(&lt;eventValue&gt;)</code>.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Convenience for invoking <code><a href="../Classes/Event.html#/s:13ImagineUICore5EventC024publishCancellableChangeC0SbyAA0e6ActionC4ArgsCyytGRszlF">publishCancellableChangeEvent()</a></code> by calling
+the event variable itself directly.</p>
 
                       </div>
                       <div class="declaration">
@@ -774,7 +791,8 @@ with <code>_someEvent(&lt;eventValue&gt;)</code>.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Convenience for invoking <code><a href="../Classes/Event.html#/s:13ImagineUICore5EventC024publishCancellableChangeC05valueSbqd___tAA0e6ActionC4ArgsCyqd__GRszlF">publishCancellableChangeEvent(value:)</a></code> by
+calling the event variable itself directly.</p>
 
                       </div>
                       <div class="declaration">
@@ -801,7 +819,13 @@ with <code>_someEvent(&lt;eventValue&gt;)</code>.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Convenience for:</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">event</span> <span class="o">=</span> <span class="kt">CancellableValueChangedEventArgs</span><span class="p">(</span><span class="nv">oldValue</span><span class="p">:</span> <span class="n">old</span><span class="p">,</span> <span class="nv">newValue</span><span class="p">:</span> <span class="k">new</span><span class="p">)</span>
+<span class="k">self</span><span class="o">.</span><span class="nf">publishEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+</code></pre>
+
+<p>Returns the final value of <code>event.cancel</code> after publishing the event to
+listeners.</p>
 
                       </div>
                       <div class="declaration">
@@ -828,7 +852,8 @@ with <code>_someEvent(&lt;eventValue&gt;)</code>.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Convenience for invoking <code><a href="../Classes/Event.html#/s:13ImagineUICore5EventC024publishCancellableChangeC03old3newSbqd___qd__tAA0e12ValueChangedC4ArgsCyqd__GRszlF">publishCancellableChangeEvent(old:new:)</a></code> by
+calling the event variable itself directly.</p>
 
                       </div>
                       <div class="declaration">
@@ -855,7 +880,9 @@ with <code>_someEvent(&lt;eventValue&gt;)</code>.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Convenience for:</p>
+<pre class="highlight swift"><code><span class="k">self</span><span class="o">.</span><span class="nf">publishEvent</span><span class="p">(</span><span class="kt">ValueChangedEventArgs</span><span class="p">(</span><span class="nv">oldValue</span><span class="p">:</span> <span class="n">old</span><span class="p">,</span> <span class="nv">newValue</span><span class="p">:</span> <span class="k">new</span><span class="p">))</span>
+</code></pre>
 
                       </div>
                       <div class="declaration">
@@ -882,7 +909,8 @@ with <code>_someEvent(&lt;eventValue&gt;)</code>.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Convenience for invoking <code><a href="../Classes/Event.html#/s:13ImagineUICore5EventC013publishChangeC03old3newyqd___qd__tAA012ValueChangedC4ArgsVyqd__GRszlF">publishChangeEvent(old:new:)</a></code> by calling the
+event variable itself directly.</p>
 
                       </div>
                       <div class="declaration">
@@ -909,7 +937,13 @@ with <code>_someEvent(&lt;eventValue&gt;)</code>.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Convenience for:</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">event</span> <span class="o">=</span> <span class="kt">CancellableActionEventArgs</span><span class="p">(</span><span class="nv">value</span><span class="p">:</span> <span class="p">())</span>
+<span class="k">self</span><span class="o">.</span><span class="nf">publishEvent</span><span class="p">((</span><span class="n">sender</span><span class="p">,</span> <span class="n">event</span><span class="p">))</span>
+</code></pre>
+
+<p>Returns the final value of <code>event.cancel</code> after publishing the event to
+listeners.</p>
 
                       </div>
                       <div class="declaration">
@@ -936,7 +970,13 @@ with <code>_someEvent(&lt;eventValue&gt;)</code>.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Convenience for:</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">event</span> <span class="o">=</span> <span class="kt">CancellableActionEventArgs</span><span class="p">(</span><span class="nv">value</span><span class="p">:</span> <span class="n">value</span><span class="p">)</span>
+<span class="k">self</span><span class="o">.</span><span class="nf">publishEvent</span><span class="p">((</span><span class="n">sender</span><span class="p">,</span> <span class="n">event</span><span class="p">))</span>
+</code></pre>
+
+<p>Returns the final value of <code>event.cancel</code> after publishing the event to
+listeners.</p>
 
                       </div>
                       <div class="declaration">
@@ -963,7 +1003,8 @@ with <code>_someEvent(&lt;eventValue&gt;)</code>.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Convenience for invoking <code><a href="../Classes/Event.html#/s:13ImagineUICore5EventC024publishCancellableChangeC06senderSbqd___tqd__AE_AA0e6ActionC4ArgsCyytG4argstRszlF">publishCancellableChangeEvent(sender:)</a></code> by
+calling the event variable itself directly.</p>
 
                       </div>
                       <div class="declaration">
@@ -990,7 +1031,8 @@ with <code>_someEvent(&lt;eventValue&gt;)</code>.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Convenience for invoking <code><a href="../Classes/Event.html#/s:13ImagineUICore5EventC024publishCancellableChangeC06sender5valueSbqd___qd_0_tqd__AE_AA0e6ActionC4ArgsCyqd_0_G4argstRszr0_lF">publishCancellableChangeEvent(sender:value:)</a></code>
+by calling the event variable itself directly.</p>
 
                       </div>
                       <div class="declaration">
@@ -1017,14 +1059,24 @@ with <code>_someEvent(&lt;eventValue&gt;)</code>.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Convenience for:</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">event</span> <span class="o">=</span> <span class="kt">CancellableValueChangedEventArgs</span><span class="p">(</span><span class="nv">oldValue</span><span class="p">:</span> <span class="n">old</span><span class="p">,</span> <span class="nv">newValue</span><span class="p">:</span> <span class="k">new</span><span class="p">)</span>
+<span class="k">self</span><span class="o">.</span><span class="nf">publishEvent</span><span class="p">((</span><span class="n">sender</span><span class="p">,</span> <span class="n">event</span><span class="p">))</span>
+</code></pre>
+
+<p>Returns the final value of <code>event.cancel</code> after publishing the event to
+listeners.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="n">publishCancellableChangeEvent</span><span class="o">&lt;</span><span class="kt">Sender</span><span class="p">,</span> <span class="kt">Value</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">sender</span><span class="p">:</span> <span class="kt">Sender</span><span class="p">,</span> <span class="nv">old</span><span class="p">:</span> <span class="kt">Value</span><span class="p">,</span> <span class="nv">new</span><span class="p">:</span> <span class="kt">Value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span> <span class="k">where</span> <span class="kt">T</span> <span class="o">==</span> <span class="kt"><a href="../Typealiases.html#/s:13ImagineUICore15SenderEventArgsa">SenderEventArgs</a></span><span class="o">&lt;</span><span class="kt">Sender</span><span class="p">,</span> <span class="kt"><a href="../Classes/CancellableValueChangedEventArgs.html">CancellableValueChangedEventArgs</a></span><span class="o">&lt;</span><span class="kt">Value</span><span class="o">&gt;&gt;</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="n">publishCancellableChangeEvent</span><span class="o">&lt;</span><span class="kt">Sender</span><span class="p">,</span> <span class="kt">Value</span><span class="o">&gt;</span><span class="p">(</span>
+    <span class="nv">sender</span><span class="p">:</span> <span class="kt">Sender</span><span class="p">,</span>
+    <span class="nv">old</span><span class="p">:</span> <span class="kt">Value</span><span class="p">,</span>
+    <span class="nv">new</span><span class="p">:</span> <span class="kt">Value</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span> <span class="k">where</span> <span class="kt">T</span> <span class="o">==</span> <span class="kt"><a href="../Typealiases.html#/s:13ImagineUICore15SenderEventArgsa">SenderEventArgs</a></span><span class="o">&lt;</span><span class="kt">Sender</span><span class="p">,</span> <span class="kt"><a href="../Classes/CancellableValueChangedEventArgs.html">CancellableValueChangedEventArgs</a></span><span class="o">&lt;</span><span class="kt">Value</span><span class="o">&gt;&gt;</span></code></pre>
 
                         </div>
                       </div>
@@ -1044,14 +1096,19 @@ with <code>_someEvent(&lt;eventValue&gt;)</code>.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Convenience for invoking <code><a href="../Classes/Event.html#/s:13ImagineUICore5EventC024publishCancellableChangeC06sender3old3newSbqd___qd_0_qd_0_tqd__AE_AA0e12ValueChangedC4ArgsCyqd_0_G4argstRszr0_lF">publishCancellableChangeEvent(sender:old:new:)</a></code>
+by calling the event variable itself directly.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="n">callAsFunction</span><span class="o">&lt;</span><span class="kt">Sender</span><span class="p">,</span> <span class="kt">Value</span><span class="o">&gt;</span><span class="p">(</span><span class="nv">sender</span><span class="p">:</span> <span class="kt">Sender</span><span class="p">,</span> <span class="nv">old</span><span class="p">:</span> <span class="kt">Value</span><span class="p">,</span> <span class="nv">new</span><span class="p">:</span> <span class="kt">Value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span> <span class="k">where</span> <span class="kt">T</span> <span class="o">==</span> <span class="kt"><a href="../Typealiases.html#/s:13ImagineUICore15SenderEventArgsa">SenderEventArgs</a></span><span class="o">&lt;</span><span class="kt">Sender</span><span class="p">,</span> <span class="kt"><a href="../Classes/CancellableValueChangedEventArgs.html">CancellableValueChangedEventArgs</a></span><span class="o">&lt;</span><span class="kt">Value</span><span class="o">&gt;&gt;</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="n">callAsFunction</span><span class="o">&lt;</span><span class="kt">Sender</span><span class="p">,</span> <span class="kt">Value</span><span class="o">&gt;</span><span class="p">(</span>
+    <span class="nv">sender</span><span class="p">:</span> <span class="kt">Sender</span><span class="p">,</span>
+    <span class="nv">old</span><span class="p">:</span> <span class="kt">Value</span><span class="p">,</span>
+    <span class="nv">new</span><span class="p">:</span> <span class="kt">Value</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span> <span class="k">where</span> <span class="kt">T</span> <span class="o">==</span> <span class="kt"><a href="../Typealiases.html#/s:13ImagineUICore15SenderEventArgsa">SenderEventArgs</a></span><span class="o">&lt;</span><span class="kt">Sender</span><span class="p">,</span> <span class="kt"><a href="../Classes/CancellableValueChangedEventArgs.html">CancellableValueChangedEventArgs</a></span><span class="o">&lt;</span><span class="kt">Value</span><span class="o">&gt;&gt;</span></code></pre>
 
                         </div>
                       </div>
@@ -1071,7 +1128,7 @@ with <code>_someEvent(&lt;eventValue&gt;)</code>.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Convenience for <code>publishEvent((sender, ()))</code>.</p>
 
                       </div>
                       <div class="declaration">
@@ -1098,7 +1155,7 @@ with <code>_someEvent(&lt;eventValue&gt;)</code>.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Convenience for <code>publishEvent((sender, args))</code>.</p>
 
                       </div>
                       <div class="declaration">
@@ -1125,7 +1182,8 @@ with <code>_someEvent(&lt;eventValue&gt;)</code>.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Convenience for invoking <code><a href="../Classes/Event.html#/s:13ImagineUICore5EventC07publishC06senderyqd___tqd__AE_yt4argstRszlF">publishEvent(sender:)</a></code> by calling the event
+variable itself directly.</p>
 
                       </div>
                       <div class="declaration">
@@ -1152,7 +1210,8 @@ with <code>_someEvent(&lt;eventValue&gt;)</code>.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Convenience for invoking <code><a href="../Classes/Event.html#/s:13ImagineUICore5EventC07publishC06sender_yqd___qd_0_tqd__AE_qd_0_4argstRszr0_lF">publishEvent(sender:_:)</a></code> by calling the event
+variable itself directly.</p>
 
                       </div>
                       <div class="declaration">
@@ -1179,7 +1238,9 @@ with <code>_someEvent(&lt;eventValue&gt;)</code>.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Convenience for:</p>
+<pre class="highlight swift"><code><span class="k">self</span><span class="o">.</span><span class="nf">publishEvent</span><span class="p">((</span><span class="n">sender</span><span class="p">,</span> <span class="kt">ValueChangedEventArgs</span><span class="p">(</span><span class="nv">oldValue</span><span class="p">:</span> <span class="n">old</span><span class="p">,</span> <span class="nv">newValue</span><span class="p">:</span> <span class="k">new</span><span class="p">)))</span>
+</code></pre>
 
                       </div>
                       <div class="declaration">
@@ -1206,7 +1267,8 @@ with <code>_someEvent(&lt;eventValue&gt;)</code>.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Convenience for invoking <code><a href="../Classes/Event.html#/s:13ImagineUICore5EventC013publishChangeC06sender3old3newyqd___qd_0_qd_0_tqd__AE_AA012ValueChangedC4ArgsVyqd_0_G4argstRszr0_lF">publishChangeEvent(sender:old:new:)</a></code> by
+calling the event variable itself directly.</p>
 
                       </div>
                       <div class="declaration">
@@ -1246,7 +1308,7 @@ with <code>_someEvent(&lt;eventValue&gt;)</code>.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Convenience for <code>publishEvent(())</code>.</p>
 
                       </div>
                       <div class="declaration">
@@ -1273,7 +1335,7 @@ with <code>_someEvent(&lt;eventValue&gt;)</code>.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Convenience for <code>publishEvent(())</code>.</p>
 
                       </div>
                       <div class="declaration">

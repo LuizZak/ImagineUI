@@ -23,7 +23,7 @@
         <a class="header-link" href="index.html">
           ImagineUICore Docs
         </a>
-         (60% documented)
+         (63% documented)
       </p>
     
       <div class="header-col--secondary">
@@ -571,7 +571,8 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>A basic control with a label around an outlined area that the user can interact
+by clicking with the mouse, raising <code><a href="Classes/ControlView.html#/s:13ImagineUICore11ControlViewC12mouseClickedAA11EventSourceVyAC6sender_AA05MouseG4ArgsV4argstGvp">ControlView.mouseClicked</a></code> events.</p>
 
                         <a href="Classes/Button.html" class="slightly-smaller">See more</a>
                       </div>
@@ -715,8 +716,9 @@ by an user with mouse and keyboard input.</p>
                         <p>Property wrapper that can be used to define an event publisher/source pair
 using a single property.</p>
 
-<p>Events can be registered to with <code>someEvent.addListener()</code>, and published
-with <code>_someEvent(&lt;eventValue&gt;)</code>.</p>
+<p>When used as a property wrapper, events can be registered to with
+<code>someEvent.addListener()</code>, and published with
+<code>_someEvent.publishEvent(&lt;eventValue&gt;)</code> or <code>_someEvent(&lt;eventValue&gt;)</code>.</p>
 
 <p>Warning: Not thread-safe.</p>
 

@@ -1,41 +1,6 @@
 {
   "warnings": [
     {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Button.swift",
-      "line": 5,
-      "symbol": "Button",
-      "symbol_kind": "source.lang.swift.decl.class",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Button.swift",
-      "line": 8,
-      "symbol": "Button.label",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Button.swift",
-      "line": 10,
-      "symbol": "Button.title",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Button.swift",
-      "line": 19,
-      "symbol": "Button.contentInset",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Button.swift",
-      "line": 34,
-      "symbol": "Button.init(title:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
       "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Checkbox.swift",
       "line": 4,
       "symbol": "CheckboxStateWillChangeEventArgs",
@@ -429,169 +394,29 @@
     },
     {
       "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Event.swift",
-      "line": 11,
-      "symbol": "Event.wrappedValue",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Event.swift",
-      "line": 15,
+      "line": 19,
       "symbol": "Event.init()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Event.swift",
-      "line": 19,
-      "symbol": "Event.publishEvent(_:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Event.swift",
+      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventArgs/CancellableActionEventArgs.swift",
       "line": 23,
-      "symbol": "Event.callAsFunction(_:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Event.swift",
-      "line": 29,
-      "symbol": "Event.publishEvent()",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/Event.swift",
-      "line": 33,
-      "symbol": "Event.callAsFunction()",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventArgs/CancellableActionEventArgs.swift",
-      "line": 8,
-      "symbol": "CancellableActionEventArgs.value",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventArgs/CancellableActionEventArgs.swift",
-      "line": 9,
-      "symbol": "CancellableActionEventArgs.cancel",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventArgs/CancellableActionEventArgs.swift",
-      "line": 11,
       "symbol": "CancellableActionEventArgs.init(value:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventArgs/CancellableActionEventArgs.swift",
-      "line": 18,
-      "symbol": "Event.publishCancellableChangeEvent()",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventArgs/CancellableActionEventArgs.swift",
-      "line": 26,
-      "symbol": "Event.publishCancellableChangeEvent(value:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventArgs/CancellableActionEventArgs.swift",
-      "line": 34,
-      "symbol": "Event.callAsFunction()",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventArgs/CancellableActionEventArgs.swift",
-      "line": 38,
-      "symbol": "Event.callAsFunction(value:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
       "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventArgs/CancellableValueChangedEventArgs.swift",
-      "line": 8,
-      "symbol": "CancellableValueChangedEventArgs.oldValue",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventArgs/CancellableValueChangedEventArgs.swift",
-      "line": 9,
-      "symbol": "CancellableValueChangedEventArgs.newValue",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventArgs/CancellableValueChangedEventArgs.swift",
-      "line": 10,
-      "symbol": "CancellableValueChangedEventArgs.cancel",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventArgs/CancellableValueChangedEventArgs.swift",
-      "line": 12,
+      "line": 27,
       "symbol": "CancellableValueChangedEventArgs.init(oldValue:newValue:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventArgs/CancellableValueChangedEventArgs.swift",
-      "line": 21,
-      "symbol": "Event.publishCancellableChangeEvent(old:new:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventArgs/CancellableValueChangedEventArgs.swift",
-      "line": 30,
-      "symbol": "Event.callAsFunction(old:new:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
       "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventArgs/ValueChangedEventArgs.swift",
-      "line": 6,
-      "symbol": "ValueChangedEventArgs.oldValue",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventArgs/ValueChangedEventArgs.swift",
-      "line": 7,
-      "symbol": "ValueChangedEventArgs.newValue",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventArgs/ValueChangedEventArgs.swift",
-      "line": 9,
+      "line": 12,
       "symbol": "ValueChangedEventArgs.init(oldValue:newValue:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventArgs/ValueChangedEventArgs.swift",
-      "line": 16,
-      "symbol": "Event.publishChangeEvent(old:new:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventArgs/ValueChangedEventArgs.swift",
-      "line": 20,
-      "symbol": "Event.callAsFunction(old:new:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
@@ -662,90 +487,6 @@
       "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventSource.swift",
       "line": 30,
       "symbol": "EventSource.removeAll(fromOwner:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventWithSender/CancellableActionEventWithSender.swift",
-      "line": 6,
-      "symbol": "Event.publishCancellableChangeEvent(sender:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventWithSender/CancellableActionEventWithSender.swift",
-      "line": 14,
-      "symbol": "Event.publishCancellableChangeEvent(sender:value:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventWithSender/CancellableActionEventWithSender.swift",
-      "line": 22,
-      "symbol": "Event.callAsFunction(sender:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventWithSender/CancellableActionEventWithSender.swift",
-      "line": 26,
-      "symbol": "Event.callAsFunction(sender:value:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventWithSender/CancellableValueChangeEventWithSender.swift",
-      "line": 6,
-      "symbol": "Event.publishCancellableChangeEvent(sender:old:new:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventWithSender/CancellableValueChangeEventWithSender.swift",
-      "line": 15,
-      "symbol": "Event.callAsFunction(sender:old:new:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventWithSender/SenderEventArgs.swift",
-      "line": 5,
-      "symbol": "Event.publishEvent(sender:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventWithSender/SenderEventArgs.swift",
-      "line": 9,
-      "symbol": "Event.publishEvent(sender:_:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventWithSender/SenderEventArgs.swift",
-      "line": 13,
-      "symbol": "Event.callAsFunction(sender:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventWithSender/SenderEventArgs.swift",
-      "line": 17,
-      "symbol": "Event.callAsFunction(sender:_:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventWithSender/ValueChangedEventWithSender.swift",
-      "line": 5,
-      "symbol": "Event.publishChangeEvent(sender:old:new:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/EventWithSender/ValueChangedEventWithSender.swift",
-      "line": 9,
-      "symbol": "Event.callAsFunction(sender:old:new:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
@@ -1194,20 +935,6 @@
       "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/StatefulEvent.swift",
       "line": 12,
       "symbol": "StatefulEvent.init(wrappedValue:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/StatefulEvent.swift",
-      "line": 18,
-      "symbol": "StatefulEvent.publishEvent(_:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/Events/StatefulEvent.swift",
-      "line": 24,
-      "symbol": "StatefulEvent.callAsFunction(_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
