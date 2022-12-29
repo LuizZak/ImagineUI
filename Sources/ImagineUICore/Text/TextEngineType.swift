@@ -1,7 +1,7 @@
 /// A minimal interface for a text engine.
 ///
 /// Mainly implemented by `TextEngine`.
-public protocol TextEngineType {
+public protocol TextEngineType: AnyObject {
     /// Gets the caret range.
     ///
     /// To change the caret range, use `setCaret()`.

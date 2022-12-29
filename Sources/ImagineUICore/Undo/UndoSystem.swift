@@ -51,22 +51,28 @@ class UndoSystem: UndoSystemType {
     private var _currentGroupUndoTask: GroupUndoTask?
 
     /// Occurs whenever a new Undo task is registered
-    @EventWithSender<UndoSystem, UndoEventArgs> public var undoRegistered
+    @EventWithSender<UndoSystem, UndoEventArgs>
+    public var undoRegistered
 
     /// Occurs whenever a task will be undone
-    @EventWithSender<UndoSystem, UndoEventArgs> public var willPerformUndo
+    @EventWithSender<UndoSystem, UndoEventArgs>
+    public var willPerformUndo
 
     /// Occurs whenever a task was undone
-    @EventWithSender<UndoSystem, UndoEventArgs> public var undoPerformed
+    @EventWithSender<UndoSystem, UndoEventArgs>
+    public var undoPerformed
 
     /// Occurs whenever a task will be redone
-    @EventWithSender<UndoSystem, UndoEventArgs> public var willPerformRedo
+    @EventWithSender<UndoSystem, UndoEventArgs>
+    public var willPerformRedo
 
     /// Occurs whenever a task was redone
-    @EventWithSender<UndoSystem, UndoEventArgs> public var redoPerformed
+    @EventWithSender<UndoSystem, UndoEventArgs>
+    public var redoPerformed
 
     /// Occurs whenever the undo system was cleared
-    @EventWithSender<UndoSystem, Void> public var cleared
+    @EventWithSender<UndoSystem, Void>
+    public var cleared
 
     /// Gets the amount of tasks currently held by this `UndoSystem`
     public var count: Int { _undoTasks.count }
@@ -112,7 +118,7 @@ class UndoSystem: UndoSystemType {
 
         // Grouped undos: record them inside the group undo
         if inGroupUndo {
-            _currentGroupUndoTask?.AddTask(task)
+            _currentGroupUndoTask?.addTask(task)
             return
         }
 

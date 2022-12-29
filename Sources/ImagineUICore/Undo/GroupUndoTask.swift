@@ -43,16 +43,18 @@ public class GroupUndoTask: UndoTask {
     /// Adds a new task on this `GroupUndoTask`
     ///
     /// - Parameter task: The task to add to this `GroupUndoTask`
-    public func AddTask(_ task: UndoTask) {
+    public func addTask(_ task: UndoTask) {
+        assert(task as AnyObject !== self, "task as AnyObject !== self")
+
         undoList.append(task)
     }
 
     /// Adds a list of tasks on this `GroupUndoTask`
     ///
     /// - Parameter tasks: The tasks to add to this `GroupUndoTask`
-    public func AddTasks(_ tasks: [UndoTask]) {
+    public func addTasks(_ tasks: [UndoTask]) {
         for task in tasks {
-            AddTask(task)
+            addTask(task)
         }
     }
 

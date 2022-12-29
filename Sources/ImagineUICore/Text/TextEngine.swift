@@ -6,7 +6,7 @@ import Text
 ///
 /// Base text input engine backing for `TextField`'s.
 class TextEngine: TextEngineType {
-    /// Whenever sequential characters are input into the text engine via `InsertText`,
+    /// Whenever sequential characters are input into the text engine via `insertText`,
     /// this undo run is incremented so the undo operation for these operations
     /// occur as one single undo for multiple characters.
     private var _currentInputUndoRun: TextInsertUndo?
@@ -39,7 +39,7 @@ class TextEngine: TextEngineType {
 
     /// Gets the caret range.
     ///
-    /// To change the caret range, use one of the `SetCaret` methods.
+    /// To change the caret range, use one of the `setCaret` methods.
     public private(set) var caret = Caret(range: TextRange(start: 0, length: 0),
                                           position: .start)
 
@@ -94,7 +94,7 @@ class TextEngine: TextEngineType {
 
     /// Updates `_currentInputUndoRun` with a new character at a specified offset.
     /// If the offset is not exactly at the end of the current undo run, a new
-    /// undo run is started and the current undo run is flushed (via `FlushTextInsertUndo`).
+    /// undo run is started and the current undo run is flushed (via `flushTextInsertUndo`).
     private func updateTextInsertUndo(_ replacing: String, _ text: String, _ caret: Caret) {
         if _isPerformingUndoRedo {
             return
@@ -271,8 +271,10 @@ class TextEngine: TextEngineType {
 
     /// Selects the entire text buffer available.
     public func selectAll() {
-        setCaret(Caret(range: TextRange(start: 0, length: textBuffer.textLength),
-                       position: .end))
+        setCaret(Caret(
+            range: TextRange(start: 0, length: textBuffer.textLength),
+            position: .end
+        ))
     }
 
     /// Moves the caret position to a given location, while maintaining a pivot
@@ -329,10 +331,14 @@ class TextEngine: TextEngineType {
             textBuffer.delete(at: caret.start - 1, length: 1)
             setCaret(TextRange(start: caret.start - 1, length: 0))
 
-            _undoSystem.registerUndo(TextDeleteUndo(textEngine: self,
-                                                    beforeCaret: oldCaret,
-                                                    deletedRange: oldCaret.textRange,
-                                                    text: String(removed)))
+            _undoSystem.registerUndo(
+                TextDeleteUndo(
+                    textEngine: self,
+                    beforeCaret: oldCaret,
+                    deletedRange: oldCaret.textRange,
+                    text: String(removed)
+                )
+            )
         } else {
             let oldCaret = caret
             let removed = textBuffer.textInRange(caret.textRange)
@@ -340,10 +346,14 @@ class TextEngine: TextEngineType {
             textBuffer.delete(at: caret.start, length: caret.length)
             setCaret(caret.start)
 
-            _undoSystem.registerUndo(TextDeleteUndo(textEngine: self,
-                                                    beforeCaret: oldCaret,
-                                                    deletedRange: oldCaret.textRange,
-                                                    text: String(removed)))
+            _undoSystem.registerUndo(
+                TextDeleteUndo(
+                    textEngine: self,
+                    beforeCaret: oldCaret,
+                    deletedRange: oldCaret.textRange,
+                    text: String(removed)
+                )
+            )
         }
     }
 
@@ -604,7 +614,7 @@ class TextEngine: TextEngineType {
 /// Undo task for a text insert operation
 class TextInsertUndo: UndoTask {
     /// Text engine associated with this undo task
-    public let textEngine: TextEngineType
+    public private(set) weak var textEngine: TextEngineType?
 
     /// Position of caret when text was input
     public let caret: Caret
@@ -627,19 +637,19 @@ class TextInsertUndo: UndoTask {
     }
 
     public func undo() {
-        textEngine.setCaret(Caret(range: TextRange(start: caret.start, length: after.count),
+        textEngine?.setCaret(Caret(range: TextRange(start: caret.start, length: after.count),
                                   position: .start))
-        textEngine.deleteText()
+        textEngine?.deleteText()
 
         if !before.isEmpty {
-            textEngine.insertText(before)
-            textEngine.setCaret(caret)
+            textEngine?.insertText(before)
+            textEngine?.setCaret(caret)
         }
     }
 
     public func redo() {
-        textEngine.setCaret(caret)
-        textEngine.insertText(after)
+        textEngine?.setCaret(caret)
+        textEngine?.insertText(after)
     }
 
     public func getDescription() -> String {
@@ -650,7 +660,7 @@ class TextInsertUndo: UndoTask {
 /// Undo task for a text delete operation
 public class TextDeleteUndo : UndoTask {
     /// Text engine associated with this undo task
-    public let textEngine: TextEngineType
+    public private(set) weak var textEngine: TextEngineType?
 
     /// Position of caret to place when operation is undone
     public let beforeCaret: Caret
@@ -675,15 +685,15 @@ public class TextDeleteUndo : UndoTask {
     }
 
     public func undo() {
-        textEngine.setCaret(Caret(location: deletedRange.start))
-        textEngine.insertText(text)
+        textEngine?.setCaret(Caret(location: deletedRange.start))
+        textEngine?.insertText(text)
 
-        textEngine.setCaret(beforeCaret)
+        textEngine?.setCaret(beforeCaret)
     }
 
     public func redo() {
-        textEngine.setCaret(Caret(range: deletedRange, position: .start))
-        textEngine.deleteText()
+        textEngine?.setCaret(Caret(range: deletedRange, position: .start))
+        textEngine?.deleteText()
     }
 
     public func getDescription() -> String {
