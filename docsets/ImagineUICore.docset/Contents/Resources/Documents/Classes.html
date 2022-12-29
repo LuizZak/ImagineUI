@@ -23,7 +23,7 @@
         <a class="header-link" href="index.html">
           ImagineUICore Docs
         </a>
-         (63% documented)
+         (68% documented)
       </p>
     
       <div class="header-col--secondary">
@@ -837,7 +837,7 @@ exposing a <code>cancel</code> that can be changed by clients to cancel the stat
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>The arguments for a keyboard event that is forwarded to event listeners.</p>
 
                         <a href="Classes/KeyEventArgs.html" class="slightly-smaller">See more</a>
                       </div>
@@ -865,7 +865,7 @@ exposing a <code>cancel</code> that can be changed by clients to cancel the stat
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>The event arguments for a character-based key press event.</p>
 
                         <a href="Classes/KeyPressEventArgs.html" class="slightly-smaller">See more</a>
                       </div>
@@ -897,8 +897,9 @@ exposing a <code>cancel</code> that can be changed by clients to cancel the stat
 using a single property which can also hold state and notify sources when its
 state has changed.</p>
 
-<p>Events can be registered to with <code>someEvent.addListener()</code>, and published
-with <code>_someEvent(&lt;eventValue&gt;)</code>.</p>
+<p>When used as a property wrapper, events can be registered to with
+<code>someEvent.addListener()</code>, and published with
+<code>_someEvent.publishEvent(&lt;eventValue&gt;)</code> or <code>_someEvent(&lt;eventValue&gt;)</code>.</p>
 
 <p>Warning: Not thread-safe.</p>
 

@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           ImagineUICore Docs
         </a>
-         (63% documented)
+         (68% documented)
       </p>
     
       <div class="header-col--secondary">
@@ -556,7 +556,9 @@
 
                 </div>
               </div>
-            <p>Undocumented</p>
+            <p>Exposes an event source point that can be subscribed into in order to receive
+future events issued by the an event publisher associated with this event
+source.</p>
 
           </div>
         </section>
@@ -630,6 +632,39 @@ automatically removed when the <code>weakOwner</code> turns <code>nil</code>.</p
                 <li class="item">
                   <div>
                     <code>
+                    <a name="/s:13ImagineUICore11EventSourceV15addWeakListeneryAA0cG3KeyVqd___yqd___xtctRld__ClF"></a>
+                    <a name="//apple_ref/swift/Method/addWeakListener(_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13ImagineUICore11EventSourceV15addWeakListeneryAA0cG3KeyVqd___yqd___xtctRld__ClF">addWeakListener(_:<wbr>_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Convenience for:</p>
+<pre class="highlight swift"><code><span class="nf">addListener</span><span class="p">(</span><span class="nv">weakOwner</span><span class="p">:</span> <span class="n">owner</span><span class="p">)</span> <span class="p">{</span> <span class="p">[</span><span class="k">weak</span> <span class="n">owner</span><span class="p">]</span> <span class="n">value</span> <span class="k">in</span>
+    <span class="k">guard</span> <span class="k">let</span> <span class="nv">owner</span> <span class="k">else</span> <span class="p">{</span> <span class="k">return</span> <span class="p">}</span>
+    <span class="o">...</span>
+<span class="p">}</span>
+</code></pre>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@discardableResult</span>
+<span class="kd">public</span> <span class="kd">func</span> <span class="n">addWeakListener</span><span class="o">&lt;</span><span class="kt">U</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">weakOwner</span><span class="p">:</span> <span class="kt">U</span><span class="p">,</span> <span class="n">_</span> <span class="nv">listener</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">U</span><span class="p">,</span> <span class="kt">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Structs/EventListenerKey.html">EventListenerKey</a></span> <span class="k">where</span> <span class="kt">U</span> <span class="p">:</span> <span class="kt">AnyObject</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
                     <a name="/s:13ImagineUICore11EventSourceV14removeListener6forKeyyAA0cfH0V_tF"></a>
                     <a name="//apple_ref/swift/Method/removeListener(forKey:)" class="dashAnchor"></a>
                     <a class="token" href="#/s:13ImagineUICore11EventSourceV14removeListener6forKeyyAA0cfH0V_tF">removeListener(forKey:<wbr>)</a>
@@ -640,7 +675,8 @@ automatically removed when the <code>weakOwner</code> turns <code>nil</code>.</p
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Requesta that an event listener associated with a given key be
+unsubscribed and no longer receive any events.</p>
 
                       </div>
                       <div class="declaration">
@@ -667,7 +703,10 @@ automatically removed when the <code>weakOwner</code> turns <code>nil</code>.</p
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Removes all event subscriptions associated with a given owner object,
+by verifying the original <code>weakOwner</code> argument that was passed to
+<code><a href="../Structs/EventSource.html#/s:13ImagineUICore11EventSourceV11addListener9weakOwner_AA0cF3KeyVyXl_yxctF">addListener(weakOwner:_:)</a></code>. Matching is done by object identity, i.e.
+via <code>===</code>.</p>
 
                       </div>
                       <div class="declaration">

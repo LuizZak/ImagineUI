@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           ImagineUICore Docs
         </a>
-         (63% documented)
+         (68% documented)
       </p>
     
       <div class="header-col--secondary">
@@ -556,7 +556,7 @@
 
                 </div>
               </div>
-            <p>Undocumented</p>
+            <p>The event arguments for a character-based key press event.</p>
 
           </div>
         </section>
@@ -578,7 +578,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>The textual character for the key press event.
+May be any valid character input from a user&rsquo;s keyboard.</p>
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    Capitalization and diacritics are pre-applied to the character
+and don&rsquo;t require further inspection of <code><a href="../Classes/KeyPressEventArgs.html#/s:13ImagineUICore17KeyPressEventArgsC9modifiersAA16KeyboardModifierVvp">modifiers</a></code>.
+
+</div>
 
                       </div>
                       <div class="declaration">
@@ -605,7 +612,8 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Any modifier that was pressed along with the rest of the input described
+by this event.</p>
 
                       </div>
                       <div class="declaration">
@@ -632,7 +640,12 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Whether this event was handled by a responder in the first responder
+chain.</p>
+
+<p>Event handlers can set this value to <code>true</code> to indicate that upstream
+control systems that forwarded the event should treat the event as handled
+and not respond to it themselves.</p>
 
                       </div>
                       <div class="declaration">
@@ -659,7 +672,8 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Initializes a new key event argument structure. <code><a href="../Classes/KeyPressEventArgs.html#/s:13ImagineUICore17KeyPressEventArgsC7handledSbvp">handled</a></code> is set to <code>false</code>
+by default.</p>
 
                       </div>
                       <div class="declaration">

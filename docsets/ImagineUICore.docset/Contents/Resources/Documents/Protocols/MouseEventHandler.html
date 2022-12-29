@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           ImagineUICore Docs
         </a>
-         (63% documented)
+         (68% documented)
       </p>
     
       <div class="header-col--secondary">
@@ -556,7 +556,7 @@
 
                 </div>
               </div>
-            <p>Undocumented</p>
+            <p>A protocol describing a mouse event handler object.</p>
 
           </div>
         </section>
@@ -578,7 +578,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Main interface to forward mouse down events to the conforming type.</p>
 
                       </div>
                       <div class="declaration">
@@ -605,7 +605,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Main interface to forward mouse move events to the conforming type.</p>
 
                       </div>
                       <div class="declaration">
@@ -632,7 +632,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Main interface to forward mouse up events to the conforming type.</p>
 
                       </div>
                       <div class="declaration">
@@ -640,33 +640,6 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">onMouseUp</span><span class="p">(</span><span class="n">_</span> <span class="nv">event</span><span class="p">:</span> <span class="kt"><a href="../Structs/MouseEventArgs.html">MouseEventArgs</a></span><span class="p">)</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:13ImagineUICore17MouseEventHandlerP02onC5LeaveyyF"></a>
-                    <a name="//apple_ref/swift/Method/onMouseLeave()" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13ImagineUICore17MouseEventHandlerP02onC5LeaveyyF">onMouseLeave()</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">onMouseLeave</span><span class="p">()</span></code></pre>
 
                         </div>
                       </div>
@@ -686,7 +659,11 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Main interface to forward mouse enter events to the conforming type.</p>
+
+<p>Mouse enter is associated with the cursor crossing to the inside of the
+bounds of a logical screen area occupied by the conforming type, or an
+object that the conforming type is associated to, as an event handler.</p>
 
                       </div>
                       <div class="declaration">
@@ -694,6 +671,37 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">onMouseEnter</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13ImagineUICore17MouseEventHandlerP02onC5LeaveyyF"></a>
+                    <a name="//apple_ref/swift/Method/onMouseLeave()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13ImagineUICore17MouseEventHandlerP02onC5LeaveyyF">onMouseLeave()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Main interface to forward mouse leave events to the conforming type.</p>
+
+<p>Mouse leave is associated with the cursor crossing to the outside of the
+bounds of a logical screen area occupied by the conforming type, or an
+object that the conforming type is associated to, as an event handler.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">onMouseLeave</span><span class="p">()</span></code></pre>
 
                         </div>
                       </div>
@@ -713,7 +721,11 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Main interface to forward mouse click events to the conforming type.</p>
+
+<p>Mouse clicks are automatically synthesized by <code><a href="../Classes/DefaultControlSystem.html">DefaultControlSystem</a></code> by
+pairing up a &lsquo;mouse up&rsquo; event with a &lsquo;mouse down&rsquo; event, in case both
+events occurred on top of the same event handler.</p>
 
                       </div>
                       <div class="declaration">
@@ -740,7 +752,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Main interface to forward mouse scroll events to the conforming type.</p>
 
                       </div>
                       <div class="declaration">

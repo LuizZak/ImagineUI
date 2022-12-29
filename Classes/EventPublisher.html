@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           ImagineUICore Docs
         </a>
-         (63% documented)
+         (68% documented)
       </p>
     
       <div class="header-col--secondary">
@@ -580,7 +580,8 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Publishes a given value to all event listeners currently subscribed to
+this event publisher.</p>
 
                       </div>
                       <div class="declaration">
@@ -607,7 +608,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Adds a new event listener, tied to a given weakly-held owner object
+reference, with a listener closure that will be invoked when future events
+are published on this event publisher.</p>
+
+<p><code>weakOwner</code> is used to create a weak ownership link that is verified
+internally during event processing, and if <code>weakOwner</code> is released from
+memory, the underlying event listener that is registered is removed, as
+if by calling <code><a href="../Structs/EventListenerKey.html#/s:13ImagineUICore16EventListenerKeyV06removeD0yyF">EventListenerKey.removeListener()</a></code>.</p>
 
                       </div>
                       <div class="declaration">
@@ -657,9 +665,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13ImagineUICore18EventPublisherTypeP14removeListener6forKeyyAA0cgI0V_tF"></a>
+                    <a name="/s:13ImagineUICore14EventPublisherC14removeListener6forKeyyAA0cfH0V_tF"></a>
                     <a name="//apple_ref/swift/Method/removeListener(forKey:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13ImagineUICore18EventPublisherTypeP14removeListener6forKeyyAA0cgI0V_tF">removeListener(forKey:<wbr>)</a>
+                    <a class="token" href="#/s:13ImagineUICore14EventPublisherC14removeListener6forKeyyAA0cfH0V_tF">removeListener(forKey:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -667,7 +675,9 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        
+                        <p>Requesta that an event listener associated with a given key be
+unsubscribed from this event publisher.</p>
+
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -693,7 +703,10 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Removes all event subscriptions associated with a given owner object,
+by verifying the original <code>weakOwner</code> argument that was passed to
+<code><a href="../Classes/EventPublisher.html#/s:13ImagineUICore14EventPublisherC11addListener9weakOwner_AA0cF3KeyVyXl_yxctF">addListener(weakOwner:_:)</a></code>. Matching is done by object identity, i.e.
+via <code>===</code>.</p>
 
                       </div>
                       <div class="declaration">
@@ -720,7 +733,9 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Creates a wrapping event source on top of this event publisher that can
+be used to expose an API for event listeners to subscribe to without
+exposing the event publishing API as well.</p>
 
                       </div>
                       <div class="declaration">

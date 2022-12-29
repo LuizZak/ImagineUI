@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           ImagineUICore Docs
         </a>
-         (63% documented)
+         (68% documented)
       </p>
     
       <div class="header-col--secondary">
@@ -560,8 +560,9 @@
 using a single property which can also hold state and notify sources when its
 state has changed.</p>
 
-<p>Events can be registered to with <code>someEvent.addListener()</code>, and published
-with <code>_someEvent(&lt;eventValue&gt;)</code>.</p>
+<p>When used as a property wrapper, events can be registered to with
+<code>someEvent.addListener()</code>, and published with
+<code>_someEvent.publishEvent(&lt;eventValue&gt;)</code> or <code>_someEvent(&lt;eventValue&gt;)</code>.</p>
 
 <p>Warning: Not thread-safe.</p>
 
@@ -585,7 +586,7 @@ with <code>_someEvent(&lt;eventValue&gt;)</code>.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Initializes this stateful event with an initial state.</p>
 
                       </div>
                       <div class="declaration">

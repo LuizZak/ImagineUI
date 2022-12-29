@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           ImagineUICore Docs
         </a>
-         (63% documented)
+         (68% documented)
       </p>
     
       <div class="header-col--secondary">
@@ -784,7 +784,13 @@ events) into this event handler.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Requests that this event handler analyze an event request, and potentially
+accept the event via <code><a href="../Protocols/EventRequest.html#/s:13ImagineUICore12EventRequestP6accept7handleryAA0C7Handler_p_tF">EventRequest.accept(handler:)</a></code>, or forward to a
+next event handler in a responder chain or other custom sequence of
+potential event handlers.</p>
+
+<p>Event handlers are not required to interact with an event request and may
+simply ignore it, but they may not accept it more than once.</p>
 
                       </div>
                       <div class="declaration">

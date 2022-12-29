@@ -23,7 +23,7 @@
         <a class="header-link" href="../index.html">
           ImagineUICore Docs
         </a>
-         (63% documented)
+         (68% documented)
       </p>
     
       <div class="header-col--secondary">
@@ -556,7 +556,9 @@
 
                 </div>
               </div>
-            <p>Undocumented</p>
+            <p>A key that is issued when subscribing to an event publisher that can be used
+to revoke the subscription to that publisher, halting further events from
+invoking the event listener closure associated with this event listener key.</p>
 
           </div>
         </section>
@@ -578,7 +580,12 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Removes the event listener associated with this event listener key.</p>
+                        <p>Removes the event listener associated with this event listener key. Even
+though <code>EventListenerKey</code> is a struct type, copies of the same original
+event listener key returned by an event publisher all cancel the same
+underlying event listener entry.</p>
+
+<p>Calling this method multiple times has no effect.</p>
 
                       </div>
                       <div class="declaration">
