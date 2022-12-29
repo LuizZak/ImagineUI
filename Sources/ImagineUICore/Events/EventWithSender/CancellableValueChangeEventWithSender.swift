@@ -3,7 +3,20 @@
 public typealias CancellableValueChangeEventWithSender<Sender, Value> = EventWithSender<Sender, CancellableValueChangedEventArgs<Value>>
 
 public extension Event {
-    func publishCancellableChangeEvent<Sender, Value>(sender: Sender, old: Value, new: Value) -> Bool where T == SenderEventArgs<Sender, CancellableValueChangedEventArgs<Value>> {
+    /// Convenience for:
+    /// 
+    /// ```swift
+    /// let event = CancellableValueChangedEventArgs(oldValue: old, newValue: new)
+    /// self.publishEvent((sender, event))
+    /// ```
+    /// 
+    /// Returns the final value of `event.cancel` after publishing the event to
+    /// listeners.
+    func publishCancellableChangeEvent<Sender, Value>(
+        sender: Sender,
+        old: Value,
+        new: Value
+    ) -> Bool where T == SenderEventArgs<Sender, CancellableValueChangedEventArgs<Value>> {
 
         let event = CancellableValueChangedEventArgs(oldValue: old, newValue: new)
 
@@ -12,7 +25,14 @@ public extension Event {
         return event.cancel
     }
 
-    func callAsFunction<Sender, Value>(sender: Sender, old: Value, new: Value) -> Bool where T == SenderEventArgs<Sender, CancellableValueChangedEventArgs<Value>> {
+    /// Convenience for invoking `publishCancellableChangeEvent(sender:old:new:)`
+    /// by calling the event variable itself directly.
+    func callAsFunction<Sender, Value>(
+        sender: Sender,
+        old: Value,
+        new: Value
+    ) -> Bool where T == SenderEventArgs<Sender, CancellableValueChangedEventArgs<Value>> {
+
         return publishCancellableChangeEvent(sender: sender, old: old, new: new)
     }
 }
