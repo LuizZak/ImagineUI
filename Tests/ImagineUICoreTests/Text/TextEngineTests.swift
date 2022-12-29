@@ -2,6 +2,9 @@ import XCTest
 
 @testable import ImagineUICore
 
+// To solve an ambiguous type lookup in macOS
+typealias TextRange = ImagineUICore.TextRange
+
 class TextEngineTests: XCTestCase {
     func testStartState() {
         let buffer = TextBuffer("Test")
