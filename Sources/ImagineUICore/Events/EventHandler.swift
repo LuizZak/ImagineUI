@@ -40,5 +40,12 @@ public protocol EventHandler: AnyObject {
     /// events) into this event handler.
     func convertFromScreen(_ point: UIVector) -> UIVector
 
+    /// Requests that this event handler analyze an event request, and potentially
+    /// accept the event via `EventRequest.accept(handler:)`, or forward to a
+    /// next event handler in a responder chain or other custom sequence of
+    /// potential event handlers.
+    ///
+    /// Event handlers are not required to interact with an event request and may
+    /// simply ignore it, but they may not accept it more than once.
     func handleOrPass(_ eventRequest: EventRequest)
 }

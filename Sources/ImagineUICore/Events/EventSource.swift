@@ -1,3 +1,6 @@
+/// Exposes an event source point that can be subscribed into in order to receive
+/// future events issued by the an event publisher associated with this event
+/// source.
 public struct EventSource<T> {
     private let publisher: EventPublisher<T>
 
@@ -23,10 +26,29 @@ public struct EventSource<T> {
         return publisher.addListener(weakOwner: weakOwner) { listener() }
     }
 
+    /// Convenience for:
+    /// 
+    /// ```swift
+    /// addListener(weakOwner: owner) { [weak owner] value in
+    ///     guard let owner else { return }
+    ///     ...
+    /// }
+    /// ```
+    @discardableResult
+    public func addWeakListener<U: AnyObject>(_ weakOwner: U, _ listener: @escaping (U, T) -> Void) -> EventListenerKey {
+        return publisher.addWeakListener(weakOwner, listener)
+    }
+
+    /// Requesta that an event listener associated with a given key be
+    /// unsubscribed and no longer receive any events.
     public func removeListener(forKey key: EventListenerKey) {
         publisher.removeListener(forKey: key)
     }
 
+    /// Removes all event subscriptions associated with a given owner object,
+    /// by verifying the original `weakOwner` argument that was passed to
+    /// `addListener(weakOwner:_:)`. Matching is done by object identity, i.e.
+    /// via `===`.
     public func removeAll(fromOwner owner: AnyObject) {
         publisher.removeAll(fromOwner: owner)
     }
