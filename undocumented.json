@@ -807,7 +807,7 @@
     },
     {
       "file": "/Users/runner/work/ImagineUI/ImagineUI/Sources/ImagineUICore/LayoutSystem/Builder/LayoutConstraintDefinitions.swift",
-      "line": 30,
+      "line": 32,
       "symbol": "LayoutConstraintDefinitions.|(_:_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.static",
       "warning": "undocumented"
