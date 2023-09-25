@@ -1,6 +1,8 @@
 /// A list of layout constraint definitions that can be used to create and/or
 /// update constraints on a view.
 public struct LayoutConstraintDefinitions {
+    // TODO: Mark as @usableFromInline to fix a crash when building ImagineUI dependency for release
+    @usableFromInline
     var definitions: [LayoutConstraintDefinition]
 
     /// Creates the layout constraints defined within this `LayoutConstraintDefinitions`
