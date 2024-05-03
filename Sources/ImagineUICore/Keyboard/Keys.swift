@@ -15,6 +15,12 @@ public struct Keys: Hashable {
 }
 
 public extension Keys {
+    /// ABNT C1 key. Maps to `/`/`?`/`°` on Brazil ABNT/ABNT2 layouts.
+    static let abnt_c1 = Keys(rawValue: 0xC1)
+
+    /// ABNT2 C1 key. Maps to `numpad +` on Brazil ABNT2 layouts.
+    static let abnt_c2 = Keys(rawValue: 0xC2)
+
     /// The A key.
     static let a = Keys(rawValue: 65)
 
