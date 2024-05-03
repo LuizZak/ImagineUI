@@ -8,6 +8,7 @@ public class UIRegion {
         _rectangles.isEmpty || _rectangles.allSatisfy({ $0.size == .zero })
     }
 
+    /// Initializes an empty region.
     public init() {
         _rectangles = []
     }
@@ -15,6 +16,11 @@ public class UIRegion {
     /// Initializes a region with a single rectangle.
     public init(rectangle: UIRectangle) {
         _rectangles = [rectangle]
+    }
+
+    /// Initializes a region with a single rectangle.
+    public init(rectangle: UIIntRectangle) {
+        _rectangles = [UIRectangle(rectangle)]
     }
 
     /// Initializes a region with a set of rectangles that are added in additive
