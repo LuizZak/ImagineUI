@@ -108,15 +108,15 @@ public class ViewBitmapCache {
         }
         
         let ctx = renderer.context.createImageRenderer(width: bitmapWidth, height: bitmapHeight)
-        
-        ctx.renderer.clear()
-        
-        ctx.renderer.translate(by: (-rectangle.location).ceil())
-        ctx.renderer.scale(by: scale)
-        
-        closure(ctx.renderer)
-        
-        let image = ctx.renderedImage()
+
+        let image = ctx.withRenderer { renderer in
+            renderer.clear()
+            
+            renderer.translate(by: (-rectangle.location).ceil())
+            renderer.scale(by: scale)
+
+            closure(renderer)
+        }
         
         renderer.drawImageScaled(image, area: rect)
         
