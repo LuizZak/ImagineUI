@@ -206,6 +206,11 @@ public struct UIRectangle: Hashable, Codable {
     }
 
     @_transparent
+    public init(_ rectangle: UIIntRectangle) {
+        self.init(location: UIPoint(rectangle.location), size: UISize(rectangle.size))
+    }
+
+    @_transparent
     public func withLocation(_ point: UIPoint) -> Self {
         .init(location: point, size: size)
     }
