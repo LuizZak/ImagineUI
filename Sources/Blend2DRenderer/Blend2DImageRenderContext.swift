@@ -2,23 +2,21 @@ import SwiftBlend2D
 import Rendering
 
 class Blend2DImageRenderContext: ImageRenderContext {
-    private let _context: BLContext
-    private let _renderer: Blend2DRenderer
-    private let _image: BLImage
-    
-    var renderer: Renderer {
-        return _renderer
-    }
+    private let size: UIIntSize
     
     init(width: Int, height: Int) {
-        _image = BLImage(width: width, height: height, format: .prgb32)
-        _context = BLContext(image: _image)!
-        _renderer = Blend2DRenderer(context: _context)
+        size = .init(width: width, height: height)
     }
-    
-    func renderedImage() -> Image {
-        _context.end()
-        
-        return Blend2DImage(image: _image)
+
+    func withRenderer(_ block: (Renderer) -> Void) -> Image {
+        let image = BLImage(width: size.width, height: size.height, format: .prgb32)
+        let context = BLContext(image: image)!
+        let renderer = Blend2DRenderer(context: context)
+
+        block(renderer)
+
+        context.end()
+
+        return Blend2DImage(image: image)
     }
 }
