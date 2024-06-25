@@ -75,9 +75,11 @@ public struct AttributedText: Equatable {
             segments.removeAll()
         }
 
-        let segment = TextSegment(text: string,
-                                  textAttributes: attributes,
-                                  textRange: TextRange(start: text.count, length: string.count))
+        let segment = TextSegment(
+            text: string,
+            textAttributes: attributes,
+            textRange: TextRange(start: text.count, length: string.count)
+        )
 
         segments.append(segment)
 
@@ -268,13 +270,17 @@ public struct AttributedText: Equatable {
 
         let offset = position - segment.textRange.start
 
-        let firstHalf = TextSegment(text: String(segment.text[characterRange: 0..<offset]),
-                                    textAttributes: segment.textAttributes,
-                                    textRange: firstHalfSeg)
+        let firstHalf = TextSegment(
+            text: String(segment.text[characterRange: 0..<offset]),
+            textAttributes: segment.textAttributes,
+            textRange: firstHalfSeg
+        )
 
-        let secondHalf = TextSegment(text: String(segment.text[characterRange: offset...]),
-                                     textAttributes: segment.textAttributes,
-                                     textRange: secondHalfSeg)
+        let secondHalf = TextSegment(
+            text: String(segment.text[characterRange: offset...]),
+            textAttributes: segment.textAttributes,
+            textRange: secondHalfSeg
+        )
 
         guard let index = segments.firstIndex(of: segment) else {
             return
@@ -349,12 +355,15 @@ public struct AttributedText: Equatable {
 //    }
 //
 
+    // TODO: Implement attribute-only text segments for inline images and other
+    // TODO: dynamic content.
+
     public struct TextSegment: Equatable {
         public var text: String
         public var textAttributes: Attributes
         public var textRange: TextRange
 
-        public func attribute<T>(named name: AttributeName, type: T.Type) -> T? {
+        public func attribute<T: TextAttributeType>(named name: AttributeName, type: T.Type) -> T? {
             return textAttributes[name] as? T
         }
 
@@ -510,7 +519,7 @@ public extension AttributedText.AttributeName {
 
     /// Specifies the stroke color to draw the text segment with.
     ///
-    /// Should be either a `BLRgba32` or `BLRgba64` color structure.
+    /// Should be a `Color` color structure.
     static let strokeColor = Self(rawValue: "strokeColor")
 
     /// Specifies the width of the line to stroke the outlines of the text segment
@@ -527,7 +536,7 @@ public extension AttributedText.AttributeName {
     /// Specifies the color to draw the underline style with.
     /// If not specified, defaults to the foreground color.
     ///
-    /// Should be either a `BLRgba32` or `BLRgba64` color structure.
+    /// Should be a `Color` color structure.
     static let underlineColor = Self(rawValue: "underlineColor")
 
     /// Specifies the strikethrough style of the text.
@@ -538,6 +547,14 @@ public extension AttributedText.AttributeName {
     /// Specifies the color to draw the strikethrough style with.
     /// If not specified, defaults to the foreground color.
     ///
-    /// Should be either a `BLRgba32` or `BLRgba64` color structure.
+    /// Should be a `Color` color structure.
     static let strikethroughColor = Self(rawValue: "strikethroughColor")
+
+    /// Specifies an image to be displayed inline with the text. The image will
+    /// displace text within the line to comport it without affecting surrounding
+    /// lines. The image will always render at the beginning of the segment it is
+    /// associated with, displacing the remaining text to the sides.
+    ///
+    /// Should be an `Image` image structure.
+    static let image = Self(rawValue: "image")
 }

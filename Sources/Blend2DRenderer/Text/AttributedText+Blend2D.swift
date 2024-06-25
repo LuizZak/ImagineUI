@@ -13,19 +13,23 @@ extension AttributedText {
     /// no font attribute. Does not override fonts specified by attributes.
     /// - Parameter horizontalAlignment: Horizontal alignment of the text layout.
     /// - Parameter verticalAlignment: Vertical alignment of the text layout.
-    func render(to context: BLContext,
-                origin: BLPoint,
-                baseFont: BLFont,
-                horizontalAlignment: HorizontalTextAlignment = .leading,
-                verticalAlignment: VerticalTextAlignment = .near) {
-        
-        let layout = TextLayout(font: Blend2DFont(font: baseFont),
-                                attributedText: self,
-                                horizontalAlignment: horizontalAlignment,
-                                verticalAlignment: verticalAlignment)
-        
+    func render(
+        to context: BLContext,
+        origin: BLPoint,
+        baseFont: BLFont,
+        horizontalAlignment: HorizontalTextAlignment = .leading,
+        verticalAlignment: VerticalTextAlignment = .near
+    ) {
+
+        let layout = TextLayout(
+            font: Blend2DFont(font: baseFont),
+            attributedText: self,
+            horizontalAlignment: horizontalAlignment,
+            verticalAlignment: verticalAlignment
+        )
+
         let renderer = TextLayoutRenderer(textLayout: layout)
-        
+
         renderer.render(in: context, location: origin)
     }
 }

@@ -1,4 +1,5 @@
 import Geometry
+import RenderingCommon
 import Text
 
 /// Protocol for abstract renderers

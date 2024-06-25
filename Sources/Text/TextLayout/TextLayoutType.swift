@@ -8,10 +8,10 @@ public protocol TextLayoutType {
     var horizontalAlignment: HorizontalTextAlignment { get }
     var verticalAlignment: VerticalTextAlignment { get }
     var numberOfLines: Int { get }
-    
+
     /// Total size of text layout area
     var size: UISize { get }
-    
+
     func locationOfCharacter(index: Int) -> UIPoint
     func boundsForCharacters(startIndex: Int, length: Int) -> [UIRectangle]
     func boundsForCharacters(in range: TextRange) -> [UIRectangle]
@@ -27,14 +27,16 @@ public struct TextLayoutHitTestResult {
     public var isTrailing: Bool
     public var width: Double
     public var height: Double
-    
-    public init(isInside: Bool,
-                textPosition: Int,
-                stringIndex: String.Index,
-                isTrailing: Bool,
-                width: Double,
-                height: Double) {
-        
+
+    public init(
+        isInside: Bool,
+        textPosition: Int,
+        stringIndex: String.Index,
+        isTrailing: Bool,
+        width: Double,
+        height: Double
+    ) {
+
         self.isInside = isInside
         self.textPosition = textPosition
         self.stringIndex = stringIndex

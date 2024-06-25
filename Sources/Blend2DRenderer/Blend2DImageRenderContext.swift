@@ -3,9 +3,13 @@ import Rendering
 
 class Blend2DImageRenderContext: ImageRenderContext {
     private let size: UIIntSize
-    
-    init(width: Int, height: Int) {
-        size = .init(width: width, height: height)
+
+    convenience init(width: Int, height: Int) {
+        self.init(size: .init(width: width, height: height))
+    }
+
+    init(size: UIIntSize) {
+        self.size = size
     }
 
     func withRenderer(_ block: (Renderer) -> Void) -> Image {

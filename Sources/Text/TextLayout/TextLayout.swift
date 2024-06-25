@@ -1,38 +1,41 @@
 import Foundation
 import Geometry
+import RenderingCommon
 
 public class TextLayout: TextLayoutType {
     internal var minimalSize: UISize = UISize()
-    
+
     public let font: Font
-    
+
     public internal(set) var lines: [TextLayoutLine] = []
-    
+
     public var text: String {
         return attributedText.string
     }
-    
+
     public let attributedText: AttributedText
-    
+
     public let horizontalAlignment: HorizontalTextAlignment
-    
+
     public let verticalAlignment: VerticalTextAlignment
-    
+
     public var numberOfLines: Int {
         return lines.count
     }
-    
+
     public let availableSize: UISize?
-    
+
     public var size: UISize {
         return availableSize ?? minimalSize
     }
 
-    public init(font: Font,
-                text: String,
-                availableSize: UISize? = nil,
-                horizontalAlignment: HorizontalTextAlignment = .leading,
-                verticalAlignment: VerticalTextAlignment = .near) {
+    public init(
+        font: Font,
+        text: String,
+        availableSize: UISize? = nil,
+        horizontalAlignment: HorizontalTextAlignment = .leading,
+        verticalAlignment: VerticalTextAlignment = .near
+    ) {
 
         self.font = font
         attributedText = AttributedText(text)
@@ -42,12 +45,14 @@ public class TextLayout: TextLayoutType {
 
         layoutLines()
     }
-    
-    public init(font: Font,
-                attributedText: AttributedText,
-                availableSize: UISize? = nil,
-                horizontalAlignment: HorizontalTextAlignment = .leading,
-                verticalAlignment: VerticalTextAlignment = .near) {
+
+    public init(
+        font: Font,
+        attributedText: AttributedText,
+        availableSize: UISize? = nil,
+        horizontalAlignment: HorizontalTextAlignment = .leading,
+        verticalAlignment: VerticalTextAlignment = .near
+    ) {
 
         self.font = font
         self.attributedText = attributedText
@@ -59,130 +64,138 @@ public class TextLayout: TextLayoutType {
     }
 
     public func locationOfCharacter(index: Int) -> UIVector {
-        func offsetFromLineSegment(line: TextLayoutLine,
-                                   segment: TextLayoutLineSegment,
-                                   offset: Int) -> UIVector {
-            
+        func offsetFromLineSegment(
+            line: TextLayoutLine,
+            segment: TextLayoutLineSegment,
+            offset: Int
+        ) -> UIVector {
+
             let offsetIndex = offset - segment.startCharacterIndex
-            
+
             var location = line.bounds.topLeft + segment.bounds.topLeft
             var iterator = segment.glyphBuffer.makeIterator()
             for _ in 0..<offsetIndex {
                 if let placement = iterator.advanceOffset {
                     location += segment.font.matrix.transform(UIVector(placement.advance))
                 }
-                
+
                 iterator.advance()
             }
-            
+
             return location
         }
-        
+
         if index <= 0 {
             return lines[0].bounds.topLeft + lines[0].segments[0].bounds.topLeft
         }
-        
+
         for line in lines {
             guard index >= line.startCharacterIndex && index <= line.endCharacterIndex else {
                 continue
             }
-            
+
             if let segment = line.segment(containing: index) {
                 return offsetFromLineSegment(line: line, segment: segment, offset: index)
             }
         }
-        
+
         if let last = lines.last, last.endCharacterIndex < index {
-            return offsetFromLineSegment(line: last,
-                                         segment: last.segments[last.segments.count - 1],
-                                         offset: last.endCharacterIndex)
+            return offsetFromLineSegment(
+                line: last,
+                segment: last.segments[last.segments.count - 1],
+                offset: last.endCharacterIndex
+            )
         }
 
         return .zero
     }
-    
+
     /// Returns the rectangular boundaries for a glyph at a given index.
     /// - precondition: `index >= 0 && index < text.count`
     public func boundsForCharacter(at index: Int) -> UIRectangle {
         precondition(index >= 0 && index < text.count)
-        
+
         return boundsForCharacters(in: TextRange(start: index, length: 1))[0]
     }
-    
+
     public func boundsForCharacters(startIndex: Int, length: Int) -> [UIRectangle] {
         return boundsForCharacters(in: TextRange(start: startIndex, length: length))
     }
-    
+
     public func boundsForCharacters(in range: TextRange) -> [UIRectangle] {
         var boundsList: [UIRectangle] = []
-        
+
         for line in lines where line.textRange.intersects(range) {
             for segment in line.segments(intersecting: range) {
                 guard let intersection = segment.textRange.intersection(range) else {
                     continue
                 }
-                
+
                 let height = Double(segment.font.metrics.ascent + segment.font.metrics.descent)
-                
+
                 var advanceOffset: UIVector = .zero
-                
+
                 var iterator = segment.glyphBuffer.makeIterator()
                 while !iterator.atEnd {
                     defer { iterator.advance() }
                     guard let advance = iterator.advanceOffset else {
                         continue
                     }
-                    
+
                     let index = segment.startCharacterIndex + iterator.index
-                    
+
                     if intersection.contains(index) {
-                        var bounds = UIRectangle(x: advanceOffset.x,
-                                               y: advanceOffset.y,
-                                               width: Double(advance.advance.x),
-                                               height: 0)
-                        
+                        var bounds = UIRectangle(
+                            x: advanceOffset.x,
+                            y: advanceOffset.y,
+                            width: Double(advance.advance.x),
+                            height: 0
+                        )
+
                         bounds = segment.font.matrix.transform(bounds)
                         bounds = bounds
                             .withSize(width: bounds.width, height: height)
                             .offsetBy(x: line.bounds.topLeft.x + segment.bounds.topLeft.x,
                                       y: line.bounds.topLeft.y + segment.bounds.topLeft.y)
-                        
+
                         boundsList.append(bounds)
                     } else if intersection.end < index {
                         break
                     }
-                    
+
                     advanceOffset += UIVector(advance.advance)
                 }
             }
         }
-        
+
         return boundsList
     }
-    
+
     public func hitTestPoint(_ point: UIVector) -> TextLayoutHitTestResult {
         guard let line = lineAtHeight(point.y) else {
-            return TextLayoutHitTestResult(isInside: false,
-                                           textPosition: 0,
-                                           stringIndex: text.startIndex,
-                                           isTrailing: false,
-                                           width: 0,
-                                           height: 0)
+            return TextLayoutHitTestResult(
+                isInside: false,
+                textPosition: 0,
+                stringIndex: text.startIndex,
+                isTrailing: false,
+                width: 0,
+                height: 0
+            )
         }
-        
+
         var closestIndex = 0
         var closestRect = UIRectangle.zero
         var closestRectDist: Double = .infinity
-        
+
         var absoluteIndex = 0
         for segment in line.segments {
             let height = Double(segment.font.metrics.ascent + segment.font.metrics.descent)
-            
+
             // TODO: Support cases where font's transform matrix doesn't in fact
             // inverts Y axis (so we would need to fetch the topLeft corner,
             // instead)
             var advanceOffset = segment.originalBounds.bottomLeft // Inverted Y axis
-            
+
             var iterator = segment.glyphBuffer.makeIterator()
             while !iterator.atEnd {
                 defer { absoluteIndex += 1 }
@@ -190,29 +203,31 @@ public class TextLayout: TextLayoutType {
                 guard let advance = iterator.advanceOffset else {
                     continue
                 }
-                
-                var rect = UIRectangle(x: advanceOffset.x,
-                                     y: advanceOffset.y,
-                                     width: Double(advance.advance.x),
-                                     height: 0)
-                
+
+                var rect = UIRectangle(
+                    x: advanceOffset.x,
+                    y: advanceOffset.y,
+                    width: Double(advance.advance.x),
+                    height: 0
+                )
+
                 rect = segment.font.matrix.transform(rect)
                 rect = rect
                     .withSize(width: rect.width, height: height)
                     .offsetBy(x: line.bounds.topLeft.x + segment.bounds.topLeft.x,
                               y: line.bounds.topLeft.y + segment.bounds.topLeft.y)
-                
+
                 if rect.contains(point) {
-                    return
-                        TextLayoutHitTestResult(
-                            isInside: true,
-                            textPosition: segment.startCharacterIndex + iterator.index,
-                            stringIndex: text.index(segment.startIndex, offsetBy: iterator.index),
-                            isTrailing: rect.center.x < point.x,
-                            width: rect.width,
-                            height: rect.height)
+                    return TextLayoutHitTestResult(
+                        isInside: true,
+                        textPosition: segment.startCharacterIndex + iterator.index,
+                        stringIndex: text.index(segment.startIndex, offsetBy: iterator.index),
+                        isTrailing: rect.center.x < point.x,
+                        width: rect.width,
+                        height: rect.height
+                    )
                 }
-                
+
                 // TODO: Should do distance to corner of rect, not its center
                 let dist = rect.center.distanceSquared(to: point)
                 if dist < closestRectDist {
@@ -226,32 +241,34 @@ public class TextLayout: TextLayoutType {
                     // character.
                     break
                 }
-                
+
                 advanceOffset += UIVector(advance.advance)
             }
         }
-        
-        return TextLayoutHitTestResult(isInside: false,
-                                       textPosition: line.startCharacterIndex + closestIndex,
-                                       stringIndex: text.index(line.startIndex, offsetBy: closestIndex),
-                                       isTrailing: closestRect.center.x < point.x,
-                                       width: closestRect.width,
-                                       height: closestRect.height)
+
+        return TextLayoutHitTestResult(
+            isInside: false,
+            textPosition: line.startCharacterIndex + closestIndex,
+            stringIndex: text.index(line.startIndex, offsetBy: closestIndex),
+            isTrailing: closestRect.center.x < point.x,
+            width: closestRect.width,
+            height: closestRect.height
+        )
     }
-    
+
     public func font(atLocation index: Int) -> Font {
         let line = lines.first(where: { $0.textRange.contains(index) })
         guard let segment = line?.segment(containing: index) else {
             return font
         }
-        
+
         return segment.font
     }
-    
+
     public func baselineHeightForLine(atIndex index: Int) -> Float {
         return lines[index].baselineHeight
     }
-    
+
     private func lineAtHeight(_ height: Double) -> TextLayoutLine? {
         if height < 0 {
             return lines.first
@@ -261,10 +278,10 @@ public class TextLayout: TextLayoutType {
                 return line
             }
         }
-        
+
         return lines.last
     }
-    
+
     public func iterateSegments(_ closure: (TextLayoutLine, TextLayoutLineSegment) -> Void) {
         for line in lines {
             for segment in line.segments {
@@ -272,26 +289,26 @@ public class TextLayout: TextLayoutType {
             }
         }
     }
-    
+
     private func layoutLines() {
         let collector = LineCollector(attributedText: attributedText, font: font)
         collector.collect()
-        
+
         self.lines = collector.lines
         self.minimalSize = collector.minimalSize
-        
+
         adjustAlignment()
     }
-    
+
     private func adjustAlignment() {
         guard !lines.isEmpty else { return }
-        
+
         /// By default, text layouts are already produced with a top-left text
         /// alignment
         if horizontalAlignment == .leading && verticalAlignment == .near { return }
-        
+
         var accumulatedHeight: Double = 0
-        
+
         for (i, line) in lines.enumerated() {
             var rect = line.bounds
 
@@ -304,7 +321,7 @@ public class TextLayout: TextLayoutType {
             case .trailing:
                 rect = rect.movingRight(to: size.width)
             }
-            
+
             // Vertical alignment
             switch verticalAlignment {
             case .near, .center:
@@ -314,21 +331,21 @@ public class TextLayout: TextLayoutType {
                 rect = rect.movingTop(to: size.height - minimalSize.height + accumulatedHeight)
                 accumulatedHeight += line.bounds.height
             }
-            
+
             lines[i].bounds = rect
         }
-        
+
         // Vertical centered text
         if verticalAlignment == .center {
             let centerY: Double = lines.reduce(0) { $0 + $1.bounds.height } / 2
             let offset = size.height / 2 - centerY
-            
+
             for (i, line) in lines.enumerated() {
                 lines[i].bounds = line.bounds.offsetBy(x: 0, y: offset)
             }
         }
     }
-    
+
     private func isLineBreak(_ character: Character) -> Bool {
         return character.unicodeScalars.contains(where: CharacterSet.newlines.contains)
     }
@@ -339,46 +356,48 @@ private class LineCollector {
     private var currentWorkingSegment: WorkingSegment
     private var currentWorkingLine: WorkingLine
     private var currentSegment: AttributedText.TextSegment
-    
+
     let attributedText: AttributedText
     let font: Font
     var index: String.Index
     var intIndex: Int
     var lines: [TextLayoutLine] = []
     var minimalSize: UISize
-    
+
     var text: String {
         return attributedText.string
     }
-    
+
     init(attributedText: AttributedText, font: Font) {
         self.attributedText = attributedText
         self.font = font
         self.index = attributedText.string.startIndex
         self.intIndex = 0
         self.minimalSize = .zero
-        
-        currentWorkingSegment =
-            WorkingSegment(font: font,
-                           startIndex: index,
-                           startCharIndex: 0,
-                           topLeft: .zero)
-        
-        currentWorkingLine =
-            WorkingLine(startIndex: index,
-                        startCharIndex: intIndex,
-                        segments: [],
-                        topLeft: .zero)
-        
+
+        currentWorkingSegment = WorkingSegment(
+            font: font,
+            startIndex: index,
+            startCharIndex: 0,
+            topLeft: .zero
+        )
+
+        currentWorkingLine = WorkingLine(
+            startIndex: index,
+            startCharIndex: intIndex,
+            segments: [],
+            topLeft: .zero
+        )
+
         currentSegment = attributedText.textSegments[0]
-        
+
         prepareWorkingLineFromCurrentState(topLeft: .zero)
     }
-    
+
     func collect() {
         while index < text.endIndex {
             defer { moveForward() }
-            
+
             if LineCollector.isLineBreak(text[index]) {
                 moveForward()
                 flushLine()
@@ -386,104 +405,127 @@ private class LineCollector {
                 flushSegment()
             }
         }
-        
+
         // Flush last remaining line and segment
         flushLine()
     }
-    
+
     private func moveForward() {
         guard index < text.endIndex else { return }
         text.formIndex(after: &index)
         intIndex += 1
     }
-    
+
     private func flushSegment() {
-        let lineSegment =
-            currentWorkingSegment
-                .makeLineSegment(endCharIndex: intIndex,
-                                 endIndex: index,
-                                 text: text,
-                                 segment: currentSegment)
-        
+        let lineSegment = currentWorkingSegment
+            .makeLineSegment(
+                endCharIndex: intIndex,
+                endIndex: index,
+                text: text,
+                segment: currentSegment
+            )
+
         currentWorkingLine.segments.append(lineSegment)
-        
+
         currentSegment = textSegmentUnderIndex() ?? currentSegment
-        
+
         prepareWorkingSegmentFromCurrentState(topLeft: lineSegment.bounds.topRight)
     }
-    
+
     private func flushLine() {
         flushSegment()
-        
+
         let line = currentWorkingLine.makeLine(text: text)
-        
+
         lines.append(line)
-        
+
         minimalSize = .pointwiseMax(minimalSize, line.bounds.bottomRight.asUISize)
-        
+
         prepareWorkingLineFromCurrentState(topLeft: line.bounds.bottomLeft)
     }
-    
+
     private func prepareWorkingSegmentFromCurrentState(topLeft: UIVector) {
         let segmentFontAttribute = currentSegment.textAttributes[.font] as? Font
         let segmentFont = segmentFontAttribute ?? font
-        
-        currentWorkingSegment =
-            WorkingSegment(font: segmentFont,
-                           startIndex: index,
-                           startCharIndex: intIndex,
-                           topLeft: topLeft)
+
+        currentWorkingSegment = WorkingSegment(
+            font: segmentFont,
+            startIndex: index,
+            startCharIndex: intIndex,
+            topLeft: topLeft
+        )
     }
-    
+
     private func prepareWorkingLineFromCurrentState(topLeft: UIVector) {
         prepareWorkingSegmentFromCurrentState(topLeft: .zero)
-        
-        currentWorkingLine =
-            WorkingLine(startIndex: index,
-                        startCharIndex: intIndex,
-                        segments: [],
-                        topLeft: topLeft)
+
+        currentWorkingLine = WorkingLine(
+            startIndex: index,
+            startCharIndex: intIndex,
+            segments: [],
+            topLeft: topLeft
+        )
     }
-    
+
     private func textSegmentUnderIndex() -> AttributedText.TextSegment? {
         return attributedText.segmentUnder(intIndex)
     }
-    
+
     private static func isLineBreak(_ character: Character) -> Bool {
         return character.unicodeScalars.contains(where: newlinesCharacterSet.contains)
     }
-    
+
     private struct WorkingSegment {
         var font: Font
         var startIndex: String.Index
         var startCharIndex: Int
         var topLeft: UIVector
-        
-        func makeLineSegment(endCharIndex: Int, endIndex: String.Index,
-                             text: String,
-                             segment: AttributedText.TextSegment) -> TextLayoutLineSegment {
-            
+
+        func makeLineSegment(
+            endCharIndex: Int, endIndex: String.Index,
+            text: String,
+            segment: AttributedText.TextSegment
+        ) -> TextLayoutLineSegment {
+
             let substring = text[startIndex..<endIndex]
             let substringMinusLineBreaks = substring.filter { !isLineBreak($0) }
             let lineGap = startIndex == text.startIndex ? 0.0 : font.metrics.lineGap
             let minHeight = Double(font.metrics.ascent + font.metrics.descent + lineGap)
-            
+
             let glyphBuffer = font.createGlyphBuffer(substring)
             let glyphBufferMinusLineBreak = font.createGlyphBuffer(substringMinusLineBreaks)
-            
+
             // Ok to force-unwrap: FontType.createGlyphBuffer guarantees a glyph
             // buffer that works with the same FontType.getTextMetrics
             let metrics = font.getTextMetrics(glyphBufferMinusLineBreak)!
-            
-            let bounds = UIRectangle(x: topLeft.x,
-                                    y: topLeft.y,
-                                    width: metrics.advance.x,
-                                    height: max(minHeight, metrics.boundingBox.height))
-            
+
+            var bounds = UIRectangle(
+                x: topLeft.x,
+                y: topLeft.y,
+                width: metrics.advance.x,
+                height: max(minHeight, metrics.boundingBox.height)
+            )
+
+            var offset = UIVector(x: 0, y: Double(font.metrics.ascent))
+
+            // Detect inlined images
+            if let imageAttribute = segment.attribute(named: .image, type: ImageAttribute.self) {
+                let image = imageAttribute.image
+
+                bounds.width = max(bounds.width, Double(image.size.width))
+                // Ensure that the descent is taken into account for cases where
+                // the image is taller than the line.
+                let newHeight = max(bounds.height, Double(image.size.height) + Double(font.metrics.descent))
+
+                if newHeight > bounds.height {
+                    offset.y += newHeight - bounds.height
+                }
+
+                bounds.height = newHeight
+            }
+
             let originalBounds = font.matrix.toMatrix2D().inverted().transform(bounds)
-            
-            let offset = UIVector(x: 0, y: Double(font.metrics.ascent))
-            
+
             return TextLayoutLineSegment(
                 startCharacterIndex: startCharIndex,
                 endCharacterIndex: endCharIndex,
@@ -499,49 +541,49 @@ private class LineCollector {
                 originalBounds: originalBounds)
         }
     }
-    
+
     private struct WorkingLine {
         var startIndex: String.Index
         var startCharIndex: Int
         var segments: [TextLayoutLineSegment]
         var topLeft: UIVector
-        
+
         func makeLine(text: String) -> TextLayoutLine {
             let startIndex = segments[0].startIndex
             let startCharIndex = segments[0].startCharacterIndex
             let endIndex = segments.last!.endIndex
             let endCharIndex = segments.last!.endCharacterIndex
-            
+
             let substring = text[startIndex..<endIndex]
-            
+
             var bounds: UIRectangle = .zero
-            
+
             var segments = self.segments
             var highestDescent: Float = 0
             var highestAscent: Float = 0
             var highestUnderline: Float = 0
-            
+
             for segment in segments {
                 bounds = bounds.union(segment.bounds)
                 highestAscent = max(highestAscent, segment.font.metrics.ascent)
                 highestDescent = max(highestDescent, segment.font.metrics.descent)
                 highestUnderline = max(highestUnderline, segment.font.metrics.underlinePosition)
             }
-            
+
             // Align segments down to the largest baseline
             for (i, segment) in segments.enumerated() {
                 let bottom =
                     bounds.bottom
                         - Double(highestDescent)
                         + Double(segment.font.metrics.descent)
-                    
+
                 segments[i].bounds =
                     segment.bounds.movingBottom(to: bottom)
-                
+
                 segments[i].originalBounds =
                     segments[i].font.matrix.transform(segments[i].bounds)
             }
-            
+
             return TextLayoutLine(
                 segments: segments,
                 startCharacterIndex: startCharIndex,
@@ -551,7 +593,8 @@ private class LineCollector {
                 text: substring,
                 baselineHeight: highestAscent,
                 underlineOffset: highestUnderline,
-                bounds: bounds.withLocation(topLeft))
+                bounds: bounds.withLocation(topLeft)
+            )
         }
     }
 }

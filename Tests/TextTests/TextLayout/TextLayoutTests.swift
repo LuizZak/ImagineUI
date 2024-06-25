@@ -1,9 +1,32 @@
 import XCTest
 import Geometry
+import RenderingCommon
 
 @testable import Text
 
 class TextLayoutTests: XCTestCase {
+    func testImageAttribute() {
+        let image = TestImage(width: 15, height: 10)
+        let input: AttributedText = "ab"
+        let inputWithImage: AttributedText = """
+        \("a", attributes: [.image: ImageAttribute(image: image)])b
+        """
+
+        let sut = makeSut(attributedText: input)
+        let sutWithImage = makeSut(attributedText: inputWithImage)
+
+        XCTAssertEqual(sut.size, .init(width: 23.525390625, height: 27.236328125))
+        XCTAssertEqual(sut.boundsForCharacter(at: 1), UIRectangle(
+            location: UIPoint(x: 11.220703125, y: 0.0),
+            size: UISize(width: 12.3046875, height: 27.236328125)
+        ))
+        XCTAssertEqual(sutWithImage.size, UISize(width: 27.3046875, height: 27.236328125))
+        XCTAssertEqual(sutWithImage.boundsForCharacter(at: 1), UIRectangle(
+            location: UIPoint(x: 15.0, y: 0.0),
+            size: UISize(width: 12.3046875, height: 27.236328125)
+        ))
+    }
+
     func testLineBreakPriorToEndOfString() {
         let input = """
         Input
@@ -19,162 +42,162 @@ class TextLayoutTests: XCTestCase {
 
     func testPerformance_noLineBreaks() {
         let font = makeFont(size: 20)
-        
+
         measure {
             for _ in 0..<10 {
                 _ = TextLayout(font: font, text: loremIpsumNoLineBreaks)
             }
         }
     }
-    
+
     func testPerformance_lineBreaks() {
         let font = makeFont(size: 20)
-        
+
         measure {
             for _ in 0..<10 {
                 _ = TextLayout(font: font, text: loremIpsumLineBreaks)
             }
         }
     }
-    
+
     func testLocationOfCharacter() {
         let sut = makeSut(text: "A string")
-        
+
         let location = sut.locationOfCharacter(index: 2)
-        
+
         XCTAssertEqual(location, UIVector(x: 17.978515625, y: 0.0))
     }
-    
+
     func testLocationOfCharacterOffBounds() {
         let sut = makeSut(text: "A string")
-        
+
         let location = sut.locationOfCharacter(index: 100)
-        
+
         XCTAssertEqual(location, sut.locationOfCharacter(index: sut.text.count))
     }
-    
+
     func testHitTestPoint() {
         let sut = makeSut(text: "A string")
-        
+
         let hitTest = sut.hitTestPoint(UIVector(x: 3, y: 2))
-        
+
         XCTAssert(hitTest.isInside)
         XCTAssertEqual(hitTest.textPosition, 0)
         XCTAssertFalse(hitTest.isTrailing)
     }
-    
+
     func testHitTestPoint_segmentedText() {
         var attributed = AttributedText("A string")
         attributed.addAttributes(.init(start: 3, length: 2), [
             "custom": TestAttribute()
         ])
         let sut = makeSut(attributedText: attributed)
-        
+
         let hitTest = sut.hitTestPoint(UIVector(x: 40, y: 2))
-        
+
         XCTAssert(hitTest.isInside)
         XCTAssertEqual(hitTest.textPosition, 4)
         XCTAssertTrue(hitTest.isTrailing)
     }
-    
+
     func testHitTestPointTrailing() {
         let sut = makeSut(text: "A string")
-        
+
         let hitTest = sut.hitTestPoint(UIVector(x: 12, y: 2))
-        
+
         XCTAssert(hitTest.isInside)
         XCTAssertEqual(hitTest.textPosition, 0)
         XCTAssert(hitTest.isTrailing)
     }
-    
+
     func testHitTestPointOutsideBoxRight() {
         let sut = makeSut(text: "A string")
-        
+
         let hitTest = sut.hitTestPoint(UIVector(x: 200, y: 0))
-        
+
         XCTAssertFalse(hitTest.isInside)
         XCTAssertEqual(hitTest.textPosition, 7)
     }
-    
+
     func testHitTestPointOutsideBoxBelow() {
         let sut = makeSut(text: "A string")
-        
+
         let hitTest = sut.hitTestPoint(UIVector(x: 14, y: 50))
-        
+
         XCTAssertFalse(hitTest.isInside)
         XCTAssertEqual(hitTest.textPosition, 1)
     }
-    
+
     func testHitTestPointMultiline() {
         let sut = makeSut(text: "A string\nAnother line")
-        
+
         let hitTest = sut.hitTestPoint(UIVector(x: 14, y: 60))
-        
+
         XCTAssertFalse(hitTest.isInside)
         XCTAssertEqual(hitTest.textPosition, 10)
     }
-    
+
     func testPerformance_hitTestPoint_manyLineBreaks() {
         let sut = makeSut(text: loremIpsumLineBreaks)
-        
+
         measure {
             for _ in 0..<100 {
                 _ = sut.hitTestPoint(UIVector(x: 300, y: 700))
             }
         }
     }
-    
+
     func testPerformance_hitTestPoint_longLines() {
         let sut = makeSut(text: loremIpsumNoLineBreaks)
-        
+
         measure {
             for _ in 0..<100 {
                 _ = sut.hitTestPoint(UIVector(x: 4000, y: 70))
             }
         }
     }
-    
+
     func testBoundsForCharacter() {
         let sut = makeSut(text: "A string\nAnother line")
-        
+
         let result = sut.boundsForCharacter(at: 7)
-        
+
         XCTAssertEqual(result, UIRectangle(x: 60.556640625, y: 0.0, width: 12.3046875, height: 27.236328125))
     }
-    
+
     func testBoundsForCharacter_segmentedLine() {
         var attributed = AttributedText("A string Another String")
         attributed.addAttributes(.init(start: 3, length: 10), [
             "custom": TestAttribute()
         ])
         let sut = makeSut(attributedText: attributed)
-        
+
         let result = sut.boundsForCharacter(at: 7)
-        
+
         XCTAssertEqual(result, UIRectangle(x: 60.556640625, y: 0.0, width: 12.3046875, height: 27.236328125))
     }
-    
+
     func testBoundsForCharacter_lineBreak() {
         let sut = makeSut(text: "A string\nAnother line")
-        
+
         let result = sut.boundsForCharacter(at: 8)
-        
+
         XCTAssertEqual(result, UIRectangle(x: 72.861328125, y: 0.0, width: 12.001953125, height: 27.236328125))
     }
-    
+
     func testBoundsForCharacter_postLineBreak() {
         let sut = makeSut(text: "A string\nAnother line")
-        
+
         let result = sut.boundsForCharacter(at: 9)
-        
+
         XCTAssertEqual(result, UIRectangle(x: 0.0, y: 27.236328125, width: 12.783203125, height: 27.236328125))
     }
-    
+
     func testBoundsForCharacters() {
         let sut = makeSut(text: "A string\nAnother line")
-        
+
         let result = sut.boundsForCharacters(startIndex: 5, length: 5)
-        
+
         XCTAssertEqual(result, [
             UIRectangle(x: 43.037109375, y: 0.0, width: 5.15625, height: 27.236328125),
             UIRectangle(x: 48.193359375, y: 0.0, width: 12.36328125, height: 27.236328125),
@@ -183,20 +206,20 @@ class TextLayoutTests: XCTestCase {
             UIRectangle(x: 0.0, y: 27.236328125, width: 12.783203125, height: 27.236328125)
         ])
     }
-    
+
     func testPerformance_boundsForCharacters_manyLineBreaks() {
         let sut = makeSut(text: loremIpsumLineBreaks)
-        
+
         measure {
             for _ in 0..<1000 {
                 _ = sut.boundsForCharacters(startIndex: 300, length: 5)
             }
         }
     }
-    
+
     func testPerformance_boundsForCharacters_longLines() {
         let sut = makeSut(text: loremIpsumNoLineBreaks)
-        
+
         measure {
             for _ in 0..<1000 {
                 _ = sut.boundsForCharacters(startIndex: 300, length: 5)
@@ -208,16 +231,16 @@ class TextLayoutTests: XCTestCase {
 extension TextLayoutTests {
     func makeSut(text: String) -> TextLayout {
         let font = makeFont(size: 20)
-        
+
         return TextLayout(font: font, text: text)
     }
-    
+
     func makeSut(attributedText: AttributedText) -> TextLayout {
         let font = makeFont(size: 20)
-        
+
         return TextLayout(font: font, attributedText: attributedText)
     }
-    
+
     func makeFont(size: Float) -> Font {
         return TestFont(size: size)
     }
@@ -228,6 +251,8 @@ private class TestAttribute: TextAttributeType {
         other as? TestAttribute === self
     }
 }
+
+// MARK: Test internals
 
 let loremIpsumNoLineBreaks = """
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Faucibus pulvinar elementum integer enim neque. Adipiscing elit pellentesque habitant morbi tristique senectus et netus. Purus ut faucibus pulvinar elementum. Etiam tempor orci eu lobortis elementum. Lectus nulla at volutpat diam ut venenatis tellus in metus. Massa vitae tortor condimentum lacinia. Pharetra sit amet aliquam id diam. Sollicitudin aliquam ultrices sagittis orci. Praesent tristique magna sit amet purus gravida quis. At ultrices mi tempus imperdiet nulla malesuada pellentesque elit. Ac feugiat sed lectus vestibulum mattis ullamcorper velit. Habitant morbi tristique senectus et netus et malesuada. Vivamus arcu felis bibendum ut tristique et egestas quis. Vestibulum morbi blandit cursus risus.
@@ -300,3 +325,22 @@ Condimentum lacinia quis vel eros donec ac. Fermentum leo vel orci porta.
 Malesuada pellentesque elit eget gravida cum sociis. Ullamcorper malesuada proin
 libero nunc consequat interdum.
 """
+
+class TestImage: Image {
+    let size: UIIntSize
+
+    convenience init(width: Int, height: Int) {
+        self.init(size: .init(width: width, height: height))
+    }
+
+    init(size: UIIntSize) {
+        self.size = size
+    }
+
+    func pixelEquals(to other: any Image) -> Bool {
+        instanceEquals(to: other)
+    }
+    func instanceEquals(to other: any Image) -> Bool {
+        other as? TestImage === self
+    }
+}

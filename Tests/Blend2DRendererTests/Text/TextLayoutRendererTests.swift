@@ -11,11 +11,15 @@ class TextLayoutRendererTests: SnapshotTestCase {
     override var snapshotPath: String {
         return TestPaths.pathToSnapshots(testTarget: "Blend2DRendererTests")
     }
-    
+
     override var snapshotFailuresPath: String {
         return TestPaths.pathToSnapshotFailures(testTarget: "Blend2DRendererTests")
     }
-    
+
+    override func setUp() {
+        // forceRecordMode = true
+    }
+
     func testRenderAttributedTextBackgroundColor() throws {
         var attributedText = AttributedText()
         attributedText.append("small", attributes: [
@@ -33,7 +37,7 @@ class TextLayoutRendererTests: SnapshotTestCase {
             .cornerRadius: UIVector(x: 4, y: 4)
         ])
         let sut = makeSut(attributedText: attributedText)
-        
+
         let (img, ctx) = makeImageContext(for: sut.textLayout)
 
         ctx.compOp = .srcCopy
@@ -41,13 +45,13 @@ class TextLayoutRendererTests: SnapshotTestCase {
         ctx.fillAll()
         ctx.compOp = .srcOver
         ctx.setFillStyle(BLRgba32.black)
-        
+
         sut.render(in: ctx, location: .zero)
-        
+
         ctx.end()
         try assertImageMatch(img)
     }
-    
+
     func testRenderBaselineBackgroundBounds() throws {
         var attributedText = AttributedText()
         attributedText.append("small", attributes: [
@@ -76,13 +80,13 @@ class TextLayoutRendererTests: SnapshotTestCase {
         ctx.fillAll()
         ctx.compOp = .srcOver
         ctx.setFillStyle(BLRgba32.black)
-        
+
         sut.render(in: ctx, location: .zero)
-        
+
         ctx.end()
         try assertImageMatch(img)
     }
-    
+
     func testRenderStrokeColor() throws {
         var attributedText = AttributedText()
         attributedText.append("Test text", attributes: [
@@ -99,20 +103,20 @@ class TextLayoutRendererTests: SnapshotTestCase {
             .strokeWidth: 5.0
         ])
         let sut = makeSut(attributedText: attributedText)
-        
+
         let (img, ctx) = makeImageContext(for: sut.textLayout)
 
         ctx.compOp = .srcCopy
         ctx.setFillStyle(BLRgba32.transparentBlack)
         ctx.fillAll()
         ctx.compOp = .srcOver
-        
+
         sut.render(in: ctx, location: .zero)
-        
+
         ctx.end()
         try assertImageMatch(img)
     }
-    
+
     func testRenderUnderlinedText() throws {
         var attributedText = AttributedText()
         attributedText.append("Test text")
@@ -127,20 +131,20 @@ class TextLayoutRendererTests: SnapshotTestCase {
             .foregroundColor: Color.black
         ])
         let sut = makeSut(attributedText: attributedText)
-        
+
         let (img, ctx) = makeImageContext(for: sut.textLayout)
 
         ctx.compOp = .srcCopy
         ctx.setFillStyle(BLRgba32.transparentBlack)
         ctx.fillAll()
         ctx.compOp = .srcOver
-        
+
         sut.render(in: ctx, location: .zero)
-        
+
         ctx.end()
         try assertImageMatch(img)
     }
-    
+
     func testRenderUnderlinedTextWithDifferentFonts() throws {
         var attributedText = AttributedText()
         attributedText.append("Test text with", attributes: [
@@ -159,20 +163,20 @@ class TextLayoutRendererTests: SnapshotTestCase {
             .foregroundColor: Color.black
         ])
         let sut = makeSut(attributedText: attributedText)
-        
+
         let (img, ctx) = makeImageContext(for: sut.textLayout)
 
         ctx.compOp = .srcCopy
         ctx.setFillStyle(BLRgba32.transparentBlack)
         ctx.fillAll()
         ctx.compOp = .srcOver
-        
+
         sut.render(in: ctx, location: .zero)
-        
+
         ctx.end()
         try assertImageMatch(img)
     }
-    
+
     func testRenderStrikethroughText() throws {
         var attributedText = AttributedText()
         attributedText.append("Test text")
@@ -187,20 +191,20 @@ class TextLayoutRendererTests: SnapshotTestCase {
             .foregroundColor: Color.black
         ])
         let sut = makeSut(attributedText: attributedText)
-        
+
         let (img, ctx) = makeImageContext(for: sut.textLayout)
 
         ctx.compOp = .srcCopy
         ctx.setFillStyle(BLRgba32.transparentBlack)
         ctx.fillAll()
         ctx.compOp = .srcOver
-        
+
         sut.render(in: ctx, location: .zero)
-        
+
         ctx.end()
         try assertImageMatch(img)
     }
-    
+
     func testRenderStrikethroughTextWithDifferentFonts() throws {
         var attributedText = AttributedText()
         attributedText.append("Test text with", attributes: [
@@ -219,38 +223,70 @@ class TextLayoutRendererTests: SnapshotTestCase {
             .foregroundColor: Color.black
         ])
         let sut = makeSut(attributedText: attributedText)
-        
+
         let (img, ctx) = makeImageContext(for: sut.textLayout)
 
         ctx.compOp = .srcCopy
         ctx.setFillStyle(BLRgba32.transparentBlack)
         ctx.fillAll()
         ctx.compOp = .srcOver
-        
+
         sut.render(in: ctx, location: .zero)
-        
+
+        ctx.end()
+        try assertImageMatch(img)
+    }
+
+    func testRenderImageAttribute() throws {
+        let imageSize = UIIntSize(width: 20, height: 30)
+        let image = Blend2DImageRenderContext(size: imageSize).withRenderer { renderer in
+            let topLeft: UIPoint = .zero
+            let topRight: UIPoint = .init(x: Double(imageSize.width), y: 0)
+            let bottomRight: UIPoint = .init(imageSize)
+            let bottomLeft: UIPoint = .init(x: 0, y: Double(imageSize.height))
+
+            renderer.clear(.white)
+            renderer.setStroke(.red)
+            renderer.strokeLine(start: topLeft, end: bottomRight)
+            renderer.strokeLine(start: bottomLeft, end: topRight)
+        }
+        let input: AttributedText = """
+        \("a", attributes: [.image: ImageAttribute(image: image)])b
+        """
+        let sut = makeSut(attributedText: input)
+
+        let (img, ctx) = makeImageContext(for: sut.textLayout)
+
+        ctx.compOp = .srcCopy
+        ctx.setFillStyle(BLRgba32.transparentBlack)
+        ctx.fillAll()
+        ctx.compOp = .srcOver
+        ctx.setFillStyle(BLRgba32.black)
+
+        sut.render(in: ctx, location: .zero)
+
         ctx.end()
         try assertImageMatch(img)
     }
 
     // MARK: - Test internals
-    
+
     func makeSut(text: String) -> TextLayoutRenderer {
         let font = makeFont(size: 20)
-        
+
         let layout = TextLayout(font: font, text: text)
-        
+
         return TextLayoutRenderer(textLayout: layout)
     }
-    
+
     func makeSut(attributedText: AttributedText) -> TextLayoutRenderer {
         let font = makeFont(size: 20)
-        
+
         let layout = TextLayout(font: font, attributedText: attributedText)
-        
+
         return TextLayoutRenderer(textLayout: layout)
     }
-    
+
     func makeFont(size: Float) -> Font {
         let face = try! BLFontFace(fromFile: TestPaths.pathToTestFontFace())
         return Blend2DFont(font: BLFont(fromFace: face, size: size))
@@ -266,7 +302,7 @@ class TextLayoutRendererTests: SnapshotTestCase {
             height: Int(size.height),
             format: .prgb32
         )
-        
+
         return (img, BLContext(image: img)!)
     }
 }
