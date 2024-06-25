@@ -555,6 +555,15 @@ public extension AttributedText.AttributeName {
     /// lines. The image will always render at the beginning of the segment it is
     /// associated with, displacing the remaining text to the sides.
     ///
-    /// Should be an `Image` image structure.
+    /// Should be an `ImageAttribute` image structure.
     static let image = Self(rawValue: "image")
+
+    /// Specifies the vertical alignment of an image attribute. By default, the
+    /// alignment is set to `ImageVerticalAlignmentAttribute.baseline`.
+    ///
+    /// If no `.image` attribute exists within the segment, this attribute is
+    /// ignored.
+    ///
+    /// Should be an `ImageVerticalAlignmentAttribute` structure.
+    static let imageVerticalAlignment = Self(rawValue: "imageVerticalAlignment")
 }

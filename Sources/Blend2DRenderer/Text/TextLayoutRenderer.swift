@@ -17,7 +17,7 @@ class TextLayoutRenderer {
         iterateSegments { line, segment in
             let offset = line.bounds.topLeft
                 + segment.bounds.topLeft
-                + segment.offset
+                + UIPoint(x: 0, y: Double(segment.ascent))
                 + location.asVector2
 
             let font = toBLFont(segment.font)
@@ -35,7 +35,7 @@ class TextLayoutRenderer {
         iterateSegments { line, segment in
             let offset = line.bounds.topLeft
                 + segment.bounds.topLeft
-                + segment.offset
+                + UIPoint(x: 0, y: Double(segment.ascent))
                 + location.asVector2
 
             let font = toBLFont(segment.font)
@@ -58,13 +58,37 @@ class TextLayoutRenderer {
 
             let offset = line.bounds.topLeft
                 + segment.bounds.topLeft
-                + segment.offset
+                + .init(x: 0, y: Double(segment.ascent))
                 + location.asVector2
 
             // Image attribute
             if let image = segment.textSegment.attribute(named: .image, type: ImageAttribute.self) {
+                let alignment = segment.textSegment.attribute(
+                    named: .imageVerticalAlignment,
+                    type: ImageVerticalAlignmentAttribute.self
+                ) ?? .baseline
+
                 let image = toBLImage(image.image)
-                let imageOffset = offset - UIPoint(x: 0, y: Double(image.size.h))
+
+                var imageOffset: UIPoint = .zero
+                imageOffset.y = offset.y
+
+                switch alignment {
+                case .baseline:
+                    imageOffset.y -= Double(image.size.h)
+
+                case .underline:
+                    imageOffset.y -= Double(image.size.h)
+
+                case .ascent:
+                    imageOffset.y -= Double(segment.font.metrics.ascent)
+
+                case .capHeight:
+                    imageOffset.y -= Double(segment.font.metrics.capHeight)
+
+                case .centralized:
+                    imageOffset.y -= Double(segment.font.metrics.xHeight + Float(image.size.h)) / 2
+                }
 
                 context.blitImage(image, at: imageOffset.asBLPoint)
             }

@@ -100,6 +100,7 @@ open class SnapshotTestCase: XCTestCase {
         let actualData = pngFileFromImage(image)
 
         if !FileManager.default.fileExists(atPath: recordPath) {
+            try createDirectory(atPath: failureFolderPath)
             try writePngFile(file: actualData, filename: failurePath)
 
             XCTFail(
@@ -134,9 +135,17 @@ open class SnapshotTestCase: XCTestCase {
             if let (diffData, stats) = produceDiffImage(recordedData, actualData) {
                 try writePngFile(file: diffData, filename: diffPath)
 
-                XCTFail("Snapshot \(testName) did not match recorded data. Please inspect image at \(diffPath) for further information.\n\(stats.description)", line: line)
+                XCTFail(
+                    "Snapshot \(testName) did not match recorded data. Please inspect image at \(diffPath) for further information.\n\(stats.description)",
+                    file: file,
+                    line: line
+                )
             } else {
-                XCTFail("Snapshot \(testName) did not match recorded data. Please inspect image at \(failurePath) for further information.", line: line)
+                XCTFail(
+                    "Snapshot \(testName) did not match recorded data. Please inspect image at \(failurePath) for further information.",
+                    file: file,
+                    line: line
+                )
             }
         }
     }

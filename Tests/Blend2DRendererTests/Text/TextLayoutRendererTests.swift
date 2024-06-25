@@ -238,35 +238,27 @@ class TextLayoutRendererTests: SnapshotTestCase {
     }
 
     func testRenderImageAttribute() throws {
-        let imageSize = UIIntSize(width: 20, height: 30)
-        let image = Blend2DImageRenderContext(size: imageSize).withRenderer { renderer in
-            let topLeft: UIPoint = .zero
-            let topRight: UIPoint = .init(x: Double(imageSize.width), y: 0)
-            let bottomRight: UIPoint = .init(imageSize)
-            let bottomLeft: UIPoint = .init(x: 0, y: Double(imageSize.height))
+        try runImageAttributeTest(alignment: nil)
+    }
 
-            renderer.clear(.white)
-            renderer.setStroke(.red)
-            renderer.strokeLine(start: topLeft, end: bottomRight)
-            renderer.strokeLine(start: bottomLeft, end: topRight)
-        }
-        let input: AttributedText = """
-        \("a", attributes: [.image: ImageAttribute(image: image)])b
-        """
-        let sut = makeSut(attributedText: input)
+    func testRenderImageAttribute_verticalAlignment_baseline() throws {
+        try runImageAttributeTest(alignment: .baseline)
+    }
 
-        let (img, ctx) = makeImageContext(for: sut.textLayout)
+    func testRenderImageAttribute_verticalAlignment_underline() throws {
+        try runImageAttributeTest(alignment: .underline)
+    }
 
-        ctx.compOp = .srcCopy
-        ctx.setFillStyle(BLRgba32.transparentBlack)
-        ctx.fillAll()
-        ctx.compOp = .srcOver
-        ctx.setFillStyle(BLRgba32.black)
+    func testRenderImageAttribute_verticalAlignment_capHeight() throws {
+        try runImageAttributeTest(alignment: .capHeight)
+    }
 
-        sut.render(in: ctx, location: .zero)
+    func testRenderImageAttribute_verticalAlignment_ascent() throws {
+        try runImageAttributeTest(alignment: .ascent)
+    }
 
-        ctx.end()
-        try assertImageMatch(img)
+    func testRenderImageAttribute_verticalAlignment_centralized() throws {
+        try runImageAttributeTest(alignment: .centralized)
     }
 
     // MARK: - Test internals
@@ -304,5 +296,47 @@ class TextLayoutRendererTests: SnapshotTestCase {
         )
 
         return (img, BLContext(image: img)!)
+    }
+
+    func runImageAttributeTest(
+        alignment: ImageVerticalAlignmentAttribute?,
+        record: Bool = false,
+        function: String = #function,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) throws {
+        let imageSize = UIIntSize(width: 20, height: 30)
+        let image = Blend2DImageRenderContext(size: imageSize).withRenderer { renderer in
+            let topLeft: UIPoint = .zero
+            let topRight: UIPoint = .init(x: Double(imageSize.width), y: 0)
+            let bottomRight: UIPoint = .init(imageSize)
+            let bottomLeft: UIPoint = .init(x: 0, y: Double(imageSize.height))
+
+            renderer.clear(.white)
+            renderer.setStroke(.red)
+            renderer.strokeLine(start: topLeft, end: bottomRight)
+            renderer.strokeLine(start: bottomLeft, end: topRight)
+        }
+        var attributes: AttributedText.Attributes = [
+            .image: ImageAttribute(image: image)
+        ]
+        attributes[.imageVerticalAlignment] = alignment
+        let input: AttributedText = """
+        \("A", attributes: attributes)b
+        """
+        let sut = makeSut(attributedText: input)
+
+        let (img, ctx) = makeImageContext(for: sut.textLayout)
+
+        ctx.compOp = .srcCopy
+        ctx.setFillStyle(BLRgba32.transparentBlack)
+        ctx.fillAll()
+        ctx.compOp = .srcOver
+        ctx.setFillStyle(BLRgba32.black)
+
+        sut.render(in: ctx, location: .zero)
+
+        ctx.end()
+        try assertImageMatch(img, function, record: record, file: file, line: line)
     }
 }

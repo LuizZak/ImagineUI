@@ -16,14 +16,24 @@ public struct TextLayoutLineSegment {
     public var font: Font
     public var textSegment: AttributedText.TextSegment
 
-    /// Boundaries of this line segment, relative to the line's origin
+    /// The advance to move the virtual pen forward after this segment's text
+    /// before any next segment's text.
+    public var advance: UIVector
+
+    /// The computed ascent for this segment.
+    public var ascent: Float
+
+    /// The computed descent for this segment.
+    public var descent: Float
+
+    /// The computed underline position for this segment.
+    public var underlinePosition: Float
+
+    /// Boundaries of this line segment, relative to the line's origin.
     public var bounds: UIRectangle
 
-    /// Rendering offset to apply to this segment
-    public var offset: UIVector
-
     /// `bounds` property's value, mapped to the original transformation
-    /// space before being multiplied by the font's transform matrix
+    /// space before being multiplied by the font's transform matrix.
     public var originalBounds: UIRectangle
 
     public init(
@@ -36,8 +46,11 @@ public struct TextLayoutLineSegment {
         glyphBufferMinusLineBreak: GlyphBuffer,
         font: Font,
         textSegment: AttributedText.TextSegment,
+        advance: UIVector,
+        ascent: Float,
+        descent: Float,
+        underlinePosition: Float,
         bounds: UIRectangle,
-        offset: UIVector,
         originalBounds: UIRectangle
     ) {
 
@@ -51,7 +64,20 @@ public struct TextLayoutLineSegment {
         self.font = font
         self.textSegment = textSegment
         self.bounds = bounds
-        self.offset = offset
+        self.advance = advance
+        self.ascent = ascent
+        self.descent = descent
+        self.underlinePosition = underlinePosition
         self.originalBounds = originalBounds
+    }
+
+    mutating func moveBaseline(to height: Double) {
+        bounds = bounds.movingBottom(to: height + Double(descent))
+    }
+
+    func movingBaseline(to height: Double) -> Self {
+        var copy = self
+        copy.moveBaseline(to: height)
+        return copy
     }
 }

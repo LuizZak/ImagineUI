@@ -490,7 +490,6 @@ private class LineCollector {
             let substring = text[startIndex..<endIndex]
             let substringMinusLineBreaks = substring.filter { !isLineBreak($0) }
             let lineGap = startIndex == text.startIndex ? 0.0 : font.metrics.lineGap
-            let minHeight = Double(font.metrics.ascent + font.metrics.descent + lineGap)
 
             let glyphBuffer = font.createGlyphBuffer(substring)
             let glyphBufferMinusLineBreak = font.createGlyphBuffer(substringMinusLineBreaks)
@@ -502,27 +501,51 @@ private class LineCollector {
             var bounds = UIRectangle(
                 x: topLeft.x,
                 y: topLeft.y,
-                width: metrics.advance.x,
-                height: max(minHeight, metrics.boundingBox.height)
+                width: 0,
+                height: 0
             )
 
-            var offset = UIVector(x: 0, y: Double(font.metrics.ascent))
+            var advance = metrics.advance
+            var descent = font.metrics.descent
+            var ascent = font.metrics.ascent
+            let underlinePosition = font.metrics.underlinePosition
 
             // Detect inlined images
             if let imageAttribute = segment.attribute(named: .image, type: ImageAttribute.self) {
                 let image = imageAttribute.image
 
-                bounds.width = max(bounds.width, Double(image.size.width))
-                // Ensure that the descent is taken into account for cases where
-                // the image is taller than the line.
-                let newHeight = max(bounds.height, Double(image.size.height) + Double(font.metrics.descent))
+                let alignment = segment.attribute(
+                    named: .imageVerticalAlignment,
+                    type: ImageVerticalAlignmentAttribute.self
+                ) ?? .baseline
 
-                if newHeight > bounds.height {
-                    offset.y += newHeight - bounds.height
+                advance.x = max(advance.x, Double(image.size.width))
+
+                switch alignment {
+                case .baseline:
+                    ascent = max(ascent, Float(image.size.height))
+
+                case .underline:
+                    ascent = max(ascent, Float(image.size.height) + underlinePosition)
+
+                case .ascent:
+                    descent = max(descent, Float(image.size.height) - ascent)
+
+                case .capHeight:
+                    descent = max(descent, Float(image.size.height) - font.metrics.capHeight)
+
+                case .centralized:
+                    let center = -font.metrics.xHeight / 2
+                    let top = center - Float(image.size.height) / 2
+                    let bottom = center + Float(image.size.height) / 2
+                    ascent = max(ascent, top)
+                    descent = max(descent, bottom)
                 }
-
-                bounds.height = newHeight
             }
+
+            let minHeight = Double(ascent + descent + lineGap)
+            bounds.width = advance.x
+            bounds.height = minHeight
 
             let originalBounds = font.matrix.toMatrix2D().inverted().transform(bounds)
 
@@ -536,9 +559,13 @@ private class LineCollector {
                 glyphBufferMinusLineBreak: glyphBufferMinusLineBreak,
                 font: font,
                 textSegment: segment,
+                advance: advance,
+                ascent: ascent,
+                descent: descent,
+                underlinePosition: underlinePosition,
                 bounds: bounds,
-                offset: offset,
-                originalBounds: originalBounds)
+                originalBounds: originalBounds
+            )
         }
     }
 
@@ -556,29 +583,33 @@ private class LineCollector {
 
             let substring = text[startIndex..<endIndex]
 
-            var bounds: UIRectangle = .zero
+            var totalBounds: UIRectangle = .zero
 
             var segments = self.segments
             var highestDescent: Float = 0
             var highestAscent: Float = 0
             var highestUnderline: Float = 0
 
+            var totalAdvance: UIVector = .zero
             for segment in segments {
-                bounds = bounds.union(segment.bounds)
-                highestAscent = max(highestAscent, segment.font.metrics.ascent)
-                highestDescent = max(highestDescent, segment.font.metrics.descent)
-                highestUnderline = max(highestUnderline, segment.font.metrics.underlinePosition)
+                totalAdvance += segment.advance
+                totalBounds.expand(toInclude: totalAdvance)
+
+                // Increment height of bounding box as well
+                let height = Double(segment.ascent + segment.descent)
+                totalBounds.expand(toInclude: totalAdvance + .init(x: 0, y: height))
+
+                highestAscent = max(highestAscent, segment.ascent)
+                highestDescent = max(highestDescent, segment.descent)
+                highestUnderline = max(highestUnderline, segment.underlinePosition)
             }
 
             // Align segments down to the largest baseline
-            for (i, segment) in segments.enumerated() {
-                let bottom =
-                    bounds.bottom
-                        - Double(highestDescent)
-                        + Double(segment.font.metrics.descent)
+            totalAdvance = .zero
+            for i in 0..<segments.count {
+                let totalBaseline = highestAscent
 
-                segments[i].bounds =
-                    segment.bounds.movingBottom(to: bottom)
+                segments[i].moveBaseline(to: Double(totalBaseline))
 
                 segments[i].originalBounds =
                     segments[i].font.matrix.transform(segments[i].bounds)
@@ -593,7 +624,7 @@ private class LineCollector {
                 text: substring,
                 baselineHeight: highestAscent,
                 underlineOffset: highestUnderline,
-                bounds: bounds.withLocation(topLeft)
+                bounds: totalBounds.withLocation(topLeft)
             )
         }
     }

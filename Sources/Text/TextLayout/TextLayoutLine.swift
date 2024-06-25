@@ -13,6 +13,8 @@ public struct TextLayoutLine {
     public var startIndex: String.Index
     public var endIndex: String.Index
     public var text: Substring
+
+    /// The common baseline height for all segments within this line.
     public var baselineHeight: Float
 
     /// Largest underline offset from this line
