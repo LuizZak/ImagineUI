@@ -2,7 +2,7 @@
 /// control system.
 public class ImagineUITooltipsManager: TooltipsManagerType {
     private var _customTooltipState: CustomTooltipState?
-    
+
     private var _previousConstraints: [LayoutConstraint] = []
 
     private var _mouseLocation: UIPoint = .zero {
@@ -84,7 +84,7 @@ public class ImagineUITooltipsManager: TooltipsManagerType {
 
     public func updateTooltip(_ tooltip: Tooltip) {
         guard !hasCustomTooltipActive else { return }
-        
+
         internalUpdateTooltip(tooltip)
     }
 
@@ -98,6 +98,11 @@ public class ImagineUITooltipsManager: TooltipsManagerType {
         let lifetime = CustomTooltipState.LifetimeObject()
 
         let handler = CustomTooltipHandler(lifetimeToken: lifetime, manager: self)
+
+        _customTooltipState = CustomTooltipState(
+            handler: handler,
+            lifetimeObject: lifetime
+        )
 
         return handler
     }
@@ -135,7 +140,7 @@ public class ImagineUITooltipsManager: TooltipsManagerType {
         guard hasCustomTooltipActive, _customTooltipState?.handler === handler else {
             return
         }
-        
+
         _customTooltipState = nil
 
         hideTooltip()
@@ -269,7 +274,7 @@ public class ImagineUITooltipsManager: TooltipsManagerType {
 
 /// Used to handle custom tooltip lifetimes.
 fileprivate final class CustomTooltipHandler: CustomTooltipHandlerType {
-    /// A lifetime object associated with this tooltip handler that is 
+    /// A lifetime object associated with this tooltip handler that is
     var lifetimeToken: AnyObject
 
     /// The tooltip manager associated with this tooltip lifetime handler.
@@ -291,7 +296,7 @@ fileprivate final class CustomTooltipHandler: CustomTooltipHandlerType {
     ) {
         guard isActive else { return }
 
-        manager?.showTooltip(tooltip, view: view, location: location)
+        manager?.internalShowTooltip(tooltip, view: view, location: location)
     }
 
     /// Requests that a tooltip for a given tooltip provider be shown, optionally
@@ -313,18 +318,18 @@ fileprivate final class CustomTooltipHandler: CustomTooltipHandlerType {
     }
 
     /// Updates the contents of the currently displayed tooltip.
-    /// Does nothing, if 
+    /// Does nothing, if
     public func updateTooltip(_ tooltip: Tooltip) {
         guard isActive else { return }
 
-        manager?.updateTooltip(tooltip)
+        manager?.internalUpdateTooltip(tooltip)
     }
 
     /// Hides a tooltip that was previously shown with `showTooltip`
     public func hideTooltip() {
         guard isActive else { return }
 
-        manager?.hideTooltip()
+        manager?.internalHideTooltip()
     }
 
     /// Explicitly requests that the custom lifetime of this tooltip handler be
@@ -332,7 +337,8 @@ fileprivate final class CustomTooltipHandler: CustomTooltipHandlerType {
     public func endTooltipLifetime() {
         guard isActive else { return }
 
-        isActive = false
         manager?.endCustomTooltipLifetime(self)
+
+        isActive = false
     }
 }

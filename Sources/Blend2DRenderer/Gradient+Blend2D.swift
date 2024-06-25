@@ -4,12 +4,12 @@ import Rendering
 extension Gradient {
     func toBLGradient() -> BLGradient {
         var gradient = BLGradient()
-        
+
         gradient.extendMode = extendMode.asBLExtendMode
         gradient.matrix = matrix.asBLMatrix2D
         gradient.stops = stops.map(\.asBLGradientStop)
         gradient.gradientValues = type.asGradientValues
-        
+
         return gradient
     }
 }

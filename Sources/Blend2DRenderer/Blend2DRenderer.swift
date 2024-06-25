@@ -18,7 +18,7 @@ public class Blend2DRenderer: Renderer {
     public convenience init(image: BLImage, options: BLContext.CreateOptions? = nil) {
         self.init(context: BLContext(image: image, options: options)!)
     }
-    
+
     private func _setStrokeField<Value>(_ keyPath: WritableKeyPath<StrokeStyle, Value>, _ value: Value) {
         self._stroke[keyPath: keyPath] = value
         _stroke.setStyle(in: _context)
@@ -72,7 +72,7 @@ public class Blend2DRenderer: Renderer {
         _stroke.width = width
         _setStrokeField(\.width, width)
     }
-    
+
     public func setStrokeDash(dashOffset: Double, dashArray: [Double]) {
         _stroke.dashOffset = dashOffset
         _stroke.dashArray = dashArray
