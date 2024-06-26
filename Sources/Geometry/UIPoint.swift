@@ -68,6 +68,11 @@ public struct UIPoint: Hashable, Codable {
     }
 
     @_transparent
+    public func angle(to other: Self) -> Scalar {
+        (other - self).angle()
+    }
+
+    @_transparent
     public func rounded(_ rule: FloatingPointRoundingRule) -> Self {
         .init(x: x.rounded(rule), y: y.rounded(rule))
     }

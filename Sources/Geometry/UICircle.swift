@@ -1,3 +1,5 @@
+import Foundation
+
 public struct UICircle: Hashable, Codable {
     public typealias Scalar = Double
 
@@ -16,7 +18,7 @@ public struct UICircle: Hashable, Codable {
         self.center = center
         self.radius = radius
     }
-    
+
     @_transparent
     public init(x: Scalar, y: Scalar, radius: Scalar) {
         self.center = .init(x: x, y: y)
@@ -52,6 +54,8 @@ public extension UICircle {
         .init(center: center, radius: radius + scalar)
     }
 
+    /// Creates an arc within this circle based on the given start and sweep
+    /// angles, both in radians.
     @_transparent
     func arc(start startAngleInRadians: Double, sweep sweepAngleInRadians: Double) -> UIArc {
         .init(
@@ -60,5 +64,11 @@ public extension UICircle {
             startAngle: startAngleInRadians,
             sweepAngle: sweepAngleInRadians
         )
+    }
+
+    /// Returns a point on this circle on a given angle in radians.
+    @_transparent
+    func pointOnAngle(_ angleInRadians: Scalar) -> UIPoint {
+        asUIEllipse.pointOnAngle(angleInRadians)
     }
 }

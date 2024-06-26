@@ -1,3 +1,5 @@
+import Foundation
+
 public struct UIEllipse: Hashable, Codable {
     public typealias Scalar = UIPoint.Scalar
 
@@ -65,7 +67,10 @@ public extension UIEllipse {
         return copy
     }
 
+    /// Creates an arc within this ellipse based on the given start and sweep
+    /// angles, both in radians.
     @_transparent
+    @inlinable
     func arc(start startAngleInRadians: Double, sweep sweepAngleInRadians: Double) -> UIArc {
         .init(
             center: center,
@@ -73,5 +78,17 @@ public extension UIEllipse {
             startAngle: startAngleInRadians,
             sweepAngle: sweepAngleInRadians
         )
+    }
+
+    /// Returns a point on this ellipse on a given angle in radians.
+    @_transparent
+    @inlinable
+    func pointOnAngle(_ angleInRadians: Scalar) -> UIPoint {
+        let c = cos(angleInRadians)
+        let s = sin(angleInRadians)
+
+        let point = UIPoint(x: c, y: s) * radius
+
+        return center + point
     }
 }

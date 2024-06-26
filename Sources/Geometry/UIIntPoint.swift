@@ -49,6 +49,16 @@ public struct UIIntPoint: Hashable, Codable {
     public func distance(to other: Self) -> Double {
         return Double(distanceSquared(to: other)).squareRoot()
     }
+
+    @_transparent
+    public func angle(to other: Self) -> Double {
+        UIPoint(self).angle(to: UIPoint(other))
+    }
+
+    @_transparent
+    public func angle() -> Double {
+        UIPoint(self).angle()
+    }
 }
 
 // MARK: Addition

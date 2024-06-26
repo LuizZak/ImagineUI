@@ -463,6 +463,15 @@ public struct UIMatrix: Hashable, Codable, CustomStringConvertible {
                  m31: 0, m32: 0)
     }
 
+    /// Creates a skew matrix around a given center point.
+    ///
+    /// - Parameter angleX: Angle of skew along the X-axis in radians.
+    /// - Parameter angleY: Angle of skew along the Y-axis in radians.
+    /// - Parameter center: Center to skew around of.
+    public static func skew(angleX: Scalar, angleY: Scalar, around center: UIPoint) -> UIMatrix {
+        translation(-center) * skew(angleX: angleX, angleY: angleY) * translation(center)
+    }
+
     /// Calculates the inverse of the specified matrix.
     ///
     /// - Parameter value: The matrix whose inverse is to be calculated.

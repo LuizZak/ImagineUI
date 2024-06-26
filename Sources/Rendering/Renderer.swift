@@ -20,20 +20,20 @@ public protocol Renderer {
     /// Sets the fill style of subsequent fill operations to match a given fill style brush.
     func setFill(_ style: FillStyle)
 
-    /// Convenience for `setFill(FillStyle(brush: .solid(color)))`
+    /// Convenience for `setFill(FillStyle(brush: .solid(color)))`.
     func setFill(_ color: Color)
 
-    /// Convenience for `setFill(FillStyle(brush: .gradient(gradient)))`
+    /// Convenience for `setFill(FillStyle(brush: .gradient(gradient)))`.
     func setFill(_ gradient: Gradient)
 
     /// Sets the stroke style of subsequent stroke operations to match a given stroke style brush.
     /// Width is set to the style's width parameter.
     func setStroke(_ style: StrokeStyle)
 
-    /// Convenience for `setStroke(StrokeStyle(brush: .solid(color)))`
+    /// Convenience for `setStroke(StrokeStyle(brush: .solid(color)))`.
     func setStroke(_ color: Color)
 
-    /// Convenience for `setStroke(StrokeStyle(brush: .gradient(gradient)))`
+    /// Convenience for `setStroke(StrokeStyle(brush: .gradient(gradient)))`.
     func setStroke(_ gradient: Gradient)
 
     /// Sets the width of the current stroke brush.
@@ -44,31 +44,31 @@ public protocol Renderer {
 
     // MARK: - Fill Operations
 
-    /// Fills a given rectangle with the current fill style
+    /// Fills a given rectangle with the current fill style.
     func fill(_ rect: UIRectangle)
 
-    /// Fills a given rounded rectangle with the current fill style
+    /// Fills a given rounded rectangle with the current fill style.
     func fill(_ roundRect: UIRoundRectangle)
 
-    /// Fills a given circle with the current fill style
+    /// Fills a given circle with the current fill style.
     func fill(_ circle: UICircle)
 
-    /// Fills a given ellipse with the current fill style
+    /// Fills a given ellipse with the current fill style.
     func fill(_ ellipse: UIEllipse)
 
-    /// Fills a given polygon with the current fill style
+    /// Fills a given polygon with the current fill style.
     func fill(_ polygon: UIPolygon)
 
-    /// Fills a given triangle with the current fill style
+    /// Fills a given triangle with the current fill style.
     func fill(_ triangle: UITriangle)
 
     /// Fills a given bezier with the current fill style.
     func fill(_ bezier: UIBezier)
 
-    /// Fills a given arc as a chord with the current fill style
+    /// Fills a given arc as a chord with the current fill style.
     func fill(chord: UIArc)
 
-    /// Fills a given arc as a pie with the current fill style
+    /// Fills a given arc as a pie with the current fill style.
     func fill(pie: UIArc)
 
     // MARK: - Stroke Operations
@@ -100,17 +100,20 @@ public protocol Renderer {
     /// Strokes a given bezier with the current stroke style.
     func stroke(_ bezier: UIBezier)
 
-    /// Strokes a given arc as a chord with the current stroke style
+    /// Strokes a given arc as a chord with the current stroke style.
     func stroke(chord: UIArc)
 
-    /// Strokes a given arc as a pie with the current stroke style
+    /// Strokes a given arc as a pie with the current stroke style.
+    ///
+    /// As well as the stroke for the outer arc, two strokes are added pointing
+    /// from the center of the arc to its starting and ending points.
     func stroke(pie: UIArc)
 
     /// Strokes a line formed by the given start and end vectors with the
-    /// current stroke style
+    /// current stroke style.
     func strokeLine(start: UIVector, end: UIVector)
 
-    /// Strokes a list of points as a contiguous line
+    /// Strokes a list of points as a contiguous line.
     func stroke(polyline: [UIVector])
 
     // MARK: - Bitmap
@@ -118,49 +121,49 @@ public protocol Renderer {
     /// Draws a given image wth the given bounds, scaling the image as necessary
     func drawImageScaled(_ image: Image, area: UIRectangle)
 
-    /// Draws a given image at a given point
+    /// Draws a given image at a given point.
     func drawImage(_ image: Image, at point: UIVector)
 
     // MARK: - Text
 
-    /// Draws a text layout on a given point
+    /// Draws a text layout on a given point.
     func drawTextLayout(_ layout: TextLayoutType, at point: UIVector)
 
-    /// Strokes a text layout on a given point
+    /// Strokes a text layout on a given point.
     func strokeTextLayout(_ layout: TextLayoutType, at point: UIVector)
 
-    /// Fills a text layout on a given point
+    /// Fills a text layout on a given point.
     func fillTextLayout(_ layout: TextLayoutType, at point: UIVector)
 
     // MARK: - Transformation
 
     /// Applies the given matrix on top of the current transformation stack for
-    /// subsequent draw calls on this renderer
+    /// subsequent draw calls on this renderer.
     func transform(_ matrix: UIMatrix)
 
-    /// Resets the transformation back to its identity
+    /// Resets the transformation back to its identity.
     func resetTransform()
 
-    /// Applies a translation transform to the subsequent draw calls on this renderer
+    /// Applies a translation transform to the subsequent draw calls on this renderer.
     func translate(x: Double, y: Double)
 
-    /// Applies a translation transform to the subsequent draw calls on this renderer
+    /// Applies a translation transform to the subsequent draw calls on this renderer.
     func translate(by vec: UIVector)
 
-    /// Applies a scale transform to the subsequent draw calls on this renderer
+    /// Applies a scale transform to the subsequent draw calls on this renderer.
     func scale(x: Double, y: Double)
 
-    /// Applies a scale transform to the subsequent draw calls on this renderer
+    /// Applies a scale transform to the subsequent draw calls on this renderer.
     func scale(by factor: UIVector)
 
-    /// Applies a rotation transform to the subsequent draw calls on this renderer
+    /// Applies a rotation transform to the subsequent draw calls on this renderer.
     ///
     /// - parameters:
     ///     - angle: The angle to rotate by, in radians
     func rotate(by angle: Double)
 
     /// Applies a rotation transform around a given center point to the
-    /// subsequent draw calls on this renderer
+    /// subsequent draw calls on this renderer.
     ///
     /// - parameters:
     ///     - angle: The angle to rotate by, in radians
@@ -173,7 +176,7 @@ public protocol Renderer {
     /// Any currently active clip is intersected with the new clipping rectangle.
     func clip(_ rect: UIRectangle)
 
-    /// Restores the clipping of this Renderer back
+    /// Restores the clipping of this Renderer back.
     func restoreClipping()
 
     // MARK: - Global alpha
@@ -190,14 +193,14 @@ public protocol Renderer {
     // MARK: - Save/Restore State
 
     /// Saves the current renderer state and returns a token that when passed to
-    /// `restoreState()` results in the same state as when this method was called
+    /// `restoreState()` results in the same state as when this method was called.
     @discardableResult
     func saveState() -> RendererStateToken
 
-    /// Restores renderer state to the state before the last `saveState()` call
+    /// Restores renderer state to the state before the last `saveState()` call.
     func restoreState()
 
-    /// Restores renderer state to the state represented by the given token
+    /// Restores renderer state to the state represented by the given token.
     func restoreState(_ state: RendererStateToken)
 
     /// Performs a given closure while this renderer saves its internal state,
@@ -216,6 +219,22 @@ public extension Renderer {
         }
 
         return try closure()
+    }
+
+    func setFill(_ color: Color) {
+        setFill(FillStyle(brush: .solid(color)))
+    }
+
+    func setFill(_ gradient: Gradient) {
+        setFill(FillStyle(brush: .gradient(gradient)))
+    }
+
+    func setStroke(_ color: Color) {
+        setStroke(StrokeStyle(brush: .solid(color)))
+    }
+
+    func setStroke(_ gradient: Gradient) {
+        setStroke(StrokeStyle(brush: .gradient(gradient)))
     }
 }
 
