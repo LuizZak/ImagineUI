@@ -22,7 +22,7 @@ public class TreeView: ControlView {
     /// Event raised when an item within this tree view is about to be expanded.
     @CancellableActionEventWithSender<TreeView, ItemIndex>
     public var willExpand
-    
+
     /// Event raised when an item within this tree view is about to be collapsed.
     @CancellableActionEventWithSender<TreeView, ItemIndex>
     public var willCollapse
@@ -43,7 +43,20 @@ public class TreeView: ControlView {
     @EventWithSender<TreeView, ItemIndex>
     public var mouseRightClickedItem
 
-    public weak var dataSource: TreeViewDataSource?
+    /// The data source queried to generate the items within this tree view.
+    ///
+    /// Changing the data source property clears all selection and expansion state,
+    /// and triggers an immediate data reload.
+    public weak var dataSource: TreeViewDataSource? {
+        didSet {
+            guard oldValue !== dataSource else { return }
+
+            _expanded.removeAll()
+            _selected.removeAll()
+
+            reloadData()
+        }
+    }
 
     public override var canBecomeFirstResponder: Bool {
         return true
@@ -217,6 +230,39 @@ public class TreeView: ControlView {
         _expand(index)
     }
 
+    /// Selects the given items on the interface alongside any currently selected
+    /// items, triggering a `didChangeSelection` event in the process.
+    public func addSelection(_ items: Set<ItemIndex>) {
+        for selected in items {
+            _visibleItem(withIndex: selected)?.isSelected = true
+        }
+
+        _selected.formUnion(items)
+    }
+
+    /// Selects the given items on the interface, deselecting any currently selected
+    /// items, triggering a `didChangeSelection` event in the process.
+    public func setSelection(_ items: Set<ItemIndex>) {
+        for selected in _selected {
+            _visibleItem(withIndex: selected)?.isSelected = false
+        }
+        for selected in items {
+            _visibleItem(withIndex: selected)?.isSelected = true
+        }
+
+        _selected = items
+    }
+
+    /// If any items are selected in this tree view, clears their selection,
+    /// triggering a `didChangeSelection` event in the process.
+    public func clearSelection() {
+        for selected in _selected {
+            _visibleItem(withIndex: selected)?.isSelected = false
+        }
+
+        _selected.removeAll()
+    }
+
     // MARK: - Internals
 
     private func _applyStyle() {
@@ -276,9 +322,6 @@ public class TreeView: ControlView {
                 _selectItemView(candidateView)
                 return true
             }
-
-        case .down:
-            break
 
         case .right:
             guard _selected.count == 1, let index = _selected.first else {
