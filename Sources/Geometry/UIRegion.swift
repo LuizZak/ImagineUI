@@ -33,7 +33,17 @@ public class UIRegion {
         }
     }
 
-    /// Returns a list of all rectangles in this region.
+    private init(_rectangles: [UIRectangle]) {
+        self._rectangles = _rectangles
+    }
+
+    /// Returns an independent copy of this `UIRegion` object.
+    public func copy() -> UIRegion {
+        UIRegion(_rectangles: self._rectangles)
+    }
+
+    /// Returns a list of rectangles that encompasses the entire region of this
+    /// `UIRegion`, with no two rectangles ever overlapping.
     public func allRectangles() -> [UIRectangle] {
         return _rectangles
     }
@@ -43,7 +53,7 @@ public class UIRegion {
     public func intersectionsFor(area: UIRectangle) -> [UIRectangle] {
         return _rectangles.compactMap { $0.overlap(area) }
     }
-    
+
     /// Returns `true` if a given rectangle intersects this region.
     ///
     /// Rectangle intersection can occur when rectangles share an edge, but do
@@ -51,7 +61,7 @@ public class UIRegion {
     public func intersects(_ rectangle: UIRectangle) -> Bool {
         return _rectangles.contains(where: { r in r.intersects(rectangle) })
     }
-    
+
     /// Returns `true` if a given rectangle overlaps this region.
     ///
     /// Rectangle overlapping can only occur when the shared area between two
@@ -59,15 +69,21 @@ public class UIRegion {
     public func overlaps(_ rectangle: UIRectangle) -> Bool {
         return _rectangles.contains(where: { r in r.overlaps(rectangle) })
     }
-    
+
     /// Returns `true` if a given rectangle is fully contained in this region.
     public func contains(_ rectangle: UIRectangle) -> Bool {
         return _rectangles.contains(where: { r in r.contains(rectangle) })
     }
-    
+
     /// Returns `true` if a given point is contained in this region.
     public func contains(_ point: UIPoint) -> Bool {
         return _rectangles.contains(where: { r in r.contains(point) })
+    }
+
+    public func addRectangles(_ rectangles: some Sequence<UIRectangle>, operation: Operation = .add) {
+        for rect in rectangles {
+            addRectangle(rect, operation: operation)
+        }
     }
 
     public func addRectangle(_ rectangle: UIRectangle, operation: Operation = .add) {
@@ -99,6 +115,54 @@ public class UIRegion {
     /// Clears the entire clip region.
     public func clear() {
         _rectangles.removeAll()
+    }
+
+    /// Performs a union of rectangles that are neighboring each other within this
+    /// region, using a given tolerance value as the minimum distance required
+    /// for rectangles to be considered neighbors.
+    ///
+    /// The process recursively merges the neighboring rectangles until no more
+    /// rectangles can be merged.
+    ///
+    /// Passing a `tolerance` value of `Double.infinity` performs an unconditional
+    /// union of the entire region to a single rectangle.
+    public func unionNeighboring(tolerance: Double) {
+        guard tolerance < .infinity else {
+            _rectangles = [UIRectangle.union(_rectangles)]
+            return
+        }
+
+        var changed: Bool
+
+        repeat {
+            changed = false
+
+            outer:
+            for r1 in 0..<_rectangles.count {
+                let rect1 = _rectangles[r1]
+
+                for r2 in 0..<_rectangles.count where r1 != r2 {
+                    let rect2 = _rectangles[r2]
+
+                    guard rect1.inflatedBy(tolerance).intersects(rect2) else {
+                        continue
+                    }
+
+                    if r1 > r2 {
+                        _rectangles.remove(at: r1)
+                        _rectangles.remove(at: r2)
+                    } else {
+                        _rectangles.remove(at: r2)
+                        _rectangles.remove(at: r1)
+                    }
+
+                    _add(rect1.union(rect2))
+
+                    changed = true
+                    break outer
+                }
+            }
+        } while changed
     }
 
     private func _add(_ rectangle: UIRectangle) {
@@ -186,7 +250,7 @@ public class UIRegion {
         case .add, .subtract, .xor:
             let result = Self._mergeOp(rectangle, rectangles: intersecting, op: op)
             _rectangles = nonIntersecting + result
-        
+
         case .intersect:
             let result = Self._mergeOp(rectangle, rectangles: intersecting, op: op)
             _rectangles = result
@@ -285,7 +349,7 @@ public class UIRegion {
                 defer {
                     depth += direction.value
                 }
-                
+
                 // xor: Flip the in and out of the row to effectively cancel out
                 // an entrance in the first rectangle with an entrance to the second
                 if op == .xor {
@@ -356,7 +420,7 @@ public class UIRegion {
 
         return newRectangles
     }
-    
+
     /// Describes the operation to use when adding elements to a `UIRegion`.
     public enum Operation {
         case add
@@ -418,7 +482,7 @@ private struct HorizontalEdge: Hashable, Comparable {
 
         return edges.sorted()
     }
-    
+
     static func < (lhs: Self, rhs: Self) -> Bool {
         lhs.y < rhs.y
     }

@@ -304,28 +304,28 @@ class UIRegionTests: XCTestCase {
             .init(left: 50.0, top: 15.0, right: 60.0, bottom: 40.0),
             .init(left: 20.0, top: 40.0, right: 60.0, bottom: 45.0),
         ])
-        
+
         // End result should be:
         //    0       10      20      30      40      50      60
-        // 0  +-------·-------·-------·-------+                 
-        //    |                               |                 
-        //    |                               |                 
-        //    |                               |                 
-        // 10 +-------·-------·-------·-------+                 
-        //    |       |                                         
-        // 15 + -  -  +  -  -  -  -  -  -  -  -  -  - +-------+ 
-        //    |       |                               |       | 
-        // 20 |       |                               |       | 
-        //    |       |                               |       | 
-        //    |       |                               |       | 
-        //    |       |                               |       | 
-        // 30 +-------+                               |       | 
-        //                                            |       | 
-        //                                            |       | 
-        //                                            |       | 
-        // 40                 +-------·-------·-------+-------+ 
-        //                    |                               | 
-        // 45                 +-------·-------·-------·-------+ 
+        // 0  +-------·-------·-------·-------+
+        //    |                               |
+        //    |                               |
+        //    |                               |
+        // 10 +-------·-------·-------·-------+
+        //    |       |
+        // 15 + -  -  +  -  -  -  -  -  -  -  -  -  - +-------+
+        //    |       |                               |       |
+        // 20 |       |                               |       |
+        //    |       |                               |       |
+        //    |       |                               |       |
+        //    |       |                               |       |
+        // 30 +-------+                               |       |
+        //                                            |       |
+        //                                            |       |
+        //                                            |       |
+        // 40                 +-------·-------·-------+-------+
+        //                    |                               |
+        // 45                 +-------·-------·-------·-------+
     }
 
     func testAddRectangle_complex_subtract_xor_intersect() {
@@ -353,6 +353,64 @@ class UIRegionTests: XCTestCase {
         ])
     }
 
+    func testUnionNeighboring_noNeighbors() {
+        let sut = UIRegion()
+        let rect1 = UIRectangle(left: 0, top: 0, right: 5, bottom: 15)
+        let rect2 = UIRectangle(left: 0, top: 20, right: 10, bottom: 25)
+        let rect3 = UIRectangle(left: 7, top: 1, right: 20, bottom: 10)
+        sut.addRectangles([rect1, rect2, rect3])
+
+        sut.unionNeighboring(tolerance: 0)
+
+        assertEquals(Set(sut.allRectangles()), [
+            rect1, rect2, rect3,
+        ])
+    }
+
+    func testUnionNeighboring_neighbors() {
+        let sut = UIRegion()
+        let rect1 = UIRectangle(left: 0, top: 0, right: 5, bottom: 15)
+        let rect2 = UIRectangle(left: 0, top: 20, right: 10, bottom: 25)
+        let rect3 = UIRectangle(left: 5, top: 1, right: 20, bottom: 10)
+        sut.addRectangles([rect1, rect2, rect3])
+
+        sut.unionNeighboring(tolerance: 0)
+
+        assertEquals(Set(sut.allRectangles()), [
+            rect1.union(rect3), rect2,
+        ])
+    }
+
+    func testUnionNeighboring_neighbors_cascadingMerge() {
+        let sut = UIRegion()
+        let rect1 = UIRectangle(x: 0, y: 0, width: 10, height: 10)
+        let rect2 = UIRectangle(x: 5, y: 5, width: 10, height: 10)
+        let rect3 = UIRectangle(x: 10, y: 10, width: 10, height: 10)
+        let rect4 = UIRectangle(x: 15, y: 15, width: 10, height: 10)
+        sut.addRectangles([rect1, rect2, rect3, rect4])
+
+        sut.unionNeighboring(tolerance: 0)
+
+        assertEquals(Set(sut.allRectangles()), [
+            UIRectangle.union([rect1, rect2, rect3, rect4]),
+        ])
+    }
+
+    func testUnionNeighboring_infinityTolerance() {
+        let sut = UIRegion()
+        let rect1 = UIRectangle(x: -9000, y: -8500, width: 10, height: 10)
+        let rect2 = UIRectangle(x: 5, y: 5, width: 10, height: 10)
+        let rect3 = UIRectangle(x: 10, y: 10, width: 10, height: 10)
+        let rect4 = UIRectangle(x: 500, y: 6000, width: 10, height: 10)
+        sut.addRectangles([rect1, rect2, rect3, rect4])
+
+        sut.unionNeighboring(tolerance: .infinity)
+
+        assertEquals(Set(sut.allRectangles()), [
+            UIRectangle.union([rect1, rect2, rect3, rect4]),
+        ])
+    }
+
     // TODO: Figure out test failures in macOS - probably related to floating-point precision botching the operation
     #if !os(macOS)
 
@@ -371,7 +429,7 @@ class UIRegionTests: XCTestCase {
             let dy = sin(r) * 20
 
             let offset = UIVector(x: dx, y: dy)
-            
+
             let rect1t = rect1.offsetBy(offset)
             let rect2t = rect2.offsetBy(offset)
             let rect3t = rect3.offsetBy(offset)
@@ -549,7 +607,7 @@ class UIRegionTests: XCTestCase {
                 let dy = sin(r) * 20
 
                 let offset = UIVector(x: dx, y: dy)
-                
+
                 let rect1t = rect1.offsetBy(offset)
                 let rect2t = rect2.offsetBy(offset)
                 let rect3t = rect3.offsetBy(offset)
@@ -578,7 +636,7 @@ class UIRegionTests: XCTestCase {
                 let dy = sin(r) * 20
 
                 let offset = UIVector(x: dx, y: dy)
-                
+
                 let rect1t = rect1.offsetBy(offset)
                 let rect2t = rect2.offsetBy(offset)
                 let rect3t = rect3.offsetBy(offset)
@@ -594,6 +652,56 @@ class UIRegionTests: XCTestCase {
         }
     }
 
+    func testPerformance_unionNeighboring_neighbors_cascadingMerge() {
+        let count = 100
+        var allRects: [UIRectangle] = []
+        for i in 0..<count {
+            allRects.append(
+                UIRectangle(
+                    x: Double(i) * 5,
+                    y: Double(i) * 5,
+                    width: 10,
+                    height: 10
+                )
+            )
+        }
+        let expectedResult = UIRectangle.union(allRects)
+        let base = UIRegion()
+        base.addRectangles(allRects)
+
+        doPerformanceTest {
+            let sut = base.copy()
+            sut.unionNeighboring(tolerance: 0)
+
+            assertEquals(Set(sut.allRectangles()), [expectedResult])
+        }
+    }
+
+    func testPerformance_unionNeighboring_infinityTolerance() {
+        let count = 1000
+        var allRects: [UIRectangle] = []
+        for i in 0..<count {
+            allRects.append(
+                UIRectangle(
+                    x: Double(i) * 5,
+                    y: Double(i) * 5,
+                    width: 10,
+                    height: 10
+                )
+            )
+        }
+        let expectedResult = UIRectangle.union(allRects)
+        let base = UIRegion()
+        base.addRectangles(allRects)
+
+        doPerformanceTest {
+            let sut = base.copy()
+            sut.unionNeighboring(tolerance: .infinity)
+
+            assertEquals(Set(sut.allRectangles()), [expectedResult])
+        }
+    }
+
     // MARK: - Test internals
     private func doPerformanceTest(
         repeatCount: Int = 1,
@@ -604,7 +712,7 @@ class UIRegionTests: XCTestCase {
 
         let closure: () -> Void = {
             var repeatCount = repeatCount
-            
+
             while repeatCount > 0 {
                 repeatCount -= 1
 
