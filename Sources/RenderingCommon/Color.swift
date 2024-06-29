@@ -1,21 +1,21 @@
 /// Represents a 4-component ARGB color
-public struct Color: Equatable {
+public struct Color: Hashable {
     @Clamped(min: 0, max: 255) public var alpha: Int = 0
     @Clamped(min: 0, max: 255) public var red: Int = 0
     @Clamped(min: 0, max: 255) public var green: Int = 0
     @Clamped(min: 0, max: 255) public var blue: Int = 0
-    
+
     public init(alpha: Int = 255, red: Int, green: Int, blue: Int) {
         self.alpha = alpha
         self.red = red
         self.green = green
         self.blue = blue
     }
-    
+
     public func withTransparency(_ alpha: Int) -> Color {
         return Color(alpha: alpha, red: red, green: green, blue: blue)
     }
-    
+
     public func withTransparency(factor: Float) -> Color {
         return Color(
             alpha: Int(255 * factor),
@@ -24,7 +24,7 @@ public struct Color: Equatable {
             blue: blue
         )
     }
-    
+
     public func faded(towards otherColor: Color, factor: Float, blendAlpha: Bool = false) -> Color {
         let from = 1 - factor
 
