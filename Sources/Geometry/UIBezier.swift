@@ -32,6 +32,53 @@ public struct UIBezier {
         }
     }
 
+    /// Returns the absolute length of the lines drawn by this bezier instance.
+    ///
+    /// Counts only drawable operations, so move operations are ignored.
+    public func length() -> Double {
+        if let cached = _cache.length {
+            return cached
+        }
+
+        let result = drawOperations().reduce(0) { $0 + $1.length }
+        _cache.length = result
+
+        return result
+    }
+
+    /// Returns the computed point of the draw operations, or the 'pen position',
+    /// at a given offset from the start of the draw operations.
+    ///
+    /// If this bezier is empty, the result is `.zero`, and if the value is
+    /// outside the range (0 - `self.length()`), the result is clamped to between
+    /// the start and end draw vertices.
+    ///
+    /// - parameter offset: A value between (0 - `self.length()`) that describes
+    ///     the absolute offset along this bezier's length.
+    public func pointAtOffset(_ offset: Double) -> UIPoint {
+        guard !isEmpty else {
+            return .zero
+        }
+
+        if offset < 0 {
+            return drawOperations().first?.startPoint ?? .zero
+        }
+        if offset > length() {
+            return drawOperations().last?.endPoint ?? .zero
+        }
+
+        var remaining = offset
+        for op in drawOperations() {
+            if remaining < op.length {
+                return op.compute(at: remaining / op.length)
+            }
+
+            remaining -= op.length
+        }
+
+        return drawOperations().last?.endPoint ?? .zero
+    }
+
     /// Returns the minimal `UIRectangle` capable of fitting all drawing operations
     /// for this `UIBezier` instance.
     public func bounds() -> UIRectangle {
@@ -167,6 +214,27 @@ public struct UIBezier {
             }
         }
 
+        var length: Double {
+            switch self {
+            case .line(let start, let end):
+                return start.distance(to: end)
+
+            case .quadBezier(let bezier):
+                let series = bezier.computeSeries(steps: 100)
+
+                return zip(series, series.dropFirst()).reduce(0.0) { (total, next) in
+                    next.0.distance(to: next.1)
+                }
+
+            case .cubicBezier(let bezier):
+                let series = bezier.computeSeries(steps: 100)
+
+                return zip(series, series.dropFirst()).reduce(0.0) { (total, next) in
+                    next.0.distance(to: next.1)
+                }
+            }
+        }
+
         var bounds: UIRectangle {
             switch self {
             case .line(let start, let end):
@@ -184,6 +252,19 @@ public struct UIBezier {
                 let (min, max) = bezier.boundingRegion()
 
                 return UIRectangle(minimum: min, maximum: max)
+            }
+        }
+
+        func compute(at factor: Double) -> UIPoint {
+            switch self {
+            case .line(let start, let end):
+                return start.lerp(to: end, factor: factor)
+
+            case .cubicBezier(let bezier):
+                return bezier.compute(at: factor)
+
+            case .quadBezier(let bezier):
+                return bezier.compute(at: factor)
             }
         }
 
@@ -265,10 +346,14 @@ public struct UIBezier {
         /// The rectangle area on this cache.
         var bounds: UIRectangle?
 
+        /// The length on this cache.
+        var length: Double?
+
         /// Resets the contents of this cache.
         func reset() {
             drawOperations = nil
             bounds = nil
+            length = nil
         }
     }
 }
