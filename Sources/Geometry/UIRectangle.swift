@@ -195,19 +195,26 @@ public struct UIRectangle: Hashable, Codable {
 
     @_transparent
     public init(x: Scalar, y: Scalar, width: Scalar, height: Scalar) {
-        self.init(location: .init(x: x, y: y),
-                  size: .init(width: width, height: height))
+        self.init(
+            location: .init(x: x, y: y),
+            size: .init(width: width, height: height)
+        )
     }
 
     @_transparent
     public init(left: Scalar, top: Scalar, right: Scalar, bottom: Scalar) {
-        self.init(minimum: .init(x: left, y: top),
-                  maximum: .init(x: right, y: bottom))
+        self.init(
+            minimum: .init(x: left, y: top),
+            maximum: .init(x: right, y: bottom)
+        )
     }
 
     @_transparent
     public init(_ rectangle: UIIntRectangle) {
-        self.init(location: UIPoint(rectangle.location), size: UISize(rectangle.size))
+        self.init(
+            location: UIPoint(rectangle.location),
+            size: UISize(rectangle.size)
+        )
     }
 
     @_transparent

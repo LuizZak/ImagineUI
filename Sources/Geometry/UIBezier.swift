@@ -94,7 +94,7 @@ public struct UIBezier {
 
     private static func makeDrawOperations(_ operations: [Operation]) -> [DrawOperation] {
         var cache: [DrawOperation] = []
-        
+
         var lastPoint: UIPoint = .zero
         for op in operations {
             defer { lastPoint = op.endPoint }
@@ -113,13 +113,13 @@ public struct UIBezier {
         switch op {
         case .moveTo:
             return nil
-        
+
         case .lineTo(let end):
             return .line(start: start, end: end)
 
         case .quadTo(let end, let cp1):
             return .quadBezier(makeQuadBezier(start, cp1, end))
-            
+
         case .cubicTo(let end, let cp1, let cp2):
             return .cubicBezier(makeCubicBezier(start, cp1, cp2, end))
         }
@@ -170,7 +170,10 @@ public struct UIBezier {
         var bounds: UIRectangle {
             switch self {
             case .line(let start, let end):
-                return UIRectangle(boundsFor: [start, end])
+                return UIRectangle(
+                    minimum: .pointwiseMin(start, end),
+                    maximum: .pointwiseMax(start, end)
+                )
 
             case .quadBezier(let bezier):
                 let (min, max) = bezier.boundingRegion()
@@ -301,7 +304,7 @@ extension UIBezier {
 
         add(op)
     }
-    
+
     /// Adds a 'line to' operation that draw a line from the current end vertex
     /// of this `UIBezier` to another point.
     public mutating func line(toX x: Double, y: Double) {

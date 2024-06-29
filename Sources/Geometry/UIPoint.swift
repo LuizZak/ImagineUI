@@ -96,7 +96,12 @@ public struct UIPoint: Hashable, Codable {
     /// of `factor`.
     @inlinable
     public static func lerp(_ start: UIPoint, _ end: UIPoint, factor: Double) -> UIPoint {
-        return start * (factor - 1) + end * factor
+        return start * (1 - factor) + end * factor
+    }
+
+    @_transparent
+    public func absolute() -> Self {
+        Self(x: x.magnitude, y: y.magnitude)
     }
 }
 
