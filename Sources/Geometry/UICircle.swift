@@ -71,4 +71,13 @@ public extension UICircle {
     func pointOnAngle(_ angleInRadians: Scalar) -> UIPoint {
         asUIEllipse.pointOnAngle(angleInRadians)
     }
+
+    /// Returns `true` if this circle contains a given point.
+    ///
+    /// Points on the edge of the circle are considered to be within the circle
+    /// by this method.
+    @_transparent
+    func contains(_ point: UIPoint) -> Bool {
+        point.distanceSquared(to: center) <= radius * radius
+    }
 }
