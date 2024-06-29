@@ -222,7 +222,7 @@ class LayoutVariables {
         if mask.contains(.location) {
             variables.left.value = bounds.x
             variables.top.value = bounds.y
-            
+
             constraintCollector.suggestValue(
                 variables.left,
                 value: bounds.x,
@@ -358,6 +358,7 @@ class LayoutVariables {
         )
         if let parent = container.parent {
             area = parent.convert(bounds: area, from: spatialReference)
+            area.size = container.convert(bounds: area, from: parent).size
         }
 
         container.setAreaSkippingLayout(area)
@@ -422,7 +423,7 @@ class LayoutVariables {
 
             // Pre-fill based on constraints
             let container = layoutVariables.container
-            
+
             if container.hasConstraintsOnAnchorKind(.left) {
                 markReferenced(.left)
             }
