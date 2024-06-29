@@ -90,7 +90,7 @@ public class ViewBitmapCache {
     /// Performs a deferred rendering operation that either redraws the cache
     /// bitmap if it's been invalidated through `closure` and then draws it on
     /// `renderer`, or if a cached bitmap is already present, draws the cached
-    /// bitmap to `renderer` and skips invoking `closure`. 
+    /// bitmap to `renderer` and skips invoking `closure`.
     public func cachingOrRendering(_ renderer: Renderer, _ closure: (Renderer) -> Void) {
         if !isCachingEnabled || !isCacheWithinSizeLimit || bitmapWidth <= 0 || bitmapHeight <= 0 {
             closure(renderer)
@@ -106,20 +106,20 @@ public class ViewBitmapCache {
             renderer.drawImageScaled(bitmap, area: rect)
             return
         }
-        
+
         let ctx = renderer.context.createImageRenderer(width: bitmapWidth, height: bitmapHeight)
 
         let image = ctx.withRenderer { renderer in
             renderer.clear()
-            
+
             renderer.translate(by: (-rectangle.location).ceil())
             renderer.scale(by: scale)
 
             closure(renderer)
         }
-        
+
         renderer.drawImageScaled(image, area: rect)
-        
+
         self.bitmap = image
     }
 }
