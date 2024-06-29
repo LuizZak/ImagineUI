@@ -359,6 +359,17 @@ class LayoutVariables {
         if let parent = container.parent {
             area = parent.convert(bounds: area, from: spatialReference)
             area.size = container.convert(bounds: area, from: parent).size
+
+            // Make sure we respect a view's desired fixed location/size, even
+            // if it participated in constraint resolution
+            if let view = container as? View {
+                if view.areaIntoConstraintsMask.contains(.location) {
+                    area.location = view.location
+                }
+                if view.areaIntoConstraintsMask.contains(.size) {
+                    area.size = view.size
+                }
+            }
         }
 
         container.setAreaSkippingLayout(area)
