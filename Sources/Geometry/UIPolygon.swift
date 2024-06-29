@@ -27,6 +27,14 @@ public struct UIPolygon: Hashable, Codable {
         addVertex(.init(x: x, y: y))
     }
 
+    public mutating func insertVertex(_ vertex: UIPoint, at index: Int) {
+        vertices.insert(vertex, at: index)
+    }
+
+    public mutating func insertVertex(x: Scalar, y: Scalar, at index: Int) {
+        insertVertex(.init(x: x, y: y), at: index)
+    }
+
     /// Adds a new vertex at the end of the vertices list that has the same location
     /// as the initial vertex.
     ///
@@ -37,6 +45,13 @@ public struct UIPolygon: Hashable, Codable {
         }
 
         addVertex(first)
+    }
+
+    /// Computes the minimum bounding box for this polygon.
+    ///
+    /// If the polygon is empty, `UIRectangle.empty` is returned, instead.
+    public func bounds() -> UIRectangle {
+        UIRectangle(boundsFor: vertices)
     }
 
     public func withCenter(on point: UIPoint) -> UIPolygon {
