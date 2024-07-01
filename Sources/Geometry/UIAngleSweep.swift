@@ -9,6 +9,11 @@ public struct UIAngleSweep {
         start + .init(radians: sweep)
     }
 
+    public init(start: UIAngle, sweep: Double) {
+        self.start = start
+        self.sweep = sweep
+    }
+
     public func contains(_ angle: UIAngle) -> Bool {
         if start < stop {
             if sweep > 0 {
