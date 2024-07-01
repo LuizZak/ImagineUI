@@ -81,10 +81,21 @@ public extension UICircle {
         )
     }
 
-    /// Returns a point on this circle on a given angle in radians.
+    /// Returns a point on this circle's perimeter on a given angle in radians.
     @_transparent
     func pointOnAngle(_ angleInRadians: Scalar) -> UIPoint {
         asUIEllipse.pointOnAngle(angleInRadians)
+    }
+
+    /// Returns a point on this circle's perimeter that is pointing in the same
+    /// direction towards the center of the circle as the given point.
+    @_transparent
+    func projectOnPerimeter(_ point: UIPoint) -> UIPoint {
+        if point == center {
+            return center + .one.normalized() * radius
+        }
+
+        return center + (point - center).normalized() * radius
     }
 
     /// Returns `true` if this circle contains a given point.

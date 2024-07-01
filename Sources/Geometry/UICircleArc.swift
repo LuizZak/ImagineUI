@@ -69,4 +69,49 @@ public extension UICircleArc {
     func pointOnAngle(_ angleInRadians: Scalar) -> UIPoint {
         circle.pointOnAngle(angleInRadians)
     }
+
+    /// Gets the length of this arc.
+    @_transparent
+    @inlinable
+    func length() -> Double {
+        sweepAngle * radius * 2
+    }
+
+    /// Returns `true` if this arc, when considered as a pie slice, contains a
+    /// given point.
+    func containsAsPie(_ point: UIPoint) -> Bool {
+        if point == center {
+            return true
+        }
+
+        let angle = normalized(angle: (point - center).angle())
+        var start = normalized(angle: startAngle)
+        var stop = normalized(angle: startAngle + sweepAngle)
+        if sweepAngle < 0 {
+            swap(&start, &stop)
+        }
+
+        if start < stop {
+            guard angle >= start && angle <= stop else {
+                return false
+            }
+        } else {
+            guard angle >= start || angle <= stop else {
+                return false
+            }
+        }
+
+        return center.distanceSquared(to: point) <= radius * radius
+    }
+}
+
+private func normalized(angle: Double) -> Double {
+    var angle = angle
+    while angle > .pi * 2 {
+        angle -= .pi * 2
+    }
+    while angle < 0 {
+        angle += .pi * 2
+    }
+    return angle
 }
