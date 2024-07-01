@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>CaretPosition Enumeration Reference</title>
+    <title>KeyedViewBitmapCache Class Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset="utf-8">
@@ -14,9 +14,9 @@
   </head>
   <body>
 
-    <a name="//apple_ref/swift/Enum/CaretPosition" class="dashAnchor"></a>
+    <a name="//apple_ref/swift/Class/KeyedViewBitmapCache" class="dashAnchor"></a>
 
-    <a title="CaretPosition Enumeration Reference"></a>
+    <a title="KeyedViewBitmapCache Class Reference"></a>
 
     <header class="header">
       <p class="header-col header-col--primary">
@@ -38,9 +38,9 @@
     <p class="breadcrumbs">
       <a class="breadcrumb" href="../index.html">ImagineUICore</a>
       <img class="carat" src="../img/carat.png" alt=""/>
-      <a class="breadcrumb" href="../Enums.html">Enumerations</a>
+      <a class="breadcrumb" href="../Classes.html">Classes</a>
       <img class="carat" src="../img/carat.png" alt=""/>
-      CaretPosition Enumeration Reference
+      KeyedViewBitmapCache Class Reference
     </p>
 
     <div class="content-wrapper">
@@ -553,17 +553,17 @@
 
         <section class="section">
           <div class="section-content top-matter">
-            <h1>CaretPosition</h1>
+            <h1>KeyedViewBitmapCache</h1>
               <div class="declaration">
                 <div class="language">
                   
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">CaretPosition</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">KeyedViewBitmapCache</span> <span class="p">:</span> <span class="kt"><a href="../Classes/ViewBitmapCache.html">ViewBitmapCache</a></span></code></pre>
 
                 </div>
               </div>
-            <p>Specifies the position a <code><a href="../Structs/Caret.html">Caret</a></code> is located within its own range.</p>
-
-<p>If start, <code>Caret.Location == Caret.Start</code>, if end, <code>Caret.Location == Caret.End</code>.</p>
+            <p>A specialization of <code><a href="../Classes/ViewBitmapCache.html">ViewBitmapCache</a></code> that supports storing hashable metadata
+that can be used to invalidate the contents of the cache by comparing the
+current values with the values present the previous time the cache was rendered.</p>
 
           </div>
         </section>
@@ -575,9 +575,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13ImagineUICore13CaretPositionO5startyA2CmF"></a>
-                    <a name="//apple_ref/swift/Element/start" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13ImagineUICore13CaretPositionO5startyA2CmF">start</a>
+                    <a name="/s:13ImagineUICore20KeyedViewBitmapCacheC10updateKeysyys11AnyHashableVd_tF"></a>
+                    <a name="//apple_ref/swift/Method/updateKeys(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13ImagineUICore20KeyedViewBitmapCacheC10updateKeysyys11AnyHashableVd_tF">updateKeys(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -585,14 +585,20 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Updates the key for this bitmap cache to be a ordered-set of the given
+hashable values.</p>
+
+<p>The next time <code>cachingOrRendering</code> is invoked, if the contents of the
+latest <code>updateKeys</code> up to before the method is invoked is different from
+the contents of the last time <code>cachingOrRendering</code> was invoked, the bitmap
+cache is invalidated and is re-rendered.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">start</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">updateKeys</span><span class="p">(</span><span class="n">_</span> <span class="nv">keys</span><span class="p">:</span> <span class="kt">AnyHashable</span><span class="o">...</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -602,9 +608,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13ImagineUICore13CaretPositionO3endyA2CmF"></a>
-                    <a name="//apple_ref/swift/Element/end" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13ImagineUICore13CaretPositionO3endyA2CmF">end</a>
+                    <a name="/s:13ImagineUICore20KeyedViewBitmapCacheC18cachingOrRenderingyy0I08Renderer_p_yAeF_pXEtF"></a>
+                    <a name="//apple_ref/swift/Method/cachingOrRendering(_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13ImagineUICore20KeyedViewBitmapCacheC18cachingOrRenderingyy0I08Renderer_p_yAeF_pXEtF">cachingOrRendering(_:<wbr>_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -612,14 +618,24 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Performs a deferred rendering operation that either redraws the cache
+bitmap if it&rsquo;s been invalidated through <code>closure</code> and then draws it on
+<code>renderer</code>, or if a cached bitmap is already present, draws the cached
+bitmap to <code>renderer</code> and skips invoking <code>closure</code>.</p>
+
+<p>If the latest <code>updateKeys</code> invocation does not match the keys present
+when the last <code>cachingOrRendering</code> call was made, the contents of the
+cache are erased and re-rendered.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">end</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">override</span> <span class="kd">func</span> <span class="nf">cachingOrRendering</span><span class="p">(</span>
+    <span class="n">_</span> <span class="nv">renderer</span><span class="p">:</span> <span class="kd">any</span> <span class="kt">Renderer</span><span class="p">,</span>
+    <span class="n">_</span> <span class="nv">closure</span><span class="p">:</span> <span class="p">(</span><span class="kd">any</span> <span class="kt">Renderer</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span>
+<span class="p">)</span></code></pre>
 
                         </div>
                       </div>

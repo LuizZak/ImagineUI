@@ -36,7 +36,9 @@
     </header>
 
     <p class="breadcrumbs">
-      <a class="breadcrumb" href="../index.html">ImagineUICore Reference</a>
+      <a class="breadcrumb" href="../index.html">ImagineUICore</a>
+      <img class="carat" src="../img/carat.png" alt=""/>
+      <a class="breadcrumb" href="../Classes.html">Classes</a>
       <img class="carat" src="../img/carat.png" alt=""/>
       TreeView Class Reference
     </p>
@@ -111,6 +113,9 @@
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/KeyPressEventArgs.html">KeyPressEventArgs</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="../Classes/KeyedViewBitmapCache.html">KeyedViewBitmapCache</a>
               </li>
               <li class="nav-group-task">
                 <a class="nav-group-task-link" href="../Classes/Label.html">Label</a>
@@ -747,14 +752,17 @@ be deselected.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>The data source queried to generate the items within this tree view.</p>
+
+<p>Changing the data source property clears all selection and expansion state,
+and triggers an immediate data reload.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">weak</span> <span class="k">var</span> <span class="nv">dataSource</span><span class="p">:</span> <span class="kt"><a href="../Protocols/TreeViewDataSource.html">TreeViewDataSource</a></span><span class="p">?</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">weak</span> <span class="k">var</span> <span class="nv">dataSource</span><span class="p">:</span> <span class="kt"><a href="../Protocols/TreeViewDataSource.html">TreeViewDataSource</a></span><span class="p">?</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -1211,6 +1219,90 @@ of the list of items.</p>
                 <li class="item">
                   <div>
                     <code>
+                    <a name="/s:13ImagineUICore8TreeViewC12addSelectionyyShyAC9ItemIndexVGF"></a>
+                    <a name="//apple_ref/swift/Method/addSelection(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13ImagineUICore8TreeViewC12addSelectionyyShyAC9ItemIndexVGF">addSelection(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Selects the given items on the interface alongside any currently selected
+items, triggering a <code><a href="../Classes/TreeView.html#/s:13ImagineUICore8TreeViewC18didChangeSelectionAA11EventSourceVyAC6sender_AA012ValueChangedH4ArgsVyShyAC9ItemIndexVGG4argstGvp">didChangeSelection</a></code> event in the process.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">addSelection</span><span class="p">(</span><span class="n">_</span> <span class="nv">items</span><span class="p">:</span> <span class="kt">Set</span><span class="o">&lt;</span><span class="kt"><a href="../Classes/TreeView/ItemIndex.html">ItemIndex</a></span><span class="o">&gt;</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13ImagineUICore8TreeViewC12setSelectionyyShyAC9ItemIndexVGF"></a>
+                    <a name="//apple_ref/swift/Method/setSelection(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13ImagineUICore8TreeViewC12setSelectionyyShyAC9ItemIndexVGF">setSelection(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Selects the given items on the interface, deselecting any currently selected
+items, triggering a <code><a href="../Classes/TreeView.html#/s:13ImagineUICore8TreeViewC18didChangeSelectionAA11EventSourceVyAC6sender_AA012ValueChangedH4ArgsVyShyAC9ItemIndexVGG4argstGvp">didChangeSelection</a></code> event in the process.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">setSelection</span><span class="p">(</span><span class="n">_</span> <span class="nv">items</span><span class="p">:</span> <span class="kt">Set</span><span class="o">&lt;</span><span class="kt"><a href="../Classes/TreeView/ItemIndex.html">ItemIndex</a></span><span class="o">&gt;</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:13ImagineUICore8TreeViewC14clearSelectionyyF"></a>
+                    <a name="//apple_ref/swift/Method/clearSelection()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:13ImagineUICore8TreeViewC14clearSelectionyyF">clearSelection()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>If any items are selected in this tree view, clears their selection,
+triggering a <code><a href="../Classes/TreeView.html#/s:13ImagineUICore8TreeViewC18didChangeSelectionAA11EventSourceVyAC6sender_AA012ValueChangedH4ArgsVyShyAC9ItemIndexVGG4argstGvp">didChangeSelection</a></code> event in the process.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">clearSelection</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
                     <a name="/s:13ImagineUICore8TreeViewC14HierarchyIndexV"></a>
                     <a name="//apple_ref/swift/Struct/HierarchyIndex" class="dashAnchor"></a>
                     <a class="token" href="#/s:13ImagineUICore8TreeViewC14HierarchyIndexV">HierarchyIndex</a>
@@ -1300,8 +1392,8 @@ of the list of items.</p>
       </article>
     </div>
     <section class="footer">
-      <p>&copy; 2023 <a class="link" href="" target="_blank" rel="external noopener"></a>. All rights reserved. (Last updated: 2023-09-25)</p>
-      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.3</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
+      <p>&copy; 2024 <a class="link" href="" target="_blank" rel="external noopener"></a>. All rights reserved. (Last updated: 2024-07-01)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.15.1</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
     </section>
   </body>
 </html>
