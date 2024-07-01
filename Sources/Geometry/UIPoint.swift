@@ -92,6 +92,16 @@ public struct UIPoint: Hashable, Codable {
         rounded(.down)
     }
 
+    @_transparent
+    public func absolute() -> Self {
+        Self(x: x.magnitude, y: y.magnitude)
+    }
+
+    @inlinable
+    public func scaledBy(_ factor: UIVector, around center: Self) -> Self {
+        (self - center) * factor + center
+    }
+
     /// Performs a linear interpolation between `start` and `end` using a ratio
     /// of `factor`.
     @inlinable
@@ -99,10 +109,6 @@ public struct UIPoint: Hashable, Codable {
         return start * (1 - factor) + end * factor
     }
 
-    @_transparent
-    public func absolute() -> Self {
-        Self(x: x.magnitude, y: y.magnitude)
-    }
 }
 
 // MARK: Addition
