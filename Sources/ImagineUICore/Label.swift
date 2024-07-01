@@ -117,9 +117,9 @@ open class Label: View {
         }
     }
 
-    public init(textColor: Color) {
+    public init(textColor: Color, fontSize: Float = 12) {
         self.textColor = textColor
-        self.font = Fonts.defaultFont(size: 12)
+        self.font = Fonts.defaultFont(size: fontSize)
         minimalTextLayout = TextLayout(font: font, attributedText: AttributedText())
 
         super.init()

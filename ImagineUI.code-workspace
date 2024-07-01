@@ -91,17 +91,6 @@
 					"kind": "test",
 					"isDefault": true
 				},
-				"windows": {
-					"options": {
-						"shell": {
-							"executable": "C:\\WINDOWS\\System32\\cmd.exe",
-							"args": [
-								"/d",
-								"/c",
-							]
-						}
-					}
-				}
 			}
 		]
 	},
