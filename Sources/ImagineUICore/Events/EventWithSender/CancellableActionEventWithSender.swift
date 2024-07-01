@@ -12,7 +12,10 @@ public extension Event {
     /// 
     /// Returns the final value of `event.cancel` after publishing the event to
     /// listeners.
-    func publishCancellableChangeEvent<Sender>(sender: Sender) -> Bool where T == SenderEventArgs<Sender, CancellableActionEventArgs<Void>> {
+    func publishCancellableChangeEvent<Sender>(
+        sender: Sender
+    ) -> Bool where T == SenderEventArgs<Sender, CancellableActionEventArgs<Void>> {
+
         let event = CancellableActionEventArgs(value: ())
 
         self.publishEvent((sender, event))
@@ -29,7 +32,11 @@ public extension Event {
     /// 
     /// Returns the final value of `event.cancel` after publishing the event to
     /// listeners.
-    func publishCancellableChangeEvent<Sender, Value>(sender: Sender, value: Value) -> Bool where T == SenderEventArgs<Sender, CancellableActionEventArgs<Value>> {
+    func publishCancellableChangeEvent<Sender, Value>(
+        sender: Sender,
+        value: Value
+    ) -> Bool where T == SenderEventArgs<Sender, CancellableActionEventArgs<Value>> {
+
         let event = CancellableActionEventArgs(value: value)
 
         self.publishEvent((sender, event))
@@ -39,13 +46,20 @@ public extension Event {
 
     /// Convenience for invoking `publishCancellableChangeEvent(sender:)` by
     /// calling the event variable itself directly.
-    func callAsFunction<Sender>(sender: Sender) -> Bool where T == SenderEventArgs<Sender, CancellableActionEventArgs<Void>> {
+    func callAsFunction<Sender>(
+        sender: Sender
+    ) -> Bool where T == SenderEventArgs<Sender, CancellableActionEventArgs<Void>> {
+        
         return publishCancellableChangeEvent(sender: sender)
     }
 
     /// Convenience for invoking `publishCancellableChangeEvent(sender:value:)`
     /// by calling the event variable itself directly.
-    func callAsFunction<Sender, Value>(sender: Sender, value: Value) -> Bool where T == SenderEventArgs<Sender, CancellableActionEventArgs<Value>> {
+    func callAsFunction<Sender, Value>(
+        sender: Sender,
+        value: Value
+    ) -> Bool where T == SenderEventArgs<Sender, CancellableActionEventArgs<Value>> {
+
         return publishCancellableChangeEvent(sender: sender, value: value)
     }
 }

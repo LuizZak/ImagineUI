@@ -8,7 +8,11 @@ public extension Event {
     }
 
     /// Convenience for `publishEvent((sender, args))`.
-    func publishEvent<Sender, Args>(sender: Sender, _ args: Args) where T == SenderEventArgs<Sender, Args> {
+    func publishEvent<Sender, Args>(
+        sender: Sender,
+        _ args: Args
+    ) where T == SenderEventArgs<Sender, Args> {
+        
         publishEvent((sender, args))
     }
 
@@ -20,7 +24,11 @@ public extension Event {
 
     /// Convenience for invoking `publishEvent(sender:_:)` by calling the event
     /// variable itself directly.
-    func callAsFunction<Sender, Args>(sender: Sender, _ args: Args) where T == SenderEventArgs<Sender, Args> {
+    func callAsFunction<Sender, Args>(
+        sender: Sender,
+        _ args: Args
+    ) where T == SenderEventArgs<Sender, Args> {
+
         publishEvent(sender: sender, args)
     }
 }

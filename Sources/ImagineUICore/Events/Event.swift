@@ -2,8 +2,8 @@
 /// using a single property.
 ///
 /// When used as a property wrapper, events can be registered to with
-/// `someEvent.addListener()`, and published with
-/// `_someEvent.publishEvent(<eventValue>)` or `_someEvent(<eventValue>)`.
+/// `EventSource<T>.addListener(weakOwner:_:)`, and published with
+/// `EventPublisher<T>.publishEvent(_:)`.
 ///
 /// Warning: Not thread-safe.
 @propertyWrapper

@@ -40,9 +40,13 @@ public extension Event {
     /// self.publishEvent(event)
     /// ```
     /// 
-    /// Returns the final value of `event.cancel` after publishing the event to
-    /// listeners.
-    func publishCancellableChangeEvent<Value>(old: Value, new: Value) -> Bool where T == CancellableValueChangedEventArgs<Value> {
+    /// Returns the final value of `CancellableValueChangedEventArgs<Value>.cancel`
+    /// after publishing the event to listeners.
+    func publishCancellableChangeEvent<Value>(
+        old: Value,
+        new: Value
+    ) -> Bool where T == CancellableValueChangedEventArgs<Value> {
+
         let event = CancellableValueChangedEventArgs(oldValue: old, newValue: new)
 
         self.publishEvent(event)
@@ -52,7 +56,11 @@ public extension Event {
 
     /// Convenience for invoking `publishCancellableChangeEvent(old:new:)` by
     /// calling the event variable itself directly.
-    func callAsFunction<Value>(old: Value, new: Value) -> Bool where T == CancellableValueChangedEventArgs<Value> {
+    func callAsFunction<Value>(
+        old: Value,
+        new: Value
+    ) -> Bool where T == CancellableValueChangedEventArgs<Value> {
+        
         return publishCancellableChangeEvent(old: old, new: new)
     }
 }

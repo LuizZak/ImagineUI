@@ -34,8 +34,8 @@ public extension Event {
     /// self.publishEvent(event)
     /// ```
     /// 
-    /// Returns the final value of `event.cancel` after publishing the event to
-    /// listeners.
+    /// Returns the final value of `CancellableActionEventArgs<Args>.cancel`
+    /// after publishing the event to listeners.
     func publishCancellableChangeEvent() -> Bool where T == CancellableActionEventArgs<Void> {
         let event = CancellableActionEventArgs(value: ())
 
@@ -51,8 +51,8 @@ public extension Event {
     /// self.publishEvent(event)
     /// ```
     /// 
-    /// Returns the final value of `event.cancel` after publishing the event to
-    /// listeners.
+    /// Returns the final value of `CancellableActionEventArgs<Args>.cancel`
+    /// after publishing the event to listeners.
     func publishCancellableChangeEvent<Value>(value: Value) -> Bool where T == CancellableActionEventArgs<Value> {
         let event = CancellableActionEventArgs(value: value)
 
