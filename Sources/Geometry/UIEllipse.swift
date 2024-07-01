@@ -1,6 +1,9 @@
 import Foundation
 
 public struct UIEllipse: Hashable, Codable {
+    /// The arc type for an ellipse.
+    public typealias Arc = UIEllipseArc
+
     public typealias Scalar = UIPoint.Scalar
 
     public static let zero: Self = .init()
@@ -71,7 +74,7 @@ public extension UIEllipse {
     /// angles, both in radians.
     @_transparent
     @inlinable
-    func arc(start startAngleInRadians: Double, sweep sweepAngleInRadians: Double) -> UIArc {
+    func arc(start startAngleInRadians: Double, sweep sweepAngleInRadians: Double) -> Arc {
         .init(
             center: center,
             radius: radius,

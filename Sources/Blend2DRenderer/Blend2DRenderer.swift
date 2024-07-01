@@ -111,11 +111,11 @@ public class Blend2DRenderer: Renderer {
         _context.fillPath(path)
     }
 
-    public func fill(chord: UIArc) {
+    public func fill(chord: UIEllipseArc) {
         _context.fillChord(chord.asBLArc)
     }
 
-    public func fill(pie: UIArc) {
+    public func fill(pie: UIEllipseArc) {
         _context.fillPie(pie.asBLArc)
     }
 
@@ -157,7 +157,7 @@ public class Blend2DRenderer: Renderer {
         _context.strokePolyline(polyline.map(\.asBLPoint))
     }
 
-    public func stroke(_ arc: UIArc) {
+    public func stroke(_ arc: UIEllipseArc) {
         _context.strokeArc(arc.asBLArc)
     }
 
@@ -167,11 +167,11 @@ public class Blend2DRenderer: Renderer {
         _context.strokePath(path)
     }
 
-    public func stroke(chord: UIArc) {
+    public func stroke(chord: UIEllipseArc) {
         _context.strokeChord(chord.asBLArc)
     }
 
-    public func stroke(pie: UIArc) {
+    public func stroke(pie: UIEllipseArc) {
         _context.strokePie(pie.asBLArc)
     }
 

@@ -1,6 +1,9 @@
 import Foundation
 
 public struct UICircle: Hashable, Codable {
+    /// The arc type for a circle.
+    public typealias Arc = UICircleArc
+
     public typealias Scalar = Double
 
     public static let zero: Self = .init()
@@ -57,7 +60,19 @@ public extension UICircle {
     /// Creates an arc within this circle based on the given start and sweep
     /// angles, both in radians.
     @_transparent
-    func arc(start startAngleInRadians: Double, sweep sweepAngleInRadians: Double) -> UIArc {
+    func arc(start startAngleInRadians: Double, sweep sweepAngleInRadians: Double) -> Arc {
+        .init(
+            center: center,
+            radius: radius,
+            startAngle: startAngleInRadians,
+            sweepAngle: sweepAngleInRadians
+        )
+    }
+
+    /// Creates an ellipse arc within this circle based on the given start and
+    /// sweep angles, both in radians.
+    @_transparent
+    func ellipseArc(start startAngleInRadians: Double, sweep sweepAngleInRadians: Double) -> UIEllipse.Arc {
         .init(
             center: center,
             radius: radius,

@@ -115,7 +115,13 @@ public extension UITriangle {
     }
 }
 
-public extension UIArc {
+public extension UICircleArc {
+    var asBLArc: BLArc {
+        ellipseArc.asBLArc
+    }
+}
+
+public extension UIEllipseArc {
     var asBLArc: BLArc {
         .init(
             center: center.asBLPoint,

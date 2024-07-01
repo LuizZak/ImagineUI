@@ -65,11 +65,17 @@ public protocol Renderer {
     /// Fills a given bezier with the current fill style.
     func fill(_ bezier: UIBezier)
 
-    /// Fills a given arc as a chord with the current fill style.
-    func fill(chord: UIArc)
+    /// Fills a given elliptical arc as a chord with the current fill style.
+    func fill(chord: UIEllipseArc)
 
-    /// Fills a given arc as a pie with the current fill style.
-    func fill(pie: UIArc)
+    /// Fills a given circular arc as a chord with the current fill style.
+    func fill(chord: UICircleArc)
+
+    /// Fills a given elliptical arc as a pie with the current fill style.
+    func fill(pie: UIEllipseArc)
+
+    /// Fills a given circular arc as a pie with the current fill style.
+    func fill(pie: UICircleArc)
 
     // MARK: - Stroke Operations
 
@@ -94,20 +100,32 @@ public protocol Renderer {
     /// Strokes a given triangle with the current stroke style
     func stroke(_ triangle: UITriangle)
 
-    /// Strokes a given arc with the current stroke style
-    func stroke(_ arc: UIArc)
+    /// Strokes a given elliptical arc with the current stroke style
+    func stroke(_ arc: UIEllipseArc)
+
+    /// Strokes a given circular arc with the current stroke style
+    func stroke(_ arc: UICircleArc)
 
     /// Strokes a given bezier with the current stroke style.
     func stroke(_ bezier: UIBezier)
 
-    /// Strokes a given arc as a chord with the current stroke style.
-    func stroke(chord: UIArc)
+    /// Strokes a given elliptical arc as a chord with the current stroke style.
+    func stroke(chord: UIEllipseArc)
 
-    /// Strokes a given arc as a pie with the current stroke style.
+    /// Strokes a given circular arc as a chord with the current stroke style.
+    func stroke(chord: UICircleArc)
+
+    /// Strokes a given elliptical arc as a pie with the current stroke style.
     ///
     /// As well as the stroke for the outer arc, two strokes are added pointing
     /// from the center of the arc to its starting and ending points.
-    func stroke(pie: UIArc)
+    func stroke(pie: UIEllipseArc)
+
+    /// Strokes a given circular arc as a pie with the current stroke style.
+    ///
+    /// As well as the stroke for the outer arc, two strokes are added pointing
+    /// from the center of the arc to its starting and ending points.
+    func stroke(pie: UICircleArc)
 
     /// Strokes a line formed by the given start and end vectors with the
     /// current stroke style.
@@ -235,6 +253,30 @@ public extension Renderer {
 
     func setStroke(_ gradient: Gradient) {
         setStroke(StrokeStyle(brush: .gradient(gradient)))
+    }
+
+    func fill(chord: UICircleArc) {
+        fill(chord: chord.ellipseArc)
+    }
+
+    func fill(pie: UICircleArc) {
+        fill(pie: pie.ellipseArc)
+    }
+
+    func fill(_ arc: UICircleArc) {
+        stroke(arc.ellipseArc)
+    }
+
+    func stroke(chord: UICircleArc) {
+        stroke(chord: chord.ellipseArc)
+    }
+
+    func stroke(_ arc: UICircleArc) {
+        stroke(arc.ellipseArc)
+    }
+
+    func stroke(pie: UICircleArc) {
+        stroke(pie: pie.ellipseArc)
     }
 }
 
