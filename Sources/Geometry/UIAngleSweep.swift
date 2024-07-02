@@ -37,38 +37,48 @@ public struct UIAngleSweep {
     /// Returns the shortest relative sweep between `start` and `angle`.
     public func relativeToStart(_ angle: UIAngle) -> Double {
         var relative = angle.radians - start.radians
+
         while relative < -.pi {
             relative += .pi * 2
         }
         while relative > .pi {
             relative -= .pi * 2
         }
-        return relative
-        /*
-        let angle1 = start.radians
-        let angle2 = angle.radians
-
-        if angle1 > angle2 {
-            if (angle1 - angle2) > .pi {
-                return (.pi * 2 - angle1) + angle2
-            } else {
-                return angle1 - angle2
-            }
-        } else {
-            if (angle2 - angle1) > .pi {
-                return (.pi * 2 - angle2) + angle1
-            } else {
-                return angle2 - angle1
-            }
-        }
-        */
-        /*
-        let relative: Double = .pi - abs(abs(start.radians - angle.radians) - .pi)
-        if start.radians < angle.radians {
-            return -relative
-        }
 
         return relative
-        */
     }
+
+    /// Returns the result of clamping a given angle so it is contained within
+    /// this angle sweep.
+    public func clamped(_ angle: UIAngle) -> UIAngle {
+        var start = self.start
+        var stop = self.stop
+
+        if sweep < 0 {
+            swap(&start, &stop)
+        }
+
+        let n_min = normalize180(start.radians - angle.radians)
+        let n_max = normalize180(stop.radians - angle.radians)
+
+        if n_min <= 0 && n_max >= 0 {
+            return angle
+        }
+        if abs(n_min) < abs(n_max) {
+            return start
+        }
+
+        return stop
+    }
+}
+
+fileprivate func normalize180(_ angle: Double) -> Double {
+    var angle = angle
+    while angle < -.pi {
+        angle += .pi * 2
+    }
+    while angle >= .pi {
+        angle -= .pi * 2
+    }
+    return angle
 }

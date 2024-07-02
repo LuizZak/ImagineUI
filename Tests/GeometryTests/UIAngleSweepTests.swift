@@ -80,6 +80,44 @@ class UIAngleSweepTests: XCTestCase {
         XCTAssertEqual(sut.relativeToStart(.pi * 0.5), .pi * 0.4)
         XCTAssertEqual(sut.relativeToStart(.pi * 1.1), -.pi, accuracy: 1e-10)
     }
+
+    func testClamped() {
+        let sut = makeSut(.pi * 0.25, .pi * 0.5)
+
+        XCTAssertEqual(sut.clamped(0), .pi * 0.25)
+        XCTAssertEqual(sut.clamped(.pi * 0.5), .pi * 0.5)
+        XCTAssertEqual(sut.clamped(.pi * 1.4), .pi * 0.75)
+    }
+
+    func testClamped_wrapAround() {
+        let sut = makeSut(.pi * 1.5, .pi)
+
+        XCTAssertEqual(sut.clamped(0), 0)
+        XCTAssertEqual(sut.clamped(.pi * 0.25), .pi * 0.25)
+        XCTAssertEqual(sut.clamped(.pi * 1.75), .pi * 1.75)
+        XCTAssertEqual(sut.clamped(.pi * 0.85), .pi * 0.5)
+        XCTAssertEqual(sut.clamped(.pi * 0.5), .pi * 0.5)
+        XCTAssertEqual(sut.clamped(.pi * 1.5), .pi * 1.5)
+    }
+
+    func testClamped_negativeSweep() {
+        let sut = makeSut(.pi * 0.75, -.pi * 0.5)
+
+        XCTAssertEqual(sut.clamped(0), .pi * 0.25)
+        XCTAssertEqual(sut.clamped(.pi * 0.5), .pi * 0.5)
+        XCTAssertEqual(sut.clamped(.pi * 1.4), .pi * 0.75)
+    }
+
+    func testClamped_negativeSweep_wrapAround() {
+        let sut = makeSut(.pi * 0.5, -.pi)
+
+        XCTAssertEqual(sut.clamped(0), 0)
+        XCTAssertEqual(sut.clamped(.pi * 0.25), .pi * 0.25)
+        XCTAssertEqual(sut.clamped(.pi * 1.75), .pi * 1.75)
+        XCTAssertEqual(sut.clamped(.pi * 0.85), .pi * 0.5)
+        XCTAssertEqual(sut.clamped(.pi * 0.5), .pi * 0.5)
+        XCTAssertEqual(sut.clamped(.pi * 1.5), .pi * 1.5)
+    }
 }
 
 // MARK: - Test internals
