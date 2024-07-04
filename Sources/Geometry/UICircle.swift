@@ -57,6 +57,11 @@ public extension UICircle {
         .init(center: center, radius: radius + scalar)
     }
 
+    @_transparent
+    func scaled(by scalar: Scalar) -> Self {
+        .init(center: center, radius: radius * scalar)
+    }
+
     /// Creates an arc within this circle based on the given start and sweep
     /// angles, both in radians.
     @_transparent
