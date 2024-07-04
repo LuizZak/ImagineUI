@@ -1,17 +1,28 @@
 /// A pair of angle + angle range values that can be used to test inclusivity of
 /// `UIAngle` values.
 public struct UIAngleSweep {
+    public typealias Scalar = Double
+
     public var start: UIAngle
-    public var sweep: Double
+    public var sweep: Scalar
 
     /// Returns `start + sweep`.
     public var stop: UIAngle {
         start + .init(radians: sweep)
     }
 
-    public init(start: UIAngle, sweep: Double) {
+    public init(start startInRadians: Scalar, sweep: Scalar) {
+        self.start = .init(radians: startInRadians)
+        self.sweep = sweep
+    }
+
+    public init(start: UIAngle, sweep: Scalar) {
         self.start = start
         self.sweep = sweep
+    }
+
+    public func contains(_ angleInRadians: Scalar) -> Bool {
+        contains(UIAngle(radians: angleInRadians))
     }
 
     public func contains(_ angle: UIAngle) -> Bool {
@@ -35,7 +46,7 @@ public struct UIAngleSweep {
     }
 
     /// Returns the shortest relative sweep between `start` and `angle`.
-    public func relativeToStart(_ angle: UIAngle) -> Double {
+    public func relativeToStart(_ angle: UIAngle) -> Scalar {
         var relative = angle.radians - start.radians
 
         while relative < -.pi {

@@ -7,6 +7,11 @@ public struct UIRectangle: Hashable, Codable {
     public var location: UIPoint
     public var size: UISize
 
+    /// Returns `true` if `self == UIRectangle.zero`.
+    public var isZero: Bool {
+        self == Self.zero
+    }
+
     public var x: Scalar {
         @_transparent
         get {

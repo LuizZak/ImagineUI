@@ -8,8 +8,8 @@ class UIAngleSweepTests: XCTestCase {
 
         XCTAssertTrue(sut.contains(sut.start))
         XCTAssertTrue(sut.contains(sut.stop))
-        XCTAssertTrue(sut.contains(.pi / 3))
-        XCTAssertFalse(sut.contains(.pi * (3 / 2)))
+        XCTAssertTrue(sut.contains(UIAngle.pi / 3))
+        XCTAssertFalse(sut.contains(UIAngle.pi * (3 / 2)))
     }
 
     func testContains_wrapAround() {
@@ -18,7 +18,7 @@ class UIAngleSweepTests: XCTestCase {
         XCTAssertTrue(sut.contains(0.0))
         XCTAssertTrue(sut.contains(sut.start))
         XCTAssertTrue(sut.contains(sut.stop))
-        XCTAssertFalse(sut.contains(.pi / 2))
+        XCTAssertFalse(sut.contains(UIAngle.pi / 2))
     }
 
     func testContains_wrapAround_largeSweep() {
@@ -27,7 +27,7 @@ class UIAngleSweepTests: XCTestCase {
         XCTAssertTrue(sut.contains(0.0))
         XCTAssertTrue(sut.contains(sut.start))
         XCTAssertTrue(sut.contains(sut.stop))
-        XCTAssertTrue(sut.contains(.pi / 2))
+        XCTAssertTrue(sut.contains(UIAngle.pi / 2))
         XCTAssertFalse(sut.contains(.pi * 1.51))
         XCTAssertFalse(sut.contains(.pi * 1.49))
     }

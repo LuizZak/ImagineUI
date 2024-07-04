@@ -7,6 +7,9 @@ extension UIBezier.DrawOperation {
         case .line(let start, let end):
             path.addLine(.init(start: start.asBLPoint, end: end.asBLPoint))
 
+        case .arc(let arc):
+            path.addArc(arc.asBLArc)
+
         case .quadBezier(let bezier):
             let points = bezier.points
 
@@ -33,6 +36,11 @@ extension Collection where Element == UIBezier.DrawOperation {
                 path.addLine(.init(start: start.asBLPoint, end: end.asBLPoint))
 
                 lastVertex = end
+
+            case .arc(let arc):
+                path.addArc(arc.asBLArc)
+
+                lastVertex = arc.endPoint
 
             case .quadBezier(let bezier):
                 let points = bezier.points

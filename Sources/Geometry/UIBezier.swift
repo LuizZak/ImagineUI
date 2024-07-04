@@ -97,8 +97,9 @@ public struct UIBezier {
         return op
     }
 
-    /// Returns `true` if the given point is contained within the area specified
-    /// by this bezier instance.
+    /// Assuming that this `UIBezier` represents an enclosed area, returns `true`
+    /// if the given point is contained within the area specified by this `UIBezier`
+    /// instance.
     public func contains(_ point: UIPoint) -> Bool {
         let outerPoint = UIPoint(x: self.bounds().right + 1, y: point.y)
         let line = UILine(start: point, end: outerPoint)
@@ -118,6 +119,21 @@ public struct UIBezier {
                 let opLine = UILine(start: start, end: end)
                 if let point = opLine.intersection(with: line) {
                     result.append(point)
+                }
+
+            case .arc(let arc):
+                switch arc.intersection(with: line) {
+                case (let a?, let b?):
+                    return [a, b]
+
+                case (let a?, nil):
+                    return [a]
+
+                case (nil, let b?):
+                    return [b]
+
+                case (nil, nil):
+                    return []
                 }
 
             case .quadBezier(let bezier):
@@ -201,6 +217,9 @@ public struct UIBezier {
         case .moveTo:
             return nil
 
+        case .arc(let end, let sweepAngle):
+            return .arc(makeArc(start, end, sweepAngle))
+
         case .lineTo(let end):
             return .line(start: start, end: end)
 
@@ -210,6 +229,10 @@ public struct UIBezier {
         case .cubicTo(let end, let cp1, let cp2):
             return .cubicBezier(makeCubicBezier(start, cp1, cp2, end))
         }
+    }
+
+    private static func makeArc(_ p0: UIPoint, _ p1: UIPoint, _ sweepAngle: Double) -> UICircleArc {
+        UICircleArc(startPoint: p0, endPoint: p1, sweepAngle: sweepAngle)
     }
 
     private static func makeQuadBezier(_ p0: UIPoint, _ p1: UIPoint, _ p2: UIPoint) -> UIQuadBezier {
@@ -225,6 +248,7 @@ public struct UIBezier {
     /// Encapsulates draw operations produced by a `UIBezier` object.
     public enum DrawOperation {
         case line(start: UIPoint, end: UIPoint)
+        case arc(UICircleArc)
         case quadBezier(UIQuadBezier)
         case cubicBezier(UICubicBezier)
 
@@ -232,6 +256,9 @@ public struct UIBezier {
             switch self {
             case .line(let start, _):
                 return start
+
+            case .arc(let arc):
+                return arc.startPoint
 
             case .quadBezier(let bezier):
                 return bezier[0]
@@ -246,6 +273,9 @@ public struct UIBezier {
             case .line(_, let end):
                 return end
 
+            case .arc(let arc):
+                return arc.endPoint
+
             case .quadBezier(let bezier):
                 return bezier[2]
 
@@ -258,6 +288,9 @@ public struct UIBezier {
             switch self {
             case .line(let start, let end):
                 return start.distance(to: end)
+
+            case .arc(let arc):
+                return arc.length()
 
             case .quadBezier(let bezier):
                 let series = bezier.computeSeries(steps: 100)
@@ -283,6 +316,9 @@ public struct UIBezier {
                     maximum: .pointwiseMax(start, end)
                 )
 
+            case .arc(let arc):
+                return arc.bounds()
+
             case .quadBezier(let bezier):
                 let (min, max) = bezier.boundingRegion()
 
@@ -300,6 +336,9 @@ public struct UIBezier {
             case .line(let start, let end):
                 return start.lerp(to: end, factor: factor)
 
+            case .arc(let arc):
+                return arc.pointOnAngle(arc.startAngle + arc.sweepAngle * factor)
+
             case .cubicBezier(let bezier):
                 return bezier.compute(at: factor)
 
@@ -312,6 +351,9 @@ public struct UIBezier {
             switch self {
             case .line(let start, let end):
                 return UILine(start: start, end: end).distanceSquared(to: point)
+
+            case .arc(let arc):
+                return arc.distanceSquared(to: point)
 
             case .quadBezier(let bezier):
                 let projected = bezier.projectApproximate(
@@ -345,13 +387,15 @@ public struct UIBezier {
         case lineTo(UIPoint)
         case quadTo(UIPoint, cp1: UIPoint)
         case cubicTo(UIPoint, cp1: UIPoint, cp2: UIPoint)
+        case arc(UIPoint, sweepAngle: Double)
 
         var endPoint: UIPoint {
             switch self {
             case .moveTo(let end),
                 .lineTo(let end),
                 .quadTo(let end, _),
-                .cubicTo(let end, _, _):
+                .cubicTo(let end, _, _),
+                .arc(let end, _):
 
                 return end
             }
@@ -360,7 +404,7 @@ public struct UIBezier {
         /// Returns `true` if this operation value is a draw operation.
         var isDrawOperation: Bool {
             switch self {
-            case .lineTo, .quadTo, .cubicTo:
+            case .lineTo, .quadTo, .cubicTo, .arc:
                 return true
             case .moveTo:
                 return false
@@ -372,7 +416,7 @@ public struct UIBezier {
             switch self {
             case .moveTo:
                 return true
-            case .lineTo, .quadTo, .cubicTo:
+            case .lineTo, .quadTo, .cubicTo, .arc:
                 return false
             }
         }
@@ -450,6 +494,15 @@ extension UIBezier {
     /// `p1` and `p2` as the second and third control points of the curve.
     public mutating func cubic(to point: UIPoint, p1: UIPoint, p2: UIPoint) {
         let op = Operation.cubicTo(point, cp1: p1, cp2: p2)
+
+        add(op)
+    }
+
+    /// Adds an 'arc' operation that draws a circular arc starting from the
+    /// current end vertex of this `UIBezier`, before sweeping towards another
+    /// end point.
+    public mutating func arc(to point: UIPoint, sweepAngle: Double) {
+        let op = Operation.arc(point, sweepAngle: sweepAngle)
 
         add(op)
     }
