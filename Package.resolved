@@ -15,7 +15,7 @@
         "repositoryURL": "https://github.com/LuizZak/swift-bezier.git",
         "state": {
           "branch": "main",
-          "revision": "84c8d4614e90fbb39a083bb7463242890ad0e475",
+          "revision": "a4f9aa49910f61cca65ab3ff9f9068f33c1bf3d8",
           "version": null
         }
       },
@@ -25,15 +25,6 @@
         "state": {
           "branch": "master",
           "revision": "39c6c0f932243f39056d525d655f0fde646a51f6",
-          "version": null
-        }
-      },
-      {
-        "package": "LibPNG",
-        "repositoryURL": "https://github.com/LuizZak/swift-libpng.git",
-        "state": {
-          "branch": "master",
-          "revision": "c059e4a34d0a84a2a1cc7eac8acdb8fa3ab8142f",
           "version": null
         }
       }

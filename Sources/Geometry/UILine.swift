@@ -48,10 +48,35 @@ public struct UILine: Hashable, Codable {
     func project(_ point: UIPoint) -> UIPoint {
         let relEnd = end - start
         let relVec = point - start
-        
+
         let proj = relVec.dot(relEnd) / relEnd.lengthSquared()
-        
+
         return start + relEnd * proj
+    }
+
+    @inlinable
+    func intersection(with other: Self) -> UIPoint? {
+        let denom = ((other.end.y - other.start.y) * (self.end.x - self.start.x)) - ((other.end.x - other.start.x) * (self.end.y - self.start.y))
+
+        // if denom == 0, lines are parallel - being a bit generous on this one..
+        if abs(denom) < .leastNonzeroMagnitude {
+            return nil
+        }
+
+        let UaTop = ((other.end.x - other.start.x) * (self.start.y - other.start.y)) - ((other.end.y - other.start.y) * (self.start.x - other.start.x))
+        let UbTop = ((self.end.x - self.start.x) * (self.start.y - other.start.y)) - ((self.end.y - self.start.y) * (self.start.x - other.start.x))
+
+        let Ua = UaTop / denom
+        let Ub = UbTop / denom
+
+        if Ua >= 0 && Ua <= 1 && Ub >= 0 && Ub <= 1 {
+            // these lines intersect!
+            let hitPt = self.start + ((self.end - self.start) * Ua)
+
+            return hitPt
+        }
+
+        return nil
     }
 }
 

@@ -70,11 +70,10 @@ public extension UICircleArc {
         circle.pointOnAngle(angleInRadians)
     }
 
-    /// Gets the length of this arc.
-    @_transparent
+    /// Gets the positive length of this arc.
     @inlinable
     func length() -> Double {
-        sweepAngle * radius * 2
+        sweepAngle.magnitude * radius
     }
 
     /// Returns `true` if this arc, when considered as a pie slice, contains a

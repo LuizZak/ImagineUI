@@ -97,6 +97,46 @@ public struct UIBezier {
         return op
     }
 
+    /// Returns `true` if the given point is contained within the area specified
+    /// by this bezier instance.
+    public func contains(_ point: UIPoint) -> Bool {
+        let outerPoint = UIPoint(x: self.bounds().right + 1, y: point.y)
+        let line = UILine(start: point, end: outerPoint)
+
+        return intersect(line).count % 2 == 1
+    }
+
+    func intersect(_ line: UILine) -> [UIPoint] {
+        let ops = drawOperations()
+
+        var result: [UIPoint] = []
+        let bezierLine = LinearBezier<UIPoint>(p0: line.start, p1: line.end)
+
+        for op in ops {
+            switch op {
+            case .line(let start, let end):
+                let opLine = UILine(start: start, end: end)
+                if let point = opLine.intersection(with: line) {
+                    result.append(point)
+                }
+
+            case .quadBezier(let bezier):
+                let (t0, t1) = bezier.bezier.intersection(with: bezierLine)
+                if let t0 { result.append(bezier.compute(at: t0)) }
+                if let t1 { result.append(bezier.compute(at: t1)) }
+
+            case .cubicBezier(let bezier):
+                let (t0, t1, t2, t3) = bezier.bezier.intersection(with: bezierLine)
+                if let t0 { result.append(bezier.compute(at: t0)) }
+                if let t1 { result.append(bezier.compute(at: t1)) }
+                if let t2 { result.append(bezier.compute(at: t2)) }
+                if let t3 { result.append(bezier.compute(at: t3)) }
+            }
+        }
+
+        return result
+    }
+
     /// If this `UIBezier` is not empty, returns the distance to the closest draw
     /// operation registered.
     ///
