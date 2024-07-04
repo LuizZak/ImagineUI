@@ -40,6 +40,24 @@ public struct UICircleArc: Hashable, Codable {
             sweepAngle: sweepAngle
         )
     }
+
+    /// Creates a new circular arc that fits the given start/end points on the
+    /// circumference of the arc, and a center point.
+    ///
+    /// - note: The initializer assumes that `center` is equally distant to both
+    /// `startPoint` and `endPoint`.
+    public init(center: UIPoint, startPoint: UIPoint, endPoint: UIPoint) {
+        let radius = center.distance(to: startPoint)
+        let startAngle = center.angle(to: startPoint)
+        let endAngle = center.angle(to: endPoint)
+
+        self.init(
+            center: center,
+            radius: radius,
+            startAngle: startAngle,
+            sweepAngle: endAngle - startAngle
+        )
+    }
 }
 
 public extension UICircleArc {
