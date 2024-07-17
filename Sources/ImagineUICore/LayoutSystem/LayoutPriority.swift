@@ -3,6 +3,7 @@ import CassowarySwift
 /// Priority for layout constraints
 public struct LayoutPriority: Hashable {
     public static let required = LayoutPriority(1000)
+    public static let veryHigh = LayoutPriority(900)
     public static let high = LayoutPriority(750)
     public static let medium = LayoutPriority(500)
     public static let low = LayoutPriority(250)
@@ -27,6 +28,8 @@ extension LayoutPriority: CustomStringConvertible {
         switch self {
         case .required:
             return "required (\(value))"
+        case .veryHigh:
+            return "very high (\(value))"
         case .high:
             return "high (\(value))"
         case .medium:
@@ -68,6 +71,8 @@ extension LayoutPriority {
         switch self {
         case .required:
             return Strength.REQUIRED
+        case .veryHigh:
+            return _toStrength(900)
         case .high:
             return Strength.STRONG
         case .medium:

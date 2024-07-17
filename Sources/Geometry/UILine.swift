@@ -81,13 +81,79 @@ public struct UILine: Hashable, Codable {
 }
 
 public extension UILine {
-    @_transparent
-    func offsetBy(x: Scalar, y: Scalar) -> Self {
-        offsetBy(.init(x: x, y: y))
+    /// Returns the center point of this line.
+    @inlinable
+    var center: UIPoint {
+        start * 0.5 + end * 0.5
     }
 
+    /// Returns the result of offsetting this line by a given amount.
     @_transparent
-    func offsetBy(_ vector: UIVector) -> Self {
+    func offset(byX x: Scalar, y: Scalar) -> Self {
+        offset(by: .init(x: x, y: y))
+    }
+
+    /// Returns the result of offsetting this line by a given amount.
+    @_transparent
+    func offset(by vector: UIVector) -> Self {
         .init(start: start + vector, end: end + vector)
+    }
+
+    /// Returns the result of scaling this line towards the origin by a given
+    /// factor.
+    func scaled(byX x: Scalar, y: Scalar) -> Self {
+        scaled(by: .init(x: x, y: y))
+    }
+
+    /// Returns the result of scaling this line towards the origin by a given
+    /// factor.
+    func scaled(by factor: UIVector) -> Self {
+        Self(start: start * factor, end: end * factor)
+    }
+
+    /// Returns the result of scaling this line around the given point by a given
+    /// factor.
+    func scaled(by factor: UIVector, around center: UIPoint) -> Self {
+        Self(
+            start: (start - center) * factor + center,
+            end: (end - center) * factor + center
+        )
+    }
+}
+
+public extension UILine {
+    /// Moves this line such that its center coincides with a given point, while
+    /// keeping the length and rotation the same.
+    func withCenter(on point: UIPoint) -> Self {
+        let center = self.center
+        let offset = point - center
+
+        return Self(start: start + offset, end: end + offset)
+    }
+
+    /// Rotates the endpoints of this line around the origin by a given angle in
+    /// radians.
+    func rotatedAroundCenter(by angleInRadians: Double) -> Self {
+        return rotated(by: angleInRadians, around: center)
+    }
+
+    /// Rotates the endpoints of this line around the given center point by a
+    /// given angle in radians.
+    func rotated(by angleInRadians: Double, around center: UIPoint) -> Self {
+        return Self(
+            start: start.rotated(by: angleInRadians, around: center),
+            end: end.rotated(by: angleInRadians, around: center)
+        )
+    }
+
+    /// Returns a polygon that is the transform of the end points of this line
+    /// using a given `UIMatrix`.
+    func transformed(by matrix: UIMatrix) -> Self {
+        .init(start: matrix.transform(start), end: matrix.transform(end))
+    }
+
+    /// Transforms the endpoints of this line in place using a given `UIMatrix`.
+    mutating func transform(by matrix: UIMatrix) {
+        self = transformed(by: matrix)
     }
 }

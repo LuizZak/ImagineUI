@@ -1,12 +1,11 @@
 import Geometry
 import Rendering
-import CassowarySwift
 
 /// A basic control with a label around an outlined area that the user can interact
 /// by clicking with the mouse, raising `ControlView.mouseClicked` events.
 open class Button: ControlView {
     private var _backColor = StatedValueStore<Color>()
-    
+
     /// Gets the view that forms the label of this button.
     public let label = Label(textColor: .white)
 
@@ -27,9 +26,9 @@ open class Button: ControlView {
             updateLabelConstraints()
         }
     }
-    
+
     /// The background color for the button.
-    /// 
+    ///
     /// Background color is automatically handled by a button, and if customization
     /// is required, `setBackgroundColor(_:forState:)` should be used to configure
     /// the colors for each state.
@@ -53,7 +52,7 @@ open class Button: ControlView {
         initStyle()
         cornerRadius = 4
     }
-    
+
     private func initStyle() {
         _backColor.setValue(.royalBlue, forState: .normal)
         _backColor.setValue(.royalBlue.faded(towards: .white, factor: 0.1), forState: .highlighted)
@@ -87,7 +86,7 @@ open class Button: ControlView {
             make.edges.equalTo(self, inset: contentInset, priority: .medium)
         }
     }
-    
+
     /// Sets the appropriate background color while this button is in a given
     /// state.
     ///
@@ -95,12 +94,12 @@ open class Button: ControlView {
     /// subsequent `renderBackground(renderer:screenRegion:)` calls.
     func setBackgroundColor(_ color: Color, forState state: ControlViewState) {
         _backColor.setValue(color, forState: state)
-        
+
         if state == controlState {
             invalidate()
         }
     }
-    
+
     open override func viewForFirstBaseline() -> View? {
         return label
     }

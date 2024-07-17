@@ -350,6 +350,34 @@ public extension UIRectangle {
     }
 }
 
+// MARK: Line conversions
+
+public extension UIRectangle {
+    /// Returns a line that corresponds to the top edge of this rectangle, wound
+    /// in clockwise order from the top.
+    var topLine: UILine {
+        .init(start: topLeft, end: topRight)
+    }
+
+    /// Returns a line that corresponds to the left edge of this rectangle, wound
+    /// in clockwise order from the top.
+    var leftLine: UILine {
+        .init(start: bottomLeft, end: topLeft)
+    }
+
+    /// Returns a line that corresponds to the right edge of this rectangle, wound
+    /// in clockwise order from the top.
+    var rightLine: UILine {
+        .init(start: topRight, end: bottomRight)
+    }
+
+    /// Returns a line that corresponds to the bottom edge of this rectangle, wound
+    /// in clockwise order from the top.
+    var bottomLine: UILine {
+        .init(start: bottomRight, end: bottomLeft)
+    }
+}
+
 // MARK: Edge / Center Moving
 
 public extension UIRectangle {

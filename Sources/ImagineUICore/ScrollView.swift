@@ -4,6 +4,7 @@ import Rendering
 
 open class ScrollView: ControlView {
     private let _contentView: ContentView = ContentView()
+    private let _safeLayoutGuide: LayoutGuide = LayoutGuide()
     private var _contentWidthConstraints: [LayoutConstraint] = []
     private var _contentHeightConstraints: [LayoutConstraint] = []
 
@@ -13,8 +14,19 @@ open class ScrollView: ControlView {
     internal var contentOffset: UIVector = .zero
     internal var targetContentOffset: UIVector = .zero
 
+    /// View that constraints that operate on the dynamic location/sizing of the
+    /// contents of this scroll view should be created on.
     public var contentView: View {
         return _contentView
+    }
+
+    /// Layout guide used to place items in a content view while avoiding the area
+    /// where scroll bars show up.
+    ///
+    /// This layout guide is always smaller than the content view even if no scroll
+    /// bars are visible.
+    public var contentLayoutGuide: LayoutGuide {
+        _safeLayoutGuide
     }
 
     public var scrollBarsMode: ScrollBarsVisibility {
@@ -109,6 +121,7 @@ open class ScrollView: ControlView {
         _contentView.onResizeEvent.addListener(weakOwner: self) { [weak self] (_, _) in
             self?.updateScrollBarSizes()
             self?.updateScrollBarVisibility()
+            self?.updateContentLayoutGuideSize()
         }
 
         updateScrollBarVisibility()
@@ -135,8 +148,22 @@ open class ScrollView: ControlView {
         super.addSubview(contentView)
         super.addSubview(horizontalBar)
         super.addSubview(verticalBar)
+
+        contentView.addLayoutGuide(contentLayoutGuide)
     }
 
+    open override func setupConstraints() {
+        super.setupConstraints()
+
+        contentLayoutGuide.layout.makeConstraints { make in
+            (make.left, make.top) == contentView
+            make.width == contentView - scrollBarSize
+            make.height == contentView - scrollBarSize
+        }
+    }
+
+    /// - note: Scroll views don't add view as their children but as children of
+    ///         their `contentView`.
     open override func addSubview(_ view: View) {
         contentView.addSubview(view)
     }
@@ -157,7 +184,7 @@ open class ScrollView: ControlView {
 
     internal func onFixedFrame(interval: TimeInterval) {
         let nextContentOffset: UIVector
-        
+
         if contentOffset.distance(to: targetContentOffset) > 0.1 {
             nextContentOffset = contentOffset + (targetContentOffset - contentOffset) * 0.7
         } else {
@@ -360,6 +387,10 @@ open class ScrollView: ControlView {
         }
     }
 
+    func updateContentLayoutGuideSize() {
+
+    }
+
     func updateScrollBarSizes() {
         let visibleSize = visibleContentBounds.size
         let totalSize = effectiveContentSize()
@@ -381,7 +412,7 @@ open class ScrollView: ControlView {
             size.width  = contentSize.width  > 0 ? contentSize.width  : size.width
             size.height = contentSize.height > 0 ? contentSize.height : size.height
         }
-        
+
         // Add over scroll amount
         let bottomPadding = visibleContentBounds.height * overScrollFactor
         size.height += bottomPadding
@@ -619,4 +650,51 @@ public class ScrollBarControl: ControlView {
         case horizontal
         case vertical
     }
+
+    /*
+    struct SizeConstraintsInfo {
+        let target: View
+        var widthConstraints: [LayoutConstraint]
+        var heightConstraints: [LayoutConstraint]
+
+        mutating func updating(_ size: UISize?) {// Width
+            widthConstraints.forEach {
+                $0.removeConstraint()
+            }
+
+            if let width = size?.width, width > 0 {
+                widthConstraints =
+                    target.layout
+                    .makeConstraints(updateAreaIntoConstraintsMask: false) { make in
+                        make.width == width
+                    }
+            } else {
+                widthConstraints =
+                    target.layout
+                    .makeConstraints(updateAreaIntoConstraintsMask: false) { make in
+                        (make.width == 0) | LayoutPriority.low
+                    }
+            }
+
+            // Height
+            heightConstraints.forEach {
+                $0.removeConstraint()
+            }
+
+            if let height = size?.height, height > 0 {
+                heightConstraints =
+                    target.layout
+                    .makeConstraints(updateAreaIntoConstraintsMask: false) { make in
+                        make.height == height
+                    }
+            } else {
+                heightConstraints =
+                    target.layout
+                    .makeConstraints(updateAreaIntoConstraintsMask: false) { make in
+                        (make.height == 0) | LayoutPriority.low
+                    }
+            }
+        }
+    }
+    */
 }

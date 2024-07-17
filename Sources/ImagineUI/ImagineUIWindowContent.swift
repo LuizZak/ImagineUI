@@ -9,6 +9,9 @@ open class ImagineUIWindowContent: ImagineUIContentType, BaseControlSystemDelega
 
     private var _rootViews: [RootView]
 
+    /// The root view where dialogs are presented to.
+    private let _dialogContainer: RootView = RootView()
+
     /// The root view where tooltips are presented to.
     private let _tooltipContainer: RootView = RootView()
 
@@ -71,9 +74,11 @@ open class ImagineUIWindowContent: ImagineUIContentType, BaseControlSystemDelega
 
     open func initialize() {
         addRootView(rootView)
+        addRootView(_dialogContainer)
         addRootView(_tooltipContainer)
 
         rootView.passthroughMouseCapture = true
+        _dialogContainer.passthroughMouseCapture = true
         _tooltipContainer.passthroughMouseCapture = true
     }
 
@@ -93,6 +98,10 @@ open class ImagineUIWindowContent: ImagineUIContentType, BaseControlSystemDelega
         view.rootControlSystem = controlSystem
         _rootViews.append(view)
 
+        if view !== _dialogContainer && _rootViews.contains(_dialogContainer) {
+            // Keep the dialog container above all other views
+            bringRootViewToFront(_dialogContainer)
+        }
         if view !== _tooltipContainer && _rootViews.contains(_tooltipContainer) {
             // Keep the tooltip container above all other views
             bringRootViewToFront(_tooltipContainer)
@@ -119,6 +128,7 @@ open class ImagineUIWindowContent: ImagineUIContentType, BaseControlSystemDelega
         rootView.location = .zero
         rootView.size = .init(width: Double(width), height: Double(height))
 
+        _dialogContainer.area = .init(x: 0, y: 0, width: Double(width), height: Double(height))
         _tooltipContainer.area = .init(x: 0, y: 0, width: Double(width), height: Double(height))
 
         _bounds = .init(location: .zero, size: UISize(size))
@@ -206,18 +216,23 @@ open class ImagineUIWindowContent: ImagineUIContentType, BaseControlSystemDelega
     // MARK: - BaseControlSystemDelegate
 
     open func bringRootViewToFront(_ rootView: RootView) {
+        func ensureViewOnTop(_ rootViewOver: RootView) {
+            _rootViews.removeAll(where: { $0 === rootViewOver })
+            _rootViews.append(rootViewOver)
+        }
+
         if !_rootViews.contains(rootView) {
             return
         }
 
         _rootViews.removeAll(where: { $0 == rootView })
+        _rootViews.append(rootView)
 
+        // Keep the dialog container above most other views, except for the tooltip
+        // container
+        ensureViewOnTop(_dialogContainer)
         // Keep the tooltip container above all other views
-        if rootView !== _tooltipContainer, let index = _rootViews.firstIndex(of: _tooltipContainer) {
-            _rootViews.insert(rootView, at: index)
-        } else {
-            _rootViews.append(rootView)
-        }
+        ensureViewOnTop(_tooltipContainer)
 
         rootView.invalidate()
     }
@@ -267,7 +282,7 @@ open class ImagineUIWindowContent: ImagineUIContentType, BaseControlSystemDelega
         if controlKinds.contains(.controls) {
             for rootView in _rootViews.reversed() where rootView != _tooltipContainer {
                 let converted = rootView.convertFromScreen(point)
-                
+
                 if let view = rootView.hitTestControl(
                     converted,
                     forEventRequest: eventRequest,
@@ -291,6 +306,10 @@ open class ImagineUIWindowContent: ImagineUIContentType, BaseControlSystemDelega
 
     open func firstResponderChanged(_ newFirstResponder: KeyboardEventHandler?) {
         delegate?.firstResponderChanged(self, newFirstResponder)
+    }
+
+    open func viewForDialog(_ dialog: any UIDialog, location: UIDialogInitialLocation) -> View {
+        _dialogContainer
     }
 
     open func tooltipsManager() -> TooltipsManagerType? {

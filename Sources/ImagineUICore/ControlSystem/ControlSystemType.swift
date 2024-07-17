@@ -6,7 +6,7 @@ public protocol ControlSystemType {
     /// Called to notify that a view has been removed from the screen's hierarchy,
     /// and any associated events and focus on its sub-hierarchy should be waived.
     func viewRemovedFromHierarchy(_ view: View)
-    
+
     /// Sets an event handler as first responder
     ///
     /// - Parameter eventHandler: An event handler, or nil, in case of an attempt
@@ -40,4 +40,9 @@ public protocol ControlSystemType {
 
     /// Hides any visible tooltip attributed to a view in a given hierarchy.
     func hideTooltipFor(anyInHierarchy view: View)
+
+    /// Requests the display of a given dialog.
+    ///
+    /// Returns `true` if the dialog display was successful.
+    func openDialog(_ view: UIDialog, location: UIDialogInitialLocation) -> Bool
 }

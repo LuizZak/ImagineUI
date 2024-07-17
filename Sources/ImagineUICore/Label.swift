@@ -171,10 +171,13 @@ open class Label: View {
     }
 
     private func recreateCachedTextLayout() -> TextLayoutType {
-        let layout = TextLayout(font: font, attributedText: attributedText,
-                                availableSize: bounds.size,
-                                horizontalAlignment: horizontalTextAlignment,
-                                verticalAlignment: verticalTextAlignment)
+        let layout = TextLayout(
+            font: font,
+            attributedText: attributedText,
+            availableSize: bounds.size,
+            horizontalAlignment: horizontalTextAlignment,
+            verticalAlignment: verticalTextAlignment
+        )
 
         _cachedTextLayout = layout
 
