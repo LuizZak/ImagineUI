@@ -10,10 +10,10 @@ protocol UndoSystemType {
     var canRedo: Bool { get }
 
     /// Undoes one task on this UndoSystem
-    func undo()
+    func undo() async
 
     /// Redoes one task on this UndoSystem
-    func redo()
+    func redo() async
 }
 
 /// A task that is capable of being undone/redone
@@ -22,10 +22,10 @@ public protocol UndoTask {
    func clear()
 
    /// Undoes this task
-   func undo()
+   func undo() async
 
    /// Redoes this task
-   func redo()
+   func redo() async
 
    /// Returns a short string description of this `UndoTask`
    func getDescription() -> String
@@ -142,7 +142,7 @@ class UndoSystem: UndoSystemType {
     }
 
     /// Undoes one task on this `UndoSystem`
-    public func undo() {
+    public func undo() async {
         checkReentry()
 
         // Finish any currently opened group undos
@@ -159,18 +159,18 @@ class UndoSystem: UndoSystemType {
         // Get the task to undo
         let task = _undoTasks[_currentTask - 1]
 
-        _willPerformUndo(sender: self, UndoEventArgs(task: task))
+        await _willPerformUndo(sender: self, UndoEventArgs(task: task))
 
         _currentTask -= 1
-        task.undo()
+        await task.undo()
 
         _isDoingWork = false
 
-        _undoPerformed(sender: self, UndoEventArgs(task: task))
+        await _undoPerformed(sender: self, UndoEventArgs(task: task))
     }
 
     /// Redoes one task on this `UndoSystem`
-    public func redo() {
+    public func redo() async {
         checkReentry()
 
         // Finish any currently opened group undos
@@ -187,14 +187,14 @@ class UndoSystem: UndoSystemType {
         // Get the task to undo
         let task = _undoTasks[_currentTask]
 
-        _willPerformRedo(sender: self, UndoEventArgs(task: task))
+        await _willPerformRedo(sender: self, UndoEventArgs(task: task))
 
         _currentTask += 1
-        task.redo()
+        await task.redo()
 
         _isDoingWork = false
 
-        _redoPerformed(sender: self, UndoEventArgs(task: task))
+        await _redoPerformed(sender: self, UndoEventArgs(task: task))
     }
 
     /// Starts a group undo task

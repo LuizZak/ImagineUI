@@ -353,15 +353,15 @@ open class TextField: ControlView {
             case .z where editable:
                 // Ctrl+Shift+Z as alternative for Ctrl+Y (redo)
                 if event.modifiers == (KeyboardModifier.osControlKey.union(.shift)) {
-                    redo()
+                    await redo()
                     return
                 }
 
-                undo()
+                await undo()
                 return
 
             case .y where editable:
-                redo()
+                await redo()
                 return
 
             case .a:
@@ -429,16 +429,16 @@ open class TextField: ControlView {
                  "Z" where editable:
                 // Ctrl+Shift+Z as alternative for Ctrl+Y (redo)
                 if event.modifiers == (KeyboardModifier.osControlKey.union(.shift)) {
-                    redo()
+                    await redo()
                     return
                 }
 
-                undo()
+                await undo()
                 return
 
             case "y" where editable,
                  "Y" where editable:
-                redo()
+                await redo()
                 return
 
             case "a", "A":
@@ -833,12 +833,12 @@ open class TextField: ControlView {
         _textEngine.paste()
     }
 
-    private func undo() {
-        _textEngine.undoSystem.undo()
+    private func undo() async {
+        await _textEngine.undoSystem.undo()
     }
 
-    private func redo() {
-        _textEngine.undoSystem.redo()
+    private func redo() async {
+        await _textEngine.undoSystem.redo()
     }
 
     // MARK: -

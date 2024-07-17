@@ -68,23 +68,23 @@ public class GroupUndoTask: UndoTask {
     }
 
     /// Undoes this task
-    public func undo() {
+    public func undo() async {
         if reverseOnUndo {
             // Undo in reverse order (last to first)
             for task in undoList.reversed() {
-                task.undo()
+                await task.undo()
             }
         } else {
             for task in undoList {
-                task.undo()
+                await task.undo()
             }
         }
     }
 
     /// Redoes this task
-    public func redo() {
+    public func redo() async {
         for task in undoList {
-            task.redo()
+            await task.redo()
         }
     }
 
