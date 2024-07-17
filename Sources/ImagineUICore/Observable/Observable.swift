@@ -29,7 +29,15 @@ public final class Observable<T> {
     /// When setting, triggers listeners updating them of the new value.
     public func callAsFunction(_ newValue: T) async {
         _value = newValue
-        await _eventPublisher.publish(value: newValue)
+        await _eventPublisher.publishAsync(value: newValue)
+    }
+
+    /// Sets the value being observed.
+    ///
+    /// When setting, triggers listeners updating them of the new value.
+    public func callAsFunction(_ newValue: T) {
+        _value = newValue
+        _eventPublisher.publish(value: newValue)
     }
 }
 
