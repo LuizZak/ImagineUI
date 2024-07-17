@@ -40,44 +40,44 @@ public protocol ImagineUIContentType: AnyObject {
     func render(renderer: Renderer, renderScale: UIVector, clipRegion: ClipRegionType)
 
     /// Called to notify that the mouse left the active area this content is on.
-    func mouseLeave()
+    func mouseLeave() async
 
     /// Called to notify of mouse down events.
     ///
     /// Mouse location should be specified relative to this content's bounds
     /// on screen, so content that does not fill a window can still respond
     /// to the mouse coordinates correctly.
-    func mouseDown(event: MouseEventArgs)
+    func mouseDown(event: MouseEventArgs) async
 
     /// Called to notify of mouse move events.
     ///
     /// Mouse location should be specified relative to this content's bounds
     /// on screen, so content that does not fill a window can still respond
     /// to the mouse coordinates correctly.
-    func mouseMoved(event: MouseEventArgs)
-    
+    func mouseMoved(event: MouseEventArgs) async
+
     /// Called to notify of mouse up events.
     ///
     /// Mouse location should be specified relative to this content's bounds
     /// on screen, so content that does not fill a window can still respond
     /// to the mouse coordinates correctly.
-    func mouseUp(event: MouseEventArgs)
-    
+    func mouseUp(event: MouseEventArgs) async
+
     /// Called to notify of mouse scroll wheel events.
     ///
     /// Mouse location should be specified relative to this content's bounds
     /// on screen, so content that does not fill a window can still respond
     /// to the mouse coordinates correctly.
-    func mouseScroll(event: MouseEventArgs)
+    func mouseScroll(event: MouseEventArgs) async
 
     /// Called to notify of key down events.
-    func keyDown(event: KeyEventArgs)
+    func keyDown(event: KeyEventArgs) async
 
     /// Called to notify of key up events.
-    func keyUp(event: KeyEventArgs)
+    func keyUp(event: KeyEventArgs) async
 
     /// Called to notify of key presses (character-based input) events.
-    func keyPress(event: KeyPressEventArgs)
+    func keyPress(event: KeyPressEventArgs) async
 
     /// Called to notify that the window associated with this ImagineUI content
     /// has been closed.

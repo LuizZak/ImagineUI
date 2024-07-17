@@ -2,27 +2,34 @@
 /// whenever its state value has been changed.
 @propertyWrapper
 public final class Observable<T> {
-    private let eventPublisher: EventPublisher<T>
-    
+    private let _eventPublisher: EventPublisher<T>
+    private var _value: T
+
     /// Gets or sets the value being observed.
     ///
     /// When setting, triggers listeners updating them of the new value.
     public var wrappedValue: T {
-        didSet {
-            eventPublisher.publish(value: wrappedValue)
-        }
+        _value
     }
-    
+
     /// Returns a publisher that can be subscribed in order to be notified of
     /// value changes.
     public var projectedValue: EventPublisher<T> {
-        return eventPublisher
+        return _eventPublisher
     }
-    
-    public init(wrappedValue: T) {
-        self.wrappedValue = wrappedValue
 
-        eventPublisher = EventPublisher()
+    public init(wrappedValue: T) {
+        self._value = wrappedValue
+
+        _eventPublisher = EventPublisher()
+    }
+
+    /// Sets the value being observed.
+    ///
+    /// When setting, triggers listeners updating them of the new value.
+    public func callAsFunction(_ newValue: T) async {
+        _value = newValue
+        await _eventPublisher.publish(value: newValue)
     }
 }
 

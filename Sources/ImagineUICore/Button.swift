@@ -59,8 +59,8 @@ open class Button: ControlView {
         _backColor.setValue(.royalBlue.faded(towards: .black, factor: 0.1), forState: .selected)
     }
 
-    open override func onStateChanged(_ event: ValueChangedEventArgs<ControlViewState>) {
-        super.onStateChanged(event)
+    open override func onStateChanged(_ event: ValueChangedEventArgs<ControlViewState>) async {
+        await super.onStateChanged(event)
 
         invalidate()
     }

@@ -7,7 +7,7 @@ public typealias CancellableValueChangeEvent<Value> = Event<CancellableValueChan
 public class CancellableValueChangedEventArgs<T> {
     /// A copy of the old value that was changed.
     public let oldValue: T
-    
+
     /// A copy of the new value that is being changed into.
     public let newValue: T
 
@@ -34,22 +34,22 @@ public class CancellableValueChangedEventArgs<T> {
 
 public extension Event {
     /// Convenience for:
-    /// 
+    ///
     /// ```swift
     /// let event = CancellableValueChangedEventArgs(oldValue: old, newValue: new)
-    /// self.publishEvent(event)
+    /// self.publishEventAsync(event)
     /// ```
-    /// 
+    ///
     /// Returns the final value of `CancellableValueChangedEventArgs<Value>.cancel`
     /// after publishing the event to listeners.
     func publishCancellableChangeEvent<Value>(
         old: Value,
         new: Value
-    ) -> Bool where T == CancellableValueChangedEventArgs<Value> {
+    ) async -> Bool where T == CancellableValueChangedEventArgs<Value> {
 
         let event = CancellableValueChangedEventArgs(oldValue: old, newValue: new)
 
-        self.publishEvent(event)
+        await self.publishEventAsync(event)
 
         return event.cancel
     }
@@ -59,8 +59,8 @@ public extension Event {
     func callAsFunction<Value>(
         old: Value,
         new: Value
-    ) -> Bool where T == CancellableValueChangedEventArgs<Value> {
-        
-        return publishCancellableChangeEvent(old: old, new: new)
+    ) async -> Bool where T == CancellableValueChangedEventArgs<Value> {
+
+        return await publishCancellableChangeEvent(old: old, new: new)
     }
 }

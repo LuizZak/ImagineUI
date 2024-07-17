@@ -3,10 +3,10 @@
 /// source.
 ///
 /// Evens published by this event source must be handled synchronously.
-public struct EventSource<T> {
-    private let publisher: EventPublisher<T>
+public struct SynchronousEventSource<T> {
+    private let publisher: SynchronousEventPublisher<T>
 
-    init(publisher: EventPublisher<T>) {
+    init(publisher: SynchronousEventPublisher<T>) {
         self.publisher = publisher
     }
 
@@ -15,7 +15,7 @@ public struct EventSource<T> {
     /// The `weakOwner` object is held weakly, and the event listener is
     /// automatically removed when the `owner` turns `nil`.
     @discardableResult
-    public func addListener(weakOwner: AnyObject, _ listener: @escaping (T) async -> Void) -> EventListenerKey {
+    public func addListener(weakOwner: AnyObject, _ listener: @escaping (T) -> Void) -> EventListenerKey {
         return publisher.addListener(weakOwner: weakOwner, listener)
     }
 
@@ -24,8 +24,8 @@ public struct EventSource<T> {
     /// The `weakOwner` object is held weakly, and the event listener is
     /// automatically removed when the `weakOwner` turns `nil`.
     @discardableResult
-    public func addListener(weakOwner: AnyObject, _ listener: @escaping () async -> Void) -> EventListenerKey where T == Void {
-        return publisher.addListener(weakOwner: weakOwner) { await listener() }
+    public func addListener(weakOwner: AnyObject, _ listener: @escaping () -> Void) -> EventListenerKey where T == Void {
+        return publisher.addListener(weakOwner: weakOwner) { listener() }
     }
 
     /// Convenience for:
@@ -37,7 +37,7 @@ public struct EventSource<T> {
     /// }
     /// ```
     @discardableResult
-    public func addWeakListener<U: AnyObject>(_ weakOwner: U, _ listener: @escaping (U, T) async -> Void) -> EventListenerKey {
+    public func addWeakListener<U: AnyObject>(_ weakOwner: U, _ listener: @escaping (U, T) -> Void) -> EventListenerKey {
         return publisher.addWeakListener(weakOwner, listener)
     }
 

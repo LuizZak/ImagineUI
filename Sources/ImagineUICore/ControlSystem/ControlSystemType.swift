@@ -44,5 +44,6 @@ public protocol ControlSystemType {
     /// Requests the display of a given dialog.
     ///
     /// Returns `true` if the dialog display was successful.
-    func openDialog(_ view: UIDialog, location: UIDialogInitialLocation) -> Bool
+    @MainActor
+    func openDialog(_ view: UIDialog, location: UIDialogInitialLocation) async -> Bool
 }

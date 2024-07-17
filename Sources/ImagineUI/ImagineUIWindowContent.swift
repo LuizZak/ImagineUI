@@ -144,11 +144,11 @@ open class ImagineUIWindowContent: ImagineUIContentType, BaseControlSystemDelega
         delegate?.invalidate(self, bounds: _bounds)
     }
 
-    open func update(_ time: TimeInterval) {
+    open func update(_ time: TimeInterval) async {
         // Fixed-frame update
         let delta = time - _lastFrame
         _lastFrame = time
-        Scheduler.instance.onFixedFrame(delta)
+        await Scheduler.instance.onFixedFrame(delta)
 
         performLayout()
     }
@@ -179,38 +179,38 @@ open class ImagineUIWindowContent: ImagineUIContentType, BaseControlSystemDelega
         }
     }
 
-    open func mouseLeave() {
-        controlSystem.onMouseLeave()
+    open func mouseLeave() async {
+        await controlSystem.onMouseLeave()
     }
 
-    open func mouseDown(event: MouseEventArgs) {
-        controlSystem.onMouseDown(event)
+    open func mouseDown(event: MouseEventArgs) async {
+        await controlSystem.onMouseDown(event)
     }
 
-    open func mouseMoved(event: MouseEventArgs) {
+    open func mouseMoved(event: MouseEventArgs) async {
         _tooltipsManager.updateTooltipCursorLocation(event.location)
 
-        controlSystem.onMouseMove(event)
+        await controlSystem.onMouseMove(event)
     }
 
-    open func mouseUp(event: MouseEventArgs) {
-        controlSystem.onMouseUp(event)
+    open func mouseUp(event: MouseEventArgs) async {
+        await controlSystem.onMouseUp(event)
     }
 
-    open func mouseScroll(event: MouseEventArgs) {
-        controlSystem.onMouseWheel(event)
+    open func mouseScroll(event: MouseEventArgs) async {
+        await controlSystem.onMouseWheel(event)
     }
 
-    open func keyDown(event: KeyEventArgs) {
-        controlSystem.onKeyDown(event)
+    open func keyDown(event: KeyEventArgs) async {
+        await controlSystem.onKeyDown(event)
     }
 
-    open func keyUp(event: KeyEventArgs) {
-        controlSystem.onKeyUp(event)
+    open func keyUp(event: KeyEventArgs) async {
+        await controlSystem.onKeyUp(event)
     }
 
-    open func keyPress(event: KeyPressEventArgs) {
-        controlSystem.onKeyPress(event)
+    open func keyPress(event: KeyPressEventArgs) async {
+        await controlSystem.onKeyPress(event)
     }
 
     // MARK: - BaseControlSystemDelegate

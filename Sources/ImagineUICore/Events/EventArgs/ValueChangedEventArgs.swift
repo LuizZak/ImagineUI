@@ -5,7 +5,7 @@ public typealias ValueChangedEvent<Value> = Event<ValueChangedEventArgs<Value>>
 public struct ValueChangedEventArgs<T> {
     /// A copy of the old value that was changed.
     public let oldValue: T
-    
+
     /// A copy of the new value that is being changed into.
     public let newValue: T
 
@@ -17,7 +17,20 @@ public struct ValueChangedEventArgs<T> {
 
 public extension Event {
     /// Convenience for:
-    /// 
+    ///
+    /// ```swift
+    /// self.publishEventAsync(ValueChangedEventArgs(oldValue: old, newValue: new))
+    /// ```
+    func publishChangeEvent<Value>(
+        old: Value,
+        new: Value
+    ) async where T == ValueChangedEventArgs<Value> {
+
+        await self.publishEventAsync(ValueChangedEventArgs(oldValue: old, newValue: new))
+    }
+
+    /// Convenience for:
+    ///
     /// ```swift
     /// self.publishEvent(ValueChangedEventArgs(oldValue: old, newValue: new))
     /// ```
@@ -29,14 +42,23 @@ public extension Event {
         self.publishEvent(ValueChangedEventArgs(oldValue: old, newValue: new))
     }
 
-    
+    /// Convenience for invoking `publishChangeEvent(old:new:)` by calling the
+    /// event variable itself directly.
+    func callAsFunction<Value>(
+        old: Value,
+        new: Value
+    ) async where T == ValueChangedEventArgs<Value> {
+
+        await self.publishChangeEvent(old: old, new: new)
+    }
+
     /// Convenience for invoking `publishChangeEvent(old:new:)` by calling the
     /// event variable itself directly.
     func callAsFunction<Value>(
         old: Value,
         new: Value
     ) where T == ValueChangedEventArgs<Value> {
-        
+
         self.publishChangeEvent(old: old, new: new)
     }
 }

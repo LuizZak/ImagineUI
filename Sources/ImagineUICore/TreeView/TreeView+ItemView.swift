@@ -91,11 +91,11 @@ extension TreeView {
             _setupMouseForward(_titleView)
 
             _chevronView.mouseClicked.addListener(weakOwner: self) { [weak self] (_, _) in
-                self?.onMouseClickChevron()
+                await self?.onMouseClickChevron()
             }
 
             mouseDown.addListener(weakOwner: self) { [weak self] (_, _) in
-                self?.onMouseSelected()
+                await self?.onMouseSelected()
             }
         }
 
@@ -199,8 +199,8 @@ extension TreeView {
             }
         }
 
-        override func onStateChanged(_ event: ValueChangedEventArgs<ControlViewState>) {
-            super.onStateChanged(event)
+        override func onStateChanged(_ event: ValueChangedEventArgs<ControlViewState>) async {
+            await super.onStateChanged(event)
 
             switch event.newValue {
             case .highlighted:
@@ -214,17 +214,17 @@ extension TreeView {
             }
         }
 
-        override func onMouseDown(_ event: MouseEventArgs) {
-            super.onMouseDown(event)
+        override func onMouseDown(_ event: MouseEventArgs) async {
+            await super.onMouseDown(event)
 
-            onMouseSelected()
+            await onMouseSelected()
         }
 
-        override func onMouseClick(_ event: MouseEventArgs) {
-            super.onMouseClick(event)
+        override func onMouseClick(_ event: MouseEventArgs) async {
+            await super.onMouseClick(event)
 
             if event.buttons == .right {
-                onMouseRightClick()
+                await onMouseRightClick()
             }
         }
 
@@ -232,16 +232,16 @@ extension TreeView {
             return bounds
         }
 
-        private func onMouseClickChevron() {
-            _mouseClickChevron(sender: self)
+        private func onMouseClickChevron() async {
+            await _mouseClickChevron(sender: self)
         }
 
-        private func onMouseSelected() {
-            _mouseSelected(sender: self)
+        private func onMouseSelected() async {
+            await _mouseSelected(sender: self)
         }
 
-        private func onMouseRightClick() {
-            _mouseRightClicked(sender: self)
+        private func onMouseRightClick() async {
+            await _mouseRightClicked(sender: self)
         }
 
         private func _applyStyle(_ style: VisualStyle.ItemStyle) {
@@ -354,8 +354,8 @@ extension TreeView {
                 mouseDownSelected = true
             }
 
-            override func onStateChanged(_ event: ValueChangedEventArgs<ControlViewState>) {
-                super.onStateChanged(event)
+            override func onStateChanged(_ event: ValueChangedEventArgs<ControlViewState>) async {
+                await super.onStateChanged(event)
 
                 invalidate()
             }

@@ -47,5 +47,5 @@ public protocol EventHandler: AnyObject {
     ///
     /// Event handlers are not required to interact with an event request and may
     /// simply ignore it, but they may not accept it more than once.
-    func handleOrPass(_ eventRequest: EventRequest)
+    func handleOrPass(_ eventRequest: EventRequest) async
 }

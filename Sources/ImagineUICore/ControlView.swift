@@ -109,7 +109,9 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
         didSet {
             if bounds.size != oldValue.size {
                 _updateCacheBounds()
-                onResize(ValueChangedEventArgs(oldValue: oldValue.size, newValue: bounds.size))
+                Task.detached { [self] in
+                    await self.onResize(ValueChangedEventArgs(oldValue: oldValue.size, newValue: bounds.size))
+                }
             }
         }
     }
@@ -367,18 +369,18 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
         super.init()
 
         _stateManager.stateChanged.addListener(weakOwner: self) { [weak self] event in
-            self?.onStateChanged(event)
+            await self?.onStateChanged(event)
         }
     }
 
     /// Raises the `resized` event
-    open func onResize(_ event: ValueChangedEventArgs<UISize>) {
-        _resized(sender: self, event)
+    open func onResize(_ event: ValueChangedEventArgs<UISize>) async {
+        await _resized(sender: self, event)
     }
 
     /// Raises the `stateChanged` event
-    open func onStateChanged(_ event: ValueChangedEventArgs<ControlViewState>) {
-        _stateChanged(sender: self, event)
+    open func onStateChanged(_ event: ValueChangedEventArgs<ControlViewState>) async {
+        await _stateChanged(sender: self, event)
     }
 
     // MARK: - Subviews
@@ -491,16 +493,16 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
     /// control to respond to an event, and is passed along to `self.next` until
     /// either a control accepts the event via `eventRequest.accept(handler:)`,
     /// or the end of the responder chain is reached (`self.next == nil`).
-    open func handleOrPass(_ eventRequest: EventRequest) {
+    open func handleOrPass(_ eventRequest: EventRequest) async {
         if !isVisible || !isRecursivelyInteractiveEnabled {
-            next?.handleOrPass(eventRequest)
+            await next?.handleOrPass(eventRequest)
             return
         }
 
         if canHandle(eventRequest) {
-            eventRequest.accept(handler: self)
+            await eventRequest.accept(handler: self)
         } else {
-            next?.handleOrPass(eventRequest)
+            await next?.handleOrPass(eventRequest)
         }
     }
 
@@ -554,8 +556,8 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
     // MARK: - Mouse Event Handling
 
     /// Raises the `mouseDown` event.
-    open func onMouseDown(_ event: MouseEventArgs) {
-        _mouseDown(sender: self, event)
+    open func onMouseDown(_ event: MouseEventArgs) async {
+        await _mouseDown(sender: self, event)
 
         if mouseDownSelected {
             _isMouseDown = true
@@ -564,8 +566,8 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
     }
 
     /// Raises the `mouseMoved` event.
-    open func onMouseMove(_ event: MouseEventArgs) {
-        _mouseMoved(sender: self, event)
+    open func onMouseMove(_ event: MouseEventArgs) async {
+        await _mouseMoved(sender: self, event)
 
         if _isMouseDown {
             isSelected = contains(point: event.location)
@@ -573,8 +575,8 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
     }
 
     /// Raises the `mouseUp` event.
-    open func onMouseUp(_ event: MouseEventArgs) {
-        _mouseUp(sender: self, event)
+    open func onMouseUp(_ event: MouseEventArgs) async {
+        await _mouseUp(sender: self, event)
 
         if _isMouseDown {
             isSelected = false
@@ -583,8 +585,8 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
     }
 
     /// Raises the `mouseEntered` event.
-    open func onMouseEnter() {
-        _mouseEntered(sender: self)
+    open func onMouseEnter() async {
+        await _mouseEntered(sender: self)
 
         if mouseOverHighlight {
             isHighlighted = true
@@ -592,8 +594,8 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
     }
 
     /// Raises the `mouseExited` event.
-    open func onMouseLeave() {
-        _mouseExited(sender: self)
+    open func onMouseLeave() async {
+        await _mouseExited(sender: self)
 
         if mouseOverHighlight {
             isHighlighted = false
@@ -601,35 +603,35 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
     }
 
     /// Raises the `mouseClicked` event.
-    open func onMouseClick(_ event: MouseEventArgs) {
-        _mouseClicked(sender: self, event)
+    open func onMouseClick(_ event: MouseEventArgs) async {
+        await _mouseClicked(sender: self, event)
     }
 
     /// Raises the `mouseWheelScrolled` event.
-    open func onMouseWheel(_ event: MouseEventArgs) {
-        _mouseWheelScrolled(sender: self, event)
+    open func onMouseWheel(_ event: MouseEventArgs) async {
+        await _mouseWheelScrolled(sender: self, event)
     }
 
     // MARK: - Keyboard Event Handling
 
     /// Raises the `keyPressed` event.
-    open func onKeyPress(_ event: KeyPressEventArgs) {
-        _keyPressed(sender: self, event)
+    open func onKeyPress(_ event: KeyPressEventArgs) async {
+        await _keyPressed(sender: self, event)
     }
 
     /// Raises the `keyDown` event.
-    open func onKeyDown(_ event: KeyEventArgs) {
-        _keyDown(sender: self, event)
+    open func onKeyDown(_ event: KeyEventArgs) async {
+        await _keyDown(sender: self, event)
     }
 
     /// Raises the `keyUp` event
-    open func onKeyUp(_ event: KeyEventArgs) {
-        _keyUp(sender: self, event)
+    open func onKeyUp(_ event: KeyEventArgs) async {
+        await _keyUp(sender: self, event)
     }
 
     /// Raises the `previewKeyDown` event.
-    open func onPreviewKeyDown(_ event: PreviewKeyDownEventArgs) {
-        _previewKeyDown(sender: self, event)
+    open func onPreviewKeyDown(_ event: PreviewKeyDownEventArgs) async {
+        await _previewKeyDown(sender: self, event)
     }
 
     // MARK: -
@@ -822,7 +824,7 @@ public enum ControlViewState {
     /// Specifies control view is disabled, and should not respond to normal
     /// UI interaction events.
     case disabled
-    
+
     /// Specifies control view is focused and receives keyboard events, i.e. it
     /// is the first responder in the responder chain.
     case focused

@@ -39,14 +39,14 @@ public class DefaultControlSystem: BaseControlSystem {
 
     // MARK: - Mouse Events
 
-    public override func onMouseLeave() {
+    public override func onMouseLeave() async {
         if _mouseHoverTarget != nil {
-            _mouseHoverTarget?.onMouseLeave()
+            await _mouseHoverTarget?.onMouseLeave()
             _mouseHoverTarget = nil
         }
     }
 
-    public override func onMouseDown(_ event: MouseEventArgs) {
+    public override func onMouseDown(_ event: MouseEventArgs) async {
         // TODO: Consider registering double clicks on mouse down on Windows
         // TODO: as a response to events WM_LBUTTONDOWN, WM_LBUTTONUP,
         // TODO: WM_LBUTTONDBLCLK, and WM_LBUTTONUP, as per Win32 documentation:
@@ -54,7 +54,7 @@ public class DefaultControlSystem: BaseControlSystem {
 
         // Make request
         let request = InnerMouseEventRequest(event: event, eventType: .mouseDown) { handler in
-            handler.onMouseDown(event.convertLocation(handler: handler))
+            await handler.onMouseDown(event.convertLocation(handler: handler))
 
             self._mouseDownTarget = handler
 
@@ -81,30 +81,30 @@ public class DefaultControlSystem: BaseControlSystem {
             bringRootViewToFront(rootView)
         }
 
-        control.handleOrPass(request)
+        await control.handleOrPass(request)
     }
 
-    public override func onMouseMove(_ event: MouseEventArgs) {
+    public override func onMouseMove(_ event: MouseEventArgs) async {
         // Fixed mouse-over on control that was pressed down
         if let mouseDownTarget = _mouseDownTarget {
-            mouseDownTarget.onMouseMove(event.convertLocation(handler: mouseDownTarget))
+            await mouseDownTarget.onMouseMove(event.convertLocation(handler: mouseDownTarget))
         } else {
-            updateMouseOver(event: event, eventType: .mouseMove)
+            await updateMouseOver(event: event, eventType: .mouseMove)
         }
     }
 
-    public override func onMouseUp(_ event: MouseEventArgs) {
+    public override func onMouseUp(_ event: MouseEventArgs) async {
         guard let handler = _mouseDownTarget else {
             return
         }
 
-        handler.onMouseUp(event.convertLocation(handler: handler))
+        await handler.onMouseUp(event.convertLocation(handler: handler))
 
         // Figure out if it's a click or mouse up event
         // Click events fire when mouseDown + mouseUp occur over the same element
         let request = InnerMouseEventRequest(event: event, eventType: .mouseClick) { clickHandler in
             if clickHandler === handler {
-                clickHandler.onMouseClick(event.convertLocation(handler: clickHandler))
+                await clickHandler.onMouseClick(event.convertLocation(handler: clickHandler))
             }
         }
 
@@ -113,23 +113,23 @@ public class DefaultControlSystem: BaseControlSystem {
             forEventRequest: request,
             controlKinds: .controls
         ) {
-            control.handleOrPass(request)
+            await control.handleOrPass(request)
         }
 
         _mouseDownTarget = nil
 
         // Dispatch a mouse move, in case the mouse up event caused objects
         // on screen to shuffle.
-        updateMouseOver(event: event, eventType: .mouseMove)
+        await updateMouseOver(event: event, eventType: .mouseMove)
     }
 
-    public override func onMouseWheel(_ event: MouseEventArgs) {
+    public override func onMouseWheel(_ event: MouseEventArgs) async {
         // Make request
         let request = InnerMouseEventRequest(event: event, eventType: .mouseWheel) { handler in
             if let mouse = self._mouseDownTarget {
-                mouse.onMouseWheel(event.convertLocation(handler: mouse))
+                await mouse.onMouseWheel(event.convertLocation(handler: mouse))
             } else {
-                handler.onMouseWheel(event.convertLocation(handler: handler))
+                await handler.onMouseWheel(event.convertLocation(handler: handler))
             }
         }
 
@@ -141,18 +141,18 @@ public class DefaultControlSystem: BaseControlSystem {
             return
         }
 
-        control.handleOrPass(request)
+        await control.handleOrPass(request)
 
         // Dispatch a mouse move, in case the mouse wheel event caused objects
         // on screen to shuffle.
         if request.accepted {
-            updateMouseOver(event: event, eventType: .mouseMove)
+            await updateMouseOver(event: event, eventType: .mouseMove)
         }
     }
 
     // MARK: - Keyboard Events
 
-    public override func onKeyDown(_ event: KeyEventArgs) {
+    public override func onKeyDown(_ event: KeyEventArgs) async {
         guard let responder = _firstResponder else {
             return
         }
@@ -163,10 +163,10 @@ public class DefaultControlSystem: BaseControlSystem {
             handler.onKeyDown(event)
         }
 
-        responder.handleOrPass(request)
+        await responder.handleOrPass(request)
     }
 
-    public override func onKeyUp(_ event: KeyEventArgs) {
+    public override func onKeyUp(_ event: KeyEventArgs) async {
         guard let responder = _firstResponder else {
             return
         }
@@ -177,10 +177,10 @@ public class DefaultControlSystem: BaseControlSystem {
             handler.onKeyUp(event)
         }
 
-        responder.handleOrPass(request)
+        await responder.handleOrPass(request)
     }
 
-    public override func onKeyPress(_ event: KeyPressEventArgs) {
+    public override func onKeyPress(_ event: KeyPressEventArgs) async {
         guard let responder = _firstResponder else {
             return
         }
@@ -191,10 +191,10 @@ public class DefaultControlSystem: BaseControlSystem {
             handler.onKeyPress(event)
         }
 
-        responder.handleOrPass(request)
+        await responder.handleOrPass(request)
     }
 
-    public override func onPreviewKeyDown(_ event: PreviewKeyDownEventArgs) {
+    public override func onPreviewKeyDown(_ event: PreviewKeyDownEventArgs) async {
         guard let responder = _firstResponder else {
             return
         }
@@ -205,14 +205,14 @@ public class DefaultControlSystem: BaseControlSystem {
             handler.onPreviewKeyDown(event)
         }
 
-        responder.handleOrPass(request)
+        await responder.handleOrPass(request)
     }
 
     // MARK: - Mouse Target Management
 
-    private func updateMouseOver(event: MouseEventArgs, eventType: MouseEventType) {
-        let bailOut: () -> Void = {
-            self._mouseHoverTarget?.onMouseLeave()
+    private func updateMouseOver(event: MouseEventArgs, eventType: MouseEventType) async {
+        let bailOut: () async -> Void = {
+            await self._mouseHoverTarget?.onMouseLeave()
             self._mouseHoverTarget = nil
             self._mouseHoverPoint = .zero
 
@@ -222,9 +222,9 @@ public class DefaultControlSystem: BaseControlSystem {
         // Make request
         let request = InnerMouseEventRequest(event: event, eventType: eventType) { handler in
             if self._mouseHoverTarget !== handler {
-                self._mouseHoverTarget?.onMouseLeave()
+                await self._mouseHoverTarget?.onMouseLeave()
                 self.hideTooltip()
-                handler.onMouseEnter()
+                await handler.onMouseEnter()
 
                 self._mouseHoverTarget = handler
                 self._mouseHoverPoint = event.convertLocation(handler: handler).location
@@ -243,7 +243,7 @@ public class DefaultControlSystem: BaseControlSystem {
                 }
 
                 self._mouseHoverPoint = converted.location
-                self._mouseHoverTarget?.onMouseMove(converted)
+                await self._mouseHoverTarget?.onMouseMove(converted)
 
                 if
                     event.buttons.isEmpty || self._mouseDownTarget == nil,
@@ -259,13 +259,13 @@ public class DefaultControlSystem: BaseControlSystem {
             forEventRequest: request,
             controlKinds: .controls
         ) else {
-            return bailOut()
+            return await bailOut()
         }
 
-        control.handleOrPass(request)
+        await control.handleOrPass(request)
 
         if !request.accepted {
-            bailOut()
+            await bailOut()
         }
     }
 
@@ -334,7 +334,7 @@ public class DefaultControlSystem: BaseControlSystem {
 
     // MARK: - Dialog
 
-    public override func openDialog(_ view: UIDialog, location: UIDialogInitialLocation) -> Bool {
+    public override func openDialog(_ view: UIDialog, location: UIDialogInitialLocation) async -> Bool {
         return _openDialog(view, location: location)
     }
 
@@ -873,21 +873,21 @@ private extension MouseEventArgs {
 }
 
 private class InnerEventRequest<THandler> : EventRequest {
-    private var onAccept: (THandler) -> Void
+    private var onAccept: (THandler) async -> Void
 
     private(set) var accepted: Bool = false
 
-    init(onAccept: @escaping (THandler) -> Void) {
+    init(onAccept: @escaping (THandler) async -> Void) {
         self.onAccept = onAccept
     }
 
-    func accept(handler: EventHandler) {
+    func accept(handler: EventHandler) async {
         guard let casted = handler as? THandler else {
             return
         }
 
         accepted = true
-        onAccept(casted)
+        await onAccept(casted)
     }
 }
 
@@ -902,7 +902,7 @@ private class InnerMouseEventRequest: InnerEventRequest<MouseEventHandler>, Mous
     convenience init(
         event: MouseEventArgs,
         eventType: MouseEventType,
-        onAccept: @escaping (MouseEventHandler) -> Void
+        onAccept: @escaping (MouseEventHandler) async -> Void
     ) {
 
         self.init(
@@ -923,7 +923,7 @@ private class InnerMouseEventRequest: InnerEventRequest<MouseEventHandler>, Mous
         clicks: Int,
         modifiers: KeyboardModifier,
         eventType: MouseEventType,
-        onAccept: @escaping (MouseEventHandler) -> Void
+        onAccept: @escaping (MouseEventHandler) async -> Void
     ) {
 
         self.screenLocation = screenLocation
@@ -942,7 +942,7 @@ private class InnerKeyboardEventRequest: InnerEventRequest<KeyboardEventHandler>
 
     init(
         eventType: KeyboardEventType,
-        onAccept: @escaping (KeyboardEventHandler) -> Void
+        onAccept: @escaping (KeyboardEventHandler) async -> Void
     ) {
 
         self.eventType = eventType

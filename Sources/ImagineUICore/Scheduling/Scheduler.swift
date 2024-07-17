@@ -10,7 +10,8 @@ public final class Scheduler {
     ///
     /// The `TimeInterval` provided to the function is the time interval elapsed
     /// since the last fixed frame event was issued.
-    @Event<TimeInterval> public var fixedFrameEvent
+    @Event<TimeInterval>
+    public var fixedFrameEvent
 
     private init() {
 
@@ -19,8 +20,8 @@ public final class Scheduler {
     /// Raises the `fixedFrameEvent` event.
     /// Should be invoked at an interval that is equal to the refresh rate of the
     /// monitor.
-    public func onFixedFrame(_ intervalInSeconds: TimeInterval) {
-        _fixedFrameEvent(intervalInSeconds)
+    public func onFixedFrame(_ intervalInSeconds: TimeInterval) async {
+        await _fixedFrameEvent(intervalInSeconds)
     }
 
     /// Schedules a timer to fire at a specified interval.

@@ -225,8 +225,8 @@ open class ScrollView: ControlView {
         updateScrollBarSizes()
     }
 
-    open override func onResize(_ event: ValueChangedEventArgs<UISize>) {
-        super.onResize(event)
+    open override func onResize(_ event: ValueChangedEventArgs<UISize>) async {
+        await super.onResize(event)
 
         contentView.location = contentOffset
 
@@ -246,8 +246,8 @@ open class ScrollView: ControlView {
         return super.canHandle(eventRequest)
     }
 
-    open override func onMouseWheel(_ event: MouseEventArgs) {
-        super.onMouseWheel(event)
+    open override func onMouseWheel(_ event: MouseEventArgs) async {
+        await super.onMouseWheel(event)
 
         if event.delta == .zero {
             return
@@ -499,22 +499,22 @@ public class ScrollBarControl: ControlView {
         backColor = .lightGray
     }
 
-    public override func onStateChanged(_ event: ValueChangedEventArgs<ControlViewState>) {
-        super.onStateChanged(event)
+    public override func onStateChanged(_ event: ValueChangedEventArgs<ControlViewState>) async {
+        await super.onStateChanged(event)
 
         invalidate()
     }
 
-    open override func onResize(_ event: ValueChangedEventArgs<UISize>) {
-        super.onResize(event)
+    open override func onResize(_ event: ValueChangedEventArgs<UISize>) async {
+        await super.onResize(event)
 
         let size = event.newValue
 
         cornerRadius = min(size.width, size.height) / 2
     }
 
-    public override func onMouseDown(_ event: MouseEventArgs) {
-        super.onMouseDown(event)
+    public override func onMouseDown(_ event: MouseEventArgs) async {
+        await super.onMouseDown(event)
 
         let barBounds = scrollBarBounds()
         assert(!barBounds.x.isNaN)
@@ -529,8 +529,8 @@ public class ScrollBarControl: ControlView {
         }
     }
 
-    public override func onMouseMove(_ event: MouseEventArgs) {
-        super.onMouseMove(event)
+    public override func onMouseMove(_ event: MouseEventArgs) async {
+        await super.onMouseMove(event)
 
         isHighlighted = scrollBarBounds().contains(event.location)
 
@@ -554,20 +554,20 @@ public class ScrollBarControl: ControlView {
             }
 
             if previousScroll != scroll {
-                _scrollChanged(sender: self, scroll)
+                await _scrollChanged(sender: self, scroll)
             }
         }
     }
 
-    public override func onMouseUp(_ event: MouseEventArgs) {
-        super.onMouseUp(event)
+    public override func onMouseUp(_ event: MouseEventArgs) async {
+        await super.onMouseUp(event)
 
         isSelected = false
         isMouseDown = false
     }
 
-    public override func onMouseLeave() {
-        super.onMouseLeave()
+    public override func onMouseLeave() async {
+        await super.onMouseLeave()
 
         isHighlighted = false
     }

@@ -185,8 +185,8 @@ public class Window: RootView {
         drawWindowBorders(context)
     }
 
-    public override func onMouseDown(_ event: MouseEventArgs) {
-        super.onMouseDown(event)
+    public override func onMouseDown(_ event: MouseEventArgs) async {
+        await super.onMouseDown(event)
 
         _mouseDownPoint = event.location
         _mouseDown = true
@@ -197,8 +197,8 @@ public class Window: RootView {
         }
     }
 
-    public override func onMouseMove(_ event: MouseEventArgs) {
-        super.onMouseMove(event)
+    public override func onMouseMove(_ event: MouseEventArgs) async {
+        await super.onMouseMove(event)
 
         if _mouseDown {
             performWindowResizeOrDrag(event)
@@ -207,14 +207,14 @@ public class Window: RootView {
         }
     }
 
-    public override func onMouseLeave() {
-        super.onMouseLeave()
+    public override func onMouseLeave() async {
+        await super.onMouseLeave()
 
         controlSystem?.setMouseCursor(.arrow)
     }
 
-    public override func onMouseUp(_ event: MouseEventArgs) {
-        super.onMouseUp(event)
+    public override func onMouseUp(_ event: MouseEventArgs) async {
+        await super.onMouseUp(event)
 
         _mouseDown = false
         if isResizingWindow() {
