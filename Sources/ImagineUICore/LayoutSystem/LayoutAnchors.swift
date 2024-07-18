@@ -24,6 +24,7 @@ public struct LayoutAnchors {
 
     /// Removes all constraints that are connecting this layout anchor list to
     /// another layout anchor list.
+    @ImagineActor
     public func removeConstraintsConnecting(to other: LayoutAnchors) {
         for constraint in container.constraints {
             if (constraint.firstCast.owner === container && constraint.secondCast?.owner === other.container) ||
@@ -39,12 +40,14 @@ public struct LayoutAnchors {
 }
 
 extension View: LayoutAnchorsContainer {
+    nonisolated
     public var layout: LayoutAnchors {
         return LayoutAnchors(container: self)
     }
 }
 
 extension LayoutGuide: LayoutAnchorsContainer {
+    nonisolated
     public var layout: LayoutAnchors {
         return LayoutAnchors(container: self)
     }
@@ -133,7 +136,7 @@ public struct LayoutAnchorSize {
         _ size: UISize,
         priority: LayoutPriority = .required
     ) -> LayoutConstraintDefinitions {
-        
+
         .create(
             first: layout.width,
             offset: size.width,

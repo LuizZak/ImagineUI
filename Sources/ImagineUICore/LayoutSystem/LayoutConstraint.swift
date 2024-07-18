@@ -1,5 +1,6 @@
 import CassowarySwift
 
+@ImagineActor
 public class LayoutConstraint: Hashable {
     var isRemoved: Bool = false
 
@@ -362,10 +363,12 @@ public class LayoutConstraint: Hashable {
         }
     }
 
+    nonisolated
     public static func == (lhs: LayoutConstraint, rhs: LayoutConstraint) -> Bool {
         return lhs === rhs
     }
 
+    nonisolated
     public func hash(into hasher: inout Hasher) {
         hasher.combine(ObjectIdentifier(self))
     }
@@ -417,6 +420,7 @@ public class LayoutConstraint: Hashable {
             _rehash()
         }
 
+        @ImagineActor
         func createConstraint() -> Constraint? {
             guard let firstVariable = firstCast.getVariable() else {
                 return nil
@@ -546,6 +550,7 @@ extension LayoutConstraint: CustomStringConvertible {
 }
 
 public extension Sequence where Element == LayoutConstraint {
+    @ImagineActor
     func setPriority(_ priority: LayoutPriority) {
         for constraint in self {
             constraint.priority = priority

@@ -18,6 +18,7 @@ public struct LayoutAnchor<T>: LayoutAnchorType, Equatable, CustomStringConverti
     }
 
     /// Removes all constraints attached to this layout anchor.
+    @ImagineActor
     public func removeConstraints() {
         _owner?.constraintsOnAnchorKind(self.kind).forEach {
             $0.removeConstraint()
@@ -26,6 +27,7 @@ public struct LayoutAnchor<T>: LayoutAnchorType, Equatable, CustomStringConverti
 
     /// Removes all constraints that tie this anchor to an absolute value,
     /// e.g. `layout.left >= 10` or `layout.width == 200`.
+    @ImagineActor
     public func removeAbsoluteConstraints() {
         _owner?.constraintsOnAnchorKind(self.kind).forEach {
             if $0.second == nil {

@@ -5,6 +5,7 @@ import Text
 /// of strings at locations that can be specified via a caret position.
 ///
 /// Base text input engine backing for `TextField`'s.
+@ImagineActor
 class TextEngine: TextEngineType {
     /// Whenever sequential characters are input into the text engine via `insertText`,
     /// this undo run is incremented so the undo operation for these operations
@@ -636,7 +637,8 @@ class TextInsertUndo: UndoTask {
 
     }
 
-    public func undo() {
+    @ImagineActor
+    public func undo() async {
         textEngine?.setCaret(Caret(range: TextRange(start: caret.start, length: after.count),
                                   position: .start))
         textEngine?.deleteText()
@@ -647,7 +649,8 @@ class TextInsertUndo: UndoTask {
         }
     }
 
-    public func redo() {
+    @ImagineActor
+    public func redo() async {
         textEngine?.setCaret(caret)
         textEngine?.insertText(after)
     }
@@ -684,14 +687,16 @@ public class TextDeleteUndo : UndoTask {
 
     }
 
-    public func undo() {
+    @ImagineActor
+    public func undo() async {
         textEngine?.setCaret(Caret(location: deletedRange.start))
         textEngine?.insertText(text)
 
         textEngine?.setCaret(beforeCaret)
     }
 
-    public func redo() {
+    @ImagineActor
+    public func redo() async {
         textEngine?.setCaret(Caret(range: deletedRange, position: .start))
         textEngine?.deleteText()
     }

@@ -1,5 +1,5 @@
 struct ConstraintCollection {
-    var affectedLayoutVariables: [LayoutVariables] = []
-    var fixedLayoutVariables: [LayoutVariables] = []
+    var affectedLayoutVariables: [(LayoutVariablesContainer, LayoutVariables)] = []
+    var fixedLayoutVariables: [(LayoutVariablesContainer, LayoutVariables)] = []
     var constraints: [LayoutConstraint] = []
 }

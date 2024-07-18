@@ -10,18 +10,22 @@ open class ImagineUIWindowContent: ImagineUIContentType, BaseControlSystemDelega
     private var _rootViews: [RootView]
 
     /// The root view where dialogs are presented to.
+    @ImagineActor
     private let _dialogContainer: RootView = RootView()
 
     /// The root view where tooltips are presented to.
+    @ImagineActor
     private let _tooltipContainer: RootView = RootView()
 
     /// The active tooltip manager for this instance.
     private let _tooltipsManager: ImagineUITooltipsManager
 
     /// The main view for this window content.
+    @ImagineActor
     public let rootView = RootView()
 
     /// Control system for this instance.
+    @ImagineActor
     public var controlSystem = DefaultControlSystem()
 
     /// Gets the current display size.
@@ -39,6 +43,7 @@ open class ImagineUIWindowContent: ImagineUIContentType, BaseControlSystemDelega
     /// Gets or sets the debug draw flags.
     ///
     /// Changing this value invalidates the screen.
+    @ImagineActor
     open var debugDrawFlags: Set<DebugDraw.DebugDrawFlags> = [] {
         didSet {
             if debugDrawFlags != oldValue {
@@ -52,6 +57,7 @@ open class ImagineUIWindowContent: ImagineUIContentType, BaseControlSystemDelega
     /// refresh's pixels will remain on the backbuffer.
     ///
     /// Changing this value invalidates the screen.
+    @ImagineActor
     open var backgroundColor: Color? = .cornflowerBlue {
         didSet {
             invalidateScreen()
@@ -61,6 +67,7 @@ open class ImagineUIWindowContent: ImagineUIContentType, BaseControlSystemDelega
     /// The delegate for this window content.
     public weak var delegate: ImagineUIContentDelegate?
 
+    @ImagineActor
     public init(size: UIIntSize) {
         _tooltipsManager = ImagineUITooltipsManager(container: _tooltipContainer)
 
@@ -72,6 +79,7 @@ open class ImagineUIWindowContent: ImagineUIContentType, BaseControlSystemDelega
         initialize()
     }
 
+    @ImagineActor
     open func initialize() {
         addRootView(rootView)
         addRootView(_dialogContainer)
@@ -91,6 +99,7 @@ open class ImagineUIWindowContent: ImagineUIContentType, BaseControlSystemDelega
     /// Adds an extra root view in this content.
     ///
     /// - precondition: `view.superview == nil`
+    @ImagineActor
     open func addRootView(_ view: RootView) {
         precondition(view.superview == nil)
 
@@ -108,20 +117,24 @@ open class ImagineUIWindowContent: ImagineUIContentType, BaseControlSystemDelega
         }
     }
 
+    @ImagineActor
     open func removeRootView(_ view: RootView) {
         view.invalidationDelegate = nil
         view.rootControlSystem = nil
         _rootViews.removeAll { $0 === view }
     }
 
+    @ImagineActor
     open func willStartLiveResize() {
 
     }
 
+    @ImagineActor
     open func didEndLiveResize() {
 
     }
 
+    @ImagineActor
     open func resize(_ newSize: UIIntSize) {
         self.size = newSize
 
@@ -140,19 +153,22 @@ open class ImagineUIWindowContent: ImagineUIContentType, BaseControlSystemDelega
         invalidateScreen()
     }
 
+    @ImagineActor
     open func invalidateScreen() {
         delegate?.invalidate(self, bounds: _bounds)
     }
 
-    open func update(_ time: TimeInterval) async {
+    @ImagineActor
+    open func update(_ time: TimeInterval) {
         // Fixed-frame update
         let delta = time - _lastFrame
         _lastFrame = time
-        await Scheduler.instance.onFixedFrame(delta)
+        Scheduler.instance.onFixedFrame(delta)
 
         performLayout()
     }
 
+    @ImagineActor
     open func performLayout() {
         // Layout loop
         for rootView in _rootViews {
@@ -160,6 +176,7 @@ open class ImagineUIWindowContent: ImagineUIContentType, BaseControlSystemDelega
         }
     }
 
+    @ImagineActor
     open func render(renderer: Renderer, renderScale: UIVector, clipRegion: ClipRegionType) {
         renderer.scale(by: renderScale)
 
@@ -188,7 +205,7 @@ open class ImagineUIWindowContent: ImagineUIContentType, BaseControlSystemDelega
     }
 
     open func mouseMoved(event: MouseEventArgs) async {
-        _tooltipsManager.updateTooltipCursorLocation(event.location)
+        await _tooltipsManager.updateTooltipCursorLocation(event.location)
 
         await controlSystem.onMouseMove(event)
     }
@@ -215,6 +232,7 @@ open class ImagineUIWindowContent: ImagineUIContentType, BaseControlSystemDelega
 
     // MARK: - BaseControlSystemDelegate
 
+    @ImagineActor
     open func bringRootViewToFront(_ rootView: RootView) {
         func ensureViewOnTop(_ rootViewOver: RootView) {
             _rootViews.removeAll(where: { $0 === rootViewOver })
@@ -330,6 +348,7 @@ open class ImagineUIWindowContent: ImagineUIContentType, BaseControlSystemDelega
 
     // MARK: - WindowDelegate
 
+    @ImagineActor
     open func windowWantsToClose(_ window: Window) {
         if let index = _rootViews.firstIndex(of: window) {
             _rootViews.remove(at: index)
@@ -337,6 +356,7 @@ open class ImagineUIWindowContent: ImagineUIContentType, BaseControlSystemDelega
         }
     }
 
+    @ImagineActor
     open func windowWantsToMaximize(_ window: Window) {
         switch window.windowState {
         case .maximized:
@@ -347,6 +367,7 @@ open class ImagineUIWindowContent: ImagineUIContentType, BaseControlSystemDelega
         }
     }
 
+    @ImagineActor
     open func windowWantsToMinimize(_ window: Window) {
         window.setWindowState(.minimized)
     }

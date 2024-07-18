@@ -1,3 +1,4 @@
+@ImagineActor
 public protocol CustomTooltipHandlerType: AnyObject {
     /// Requests that a tooltip be shown at a specified location relative to a
     /// specified view.
@@ -15,7 +16,7 @@ public protocol CustomTooltipHandlerType: AnyObject {
     )
 
     /// Updates the contents of the currently displayed tooltip.
-    /// Does nothing, if 
+    /// Does nothing, if
     func updateTooltip(_ tooltip: Tooltip)
 
     /// Hides a tooltip that was previously shown with `showTooltip`

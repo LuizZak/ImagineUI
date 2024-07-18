@@ -1,6 +1,7 @@
 import Foundation
 import CassowarySwift
 
+@ImagineActor
 public class LayoutConstraintSolverCache {
     private var cacheState: CacheType
 
@@ -86,7 +87,7 @@ public class LayoutConstraintSolverCache {
 
         case .split(let horizontal, let vertical):
 
-            #if DUMP_CONSTRAINTS_TO_DESKTOP // For debugging purposes; .compareAndApplyStates() must be run sequentially on the same thread due to potential dump file contention.
+            #if true || DUMP_CONSTRAINTS_TO_DESKTOP // For debugging purposes; .compareAndApplyStates() must be run sequentially on the same thread due to potential dump file contention.
 
             try horizontal.compareAndApplyStates(orientations: [.horizontal])
             try vertical.compareAndApplyStates(orientations: [.vertical])
@@ -141,6 +142,7 @@ public class LayoutConstraintSolverCache {
         case split(horizontal: _LayoutConstraintSolverCache, vertical: _LayoutConstraintSolverCache)
     }
 
+    @ImagineActor
     private struct ConstraintViewVisitor: ViewVisitor {
         var rootView: View
 
@@ -163,13 +165,19 @@ public class LayoutConstraintSolverCache {
             let isFullyStatic = view.areaIntoConstraintsMask == []
 
             if isFullyStatic && view.constraints.isEmpty {
-                collection.fixedLayoutVariables.append(view.layoutVariables)
+                collection.fixedLayoutVariables.append(
+                    (view, view.layoutVariables)
+                )
             } else {
-                collection.affectedLayoutVariables.append(view.layoutVariables)
+                collection.affectedLayoutVariables.append(
+                    (view, view.layoutVariables)
+                )
             }
 
             for guide in view.layoutGuides {
-                collection.affectedLayoutVariables.append(guide.layoutVariables)
+                collection.affectedLayoutVariables.append(
+                    (guide, guide.layoutVariables)
+                )
             }
 
             for constraint in view.containedConstraints where constraint.isEnabled {
@@ -181,6 +189,7 @@ public class LayoutConstraintSolverCache {
     }
 }
 
+@ImagineActor
 fileprivate class _LayoutConstraintSolverCache {
     private var _constraintSet: [LayoutConstraint: ConstraintState] = [:]
     private var _viewConstraintList: [LayoutVariables: ViewConstraintList] = [:]
@@ -212,10 +221,11 @@ fileprivate class _LayoutConstraintSolverCache {
         rootSpatialReference: View?
     ) {
 
-        for affectedView in result.affectedLayoutVariables {
-            withConstraintList(for: affectedView.container, orientations: orientations) {
+        for (container, affectedView) in result.affectedLayoutVariables {
+            withConstraintList(for: container, orientations: orientations) {
                 affectedView.deriveConstraints(
                     &$0,
+                    container: container,
                     rootSpatialReference: rootSpatialReference
                 )
             }
@@ -283,7 +293,7 @@ fileprivate class _LayoutConstraintSolverCache {
         orientations: Set<LayoutConstraintOrientation>,
         _ closure: (inout ViewConstraintList) -> Void
     ) {
-        
+
         let identifier: LayoutVariables = container.layoutVariables
 
         if var list = _viewConstraintList[identifier], list.orientations == orientations {
@@ -299,7 +309,7 @@ fileprivate class _LayoutConstraintSolverCache {
         #else
 
         var list = ViewConstraintList(orientations: orientations)
-        
+
         #endif // DUMP_CONSTRAINTS_TO_DESKTOP
 
         closure(&list)

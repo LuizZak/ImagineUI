@@ -2,8 +2,9 @@ import Geometry
 
 /// A rectangular area in a view that can interact with the layout constraint
 /// system.
+@ImagineActor
 public final class LayoutGuide {
-    var layoutVariables: LayoutVariables!
+    let layoutVariables: LayoutVariables = .init(name: "LayoutGuide")
     var constraints: [LayoutConstraint] = []
 
     var transform: UIMatrix {
@@ -15,7 +16,6 @@ public final class LayoutGuide {
     internal(set) public var area: UIRectangle = .zero
 
     public init() {
-        layoutVariables = LayoutVariables(container: self)
     }
 
     public func removeFromSuperview() {
@@ -82,12 +82,14 @@ extension LayoutGuide: SpatialReferenceType {
 }
 
 extension LayoutGuide: Equatable {
+    nonisolated
     public static func == (lhs: LayoutGuide, rhs: LayoutGuide) -> Bool {
         return lhs === rhs
     }
 }
 
 extension LayoutGuide: Hashable {
+    nonisolated
     public func hash(into hasher: inout Hasher) {
         hasher.combine(ObjectIdentifier(self))
     }

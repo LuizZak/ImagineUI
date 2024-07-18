@@ -627,6 +627,7 @@ public class TreeView: ControlView {
         return itemView
     }
 
+    @ImagineActor
     private class TreeViewCache {
         var reclaimed: [ItemView] = []
 

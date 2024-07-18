@@ -30,14 +30,17 @@ public protocol EventHandler: AnyObject {
     ///
     /// If this handler is already the first responder (see `isFirstResponder`),
     /// the method returns true immediately.
+    @ImagineActor
     func becomeFirstResponder() -> Bool
 
     /// Asks this event handler to dismiss its first responder status.
+    @ImagineActor
     func resignFirstResponder()
 
     /// Asks this event handler to convert a screen-coordinate space point into
     /// its own local coordinates when synthesizing location events (e.g. mouse
     /// events) into this event handler.
+    @ImagineActor
     func convertFromScreen(_ point: UIVector) -> UIVector
 
     /// Requests that this event handler analyze an event request, and potentially
@@ -47,5 +50,6 @@ public protocol EventHandler: AnyObject {
     ///
     /// Event handlers are not required to interact with an event request and may
     /// simply ignore it, but they may not accept it more than once.
+    @ImagineActor
     func handleOrPass(_ eventRequest: EventRequest) async
 }

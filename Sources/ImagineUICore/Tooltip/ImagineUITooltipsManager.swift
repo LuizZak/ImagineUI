@@ -1,5 +1,6 @@
 /// Manages exhibition of tooltips for a view hierarchy within an ImagineUI
 /// control system.
+@ImagineActor
 public class ImagineUITooltipsManager: TooltipsManagerType {
     private var _customTooltipState: CustomTooltipState?
 
@@ -256,6 +257,7 @@ public class ImagineUITooltipsManager: TooltipsManagerType {
         case followingMouse
     }
 
+    @ImagineActor
     private struct CustomTooltipState {
         weak var handler: CustomTooltipHandler?
         weak var lifetimeObject: AnyObject?
@@ -273,6 +275,7 @@ public class ImagineUITooltipsManager: TooltipsManagerType {
 }
 
 /// Used to handle custom tooltip lifetimes.
+@ImagineActor
 fileprivate final class CustomTooltipHandler: CustomTooltipHandlerType {
     /// A lifetime object associated with this tooltip handler that is
     var lifetimeToken: AnyObject

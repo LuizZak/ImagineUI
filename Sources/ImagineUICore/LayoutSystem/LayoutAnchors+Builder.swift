@@ -8,6 +8,7 @@ public extension LayoutAnchors {
     /// `areaIntoConstraintsMask` of this layout anchor's view to allow constraints
     /// to affect the view correctly.
     @discardableResult
+    @ImagineActor
     func makeConstraints(
         updateAreaIntoConstraintsMask: Bool = true,
         @LayoutResultBuilder _ builder: (LayoutAnchors) -> LayoutConstraintDefinitions
@@ -28,6 +29,7 @@ public extension LayoutAnchors {
     /// `areaIntoConstraintsMask` of this layout anchor's view to allow constraints
     /// to affect the view correctly.
     @discardableResult
+    @ImagineActor
     func remakeConstraints(
         updateAreaIntoConstraintsMask: Bool = true,
         @LayoutResultBuilder _ builder: (LayoutAnchors) -> LayoutConstraintDefinitions
@@ -53,6 +55,7 @@ public extension LayoutAnchors {
     /// `areaIntoConstraintsMask` of this layout anchor's view to allow constraints
     /// to affect the view correctly.
     @discardableResult
+    @ImagineActor
     func updateConstraints(
         @LayoutResultBuilder _ builder: (LayoutAnchors) -> LayoutConstraintDefinitions
     ) -> [LayoutConstraint] {

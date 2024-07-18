@@ -1,6 +1,7 @@
 /// A minimal interface for a text engine.
 ///
 /// Mainly implemented by `TextEngine`.
+@ImagineActor
 public protocol TextEngineType: AnyObject {
     /// Gets the caret range.
     ///

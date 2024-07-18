@@ -3,21 +3,21 @@ public protocol KeyboardEventHandler: EventHandler {
     /// Main interface to forward key press events to the conforming type.
     /// Key presses are associated with textual-type
     /// character input instead of raw key codes.
-    @MainActor
+    @ImagineActor
     func onKeyPress(_ event: KeyPressEventArgs) async
 
     /// Main interface to forward key down events to the conforming type.
-    @MainActor
+    @ImagineActor
     func onKeyDown(_ event: KeyEventArgs) async
 
     /// Main interface to forward key up events to the conforming type.
-    @MainActor
+    @ImagineActor
     func onKeyUp(_ event: KeyEventArgs) async
 
     /// Main interface to forward key preview events to the conforming type.
     ///
     /// Preview keys may only be available on some OS platforms.
-    @MainActor
+    @ImagineActor
     func onPreviewKeyDown(_ event: PreviewKeyDownEventArgs) async
 }
 

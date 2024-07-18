@@ -1,4 +1,5 @@
 /// Protocol for tooltip managers.
+@ImagineActor
 public protocol TooltipsManagerType {
     /// Returns whether a tooltip is currently visible on screen.
     var isTooltipVisible: Bool { get }

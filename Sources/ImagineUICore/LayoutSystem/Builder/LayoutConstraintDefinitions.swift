@@ -8,6 +8,7 @@ public struct LayoutConstraintDefinitions {
     /// Creates the layout constraints defined within this `LayoutConstraintDefinitions`
     /// object.
     @discardableResult
+    @ImagineActor
     public func create() -> [LayoutConstraint] {
         return definitions.map {
             $0.create()
@@ -21,6 +22,7 @@ public struct LayoutConstraintDefinitions {
     /// one or more of the constraints does not exist, the method traps with a
     /// `fatalError`.
     @discardableResult
+    @ImagineActor
     public func update() -> [LayoutConstraint] {
         return definitions.map {
             $0.update()
@@ -33,7 +35,7 @@ public extension LayoutConstraintDefinitions {
         lhs: LayoutConstraintDefinitions,
         rhs: LayoutPriority
     ) -> LayoutConstraintDefinitions {
-        
+
         .init(definitions: lhs.definitions.map {
             $0 | rhs
         })

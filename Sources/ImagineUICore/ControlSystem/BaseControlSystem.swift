@@ -2,6 +2,7 @@ import Foundation
 import Geometry
 
 /// Base empty control system class that can be overridden with implementation.
+@ImagineActor
 open class BaseControlSystem: ControlSystemType {
     public weak var delegate: BaseControlSystemDelegate?
 

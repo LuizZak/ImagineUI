@@ -1,5 +1,6 @@
 import Text
 
+@ImagineActor
 protocol TextEngineTextualBuffer {
     /// Gets the textual length on this text buffer
     var textLength: Int { get }

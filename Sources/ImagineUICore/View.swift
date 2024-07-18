@@ -6,6 +6,7 @@ import Rendering
 ///
 /// Can be instantiated and used as container as-is or subclassed to provide
 /// custom behaviour, if required.
+@ImagineActor
 open class View {
     /// If `true`, setting `self.location` or `self.bounds` skips calling `setNeedsLayout`
     /// internally.
@@ -48,7 +49,7 @@ open class View {
         }
     }
 
-    var layoutVariables: LayoutVariables!
+    let layoutVariables: LayoutVariables = LayoutVariables(name: "View")
 
     var layoutSuspendStackDepth: Int = 0
 
@@ -140,7 +141,7 @@ open class View {
     /// Gets the full transform matrix for this view's translation, rotation, and
     /// scale.
     ///
-    /// This 
+    /// This
     open var transform: UIMatrix {
         let baseMatrix: UIMatrix = .transformation(
             xScale: scale.x,
@@ -272,7 +273,7 @@ open class View {
 
         visitingSuperviews { view in
             result *= view.alpha
-        }        
+        }
 
         return result
     }
@@ -356,7 +357,6 @@ open class View {
     public init() {
         self.bounds = .zero
         self.location = .zero
-        layoutVariables = LayoutVariables(container: self)
         setupHierarchy()
         setupConstraints()
     }
@@ -407,7 +407,7 @@ open class View {
     ///
     /// Used as a convenience for generating new view subclasses; view hierarchies
     /// can be changed at any point in a view's lifecycle.
-    /// 
+    ///
     /// - seealso: `setupConstraints()`
     open func setupHierarchy() {
 
@@ -419,7 +419,7 @@ open class View {
     ///
     /// Used as a convenience for generating new view subclasses; view constraints
     /// can be changed at any point in a view's lifecycle.
-    /// 
+    ///
     /// - seealso: `setupHierarchy()`
     open func setupConstraints() {
 
@@ -899,7 +899,7 @@ open class View {
         inflatingArea: UIVector = .zero,
         predicate: (View) -> Bool
     ) -> View? {
-        
+
         guard contains(point: point, inflatingArea: inflatingArea) else {
             return nil
         }
@@ -1187,6 +1187,7 @@ open class View {
 extension View: Equatable {
     /// Returns `true` if the two given view references are pointing to the same
     /// view instance.
+    nonisolated
     public static func == (lhs: View, rhs: View) -> Bool {
         return lhs === rhs
     }
@@ -1194,6 +1195,7 @@ extension View: Equatable {
 
 extension View: Hashable {
     /// Hashes this view as an identity hash, i.e. based on its pointer value.
+    nonisolated
     public func hash(into hasher: inout Hasher) {
         hasher.combine(ObjectIdentifier(self))
     }

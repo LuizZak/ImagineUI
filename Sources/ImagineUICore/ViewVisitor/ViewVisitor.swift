@@ -1,3 +1,4 @@
+@ImagineActor
 public protocol ViewVisitor {
     associatedtype State
 

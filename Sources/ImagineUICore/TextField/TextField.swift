@@ -3,8 +3,6 @@ import Geometry
 import Text
 import Rendering
 
-// import QuartzCore
-
 open class TextField: ControlView {
     private let _blinker = CursorBlinker()
     private var _label: Label

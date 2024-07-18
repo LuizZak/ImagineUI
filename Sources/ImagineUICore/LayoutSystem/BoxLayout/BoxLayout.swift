@@ -4,6 +4,7 @@ struct BoxLayout {
     /// Applies box layout to a series of views across an available length.
     ///
     /// - note: Views are assumed to be contained within the same parent view.
+    @ImagineActor
     static func layout(
         _ entries: [Entry],
         alignment: Alignment = .centered,
@@ -191,6 +192,7 @@ struct BoxLayout {
             }
         }
 
+        @ImagineActor
         subscript(location view: View) -> Double {
             get {
                 switch self {
@@ -210,6 +212,7 @@ struct BoxLayout {
             }
         }
 
+        @ImagineActor
         subscript(center view: View) -> Double {
             get {
                 switch self {
@@ -229,6 +232,7 @@ struct BoxLayout {
             }
         }
 
+        @ImagineActor
         subscript(size view: View) -> Double {
             get {
                 switch self {

@@ -10,6 +10,7 @@ public struct LayoutConstraintDefinition {
     /// Creates the layout constraint defined within this `LayoutConstraintDefinition`
     /// object.
     @discardableResult
+    @ImagineActor
     public func create() -> LayoutConstraint {
         if let secondCast = secondCast {
             return LayoutConstraint._create(
@@ -36,6 +37,7 @@ public struct LayoutConstraintDefinition {
     /// Note: This method assumes the referenced constraint already exist. If
     /// a matching constraint does not exist, the method traps with a `fatalError`.
     @discardableResult
+    @ImagineActor
     public func update(updateAreaIntoConstraintsMask: Bool = true) -> LayoutConstraint {
         if let secondCast = secondCast {
             return LayoutConstraint._update(
@@ -66,6 +68,7 @@ public struct LayoutConstraintDefinition {
     /// If more than one constraint with the current relationship and anchors
     /// is present, only the first instance found is removed.
     @discardableResult
+    @ImagineActor
     public func remove() -> LayoutConstraint? {
         guard let constraints = firstCast._owner?.constraintsOnAnchorKind(firstCast.kind) else {
             return nil
@@ -157,7 +160,7 @@ public extension LayoutConstraintDefinition {
         lhs: LayoutConstraintDefinition,
         rhs: LayoutPriority
     ) -> LayoutConstraintDefinition {
-        
+
         var copy = lhs
         copy.priority = rhs
         return copy

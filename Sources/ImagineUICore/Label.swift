@@ -20,7 +20,7 @@ open class Label: View {
     /// Same as `minimalTextLayout`, but with view boundaries constraints taken
     /// into account.
     var textLayout: TextLayoutType {
-        return InnerLabelTextLayout(label: self)
+        return getOrRecreateTextLayout()
     }
 
     // TODO: Account for vertical alignments other than `.near` when computing
@@ -141,7 +141,7 @@ open class Label: View {
         _bitmapCache.cachingOrRendering(renderer) { renderer in
             renderer.setFill(textColor)
             renderer.setStroke(textColor)
-            renderer.drawTextLayout(textLayout, at: .zero)
+            renderer.drawTextLayout(getOrRecreateTextLayout(), at: .zero)
         }
     }
 
@@ -170,6 +170,14 @@ open class Label: View {
         _cachedTextLayout = nil
     }
 
+    private func getOrRecreateTextLayout() -> TextLayoutType {
+        if let _cachedTextLayout {
+            return _cachedTextLayout
+        }
+
+        return recreateCachedTextLayout()
+    }
+
     private func recreateCachedTextLayout() -> TextLayoutType {
         let layout = TextLayout(
             font: font,
@@ -182,57 +190,5 @@ open class Label: View {
         _cachedTextLayout = layout
 
         return layout
-    }
-
-    private class InnerLabelTextLayout: TextLayoutType {
-        let label: Label
-        var textLayout: TextLayoutType {
-            if let cached = label._cachedTextLayout {
-                return cached
-            }
-            return label.recreateCachedTextLayout()
-        }
-
-        var lines: [TextLayoutLine] { textLayout.lines }
-        var font: Font { textLayout.font }
-        var text: String { textLayout.text }
-        var attributedText: AttributedText { textLayout.attributedText }
-        var horizontalAlignment: HorizontalTextAlignment { textLayout.horizontalAlignment }
-        var verticalAlignment: VerticalTextAlignment { textLayout.verticalAlignment }
-        var numberOfLines: Int { textLayout.numberOfLines }
-        var size: UISize { textLayout.size }
-
-        init(label: Label) {
-            self.label = label
-        }
-
-        func locationOfCharacter(index: Int) -> UIVector {
-            return textLayout.locationOfCharacter(index: index)
-        }
-        func boundsForCharacters(startIndex: Int, length: Int) -> [UIRectangle] {
-            return textLayout.boundsForCharacters(startIndex: startIndex, length: length)
-        }
-        func boundsForCharacters(in range: TextRange) -> [UIRectangle] {
-            return textLayout.boundsForCharacters(in: range)
-        }
-        func hitTestPoint(_ point: UIVector) -> TextLayoutHitTestResult {
-            return textLayout.hitTestPoint(point)
-        }
-        func font(atLocation index: Int) -> Font {
-            return textLayout.font(atLocation: index)
-        }
-        func baselineHeightForLine(atIndex index: Int) -> Float {
-            return textLayout.baselineHeightForLine(atIndex: index)
-        }
-
-        func strokeText(in renderer: Renderer, location: UIVector) {
-            renderer.strokeTextLayout(self, at: location)
-        }
-        func fillText(in renderer: Renderer, location: UIVector) {
-            renderer.fillTextLayout(self, at: location)
-        }
-        func renderText(in renderer: Renderer, location: UIVector) {
-            renderer.drawTextLayout(self, at: location)
-        }
     }
 }

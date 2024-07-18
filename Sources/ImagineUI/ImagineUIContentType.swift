@@ -20,16 +20,20 @@ public protocol ImagineUIContentType: AnyObject {
     ///
     /// Can be used to temporarily ignore expensive internal resizing operations
     /// until `didEndLiveResize()` is called.
+    @ImagineActor
     func willStartLiveResize()
 
     /// Called to notify that the GUI window this content is in has finished
     /// a live resize operation.
+    @ImagineActor
     func didEndLiveResize()
 
     /// Called to notify that the screen space this content occupies has changed.
+    @ImagineActor
     func resize(_ newSize: UIIntSize)
 
     /// Called to request that any pending layout operations are performed.
+    @ImagineActor
     func performLayout()
 
     /// Renders this content on a given renderer, with a specified render scale
@@ -37,6 +41,7 @@ public protocol ImagineUIContentType: AnyObject {
     ///
     /// A redraw clipping region is specified to inform the content of areas
     /// where re-rendering is not required.
+    @ImagineActor
     func render(renderer: Renderer, renderScale: UIVector, clipRegion: ClipRegionType)
 
     /// Called to notify that the mouse left the active area this content is on.
@@ -81,5 +86,6 @@ public protocol ImagineUIContentType: AnyObject {
 
     /// Called to notify that the window associated with this ImagineUI content
     /// has been closed.
+    @ImagineActor
     func didCloseWindow()
 }

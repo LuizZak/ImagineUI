@@ -865,6 +865,7 @@ extension DefaultControlSystem: UIDialogDelegate {
 }
 
 private extension MouseEventArgs {
+    @ImagineActor
     func convertLocation(handler: EventHandler) -> MouseEventArgs {
         var mouseEvent = self
         mouseEvent.location = handler.convertFromScreen(mouseEvent.location)

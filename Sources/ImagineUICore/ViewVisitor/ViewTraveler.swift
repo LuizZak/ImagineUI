@@ -1,3 +1,4 @@
+@ImagineActor
 public class ViewTraveler<Visitor: ViewVisitor> {
     var state: Visitor.State
     let visitor: Visitor

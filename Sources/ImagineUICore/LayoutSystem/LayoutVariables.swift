@@ -1,8 +1,8 @@
 import Geometry
 import CassowarySwift
 
+@ImagineActor
 class LayoutVariables {
-    unowned let container: LayoutVariablesContainer
     let left: Variable
     let right: Variable
     let top: Variable
@@ -57,11 +57,7 @@ class LayoutVariables {
     @ParameterizedCachedConstraint
     private var heightAsIntrinsicSizeConstraint: (Double) -> Constraint
 
-    init(container: LayoutVariablesContainer) {
-        let name = LayoutVariables.deriveName(container)
-
-        self.container = container
-
+    init(name: String) {
         let left = Variable("\(name)_left")
         let right = Variable("\(name)_right")
         let top = Variable("\(name)_top")
@@ -126,9 +122,13 @@ class LayoutVariables {
 
     func deriveConstraints<T: ViewConstraintCollectorType>(
         _ constraintCollector: inout T,
+        container: LayoutVariablesContainer,
         rootSpatialReference: View?
     ) {
-        let variables = VariablesBroker(layoutVariables: self)
+        let variables = VariablesBroker(
+            container: container,
+            layoutVariables: self
+        )
 
         if let view = container as? View {
             deriveViewConstraints(
@@ -186,7 +186,7 @@ class LayoutVariables {
         }
 
         if variables.isReferenced(.firstBaseline) {
-            if let label = viewForFirstBaseline() as? Label {
+            if let label = viewForFirstBaseline(container: container) as? Label {
                 constraintCollector.suggestValue(
                     variables.baselineHeight,
                     value: label.baselineHeight,
@@ -349,7 +349,10 @@ class LayoutVariables {
         }
     }
 
-    func applyVariables(relativeTo spatialReference: View?) {
+    func applyVariables(
+        container: LayoutVariablesContainer,
+        relativeTo spatialReference: View?
+    ) {
         var area = UIRectangle(
             x: left.value,
             y: top.value,
@@ -375,7 +378,9 @@ class LayoutVariables {
         container.setAreaSkippingLayout(area)
     }
 
-    func viewForFirstBaseline() -> View? {
+    func viewForFirstBaseline(
+        container: LayoutVariablesContainer
+    ) -> View? {
         if let view = container as? View {
             if let viewForBaseline = container.viewForFirstBaseline() {
                 return viewForBaseline
@@ -412,6 +417,7 @@ class LayoutVariables {
 
     /// Used to help ensure variable references are taken into account while
     /// deciding which constraints to report to a `ViewConstraintCollectorType`.
+    @ImagineActor
     private class VariablesBroker {
         let layoutVariables: LayoutVariables
         var referencedVariables: Set<LayoutVariable> = []
@@ -429,12 +435,13 @@ class LayoutVariables {
         var intrinsicHeight: Variable { fetchVariable(.intrinsicHeight) }
         var baselineHeight: Variable { fetchVariable(.baselineHeight) }
 
-        init(layoutVariables: LayoutVariables) {
+        init(
+            container: LayoutVariablesContainer,
+            layoutVariables: LayoutVariables
+        ) {
             self.layoutVariables = layoutVariables
 
             // Pre-fill based on constraints
-            let container = layoutVariables.container
-
             if container.hasConstraintsOnAnchorKind(.left) {
                 markReferenced(.left)
             }

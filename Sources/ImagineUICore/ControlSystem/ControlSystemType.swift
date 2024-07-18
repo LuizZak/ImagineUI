@@ -2,6 +2,7 @@ import Geometry
 
 /// Base for a control system which handles views and controls from a full
 /// hierarchy
+@ImagineActor
 public protocol ControlSystemType {
     /// Called to notify that a view has been removed from the screen's hierarchy,
     /// and any associated events and focus on its sub-hierarchy should be waived.
@@ -44,6 +45,5 @@ public protocol ControlSystemType {
     /// Requests the display of a given dialog.
     ///
     /// Returns `true` if the dialog display was successful.
-    @MainActor
     func openDialog(_ view: UIDialog, location: UIDialogInitialLocation) async -> Bool
 }

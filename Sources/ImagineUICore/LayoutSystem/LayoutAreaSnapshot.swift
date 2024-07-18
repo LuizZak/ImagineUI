@@ -2,6 +2,7 @@ import Geometry
 
 /// Stores information about a view or layout guide's location and size, which
 /// can be later restored
+@ImagineActor
 struct LayoutAreaSnapshot {
     var layoutContainer: LayoutVariablesContainer
     var area: UIRectangle
@@ -32,6 +33,7 @@ struct LayoutAreaSnapshot {
 }
 
 extension Sequence where Element == LayoutAreaSnapshot {
+    @ImagineActor
     func restore() {
         for snapshot in self {
             snapshot.restore()
