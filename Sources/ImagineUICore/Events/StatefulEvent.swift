@@ -17,10 +17,20 @@ public class StatefulEvent<T>: Event<T> {
         super.init()
     }
 
+    public override func publishEventAsync(_ event: T) async {
+        state = event
+
+        await super.publishEventAsync(event)
+    }
+
     public override func publishEvent(_ event: T) {
         state = event
-        
+
         super.publishEvent(event)
+    }
+
+    public override func callAsFunction(_ event: T) async {
+        await publishEventAsync(event)
     }
 
     public override func callAsFunction(_ event: T) {

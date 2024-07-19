@@ -77,8 +77,8 @@ open class ComboBox: ControlView {
         _backColor.setValue(Self.comboBoxBackgroundColor.faded(towards: .black, factor: 0.1), forState: .selected)
     }
 
-    open override func onStateChanged(_ event: ValueChangedEventArgs<ControlViewState>) {
-        super.onStateChanged(event)
+    open override func onStateChanged(_ event: ValueChangedEventArgs<ControlViewState>) async {
+        await super.onStateChanged(event)
 
         invalidate()
     }
@@ -108,10 +108,10 @@ open class ComboBox: ControlView {
         }
     }
 
-    open override func onMouseClick(_ event: MouseEventArgs) {
-        super.onMouseClick(event)
+    open override func onMouseClick(_ event: MouseEventArgs) async {
+        await super.onMouseClick(event)
 
-        _open()
+        await _open()
     }
 
     public override func boundsForFillOrStroke() -> UIRectangle {
@@ -167,7 +167,7 @@ open class ComboBox: ControlView {
                     guard let self = self else { return }
 
                     // TODO: Add ghost view of selected item like in Windows comboboxes
-                    self._handleItemSelect(index: index)
+                    await self._handleItemSelect(index: index)
                     self._close()
                 }
 
@@ -195,19 +195,19 @@ open class ComboBox: ControlView {
         _visibleList = nil
     }
 
-    private func _open() {
+    private func _open() async {
         guard let controlSystem else {
             return
         }
 
         let listView = ListView(items: _generateItems())
         listView.onClose.addWeakListener(self) { (self, e) in
-            self._didClose(sender: self)
+            await self._didClose(sender: self)
         }
 
         _visibleList = listView
 
-        let didShow = controlSystem.openDialog(
+        let didShow = await controlSystem.openDialog(
             listView,
             location: .topLeft(bounds.bottomLeft, relativeTo: self)
         )
@@ -226,16 +226,16 @@ open class ComboBox: ControlView {
                 }
             }
 
-            _didOpen(sender: self)
+            await _didOpen(sender: self)
         }
     }
 
-    private func _handleItemSelect(index: Int) {
-        guard !_willSelect(sender: self, value: index) else {
+    private func _handleItemSelect(index: Int) async {
+        guard await !_willSelect(sender: self, value: index) else {
             return
         }
 
-        _didSelect(sender: self, index)
+        await _didSelect(sender: self, index)
 
         _populateSelection()
     }
@@ -376,12 +376,12 @@ open class ComboBox: ControlView {
             }
         }
 
-        override func onMouseClick(_ event: MouseEventArgs) {
-            super.onMouseClick(event)
+        override func onMouseClick(_ event: MouseEventArgs) async {
+            await super.onMouseClick(event)
         }
 
-        override func onStateChanged(_ event: ValueChangedEventArgs<ControlViewState>) {
-            super.onStateChanged(event)
+        override func onStateChanged(_ event: ValueChangedEventArgs<ControlViewState>) async {
+            await super.onStateChanged(event)
 
             switch controlState {
             case .selected:
@@ -411,14 +411,14 @@ open class ComboBox: ControlView {
             }
         }
 
-        override func onMouseEnter() {
-            super.onMouseEnter()
+        override func onMouseEnter() async {
+            await super.onMouseEnter()
 
             item.mouseEnteredItem?()
         }
 
-        override func onMouseLeave() {
-            super.onMouseLeave()
+        override func onMouseLeave() async {
+            await super.onMouseLeave()
 
             item.mouseExitedItem?()
         }
@@ -582,10 +582,10 @@ extension ComboBox.ListView: UIDialog {
         @Event<Void>
         var wantsToDismiss
 
-        override func onMouseDown(_ event: MouseEventArgs) {
-            super.onMouseDown(event)
+        override func onMouseDown(_ event: MouseEventArgs) async {
+            await super.onMouseDown(event)
 
-            _wantsToDismiss()
+            await _wantsToDismiss()
         }
 
         override func canHandle(_ eventRequest: EventRequest) -> Bool {

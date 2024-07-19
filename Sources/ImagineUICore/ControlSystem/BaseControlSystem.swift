@@ -17,41 +17,41 @@ open class BaseControlSystem: ControlSystemType {
 
     // MARK: - Mouse Events
 
-    open func onMouseLeave() {
+    open func onMouseLeave() async {
 
     }
 
-    open func onMouseDown(_ event: MouseEventArgs) {
+    open func onMouseDown(_ event: MouseEventArgs) async {
 
     }
 
-    open func onMouseMove(_ event: MouseEventArgs) {
+    open func onMouseMove(_ event: MouseEventArgs) async {
 
     }
 
-    open func onMouseUp(_ event: MouseEventArgs) {
+    open func onMouseUp(_ event: MouseEventArgs) async {
 
     }
 
-    open func onMouseWheel(_ event: MouseEventArgs) {
+    open func onMouseWheel(_ event: MouseEventArgs) async {
 
     }
 
     // MARK: - Keyboard Events
 
-    open func onKeyDown(_ event: KeyEventArgs) {
+    open func onKeyDown(_ event: KeyEventArgs) async {
 
     }
 
-    open func onKeyUp(_ event: KeyEventArgs) {
+    open func onKeyUp(_ event: KeyEventArgs) async {
 
     }
 
-    open func onKeyPress(_ event: KeyPressEventArgs) {
+    open func onKeyPress(_ event: KeyPressEventArgs) async {
 
     }
 
-    open func onPreviewKeyDown(_ event: PreviewKeyDownEventArgs) {
+    open func onPreviewKeyDown(_ event: PreviewKeyDownEventArgs) async {
 
     }
 
@@ -81,7 +81,7 @@ open class BaseControlSystem: ControlSystemType {
 
     // MARK: - Dialog
 
-    open func openDialog(_ view: any UIDialog, location: UIDialogInitialLocation) -> Bool {
+    open func openDialog(_ view: any UIDialog, location: UIDialogInitialLocation) async -> Bool {
         false
     }
 

@@ -116,8 +116,8 @@ public class ContextMenuView: ControlView {
             }
         }
 
-        override func onStateChanged(_ event: ValueChangedEventArgs<ControlViewState>) {
-            super.onStateChanged(event)
+        override func onStateChanged(_ event: ValueChangedEventArgs<ControlViewState>) async {
+            await super.onStateChanged(event)
 
             switch controlState {
             case .highlighted, .selected:
@@ -127,14 +127,14 @@ public class ContextMenuView: ControlView {
             }
         }
 
-        override func onMouseEnter() {
-            super.onMouseEnter()
+        override func onMouseEnter() async {
+            await super.onMouseEnter()
 
             item.mouseEnteredItem?()
         }
 
-        override func onMouseLeave() {
-            super.onMouseLeave()
+        override func onMouseLeave() async {
+            await super.onMouseLeave()
 
             item.mouseExitedItem?()
         }
@@ -191,11 +191,11 @@ extension ContextMenuView: UIDialog {
     }
 
     private class BackdropControl: ControlView {
-        @Event<Void>
+        @SynchronousEvent<Void>
         var wantsToDismiss
 
-        override func onMouseDown(_ event: MouseEventArgs) {
-            super.onMouseDown(event)
+        override func onMouseDown(_ event: MouseEventArgs) async {
+            await super.onMouseDown(event)
 
             _wantsToDismiss()
         }

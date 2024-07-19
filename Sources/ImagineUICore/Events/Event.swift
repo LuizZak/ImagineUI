@@ -26,6 +26,21 @@ public class Event<T> {
         eventPublisher.publish(value: event)
     }
 
+    /// Synchronously publishes an event with a given value to all event listeners
+    /// currently active.
+    ///
+    /// The event is emitted asynchronously and must be responded by all listeners
+    /// before the method returns.
+    public func publishEventAsync(_ event: T) async {
+        await eventPublisher.publishAsync(value: event)
+    }
+
+    /// Convenience for invoking `publishEvent(_:)` by calling the event variable
+    /// itself directly.
+    public func callAsFunction(_ event: T) async {
+        await publishEventAsync(event)
+    }
+
     /// Convenience for invoking `publishEvent(_:)` by calling the event variable
     /// itself directly.
     public func callAsFunction(_ event: T) {
@@ -34,9 +49,19 @@ public class Event<T> {
 }
 
 public extension Event where T == Void {
+    /// Convenience for `publishEventAsync(())`.
+    func publishEvent() async {
+        await publishEventAsync(())
+    }
+
     /// Convenience for `publishEvent(())`.
     func publishEvent() {
         publishEvent(())
+    }
+
+    /// Convenience for `publishEvent(())`.
+    func callAsFunction() async {
+        await publishEvent()
     }
 
     /// Convenience for `publishEvent(())`.

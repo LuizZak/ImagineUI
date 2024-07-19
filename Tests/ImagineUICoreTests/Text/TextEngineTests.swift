@@ -309,7 +309,7 @@ class TextEngineTests: XCTestCase {
         sut.setCaret(3)
 
         sut.selectToStart()
-        
+
         XCTAssertEqual(Caret(range: TextRange(start: 0, length: 3), position: .start), sut.caret)
     }
 
@@ -720,7 +720,7 @@ class TextEngineTests: XCTestCase {
     func testInsertTextCaretAtEnd() {
         let stub = TextBuffer()
         let sut = TextEngine(textBuffer: stub)
-        
+
         sut.insertText("456")
 
         XCTAssertTrue(stub.append_calls.contains("456"), stub.append_calls.description)
@@ -733,7 +733,7 @@ class TextEngineTests: XCTestCase {
         sut.setCaret(0)
 
         sut.insertText("456")
-        
+
         XCTAssertTrue(stub.insertAt_calls.contains(tuple: (0, "456")), stub.insertAt_calls.description)
         XCTAssertEqual(Caret(location: 3), sut.caret)
     }
@@ -744,7 +744,7 @@ class TextEngineTests: XCTestCase {
         sut.setCaret(TextRange(start: 1, length: 2))
 
         sut.insertText("456")
-        
+
         XCTAssertTrue(stub.replaceAtLength_calls.contains(tuple: (1, 2, "456")), stub.replaceAtLength_calls.description)
         XCTAssertEqual(Caret(location: 4), sut.caret)
     }
@@ -757,7 +757,7 @@ class TextEngineTests: XCTestCase {
         sut.setCaret(3)
 
         sut.backspaceText()
-        
+
         XCTAssertTrue(stub.deleteAtLength_calls.contains(tuple: (2, 1)), stub.deleteAtLength_calls.description)
         XCTAssertEqual(Caret(location: 2), sut.caret)
     }
@@ -797,7 +797,7 @@ class TextEngineTests: XCTestCase {
     func testDelete() {
         let stub = TextBuffer("123")
         let sut = TextEngine(textBuffer: stub)
-        
+
         sut.deleteText()
 
         XCTAssertTrue(stub.deleteAtLength_calls.contains(tuple: (0, 1)), stub.deleteAtLength_calls.description)
@@ -925,7 +925,7 @@ class TextEngineTests: XCTestCase {
         sut.setCaret(TextRange(start: 1, length: 2))
 
         sut.paste()
-        
+
         XCTAssertEqual(buffer.text, "adef")
     }
 
@@ -933,21 +933,21 @@ class TextEngineTests: XCTestCase {
 
     /// Tests that multiple sequential 1-char long InsertText calls are properly undone
     /// as a single operation
-    func testInsertTextUndo() {
+    func testInsertTextUndo() async {
         let buffer = TextBuffer("")
         let sut = TextEngine(textBuffer: buffer)
         sut.insertText("a")
         sut.insertText("b")
         sut.insertText("c")
 
-        sut.undoSystem.undo()
+        await sut.undoSystem.undo()
 
         XCTAssertEqual("", buffer.text)
     }
 
     /// Tests that combining insert text undo operations into one only occur when the insertions
     /// are located one after another sequentially.
-    func testInsertTextUndoSequenceBreaksIfNotSequential() {
+    func testInsertTextUndoSequenceBreaksIfNotSequential() async {
         let buffer = TextBuffer("")
         let sut = TextEngine(textBuffer: buffer)
         sut.insertText("a")
@@ -956,15 +956,15 @@ class TextEngineTests: XCTestCase {
         sut.setCaret(2)
         sut.insertText("d")
 
-        sut.undoSystem.undo()
+        await sut.undoSystem.undo()
 
         XCTAssertEqual("abc", buffer.text)
     }
 
-    /// Sequential insertions should be chained even if calls to SetCaret (but only SetCaret) are 
+    /// Sequential insertions should be chained even if calls to SetCaret (but only SetCaret) are
     /// made between insertions, so long as the next text inserted is right after the previous inserted
     /// string.
-    func testInsertTextUndoSequenceDoesntBreakWhenCallingSetCaret() {
+    func testInsertTextUndoSequenceDoesntBreakWhenCallingSetCaret() async {
         let buffer = TextBuffer("")
         let sut = TextEngine(textBuffer: buffer)
         sut.insertText("a")
@@ -974,15 +974,15 @@ class TextEngineTests: XCTestCase {
         sut.setCaret(3)
         sut.insertText("d")
 
-        sut.undoSystem.undo()
+        await sut.undoSystem.undo()
 
         XCTAssertEqual("", buffer.text)
     }
 
-    /// Tests that calling `TextEngine.paste` interrupts insert undo sequences such 
+    /// Tests that calling `TextEngine.paste` interrupts insert undo sequences such
     /// that it's considered a distinct input undo operation from the characters being input so
     /// far.
-    func testInsertTextUndoSequenceBreaksAfterPaste() {
+    func testInsertTextUndoSequenceBreaksAfterPaste() async {
         let clipboard = TestClipboard("d")
         let buffer = TextBuffer("")
         let sut = TextEngine(textBuffer: buffer)
@@ -992,13 +992,13 @@ class TextEngineTests: XCTestCase {
         sut.insertText("c")
         sut.paste()
 
-        sut.undoSystem.undo()
+        await sut.undoSystem.undo()
 
         XCTAssertEqual("abc", buffer.text)
     }
 
     /// Tests that calling `TextEngine.deleteText` interrupts insert undo sequences.
-    func testInsertTextUndoSequenceBreaksAfterDeleteText() {
+    func testInsertTextUndoSequenceBreaksAfterDeleteText() async {
         let buffer = TextBuffer("e")
         let sut = TextEngine(textBuffer: buffer)
         sut.insertText("a")
@@ -1007,13 +1007,13 @@ class TextEngineTests: XCTestCase {
         sut.deleteText()
         sut.insertText("d")
 
-        sut.undoSystem.undo()
+        await sut.undoSystem.undo()
 
         XCTAssertEqual("abc", buffer.text)
     }
 
     /// Tests that calling `TextEngine.backspaceText` interrupts insert undo sequences.
-    func testInsertTextUndoSequenceBreaksAfterBackspaceText() {
+    func testInsertTextUndoSequenceBreaksAfterBackspaceText() async {
         let buffer = TextBuffer("e")
         let sut = TextEngine(textBuffer: buffer)
         sut.insertText("a")
@@ -1023,55 +1023,55 @@ class TextEngineTests: XCTestCase {
         sut.backspaceText()
         sut.insertText("d")
 
-        sut.undoSystem.undo()
+        await sut.undoSystem.undo()
 
         XCTAssertEqual("abc", buffer.text)
     }
 
-    func testBackspaceTextUndo() {
+    func testBackspaceTextUndo() async {
         let buffer = TextBuffer("abc")
         let sut = TextEngine(textBuffer: buffer)
         sut.setCaret(3)
 
         sut.backspaceText()
-        sut.undoSystem.undo()
+        await sut.undoSystem.undo()
 
         XCTAssertEqual("abc", buffer.text)
     }
 
-    func testBackspaceTextRangeUndo() {
+    func testBackspaceTextRangeUndo() async {
         let buffer = TextBuffer("abc")
         let sut = TextEngine(textBuffer: buffer)
         sut.setCaret(TextRange(start: 1, length: 2), position: CaretPosition.end)
 
         sut.backspaceText()
-        sut.undoSystem.undo()
+        await sut.undoSystem.undo()
 
         XCTAssertEqual("abc", buffer.text)
     }
 
-    func testDeleteTextUndo() {
+    func testDeleteTextUndo() async {
         let buffer = TextBuffer("abc")
         let sut = TextEngine(textBuffer: buffer)
 
         sut.deleteText()
-        sut.undoSystem.undo()
+        await sut.undoSystem.undo()
 
         XCTAssertEqual("abc", buffer.text)
     }
 
-    func testDeleteTextRangeUndo() {
+    func testDeleteTextRangeUndo() async {
         let buffer = TextBuffer("abc")
         let sut = TextEngine(textBuffer: buffer)
         sut.setCaret(TextRange(start: 1, length: 2), position: CaretPosition.end)
 
         sut.deleteText()
-        sut.undoSystem.undo()
+        await sut.undoSystem.undo()
 
         XCTAssertEqual("abc", buffer.text)
     }
 
-    func testBackwardsInsertionPlusDeleteUndo() {
+    func testBackwardsInsertionPlusDeleteUndo() async {
         let buffer = TextBuffer("")
         let sut = TextEngine(textBuffer: buffer)
         sut.insertText("c")
@@ -1080,18 +1080,18 @@ class TextEngineTests: XCTestCase {
         sut.setCaret(0)
         sut.insertText("a")
         sut.setCaret(0)
-        sut.undoSystem.undo()
+        await sut.undoSystem.undo()
         sut.insertText("a")
         sut.setCaret(0)
 
-        sut.undoSystem.undo()
-        sut.undoSystem.undo()
-        sut.undoSystem.undo()
+        await sut.undoSystem.undo()
+        await sut.undoSystem.undo()
+        await sut.undoSystem.undo()
 
         XCTAssertEqual("", buffer.text)
     }
 
-    func testPasteUndoRespectsSelectedRegion() {
+    func testPasteUndoRespectsSelectedRegion() async {
         let paste = TestClipboard("test")
         let buffer = TextBuffer("")
         let sut = TextEngine(textBuffer: buffer)
@@ -1100,13 +1100,13 @@ class TextEngineTests: XCTestCase {
         sut.insertText("e")
         sut.selectToStart()
         sut.paste()
-        
-        sut.undoSystem.undo()
+
+        await sut.undoSystem.undo()
 
         XCTAssertEqual(Caret(range: TextRange(start: 0, length: 2), position: CaretPosition.start), sut.caret)
     }
 
-    func testReplacingPasteUndoAndRedo() {
+    func testReplacingPasteUndoAndRedo() async {
         let paste = TestClipboard("test")
         let buffer = TextBuffer("")
         let sut = TextEngine(textBuffer: buffer)
@@ -1116,15 +1116,15 @@ class TextEngineTests: XCTestCase {
         sut.selectToStart()
         sut.paste()
 
-        sut.undoSystem.undo()
-        sut.undoSystem.undo()
-        sut.undoSystem.redo()
-        sut.undoSystem.redo()
+        await sut.undoSystem.undo()
+        await sut.undoSystem.undo()
+        await sut.undoSystem.redo()
+        await sut.undoSystem.redo()
 
         XCTAssertEqual("test", buffer.text)
     }
 
-    func testPasteBreaksTextInsertUndoChain() {
+    func testPasteBreaksTextInsertUndoChain() async {
         let paste = TestClipboard("est")
         let buffer = TextBuffer("")
         let sut = TextEngine(textBuffer: buffer)
@@ -1133,7 +1133,7 @@ class TextEngineTests: XCTestCase {
         sut.paste()
         sut.insertText("t")
 
-        sut.undoSystem.undo()
+        await sut.undoSystem.undo()
 
         XCTAssertEqual("test", buffer.text)
     }
@@ -1311,7 +1311,7 @@ class TextEngineTests: XCTestCase {
 
     class TestClipboard: TextClipboard {
         public var value: String?
-        
+
         init(_ value: String? = nil) {
             self.value = value
         }

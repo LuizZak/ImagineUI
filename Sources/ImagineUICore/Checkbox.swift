@@ -38,8 +38,8 @@ open class Checkbox: ControlView {
         mouseDownSelected = true
     }
 
-    open override func onStateChanged(_ event: ValueChangedEventArgs<ControlViewState>) {
-        super.onStateChanged(event)
+    open override func onStateChanged(_ event: ValueChangedEventArgs<ControlViewState>) async {
+        await super.onStateChanged(event)
 
         invalidate()
     }
@@ -75,8 +75,8 @@ open class Checkbox: ControlView {
         drawCheckBox(state: checkboxState, renderer)
     }
 
-    open override func onMouseClick(_ event: MouseEventArgs) {
-        super.onMouseClick(event)
+    open override func onMouseClick(_ event: MouseEventArgs) async {
+        await super.onMouseClick(event)
 
         if isEnabled {
             let newState: State
@@ -87,12 +87,12 @@ open class Checkbox: ControlView {
                 newState = .unchecked
             }
 
-            invokeStateWillChangeEvent(newState: newState)
+            await invokeStateWillChangeEvent(newState: newState)
         }
     }
 
-    func invokeStateWillChangeEvent(newState: State) {
-        if !_checkboxStateWillChange(sender: self, old: checkboxState, new: newState) {
+    func invokeStateWillChangeEvent(newState: State) async {
+        if await !_checkboxStateWillChange(sender: self, old: checkboxState, new: newState) {
             checkboxState = newState
         }
     }

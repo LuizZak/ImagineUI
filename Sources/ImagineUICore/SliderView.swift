@@ -155,14 +155,14 @@ public class SliderView: ControlView {
         _valueChanged(sender: self, event)
     }
 
-    public override func onStateChanged(_ event: ValueChangedEventArgs<ControlViewState>) {
-        super.onStateChanged(event)
+    public override func onStateChanged(_ event: ValueChangedEventArgs<ControlViewState>) async {
+        await super.onStateChanged(event)
 
         invalidate()
     }
 
-    public override func onMouseMove(_ event: MouseEventArgs) {
-        super.onMouseMove(event)
+    public override func onMouseMove(_ event: MouseEventArgs) async {
+        await super.onMouseMove(event)
 
         isHighlighted = knobArea().contains(event.location)
 
@@ -172,8 +172,8 @@ public class SliderView: ControlView {
         }
     }
 
-    public override func onMouseDown(_ event: MouseEventArgs) {
-        super.onMouseDown(event)
+    public override func onMouseDown(_ event: MouseEventArgs) async {
+        await super.onMouseDown(event)
 
         if knobArea().contains(event.location) {
             isMouseDown = true
@@ -182,15 +182,15 @@ public class SliderView: ControlView {
         }
     }
 
-    public override func onMouseUp(_ event: MouseEventArgs) {
-        super.onMouseUp(event)
+    public override func onMouseUp(_ event: MouseEventArgs) async {
+        await super.onMouseUp(event)
 
         isMouseDown = false
         isSelected = false
     }
 
-    public override func onMouseLeave() {
-        super.onMouseLeave()
+    public override func onMouseLeave() async {
+        await super.onMouseLeave()
 
         isHighlighted = false
     }

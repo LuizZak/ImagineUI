@@ -28,48 +28,48 @@ public class CancellableActionEventArgs<Args> {
 
 public extension Event {
     /// Convenience for:
-    /// 
+    ///
     /// ```swift
     /// let event = CancellableActionEventArgs(value: ())
-    /// self.publishEvent(event)
+    /// self.publishEventAsync(event)
     /// ```
-    /// 
+    ///
     /// Returns the final value of `CancellableActionEventArgs<Args>.cancel`
     /// after publishing the event to listeners.
-    func publishCancellableChangeEvent() -> Bool where T == CancellableActionEventArgs<Void> {
+    func publishCancellableChangeEvent() async -> Bool where T == CancellableActionEventArgs<Void> {
         let event = CancellableActionEventArgs(value: ())
 
-        self.publishEvent(event)
+        await self.publishEventAsync(event)
 
         return event.cancel
     }
 
     /// Convenience for:
-    /// 
+    ///
     /// ```swift
     /// let event = CancellableActionEventArgs(value: value)
-    /// self.publishEvent(event)
+    /// self.publishEventAsync(event)
     /// ```
-    /// 
+    ///
     /// Returns the final value of `CancellableActionEventArgs<Args>.cancel`
     /// after publishing the event to listeners.
-    func publishCancellableChangeEvent<Value>(value: Value) -> Bool where T == CancellableActionEventArgs<Value> {
+    func publishCancellableChangeEvent<Value>(value: Value) async -> Bool where T == CancellableActionEventArgs<Value> {
         let event = CancellableActionEventArgs(value: value)
 
-        self.publishEvent(event)
+        await self.publishEventAsync(event)
 
         return event.cancel
     }
 
     /// Convenience for invoking `publishCancellableChangeEvent()` by calling
     /// the event variable itself directly.
-    func callAsFunction() -> Bool where T == CancellableActionEventArgs<Void> {
-        return publishCancellableChangeEvent()
+    func callAsFunction() async -> Bool where T == CancellableActionEventArgs<Void> {
+        return await publishCancellableChangeEvent()
     }
 
     /// Convenience for invoking `publishCancellableChangeEvent(value:)` by
     /// calling the event variable itself directly.
-    func callAsFunction<Value>(value: Value) -> Bool where T == CancellableActionEventArgs<Value> {
-        return publishCancellableChangeEvent(value: value)
+    func callAsFunction<Value>(value: Value) async -> Bool where T == CancellableActionEventArgs<Value> {
+        return await publishCancellableChangeEvent(value: value)
     }
 }

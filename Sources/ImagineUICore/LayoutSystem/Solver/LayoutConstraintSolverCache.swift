@@ -86,7 +86,7 @@ public class LayoutConstraintSolverCache {
 
         case .split(let horizontal, let vertical):
 
-            #if DUMP_CONSTRAINTS_TO_DESKTOP // For debugging purposes; .compareAndApplyStates() must be run sequentially on the same thread due to potential dump file contention.
+            #if true || DUMP_CONSTRAINTS_TO_DESKTOP // For debugging purposes; .compareAndApplyStates() must be run sequentially on the same thread due to potential dump file contention.
 
             try horizontal.compareAndApplyStates(orientations: [.horizontal])
             try vertical.compareAndApplyStates(orientations: [.vertical])
@@ -283,7 +283,7 @@ fileprivate class _LayoutConstraintSolverCache {
         orientations: Set<LayoutConstraintOrientation>,
         _ closure: (inout ViewConstraintList) -> Void
     ) {
-        
+
         let identifier: LayoutVariables = container.layoutVariables
 
         if var list = _viewConstraintList[identifier], list.orientations == orientations {
@@ -299,7 +299,7 @@ fileprivate class _LayoutConstraintSolverCache {
         #else
 
         var list = ViewConstraintList(orientations: orientations)
-        
+
         #endif // DUMP_CONSTRAINTS_TO_DESKTOP
 
         closure(&list)

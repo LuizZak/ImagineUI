@@ -11,7 +11,9 @@ public class TreeView: ControlView {
     private var _selected: Set<ItemIndex> = [] {
         didSet {
             if _selected != oldValue {
-                _raiseSelectionChangeEvent(oldValue, _selected)
+                Task.detached { [self, oldValue, _selected] in
+                    await self._raiseSelectionChangeEvent(oldValue, _selected)
+                }
             }
         }
     }
@@ -156,7 +158,7 @@ public class TreeView: ControlView {
         _scrollView.mouseClicked.addListener(weakOwner: self) { [weak self] (_, _) in
             guard let self = self else { return }
 
-            self._raiseDeselectEvent(self._selected)
+            await self._raiseDeselectEvent(self._selected)
         }
     }
 
@@ -170,21 +172,21 @@ public class TreeView: ControlView {
         return super.canHandle(eventRequest)
     }
 
-    public override func onKeyDown(_ event: KeyEventArgs) {
-        super.onKeyDown(event)
+    public override func onKeyDown(_ event: KeyEventArgs) async {
+        await super.onKeyDown(event)
 
         guard !event.handled else { return }
 
-        if _handleKeyDown(event.keyCode, event.modifiers) {
+        if await _handleKeyDown(event.keyCode, event.modifiers) {
             event.handled = true
         }
     }
 
-    public override func onMouseClick(_ event: MouseEventArgs) {
-        super.onMouseClick(event)
+    public override func onMouseClick(_ event: MouseEventArgs) async {
+        await super.onMouseClick(event)
 
         if canDeselectItemsOnEmptySpaces {
-            _raiseDeselectEvent(_selected)
+            await _raiseDeselectEvent(_selected)
         }
     }
 
@@ -273,7 +275,7 @@ public class TreeView: ControlView {
         }
     }
 
-    private func _handleKeyDown(_ keyCode: Keys, _ modifiers: KeyboardModifier) -> Bool {
+    private func _handleKeyDown(_ keyCode: Keys, _ modifiers: KeyboardModifier) async -> Bool {
         switch keyCode {
         case .up:
             guard _selected.count == 1, let selectedIndex = _selected.first else {
@@ -336,7 +338,7 @@ public class TreeView: ControlView {
                     return true
                 }
             } else {
-                return _raiseExpandEvent(index)
+                return await _raiseExpandEvent(index)
             }
 
         case .left:
@@ -352,7 +354,7 @@ public class TreeView: ControlView {
                     return true
                 }
             } else {
-                return _raiseCollapseEvent(index)
+                return await _raiseCollapseEvent(index)
             }
         default:
             break
@@ -411,7 +413,7 @@ public class TreeView: ControlView {
     }
 
     @discardableResult
-    private func _raiseExpandEvent(_ index: ItemIndex) -> Bool {
+    private func _raiseExpandEvent(_ index: ItemIndex) async -> Bool {
         guard !_isExpanded(index: index) else {
             return true
         }
@@ -422,7 +424,7 @@ public class TreeView: ControlView {
             return true
         }
 
-        let cancel = _willExpand(sender: self, value: index)
+        let cancel = await _willExpand(sender: self, value: index)
         if !cancel {
             _expand(index)
         }
@@ -431,12 +433,12 @@ public class TreeView: ControlView {
     }
 
     @discardableResult
-    private func _raiseCollapseEvent(_ index: ItemIndex) -> Bool {
+    private func _raiseCollapseEvent(_ index: ItemIndex) async -> Bool {
         guard _isExpanded(index: index) else {
             return true
         }
 
-        let cancel = _willCollapse(sender: self, value: index)
+        let cancel = await _willCollapse(sender: self, value: index)
         if !cancel {
             _collapse(index)
         }
@@ -445,7 +447,7 @@ public class TreeView: ControlView {
     }
 
     @discardableResult
-    private func _raiseSelectEvent(_ itemView: ItemView) -> Bool {
+    private func _raiseSelectEvent(_ itemView: ItemView) async -> Bool {
         guard !_isSelected(index: itemView.itemIndex) else {
             return true
         }
@@ -454,7 +456,7 @@ public class TreeView: ControlView {
             return true
         }
 
-        let cancel = _willSelect(sender: self, value: itemView.itemIndex)
+        let cancel = await _willSelect(sender: self, value: itemView.itemIndex)
         if !cancel {
             _selectItemView(itemView)
         }
@@ -463,14 +465,14 @@ public class TreeView: ControlView {
     }
 
     @discardableResult
-    private func _raiseDeselectEvent(_ items: Set<ItemIndex>) -> Bool {
+    private func _raiseDeselectEvent(_ items: Set<ItemIndex>) async -> Bool {
         let filtered = items.filter(self._isSelected(index:))
 
         if filtered.isEmpty {
             return true
         }
 
-        let cancel = _willDeselect(sender: self, value: filtered)
+        let cancel = await _willDeselect(sender: self, value: filtered)
         if !cancel {
             _deselectItemViews(filtered)
         }
@@ -478,12 +480,12 @@ public class TreeView: ControlView {
         return cancel
     }
 
-    private func _raiseSelectionChangeEvent(_ oldSelection: Set<ItemIndex>, _ newSelection: Set<ItemIndex>) {
-        _didChangeSelection(sender: self, old: oldSelection, new: newSelection)
+    private func _raiseSelectionChangeEvent(_ oldSelection: Set<ItemIndex>, _ newSelection: Set<ItemIndex>) async {
+        await _didChangeSelection(sender: self, old: oldSelection, new: newSelection)
     }
 
-    private func _raiseRightMouseClick(_ index: ItemIndex) {
-        _mouseRightClickedItem(sender: self, index)
+    private func _raiseRightMouseClick(_ index: ItemIndex) async {
+        await _mouseRightClickedItem(sender: self, index)
     }
 
     private func _selectItemView(_ itemView: ItemView) {
@@ -597,21 +599,21 @@ public class TreeView: ControlView {
     private func _makeItemView(itemIndex: ItemIndex, dataSource: TreeViewDataSource) -> ItemView {
         let itemView = _itemViewCache.dequeue(itemIndex: itemIndex, style: style) { itemView in
             itemView.mouseSelected.addListener(weakOwner: self) { [weak self] (sender, _) in
-                self?._raiseSelectEvent(sender)
+                await self?._raiseSelectEvent(sender)
             }
             itemView.mouseClickChevron.addListener(weakOwner: self) { [weak self] (sender, _) in
                 guard let self = self else { return }
 
                 if self._isExpanded(index: sender.itemIndex) {
-                    self._raiseCollapseEvent(sender.itemIndex)
+                    await self._raiseCollapseEvent(sender.itemIndex)
                 } else {
-                    self._raiseExpandEvent(sender.itemIndex)
+                    await self._raiseExpandEvent(sender.itemIndex)
                 }
             }
             itemView.mouseRightClicked.addListener(weakOwner: self) { [weak self] (sender, _) in
                 guard let self = self else { return }
 
-                self._raiseRightMouseClick(sender.itemIndex)
+                await self._raiseRightMouseClick(sender.itemIndex)
             }
         }
 

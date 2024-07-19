@@ -1,49 +1,20 @@
-/// A protocol for event publisher types.
-public protocol EventPublisherType: AnyObject {
-    /// Removes a listener associated with a given key.
-    func removeListener(forKey key: EventListenerKey)
-}
-
-/// An event publisher that handles registration and dispatching of events.
+/// An event publisher that handles registration and dispatching of events
+/// synchronously.
 ///
 /// Warning: Not thread-safe.
-public class EventPublisher<T>: EventPublisherType {
+public class SynchronousEventPublisher<T>: EventPublisherType {
     private var _listenerKey = 0
-    var listeners: [(key: EventListenerKey, listener: (T) async -> Void)] = []
+    var listeners: [(key: EventListenerKey, listener: (T) -> Void)] = []
 
     /// Publishes a given value to all event listeners currently subscribed to
     /// this event publisher.
-    ///
-    /// The event is published as a detached task, and may be received in arbitrary
-    /// order by the listeners.
     public func publish(value: T) {
         guard !listeners.isEmpty else { return }
 
         var removed = 0
         for (i, listener) in listeners.enumerated() {
             if listener.key.owner != nil {
-                Task.detached {
-                    await listener.listener(value)
-                }
-            } else {
-                listeners.remove(at: i - removed)
-                removed += 1
-            }
-        }
-    }
-
-    /// Publishes a given value to all event listeners currently subscribed to
-    /// this event publisher.
-    ///
-    /// The event is emitted asynchronously, and all listeners must receive the
-    /// event before the method returns.
-    public func publishAsync(value: T) async {
-        guard !listeners.isEmpty else { return }
-
-        var removed = 0
-        for (i, listener) in listeners.enumerated() {
-            if listener.key.owner != nil {
-                await listener.listener(value)
+                listener.listener(value)
             } else {
                 listeners.remove(at: i - removed)
                 removed += 1
@@ -59,7 +30,7 @@ public class EventPublisher<T>: EventPublisherType {
     /// internally during event processing, and if `weakOwner` is released from
     /// memory, the underlying event listener that is registered is removed, as
     /// if by calling `EventListenerKey.removeListener()`.
-    public func addListener(weakOwner: AnyObject, _ listener: @escaping (T) async -> Void) -> EventListenerKey {
+    public func addListener(weakOwner: AnyObject, _ listener: @escaping (T) -> Void) -> EventListenerKey {
         let key = EventListenerKey(owner: weakOwner, publisher: self, key: _listenerKey)
         _listenerKey &+= 1
 
@@ -77,11 +48,11 @@ public class EventPublisher<T>: EventPublisherType {
     /// }
     /// ```
     @discardableResult
-    public func addWeakListener<U: AnyObject>(_ weakOwner: U, _ listener: @escaping (U, T) async -> Void) -> EventListenerKey {
+    public func addWeakListener<U: AnyObject>(_ weakOwner: U, _ listener: @escaping (U, T) -> Void) -> EventListenerKey {
         return addListener(weakOwner: weakOwner) { [weak weakOwner] value in
             guard let owner = weakOwner else { return }
 
-            await listener(owner, value)
+            listener(owner, value)
         }
     }
 
@@ -111,7 +82,7 @@ public class EventPublisher<T>: EventPublisherType {
     /// Creates a wrapping event source on top of this event publisher that can
     /// be used to expose an API for event listeners to subscribe to without
     /// exposing the event publishing API as well.
-    public func makeEventSource() -> EventSource<T> {
-        return EventSource(publisher: self)
+    public func makeEventSource() -> SynchronousEventSource<T> {
+        return SynchronousEventSource(publisher: self)
     }
 }

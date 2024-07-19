@@ -31,8 +31,8 @@ open class RadioButton: ControlView {
         addSubview(label)
     }
 
-    open override func onStateChanged(_ event: ValueChangedEventArgs<ControlViewState>) {
-        super.onStateChanged(event)
+    open override func onStateChanged(_ event: ValueChangedEventArgs<ControlViewState>) async {
+        await super.onStateChanged(event)
 
         invalidate()
     }
@@ -62,8 +62,8 @@ open class RadioButton: ControlView {
         drawRadioButton(renderer)
     }
 
-    open override func onMouseClick(_ event: MouseEventArgs) {
-        super.onMouseClick(event)
+    open override func onMouseClick(_ event: MouseEventArgs) async {
+        await super.onMouseClick(event)
 
         if isEnabled && !isSelected {
             getManager()?.selectRadioButton(self)

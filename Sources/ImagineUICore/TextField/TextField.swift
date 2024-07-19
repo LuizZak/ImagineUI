@@ -192,15 +192,15 @@ open class TextField: ControlView {
         _caretChanged(sender: self, event)
     }
 
-    open override func onResize(_ event: ValueChangedEventArgs<UISize>) {
-        super.onResize(event)
+    open override func onResize(_ event: ValueChangedEventArgs<UISize>) async {
+        await super.onResize(event)
 
         updateLabelAndPlaceholder()
         scrollLabel()
     }
 
-    open override func onStateChanged(_ event: ValueChangedEventArgs<ControlViewState>) {
-        super.onStateChanged(event)
+    open override func onStateChanged(_ event: ValueChangedEventArgs<ControlViewState>) async {
+        await super.onStateChanged(event)
 
         let style = getStyle(forState: event.newValue)
         applyStyle(style)
@@ -254,8 +254,8 @@ open class TextField: ControlView {
 
     // MARK: - Mouse Handlers
 
-    open override func onMouseDown(_ event: MouseEventArgs) {
-        super.onMouseDown(event)
+    open override func onMouseDown(_ event: MouseEventArgs) async {
+        await super.onMouseDown(event)
 
         if !becomeFirstResponder() {
             return
@@ -280,8 +280,8 @@ open class TextField: ControlView {
         _lastMouseDown = UISettings.timeInSeconds()
     }
 
-    open override func onMouseEnter() {
-        super.onMouseEnter()
+    open override func onMouseEnter() async {
+        await super.onMouseEnter()
 
         if canBecomeFirstResponder {
             controlSystem?.setMouseCursor(.iBeam)
@@ -290,8 +290,8 @@ open class TextField: ControlView {
         invalidate()
     }
 
-    open override func onMouseLeave() {
-        super.onMouseLeave()
+    open override func onMouseLeave() async {
+        await super.onMouseLeave()
 
         if canBecomeFirstResponder {
             controlSystem?.setMouseCursor(.arrow)
@@ -300,8 +300,8 @@ open class TextField: ControlView {
         invalidate()
     }
 
-    open override func onMouseMove(_ event: MouseEventArgs) {
-        super.onMouseMove(event)
+    open override func onMouseMove(_ event: MouseEventArgs) async {
+        await super.onMouseMove(event)
 
         if !_mouseDown {
             return
@@ -320,8 +320,8 @@ open class TextField: ControlView {
         }
     }
 
-    open override func onMouseUp(_ event: MouseEventArgs) {
-        super.onMouseUp(event)
+    open override func onMouseUp(_ event: MouseEventArgs) async {
+        await super.onMouseUp(event)
 
         _mouseDown = false
         _selectingWordSpan = false
@@ -329,8 +329,8 @@ open class TextField: ControlView {
 
     // MARK: - Keyboard
 
-    open override func onKeyDown(_ event: KeyEventArgs) {
-        super.onKeyDown(event)
+    open override func onKeyDown(_ event: KeyEventArgs) async {
+        await super.onKeyDown(event)
 
         controlSystem?.setMouseHiddenUntilMouseMoves()
 
@@ -353,15 +353,15 @@ open class TextField: ControlView {
             case .z where editable:
                 // Ctrl+Shift+Z as alternative for Ctrl+Y (redo)
                 if event.modifiers == (KeyboardModifier.osControlKey.union(.shift)) {
-                    redo()
+                    await redo()
                     return
                 }
 
-                undo()
+                await undo()
                 return
 
             case .y where editable:
-                redo()
+                await redo()
                 return
 
             case .a:
@@ -375,7 +375,7 @@ open class TextField: ControlView {
 
         if event.keyCode == Keys.enter {
             if acceptsEnterKey {
-                _enterKey(sender: self)
+                await _enterKey(sender: self)
             }
             return
         }
@@ -402,8 +402,8 @@ open class TextField: ControlView {
         }
     }
 
-    open override func onKeyPress(_ event: KeyPressEventArgs) {
-        super.onKeyPress(event)
+    open override func onKeyPress(_ event: KeyPressEventArgs) async {
+        await super.onKeyPress(event)
 
         controlSystem?.setMouseHiddenUntilMouseMoves()
 
@@ -429,16 +429,16 @@ open class TextField: ControlView {
                  "Z" where editable:
                 // Ctrl+Shift+Z as alternative for Ctrl+Y (redo)
                 if event.modifiers == (KeyboardModifier.osControlKey.union(.shift)) {
-                    redo()
+                    await redo()
                     return
                 }
 
-                undo()
+                await undo()
                 return
 
             case "y" where editable,
                  "Y" where editable:
-                redo()
+                await redo()
                 return
 
             case "a", "A":
@@ -833,12 +833,12 @@ open class TextField: ControlView {
         _textEngine.paste()
     }
 
-    private func undo() {
-        _textEngine.undoSystem.undo()
+    private func undo() async {
+        await _textEngine.undoSystem.undo()
     }
 
-    private func redo() {
-        _textEngine.undoSystem.redo()
+    private func redo() async {
+        await _textEngine.undoSystem.redo()
     }
 
     // MARK: -
