@@ -233,7 +233,7 @@ public class DefaultControlSystem: BaseControlSystem {
                     event.buttons.isEmpty || self._mouseDownTarget == nil,
                     let tooltipProvider = handler as? TooltipProvider
                 {
-                    self.startTooltipHoverTimer(provider: tooltipProvider)
+                    await self.startTooltipHoverTimer(provider: tooltipProvider)
                 }
             } else {
                 let converted = event.convertLocation(handler: handler)
@@ -249,7 +249,7 @@ public class DefaultControlSystem: BaseControlSystem {
                     event.buttons.isEmpty || self._mouseDownTarget == nil,
                     let tooltipProvider = handler as? TooltipProvider, !self.isTooltipVisible()
                 {
-                    self.startTooltipHoverTimer(provider: tooltipProvider)
+                    await self.startTooltipHoverTimer(provider: tooltipProvider)
                 }
             }
         }
@@ -521,7 +521,7 @@ public class DefaultControlSystem: BaseControlSystem {
         hideTooltip()
     }
 
-    private func startTooltipHoverTimer(provider: TooltipProvider) {
+    private func startTooltipHoverTimer(provider: TooltipProvider) async {
         guard tooltipsManager?.hasCustomTooltipActive == false else { return }
 
         guard !isTooltipVisible() else {
@@ -532,7 +532,7 @@ public class DefaultControlSystem: BaseControlSystem {
             return
         }
 
-        _tooltipWrapper.setHover(provider: provider) {
+        await _tooltipWrapper.setHover(provider: provider) {
             guard self.tooltipsManager?.hasCustomTooltipActive == false else { return }
 
             let obj = provider as AnyObject
@@ -807,19 +807,18 @@ public class DefaultControlSystem: BaseControlSystem {
             _currentUpdateEvent = provider.tooltipUpdated.addListener(weakOwner: self, onUpdate)
         }
 
-        func setHover(provider: TooltipProvider, defaultDelay: TimeInterval = 0.5, callback: @escaping () -> Void) {
-            _currentUpdateEvent = nil
-            state.invalidateTimer()
+        func setHover(provider: TooltipProvider, defaultDelay: TimeInterval = 0.5, callback: @escaping () async -> Void) async {
+            setHidden()
 
             let delay = provider.tooltipDelay ?? defaultDelay
 
             if delay <= 0.0 {
-                callback()
+                await callback()
                 return
             }
 
             let timer = Scheduler.instance.scheduleTimer(interval: delay) {
-                callback()
+                await callback()
             }
             state = .hovered(provider: provider, timer: timer)
         }
@@ -848,6 +847,7 @@ public class DefaultControlSystem: BaseControlSystem {
                 switch self {
                 case .hovered(_, let timer):
                     timer.invalidate()
+
                 default:
                     break
                 }
