@@ -82,7 +82,7 @@ extension TreeView {
 
             super.init()
 
-            cacheAsBitmap = false
+            bitmapCacheBehavior = .noCaching
             _applyStyle(style.itemStyle.normal)
 
             _iconImageView.scalingMode = .centeredAsIs
@@ -350,7 +350,7 @@ extension TreeView {
                 super.init()
 
                 foreColor = .gray
-                cacheAsBitmap = false
+                bitmapCacheBehavior = .noCaching
                 mouseDownSelected = true
             }
 

@@ -88,7 +88,7 @@ public class TreeView: ControlView {
     public override init() {
         super.init()
 
-        cacheAsBitmap = false
+        bitmapCacheBehavior = .noCaching
         _scrollView.scrollBarsAlwaysVisible = false
         _applyStyle()
     }

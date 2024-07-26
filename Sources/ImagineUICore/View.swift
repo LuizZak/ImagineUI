@@ -140,7 +140,7 @@ open class View {
     /// Gets the full transform matrix for this view's translation, rotation, and
     /// scale.
     ///
-    /// This 
+    /// This
     open var transform: UIMatrix {
         let baseMatrix: UIMatrix = .transformation(
             xScale: scale.x,
@@ -272,7 +272,7 @@ open class View {
 
         visitingSuperviews { view in
             result *= view.alpha
-        }        
+        }
 
         return result
     }
@@ -407,7 +407,7 @@ open class View {
     ///
     /// Used as a convenience for generating new view subclasses; view hierarchies
     /// can be changed at any point in a view's lifecycle.
-    /// 
+    ///
     /// - seealso: `setupConstraints()`
     open func setupHierarchy() {
 
@@ -419,7 +419,7 @@ open class View {
     ///
     /// Used as a convenience for generating new view subclasses; view constraints
     /// can be changed at any point in a view's lifecycle.
-    /// 
+    ///
     /// - seealso: `setupHierarchy()`
     open func setupConstraints() {
 
@@ -899,7 +899,7 @@ open class View {
         inflatingArea: UIVector = .zero,
         predicate: (View) -> Bool
     ) -> View? {
-        
+
         guard contains(point: point, inflatingArea: inflatingArea) else {
             return nil
         }

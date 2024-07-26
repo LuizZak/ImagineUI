@@ -54,19 +54,31 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
         return true
     }
 
-    /// Overrides the default `ControlView.globallyCacheAsBitmap` value with a
-    /// specified boolean value. If `nil`, the global value is used, instead.
+    /// Specifies the bitmap caching behavior for this control view.
     ///
     /// Bitmap caching only stores the contents produced by `renderBackground()`
     /// and `renderForeground()`, ignoring any subview content, and the size used
     /// is the size returned by `boundsForRedraw()`.
     ///
-    /// Defaults to `nil` on creation.
-    open var cacheAsBitmap: Bool? = nil {
+    /// Defaults to `BitmapCachingBehavior.inheritGlobal` on creation.
+    open var bitmapCacheBehavior: BitmapCachingBehavior = .inheritGlobal {
         didSet {
-            guard cacheAsBitmap != oldValue else { return }
+            guard bitmapCacheBehavior != bitmapCacheBehavior else { return }
 
             invalidate()
+        }
+    }
+
+    internal var cacheAsBitmap: Bool {
+        switch bitmapCacheBehavior {
+        case .cache:
+            return true
+
+        case .noCaching:
+            return false
+
+        case .inheritGlobal:
+            return ControlView.globallyCacheAsBitmap
         }
     }
 
@@ -396,7 +408,7 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
         super.render(in: renderer, screenRegion: screenRegion)
 
         renderer.withTemporaryState {
-            _bitmapCache.isCachingEnabled = cacheAsBitmap ?? ControlView.globallyCacheAsBitmap
+            _bitmapCache.isCachingEnabled = cacheAsBitmap
 
             _updateCacheBounds()
             _bitmapCache.cachingOrRendering(renderer) { ctx in
@@ -804,6 +816,20 @@ open class ControlView: View, TooltipProvider, MouseEventHandler, KeyboardEventH
             _statesMap[state] = nil
         }
     }
+
+    /// The behavior of bitmap caching for a control view.
+    public enum BitmapCachingBehavior: Equatable {
+        /// Control view should cache its contents to a bitmap.
+        case cache
+
+        /// Control view should only cache its contents if `Control.globallyCacheAsBitmap`
+        /// is `true`.
+        case inheritGlobal
+
+        /// Control view should not cache its contents to a bitmap, even if
+        /// `Control.globallyCacheAsBitmap` is `true`.
+        case noCaching
+    }
 }
 
 /// Specifies the state of a control view.
@@ -822,7 +848,7 @@ public enum ControlViewState {
     /// Specifies control view is disabled, and should not respond to normal
     /// UI interaction events.
     case disabled
-    
+
     /// Specifies control view is focused and receives keyboard events, i.e. it
     /// is the first responder in the responder chain.
     case focused
