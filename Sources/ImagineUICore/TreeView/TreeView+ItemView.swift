@@ -123,6 +123,10 @@ extension TreeView {
             addSubview(_titleView)
         }
 
+        override func hasIndependentInternalLayout() -> Bool {
+            return true
+        }
+
         override func performInternalLayout() {
             super.performInternalLayout()
 
