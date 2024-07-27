@@ -44,7 +44,6 @@ open class RootView: ControlView {
     public override func setNeedsLayout() {
         super.setNeedsLayout()
 
-        guard !_isSizingLayout else { return }
         guard !isLayoutSuspended else { return }
 
         invalidationDelegate?.rootViewInvalidatedLayout(self)
@@ -68,7 +67,7 @@ open class RootView: ControlView {
     }
 
     override func invalidate(bounds: UIRectangle, spatialReference: SpatialReferenceType) {
-        guard !_isSizingLayout else { return }
+        guard !isInvalidateSuspended else { return }
 
         if let invalidationDelegate = invalidationDelegate {
             let rect = spatialReference.convert(bounds: bounds, to: nil)

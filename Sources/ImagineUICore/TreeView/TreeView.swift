@@ -47,7 +47,7 @@ public class TreeView: ControlView {
     ///
     /// Changing the data source property clears all selection and expansion state,
     /// and triggers an immediate data reload.
-    public weak var dataSource: TreeViewDataSource? {
+    public weak var dataSource: DataSource? {
         didSet {
             guard oldValue !== dataSource else { return }
 
@@ -380,7 +380,9 @@ public class TreeView: ControlView {
             visible.isExpanded = true
         }
 
-        _recursiveAddItems(hierarchy: index.asHierarchyIndex, dataSource: dataSource)
+        withSuspendedLayout(setNeedsLayout: false) {
+            _recursiveAddItems(hierarchy: index.asHierarchyIndex, dataSource: dataSource)
+        }
         _layoutItemViews()
     }
 
@@ -395,16 +397,18 @@ public class TreeView: ControlView {
             return
         }
 
-        visible.isExpanded = false
+        withSuspendedLayout(setNeedsLayout: false) {
+            visible.isExpanded = false
 
-        let hierarchyIndex = index.asHierarchyIndex
-        for (i, itemView) in _visibleItems.enumerated().reversed() where itemView.itemIndex.isChild(of: hierarchyIndex) {
-            itemView.removeFromSuperview()
-            _visibleItems.remove(at: i)
+            let hierarchyIndex = index.asHierarchyIndex
+            for (i, itemView) in _visibleItems.enumerated().reversed() where itemView.itemIndex.isChild(of: hierarchyIndex) {
+                itemView.removeFromSuperview()
+                _visibleItems.remove(at: i)
 
-            _selected.remove(itemView.itemIndex)
+                _selected.remove(itemView.itemIndex)
 
-            _reclaim(itemView: itemView)
+                _reclaim(itemView: itemView)
+            }
         }
 
         _layoutItemViews()
@@ -549,7 +553,7 @@ public class TreeView: ControlView {
         return _expanded.contains(index)
     }
 
-    private func _recursiveAddItems(hierarchy: HierarchyIndex, dataSource: TreeViewDataSource) {
+    private func _recursiveAddItems(hierarchy: HierarchyIndex, dataSource: DataSource) {
         let count = dataSource.numberOfItems(at: hierarchy)
 
         // TODO: Replace chevron spacing with a visual indicator taking the same
@@ -594,7 +598,7 @@ public class TreeView: ControlView {
         _itemViewCache.reclaim(view: itemView)
     }
 
-    private func _makeItemView(itemIndex: ItemIndex, dataSource: TreeViewDataSource) -> ItemView {
+    private func _makeItemView(itemIndex: ItemIndex, dataSource: DataSource) -> ItemView {
         let itemView = _itemViewCache.dequeue(itemIndex: itemIndex, style: style) { itemView in
             itemView.mouseSelected.addListener(weakOwner: self) { [weak self] (sender, _) in
                 self?._raiseSelectEvent(sender)
@@ -629,12 +633,6 @@ public class TreeView: ControlView {
         var reclaimed: [ItemView] = []
 
         func dequeue(itemIndex: TreeView.ItemIndex, style: VisualStyle, initializer: (ItemView) -> Void) -> ItemView {
-            // Search for a matching item index
-            for (i, view) in reclaimed.enumerated() where view.itemIndex == itemIndex {
-                reclaimed.remove(at: i)
-                return view
-            }
-
             // Pop any item
             if let next = reclaimed.popLast() {
                 next.itemIndex = itemIndex

@@ -189,17 +189,19 @@ extension TreeView {
 
         override func layoutSizeFitting(size: UISize) -> UISize {
             return withSuspendedLayout(setNeedsLayout: false) {
-                let snapshot = LayoutAreaSnapshot.snapshotHierarchy(self)
+                return withSuspendedInvalidation(invalidate: false) {
+                    let snapshot = LayoutAreaSnapshot.snapshotHierarchy(self)
 
-                _performLayout(size: size)
+                    _performLayout(size: size)
 
-                var totalArea = UIRectangle.union(subviews.map(\.area))
-                totalArea = totalArea.stretchingLeft(to: 0)
-                totalArea = totalArea.inset(-_contentInset)
+                    var totalArea = UIRectangle.union(subviews.map(\.area))
+                    totalArea = totalArea.stretchingLeft(to: 0)
+                    totalArea = totalArea.inset(-_contentInset)
 
-                snapshot.restore()
+                    snapshot.restore()
 
-                return max(size, totalArea.size)
+                    return max(size, totalArea.size)
+                }
             }
         }
 
