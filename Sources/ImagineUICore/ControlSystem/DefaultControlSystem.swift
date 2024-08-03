@@ -377,16 +377,18 @@ public class DefaultControlSystem: BaseControlSystem {
 
         _dialogState = state
 
-        _dialogsContainer.addSubview(background)
-        _dialogsContainer.addSubview(dropShadowView)
-        _dialogsContainer.addSubview(dialog)
+        _dialogsContainer.withSuspendedLayout(setNeedsLayout: true) {
+            _dialogsContainer.addSubview(background)
+            _dialogsContainer.addSubview(dropShadowView)
+            _dialogsContainer.addSubview(dialog)
 
-        background.layout.makeConstraints { make in
-            make.edges == _dialogsContainer
-        }
+            background.layout.makeConstraints { make in
+                make.edges == _dialogsContainer
+            }
 
-        dropShadowView.layout.makeConstraints { make in
-            make.edges.equalTo(dialog, inset: -UIEdgeInsets(shadowRadius))
+            dropShadowView.layout.makeConstraints { make in
+                make.edges.equalTo(dialog, inset: -UIEdgeInsets(shadowRadius))
+            }
         }
 
         switch location {

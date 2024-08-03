@@ -69,6 +69,22 @@ extension LayoutGuide: LayoutVariablesContainer {
     func setAreaSkippingLayout(_ area: UIRectangle) {
         self.area = area
     }
+
+    func suspendLayout() {
+        viewInHierarchy?.suspendLayout()
+    }
+
+    func resumeLayout(setNeedsLayout: Bool) {
+        viewInHierarchy?.resumeLayout(setNeedsLayout: setNeedsLayout)
+    }
+
+    func withSuspendedLayout<T>(setNeedsLayout: Bool, _ block: () throws -> T) rethrows -> T {
+        if let viewInHierarchy {
+            try viewInHierarchy.withSuspendedLayout(setNeedsLayout: setNeedsLayout, block)
+        } else {
+            try block()
+        }
+    }
 }
 
 extension LayoutGuide: SpatialReferenceType {

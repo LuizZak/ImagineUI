@@ -1215,6 +1215,14 @@ open class View {
         }
     }
 
+    /// Returns the first common ancestor between `view1` and `view2`.
+    ///
+    /// If the common ancestor between the views is either `view1` or `view2`,
+    /// that ancestor view is returned.
+    ///
+    /// If no common ancestor exists for the two views, `nil` is returned, instead.
+    ///
+    /// If both views refer to the same view, that view is returned.
     static func firstCommonAncestor(between view1: View, _ view2: View) -> View? {
         if view1 === view2 {
             return view1

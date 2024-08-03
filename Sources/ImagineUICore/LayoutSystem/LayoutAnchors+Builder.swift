@@ -13,12 +13,14 @@ public extension LayoutAnchors {
         @LayoutResultBuilder _ builder: (LayoutAnchors) -> LayoutConstraintDefinitions
     ) -> [LayoutConstraint] {
 
+        let definitions = builder(self)
+
         if updateAreaIntoConstraintsMask, let view = container as? View {
             view.areaIntoConstraintsMask = []
         }
 
-        let definitions = builder(self)
-        return definitions.create()
+        let constraints = definitions.create()
+        return constraints
     }
 
     /// Removes all constraints of this anchors' container and creates new
@@ -37,7 +39,11 @@ public extension LayoutAnchors {
             constraint.removeConstraint()
         }
 
-        return makeConstraints(updateAreaIntoConstraintsMask: updateAreaIntoConstraintsMask, builder)
+        let constraints = makeConstraints(
+            updateAreaIntoConstraintsMask: updateAreaIntoConstraintsMask,
+            builder
+        )
+        return constraints
     }
 
     /// Updates the constraints of this anchors' container based on the results
@@ -59,7 +65,8 @@ public extension LayoutAnchors {
 
         let definitions = builder(self)
 
-        return definitions.update()
+        let constraints = definitions.update()
+        return constraints
     }
 }
 

@@ -19,6 +19,30 @@ protocol LayoutVariablesContainer: AnyObject, SpatialReferenceType {
     func constraintsOnAnchorKind(_ anchorKind: AnchorKind) -> [LayoutConstraint]
     func setAreaSkippingLayout(_ area: UIRectangle)
 
+    /// Suspends setNeedsLayout() from affecting this container and its parent
+    /// hierarchy.
+    ///
+    /// Sequential calls to `suspendLayout()` must be balanced with a matching
+    /// number of `resumeLayout(setNeedsLayout:)` calls later in order for
+    /// layout to resume successfully.
+    func suspendLayout()
+
+    /// Resumes layout, optionally dispatching a `setNeedsLayout()` call to the
+    /// container at the end.
+    ///
+    /// Sequential calls to `resumeLayout(setNeedsLayout:)` must be balanced
+    /// with a matching number of earlier `suspendLayout()` calls in order for
+    /// layout to resume successfully.
+    func resumeLayout(setNeedsLayout: Bool)
+
+    /// Performs a given closure while suspending the layout of this container,
+    /// optionally dispatching a `setNeedsLayout()` call to the container at the
+    /// end.
+    ///
+    /// Layout is resumed whether or not the closure throws before the end of
+    /// the block.
+    func withSuspendedLayout<T>(setNeedsLayout: Bool, _ block: () throws -> T) rethrows -> T
+
     // TODO: These methods are used exclusively by `RootView` to cache `hasIndependentInternalLayout`
     // TODO: results ahead of time. Consider using the constraint solver's internal
     // TODO: view visitor to figure out independent layouts during constraint
