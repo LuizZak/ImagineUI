@@ -317,12 +317,12 @@ internal class _LayoutConstraintSolverCache {
         for constDiff in diff.constraintDiffs {
             switch constDiff {
             case .removed(_, let constraint):
-                if solver.hasConstraint(constraint.constraint) {
-                    transaction.removeConstraint(constraint.constraint)
+                if solver.hasConstraint(constraint.cassowaryConstraint) {
+                    transaction.removeConstraint(constraint.cassowaryConstraint)
                 }
 
             case .updated(_, let old, _):
-                transaction.removeConstraint(old.constraint)
+                transaction.removeConstraint(old.cassowaryConstraint)
 
             case .added:
                 break
@@ -369,13 +369,13 @@ internal class _LayoutConstraintSolverCache {
         for constDiff in diff.constraintDiffs {
             switch constDiff {
             case .added(_, let constraint):
-                transaction.addConstraint(constraint.constraint)
+                transaction.addConstraint(constraint.cassowaryConstraint)
 
             case .removed:
                 break // Already handled above
 
             case .updated(_, _, let new):
-                transaction.addConstraint(new.constraint)
+                transaction.addConstraint(new.cassowaryConstraint)
             }
         }
 
@@ -470,38 +470,11 @@ internal class _LayoutConstraintSolverCache {
     }
 
     internal func _compareConstraints() -> [KeyedDifference<LayoutConstraint, ConstraintState>] {
-        var addedList: [(LayoutConstraint, ConstraintState)] = []
-        var updatedList: [(LayoutConstraint, old: ConstraintState, new: ConstraintState)] = []
-        var removedList: [(LayoutConstraint, ConstraintState)] = []
-
-        _constraintSet.makeDifference(
-            withPrevious: _previousConstraintSet,
-            addedList: &addedList,
-            updatedList: &updatedList,
-            removedList: &removedList
+        let constDiff = _constraintSet.makeDifference(
+            withPrevious: _previousConstraintSet
         ) { (_, old, new) in
-            return old.definition == new.definition && old.constraint.hasSameEffects(as: new.constraint)
+            return old.constraint == new.constraint && old.cassowaryConstraint.hasSameEffects(as: new.cassowaryConstraint)
         }
-
-        var constDiff: [KeyedDifference<LayoutConstraint, ConstraintState>] = []
-
-        // Cross-check newly-added constraints can be interpreted as one of the
-        // constraints that where removed
-        for (added, addedState) in addedList {
-            var found = false
-            for (i, (removed, removedState)) in removedList.enumerated() where addedState.definition == removedState.definition {
-                removedList.remove(at: i)
-                _constraintSet[removed] = removedState
-                found = true
-                break
-            }
-
-            if !found {
-                constDiff.append(.added(added, addedState))
-            }
-        }
-
-        constDiff += removedList.map(KeyedDifference.removed) + updatedList.map(KeyedDifference.updated)
 
         return constDiff
     }
@@ -549,19 +522,19 @@ internal class _LayoutConstraintSolverCache {
             return
         }
 
-        if let previous = _previousConstraintSet[layoutConstraint], previous.definition == layoutConstraint.definition {
+        if let previous = _previousConstraintSet[layoutConstraint], previous.constraint == layoutConstraint {
             _constraintSet[layoutConstraint] = previous
         } else {
             _constraintSet[layoutConstraint] = ConstraintState(
-                constraint: constraint,
-                definition: layoutConstraint.definition
+                cassowaryConstraint: constraint,
+                constraint: layoutConstraint
             )
         }
     }
 
     internal struct ConstraintState {
-        var constraint: Constraint
-        var definition: LayoutConstraint.Definition
+        var cassowaryConstraint: Constraint
+        var constraint: LayoutConstraint
     }
 
     internal struct CacheStateDiff {
