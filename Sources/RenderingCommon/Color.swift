@@ -16,6 +16,17 @@ public struct Color: Hashable {
         return alpha | red | green | blue
     }
 
+    /// Packs this color value as a 32-bit integer red-green-blue-alpha ordered
+    /// color value.
+    public var asRGBA: Int {
+        let red = red << 24
+        let green = green << 16
+        let blue = blue << 8
+        let alpha = alpha
+
+        return red | green | blue | alpha
+    }
+
     /// Initializes a new color with the given RGB + alpha components.
     public init(alpha: Int = 255, red: Int, green: Int, blue: Int) {
         self.alpha = alpha
@@ -208,5 +219,25 @@ public extension Color {
     /// Initializes a new color using a packed 32-bit ARGB color value.
     init(argb: UInt32) {
         self.init(argb: Int(argb))
+    }
+
+    /// Initializes a new color using a packed 32-bit RGBA color value.
+    init(rgba: Int) {
+        let red = rgba >> 24 & 0xff
+        let green = rgba >> 16 & 0xff
+        let blue = rgba >> 8 & 0xff
+        let alpha = rgba & 0xff
+
+        self.init(
+            alpha: alpha,
+            red: red,
+            green: green,
+            blue: blue
+        )
+    }
+
+    /// Initializes a new color using a packed 32-bit RGBA color value.
+    init(rgba: UInt32) {
+        self.init(rgba: Int(rgba))
     }
 }
