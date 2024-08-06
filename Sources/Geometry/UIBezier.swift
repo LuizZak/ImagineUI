@@ -28,7 +28,7 @@ public struct UIBezier {
 
     private mutating func ensureUnique() {
         if !isKnownUniquelyReferenced(&_cache) {
-            _cache = _Cache()
+            _cache = _cache.copy()
         }
     }
 
@@ -83,6 +83,11 @@ public struct UIBezier {
     /// for this `UIBezier` instance.
     public func bounds() -> UIRectangle {
         return .union(drawOperations().map(\.bounds))
+    }
+
+    /// Returns the internal list of operations queued up within this `UIBezier`.
+    public func operations() -> [Operation] {
+        return _operations
     }
 
     /// Returns a list of draw operations contained within this `UIBezier`.
@@ -245,7 +250,8 @@ public struct UIBezier {
 
     // MARK: - Auxiliary types
 
-    /// Encapsulates draw operations produced by a `UIBezier` object.
+    /// Encapsulates draw operations produced by a `UIBezier` object, and always
+    /// represents a stroke operation.
     public enum DrawOperation {
         case line(start: UIPoint, end: UIPoint)
         case arc(UICircleArc)
@@ -382,14 +388,15 @@ public struct UIBezier {
         }
     }
 
-    enum Operation: Hashable {
+    /// An internal path operation that may or may not produce a stroke.
+    public enum Operation: Hashable {
         case moveTo(UIPoint)
         case lineTo(UIPoint)
         case quadTo(UIPoint, cp1: UIPoint)
         case cubicTo(UIPoint, cp1: UIPoint, cp2: UIPoint)
         case arc(UIPoint, sweepAngle: Double)
 
-        var endPoint: UIPoint {
+        public var endPoint: UIPoint {
             switch self {
             case .moveTo(let end),
                 .lineTo(let end),
@@ -402,7 +409,7 @@ public struct UIBezier {
         }
 
         /// Returns `true` if this operation value is a draw operation.
-        var isDrawOperation: Bool {
+        public var isDrawOperation: Bool {
             switch self {
             case .lineTo, .quadTo, .cubicTo, .arc:
                 return true
@@ -412,7 +419,7 @@ public struct UIBezier {
         }
 
         /// Returns `true` if this operation is a `moveTo` operation.
-        var isMove: Bool {
+        public var isMove: Bool {
             switch self {
             case .moveTo:
                 return true
@@ -433,6 +440,24 @@ public struct UIBezier {
         /// The length on this cache.
         var length: Double?
 
+        init(
+            drawOperations: [UIBezier.DrawOperation]? = nil,
+            bounds: UIRectangle? = nil,
+            length: Double? = nil
+        ) {
+            self.drawOperations = drawOperations
+            self.bounds = bounds
+            self.length = length
+        }
+
+        func copy() -> _Cache {
+            return _Cache(
+                drawOperations: drawOperations,
+                bounds: bounds,
+                length: length
+            )
+        }
+
         /// Resets the contents of this cache.
         func reset() {
             drawOperations = nil
@@ -448,12 +473,13 @@ extension UIBezier {
     /// Adds a 'move to' operation that moves the current vertex on this `UIBezier`
     /// without issuing a draw command.
     public mutating func move(to point: UIPoint) {
+        ensureUnique()
+
         let op = Operation.moveTo(point)
 
         // If the last operation is already a `.moveTo()` operation, replace it
         // instead of appending a new one.
         if _operations.last?.isMove == true {
-            ensureUnique()
             _operations[_operations.count - 1] = op
         } else {
             add(op)
@@ -516,6 +542,8 @@ extension UIBezier {
     ///
     /// Sequential calls to `close()` are idempotent.
     public mutating func close() {
+        ensureUnique()
+
         guard !isEmpty else {
             return
         }
@@ -524,7 +552,6 @@ extension UIBezier {
         }
 
         if end != start {
-            ensureUnique()
             line(to: start)
         }
     }

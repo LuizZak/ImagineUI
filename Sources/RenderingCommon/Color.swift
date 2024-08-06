@@ -104,7 +104,7 @@ public struct Color: Hashable {
         let backAlphaFloat = backA
         let foreAlphaFloat = foreA
 
-        let foreAlphaNormalized = foreAlphaFloat
+        let foreAlphaNormalized = foreAlphaFloat / 255.0
         let backColorMultiplier = backAlphaFloat * (1 - foreAlphaNormalized)
 
         let alpha = backAlphaFloat + foreAlphaFloat - backAlphaFloat * foreAlphaNormalized

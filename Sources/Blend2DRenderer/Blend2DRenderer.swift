@@ -106,7 +106,7 @@ public class Blend2DRenderer: Renderer {
     }
 
     public func fill(_ bezier: UIBezier) {
-        let path = bezier.drawOperations().toBLPath()
+        let path = bezier.operations().toBLPath()
 
         _context.fillPath(path)
     }
@@ -162,7 +162,7 @@ public class Blend2DRenderer: Renderer {
     }
 
     public func stroke(_ bezier: UIBezier) {
-        let path = bezier.drawOperations().toBLPath()
+        let path = bezier.operations().toBLPath()
 
         _context.strokePath(path)
     }

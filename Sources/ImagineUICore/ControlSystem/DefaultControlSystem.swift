@@ -33,6 +33,12 @@ public class DefaultControlSystem: BaseControlSystem {
         delegate?.tooltipsManager()
     }
 
+    /// If this control system should issue `bringRootViewToFront(_:)` calls when
+    /// mouse interactions are issued to root views.
+    ///
+    /// Defaults to `true`.
+    public var shouldReorderRootViews: Bool = true
+
     override public init() {
 
     }
@@ -77,7 +83,7 @@ public class DefaultControlSystem: BaseControlSystem {
 
         // Request that the given root view be brought to the front of the views
         // list to be rendered on top of all other views.
-        if let rootView = control.rootView {
+        if shouldReorderRootViews, let rootView = control.rootView {
             bringRootViewToFront(rootView)
         }
 

@@ -14,7 +14,7 @@ public extension BLLine {
 }
 
 public extension BLPoint {
-    var asVector2: UIVector {
+    var asUIVector: UIVector {
         return UIVector(x: x, y: y)
     }
 }
@@ -87,7 +87,7 @@ public extension UIRoundRectangle {
 
 public extension BLCircle {
     var asCircle: UICircle {
-        return UICircle(center: center.asVector2, radius: r)
+        return UICircle(center: center.asUIVector, radius: r)
     }
 }
 

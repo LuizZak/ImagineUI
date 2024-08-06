@@ -18,7 +18,7 @@ class TextLayoutRenderer {
             let offset = line.bounds.topLeft
                 + segment.bounds.topLeft
                 + UIPoint(x: 0, y: Double(segment.ascent))
-                + location.asVector2
+                + location.asUIVector
 
             let font = toBLFont(segment.font)
             let glyphBufferMinusLineBreak = toBLGlyphBuffer(segment.glyphBufferMinusLineBreak)
@@ -36,7 +36,7 @@ class TextLayoutRenderer {
             let offset = line.bounds.topLeft
                 + segment.bounds.topLeft
                 + UIPoint(x: 0, y: Double(segment.ascent))
-                + location.asVector2
+                + location.asUIVector
 
             let font = toBLFont(segment.font)
             let glyphBufferMinusLineBreak = toBLGlyphBuffer(segment.glyphBufferMinusLineBreak)
@@ -59,7 +59,7 @@ class TextLayoutRenderer {
             let offset = line.bounds.topLeft
                 + segment.bounds.topLeft
                 + .init(x: 0, y: Double(segment.ascent))
-                + location.asVector2
+                + location.asUIVector
 
             // Image attribute
             if let image = segment.textSegment.attribute(named: .image, type: ImageAttribute.self) {
