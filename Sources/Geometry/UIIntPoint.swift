@@ -38,6 +38,14 @@ public struct UIIntPoint: Hashable, Codable {
     }
 
     @_transparent
+    public init(rounding point: UIPoint) {
+        self.init(
+            x: Int(point.x.rounded()),
+            y: Int(point.y.rounded())
+        )
+    }
+
+    @_transparent
     public func distanceSquared(to other: Self) -> Scalar {
         let dx = x - other.x
         let dy = y - other.y

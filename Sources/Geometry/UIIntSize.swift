@@ -35,6 +35,12 @@ public struct UIIntSize: Hashable, Codable {
         self.width = point.x
         self.height = point.y
     }
+
+    @_transparent
+    public init(rounding size: UISize) {
+        self.width = Int(size.width.rounded())
+        self.height = Int(size.height.rounded())
+    }
 }
 
 // MARK: Addition
