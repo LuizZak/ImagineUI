@@ -157,9 +157,9 @@ public class ImagineUITooltipsManager: TooltipsManagerType {
         case .left:
             position = .leftOf(view)
         case .top:
-            position = .rightOf(view)
+            position = .above(view)
         case .bottom:
-            position = .rightOf(view)
+            position = .under(view)
         case .inPlace:
             position = .inPlace(view, _computeInPlacePosition(view))
         case .nextToMouse:
@@ -212,6 +212,21 @@ public class ImagineUITooltipsManager: TooltipsManagerType {
                 }
             }
 
+        case .under(let view):
+            location = _container.convert(
+                point: UIPoint(x: 0, y: view.size.height),
+                from: view
+            )
+
+        case .above(let view):
+            location = _container.convert(point: .zero, from: view)
+
+            if shouldRemakeConstraints {
+                _previousConstraints = _tooltip.layout.makeConstraints { make in
+                    (make.bottom == _tooltipTargetPosition.layout.top) | .medium
+                }
+            }
+
         case .inPlace(let view, let point):
             location = _container.convert(point: point, from: view)
 
@@ -251,6 +266,8 @@ public class ImagineUITooltipsManager: TooltipsManagerType {
         case relative(View, UIPoint)
         case rightOf(View)
         case leftOf(View)
+        case above(View)
+        case under(View)
         case inPlace(View, UIPoint)
         case nextToMouse
         case followingMouse
