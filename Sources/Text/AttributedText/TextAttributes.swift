@@ -34,6 +34,8 @@ public struct ImageAttribute: TextAttributeType {
     public let image: Image
     public let offset: UIVector
 
+    public var isContentAttribute: Bool { true }
+
     public init(image: Image, offset: UIVector = .zero) {
         self.image = image
         self.offset = .zero

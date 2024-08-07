@@ -2,6 +2,8 @@ import Foundation
 import Geometry
 import RenderingCommon
 
+// TODO: Support word-wrap/line breaks.
+
 public class TextLayout: TextLayoutType {
     internal var minimalSize: UISize = UISize()
 
