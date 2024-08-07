@@ -32,7 +32,7 @@ public protocol UndoTask {
 }
 
 /// Enables recording and performing of series of undo/redo tasks.
-class UndoSystem: UndoSystemType {
+public class UndoSystem: UndoSystemType {
     /// Set to true before any undo/redo task, and subsequently set to false
     /// before returning.
     ///
