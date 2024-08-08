@@ -310,4 +310,36 @@ public struct ContextMenuViewBuilder {
     public static func buildArray(_ components: [ContextMenuItemEntry]) -> [ContextMenuItemEntry] {
         components
     }
+
+    public static func buildEither(first component: [ContextMenuItemEntry]) -> [ContextMenuItemEntry] {
+        component
+    }
+
+    public static func buildEither(second component: [ContextMenuItemEntry]) -> [ContextMenuItemEntry] {
+        component
+    }
+
+    public static func buildPartialBlock(first: ContextMenuItemEntry) -> [ContextMenuItemEntry] {
+        [first]
+    }
+
+    public static func buildPartialBlock(first: [ContextMenuItemEntry]) -> [ContextMenuItemEntry] {
+        first
+    }
+
+    public static func buildPartialBlock(accumulated: [ContextMenuItemEntry], next: ContextMenuItemEntry) -> [ContextMenuItemEntry] {
+        accumulated + [next]
+    }
+
+    public static func buildOptional(_ component: [ContextMenuItemEntry]?) -> [ContextMenuItemEntry] {
+        if let component {
+            return component
+        } else {
+            return []
+        }
+    }
+
+    public static func buildLimitedAvailability(_ component: [ContextMenuItemEntry]) -> [ContextMenuItemEntry] {
+        return component
+    }
 }
