@@ -213,7 +213,7 @@ open class ImagineUIWindowContent: ImagineUIContentType, BaseControlSystemDelega
         controlSystem.onKeyUp(event)
     }
 
-    open func keyPress(event: KeyPressEventArgs) {
+    open func keyPress(event: KeyPressEventArgs) -> Bool {
         controlSystem.onKeyPress(event)
     }
 

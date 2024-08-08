@@ -55,14 +55,14 @@ public protocol ImagineUIContentType: AnyObject {
     /// on screen, so content that does not fill a window can still respond
     /// to the mouse coordinates correctly.
     func mouseMoved(event: MouseEventArgs)
-    
+
     /// Called to notify of mouse up events.
     ///
     /// Mouse location should be specified relative to this content's bounds
     /// on screen, so content that does not fill a window can still respond
     /// to the mouse coordinates correctly.
     func mouseUp(event: MouseEventArgs)
-    
+
     /// Called to notify of mouse scroll wheel events.
     ///
     /// Mouse location should be specified relative to this content's bounds
@@ -77,7 +77,9 @@ public protocol ImagineUIContentType: AnyObject {
     func keyUp(event: KeyEventArgs)
 
     /// Called to notify of key presses (character-based input) events.
-    func keyPress(event: KeyPressEventArgs)
+    ///
+    /// Returns `false` if no event responder responded to the event request.
+    func keyPress(event: KeyPressEventArgs) -> Bool
 
     /// Called to notify that the window associated with this ImagineUI content
     /// has been closed.

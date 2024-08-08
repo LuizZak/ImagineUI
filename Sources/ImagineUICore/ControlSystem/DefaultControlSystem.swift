@@ -186,9 +186,9 @@ public class DefaultControlSystem: BaseControlSystem {
         responder.handleOrPass(request)
     }
 
-    public override func onKeyPress(_ event: KeyPressEventArgs) {
+    public override func onKeyPress(_ event: KeyPressEventArgs) -> Bool {
         guard let responder = _firstResponder else {
-            return
+            return false
         }
 
         hideTooltip(stopTimers: true)
@@ -198,6 +198,8 @@ public class DefaultControlSystem: BaseControlSystem {
         }
 
         responder.handleOrPass(request)
+
+        return request.accepted
     }
 
     public override func onPreviewKeyDown(_ event: PreviewKeyDownEventArgs) {

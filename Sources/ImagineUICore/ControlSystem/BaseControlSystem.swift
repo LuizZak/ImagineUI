@@ -47,8 +47,8 @@ open class BaseControlSystem: ControlSystemType {
 
     }
 
-    open func onKeyPress(_ event: KeyPressEventArgs) {
-
+    open func onKeyPress(_ event: KeyPressEventArgs) -> Bool {
+        return false
     }
 
     open func onPreviewKeyDown(_ event: PreviewKeyDownEventArgs) {
