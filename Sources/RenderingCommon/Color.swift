@@ -1,9 +1,16 @@
 /// Represents a 4-component ARGB color
-public struct Color: Hashable {
-    @Clamped(min: 0, max: 255) public var alpha: Int = 0
-    @Clamped(min: 0, max: 255) public var red: Int = 0
-    @Clamped(min: 0, max: 255) public var green: Int = 0
-    @Clamped(min: 0, max: 255) public var blue: Int = 0
+public struct Color: Hashable, Codable {
+    @Clamped(min: 0, max: 255)
+    public var alpha: Int = 0
+
+    @Clamped(min: 0, max: 255)
+    public var red: Int = 0
+
+    @Clamped(min: 0, max: 255)
+    public var green: Int = 0
+
+    @Clamped(min: 0, max: 255)
+    public var blue: Int = 0
 
     /// Packs this color value as a 32-bit integer alpha-red-green-blue ordered
     /// color value.
@@ -27,12 +34,34 @@ public struct Color: Hashable {
         return red | green | blue | alpha
     }
 
+    /// Decodes an ARGB color from a given decoder.
+    public init(from decoder: any Decoder) throws {
+        var container = try decoder.unkeyedContainer()
+
+        let alpha = try container.decode(Int.self)
+        let red = try container.decode(Int.self)
+        let green = try container.decode(Int.self)
+        let blue = try container.decode(Int.self)
+
+        self.init(alpha: alpha, red: red, green: green, blue: blue)
+    }
+
     /// Initializes a new color with the given RGB + alpha components.
     public init(alpha: Int = 255, red: Int, green: Int, blue: Int) {
         self.alpha = alpha
         self.red = red
         self.green = green
         self.blue = blue
+    }
+
+    /// Encodes an ARGB color into a given encoder.
+    public func encode(to encoder: any Encoder) throws {
+        var container = encoder.unkeyedContainer()
+
+        try container.encode(alpha)
+        try container.encode(red)
+        try container.encode(green)
+        try container.encode(blue)
     }
 
     /// Returns a copy of this color with a given alpha attributed to it.
