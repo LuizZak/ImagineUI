@@ -342,6 +342,7 @@ public class DefaultControlSystem: BaseControlSystem {
 
     // MARK: - Dialog
 
+    @discardableResult
     public override func openDialog(_ view: UIDialog, location: UIDialogInitialLocation) -> Bool {
         return _openDialog(view, location: location)
     }
