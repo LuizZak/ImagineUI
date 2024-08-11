@@ -331,6 +331,10 @@ public struct ContextMenuViewBuilder {
         accumulated + [next]
     }
 
+    public static func buildPartialBlock(accumulated: [ContextMenuItemEntry], next: [ContextMenuItemEntry]) -> [ContextMenuItemEntry] {
+        accumulated + next
+    }
+
     public static func buildOptional(_ component: [ContextMenuItemEntry]?) -> [ContextMenuItemEntry] {
         if let component {
             return component
