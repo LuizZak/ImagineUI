@@ -2,7 +2,7 @@ import Geometry
 import CassowarySwift
 import Rendering
 
-public class Window: RootView {
+open class Window: RootView {
     /// Saves the location of the window before maximizing state
     private var _normalStateLocation: UIVector = .zero
 
@@ -139,7 +139,7 @@ public class Window: RootView {
         setNeedsLayout()
     }
 
-    public override func setupHierarchy() {
+    open override func setupHierarchy() {
         super.setupHierarchy()
 
         addSubview(_buttons)
@@ -148,7 +148,7 @@ public class Window: RootView {
         addLayoutGuide(contentsLayoutArea)
     }
 
-    public override func setupConstraints() {
+    open override func setupConstraints() {
         super.setupConstraints()
 
         titleBarLayoutArea.layout.makeConstraints { make in
@@ -178,13 +178,13 @@ public class Window: RootView {
         }
     }
 
-    public override func renderBackground(in renderer: Renderer, screenRegion: ClipRegionType) {
+    open override func renderBackground(in renderer: Renderer, screenRegion: ClipRegionType) {
         super.renderBackground(in: renderer, screenRegion: screenRegion)
 
         drawWindowBackground(renderer)
     }
 
-    public override func renderForeground(in context: Renderer, screenRegion: ClipRegionType) {
+    open override func renderForeground(in context: Renderer, screenRegion: ClipRegionType) {
         super.renderForeground(in: context, screenRegion: screenRegion)
 
         if screenRegion.hitTest(titleBarArea.transformedBounds(absoluteTransform())) != .out {
@@ -194,7 +194,7 @@ public class Window: RootView {
         drawWindowBorders(context)
     }
 
-    public override func onMouseDown(_ event: MouseEventArgs) {
+    open override func onMouseDown(_ event: MouseEventArgs) {
         super.onMouseDown(event)
 
         _mouseDownPoint = event.location
@@ -206,7 +206,7 @@ public class Window: RootView {
         }
     }
 
-    public override func onMouseMove(_ event: MouseEventArgs) {
+    open override func onMouseMove(_ event: MouseEventArgs) {
         super.onMouseMove(event)
 
         if _mouseDown {
@@ -216,13 +216,13 @@ public class Window: RootView {
         }
     }
 
-    public override func onMouseLeave() {
+    open override func onMouseLeave() {
         super.onMouseLeave()
 
         controlSystem?.setMouseCursor(.arrow)
     }
 
-    public override func onMouseUp(_ event: MouseEventArgs) {
+    open override func onMouseUp(_ event: MouseEventArgs) {
         super.onMouseUp(event)
 
         _mouseDown = false
