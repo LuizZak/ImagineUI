@@ -348,8 +348,8 @@ extension TreeView {
                 }
             }
 
-            override var intrinsicSize: UISize? {
-                return UISize(width: 10, height: 10)
+            override var intrinsicSize: IntrinsicSize {
+                return .size(.init(width: 10, height: 10))
             }
 
             override init() {

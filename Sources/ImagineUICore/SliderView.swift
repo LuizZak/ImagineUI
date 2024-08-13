@@ -97,8 +97,8 @@ public class SliderView: ControlView {
     @ValueChangedEventWithSender<SliderView, Double>
     public var valueChanged
 
-    public override var intrinsicSize: UISize? {
-        return UISize(width: bounds.width, height: knobSize.height)
+    public override var intrinsicSize: IntrinsicSize {
+        return .height(knobSize.height)
     }
 
     public override init() {
@@ -141,7 +141,7 @@ public class SliderView: ControlView {
             make.bottom == self
         }
         rightLabel.layout.makeConstraints { make in
-            make.top == self + knobSize.width
+            make.top == self + knobSize.height
             make.right == self - 2
             make.bottom == self
         }

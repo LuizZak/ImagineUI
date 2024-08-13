@@ -22,12 +22,12 @@ public class ImageView: View {
     /// Defaults to '.topLeftAsIs'.
     public var scalingMode: ImageScale = .topLeftAsIs
 
-    public override var intrinsicSize: UISize? {
+    public override var intrinsicSize: IntrinsicSize {
         if let image = image {
-            return UISize(image.size)
+            return .size(UISize(image.size))
         }
 
-        return nil
+        return .none
     }
 
     public init(image: Image?) {

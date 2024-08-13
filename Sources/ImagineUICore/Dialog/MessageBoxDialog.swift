@@ -12,7 +12,7 @@ public class MessageBoxDialog: Window {
     /// The delegate associated with this message box dialog view.
     public var dialogDelegate: UIDialogDelegate?
 
-    public init(message: AttributedText, title: String, buttons: [ButtonEntry]) {
+    public init(message: AttributedText, title: AttributedText, buttons: [ButtonEntry]) {
         self.messageLabel.attributedText = message
         self.messageLabel.horizontalTextAlignment = .center
         self.messageLabel.verticalTextAlignment = .center

@@ -99,7 +99,9 @@ open class Label: View {
         }
     }
 
-    open override var intrinsicSize: UISize? { minimalTextLayout.size }
+    open override var intrinsicSize: IntrinsicSize {
+        .size(minimalTextLayout.size)
+    }
 
     open var horizontalTextAlignment: HorizontalTextAlignment = .leading {
         didSet {
@@ -146,7 +148,7 @@ open class Label: View {
     }
 
     open override func layoutSizeFitting(size: UISize) -> UISize {
-        guard let intrinsicSize = intrinsicSize else {
+        guard case .size(let intrinsicSize) = intrinsicSize else {
             return size
         }
 
@@ -155,7 +157,13 @@ open class Label: View {
 
     internal func autoSize() {
         withSuspendedLayout(setNeedsLayout: false) {
-            bounds.size = intrinsicSize ?? .zero
+            switch intrinsicSize {
+            case .size(let size):
+                bounds.size = size
+
+            default:
+                bounds.size = .zero
+            }
         }
     }
 

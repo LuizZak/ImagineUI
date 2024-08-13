@@ -43,9 +43,9 @@ open class Window: RootView {
     public let contentsLayoutArea = LayoutGuide()
     public let titleBarLayoutArea = LayoutGuide()
 
-    public var title: String {
+    public var title: AttributedText {
         didSet {
-            _titleLabel.text = title
+            _titleLabel.attributedText = title
         }
     }
     public var titleFont: Font {
@@ -63,12 +63,21 @@ open class Window: RootView {
         }
     }
 
-    public override var intrinsicSize: UISize? {
+    public override var intrinsicSize: IntrinsicSize {
         switch windowState {
         case .maximized:
-            return delegate?.windowSizeForFullscreen(self) ?? targetSize
+            let size = delegate?.windowSizeForFullscreen(self) ?? targetSize
+
+            if let size {
+                return .size(size)
+            }
+
+            return .none
         case .normal, .minimized:
-            return targetSize
+            if let targetSize {
+                return .size(targetSize)
+            }
+            return .none
         }
     }
 
@@ -76,7 +85,7 @@ open class Window: RootView {
 
     public weak var delegate: WindowDelegate?
 
-    public init(area: UIRectangle, title: String, titleFont: Font = Fonts.defaultFont(size: 12)) {
+    public init(area: UIRectangle, title: AttributedText, titleFont: Font = Fonts.defaultFont(size: 12)) {
         self.title = title
         self.titleFont = titleFont
 
@@ -92,7 +101,7 @@ open class Window: RootView {
     }
 
     private func initialize() {
-        _titleLabel.text = title
+        _titleLabel.attributedText = title
         _titleLabel.font = titleFont
 
         _buttons.close.mouseClicked.addListener(weakOwner: self) { [weak self] (_, _) in

@@ -425,8 +425,8 @@ open class ComboBox: ControlView {
     }
 
     private class SeparatorItem: View {
-        override var intrinsicSize: UISize? {
-            .init(width: 0, height: 16)
+        override var intrinsicSize: IntrinsicSize {
+            .height(16)
         }
 
         var color: Color = .gray {

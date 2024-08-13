@@ -9,8 +9,8 @@ public class ProgressBar: ControlView {
         }
     }
 
-    public override var intrinsicSize: UISize? {
-        return UISize(width: bounds.width, height: 5)
+    public override var intrinsicSize: IntrinsicSize {
+        return .height(5)
     }
 
     public override init() {

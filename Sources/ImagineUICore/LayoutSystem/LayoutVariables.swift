@@ -257,29 +257,31 @@ class LayoutVariables {
             )
         }
 
-        if let intrinsicSize = view._targetLayoutSize ?? view.intrinsicSize {
-            deriveIntrinsicSizeConstraints(
-                view,
-                intrinsicSize: intrinsicSize,
-                &constraintCollector,
-                variables
-            )
-        }
+        let intrinsicSize =
+            view._targetLayoutSize.map(View.IntrinsicSize.size)
+            ?? view.intrinsicSize
+
+        deriveIntrinsicSizeConstraints(
+            view,
+            intrinsicSize: intrinsicSize,
+            &constraintCollector,
+            variables
+        )
     }
 
     private func deriveIntrinsicSizeConstraints<T: ViewConstraintCollectorType>(
         _ view: View,
-        intrinsicSize: UISize,
+        intrinsicSize: View.IntrinsicSize,
         _ constraintCollector: inout T,
         _ variables: VariablesBroker
     ) {
 
         // Horizontal
         horizontal:
-        if view.horizontalCompressResistance != nil || view.horizontalHuggingPriority != nil {
+        if let width = intrinsicSize.width, view.horizontalCompressResistance != nil || view.horizontalHuggingPriority != nil {
             constraintCollector.suggestValue(
                 variables.intrinsicWidth,
-                value: intrinsicSize.width,
+                value: width,
                 strength: Strength.STRONG,
                 orientation: .horizontal
             )
@@ -313,10 +315,10 @@ class LayoutVariables {
 
         // Vertical
         vertical:
-        if view.verticalCompressResistance != nil || view.verticalHuggingPriority != nil {
+        if let height = intrinsicSize.height, view.verticalCompressResistance != nil || view.verticalHuggingPriority != nil {
             constraintCollector.suggestValue(
                 variables.intrinsicHeight,
-                value: intrinsicSize.height,
+                value: height,
                 strength: Strength.STRONG,
                 orientation: .vertical
             )
@@ -465,7 +467,7 @@ class LayoutVariables {
 
             if let view = container as? View {
                 let mask = view.areaIntoConstraintsMask
-                if mask != [] || view._targetLayoutSize != nil || view.intrinsicSize != nil {
+                if mask != [] || view._targetLayoutSize != nil || view.intrinsicSize != .none {
                     markReferenced(.left)
                     markReferenced(.right)
                     markReferenced(.top)

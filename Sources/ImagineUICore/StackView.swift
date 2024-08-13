@@ -11,11 +11,11 @@ open class StackView: View {
     /// as part of the stack view's layout behaviour.
     private(set) public var arrangedSubviews: [View] = []
 
-    /// Intrinsic size of a `StackView` is always `UISize.zero`, as the default
-    /// behaviour of a stack view is to always shrink to the smallest size
-    /// possible.
-    public override var intrinsicSize: UISize? {
-        return .zero
+    /// Intrinsic size of a `StackView` is always `IntrinsicSize.size(UISize.zero)`,
+    /// as the default behaviour of a stack view is to always shrink to the
+    /// smallest size possible.
+    public override var intrinsicSize: IntrinsicSize {
+        return .size(.zero)
     }
 
     /// A spacing applied between every view added to this stack view.

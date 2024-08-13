@@ -297,13 +297,14 @@ open class View {
 
     /// This view's intrinsic size.
     ///
-    /// If non-nil, it indicates to layout systems that this view has a natural
-    /// size that it reports is preferred, and content compression/hugging
-    /// constraints are applied relative to it.
+    /// If a dimension is present, it indicates to layout systems that this view
+    /// has a natural size that it reports is preferred, and content
+    /// compression/hugging constraints are applied relative to it.
     ///
-    /// If `nil`, content compression/hugging is ignored during constraint layout.
-    open var intrinsicSize: UISize? {
-        return nil
+    /// If `none`, content compression/hugging is ignored entirely during constraint
+    /// layout.
+    open var intrinsicSize: IntrinsicSize {
+        return .none
     }
 
     /// Gets the logical superview for this view.
@@ -651,7 +652,7 @@ open class View {
                 _targetLayoutSize = size
                 areaIntoConstraintsMask = [.location]
 
-                performConstraintsLayout(cached: true)
+                performConstraintsLayout(cached: false)
 
                 let optimalSize = self.size
 
@@ -1238,6 +1239,49 @@ open class View {
         }
 
         return nil
+    }
+
+    /// Specifies intrinsic size for a view.
+    public enum IntrinsicSize: Hashable {
+        /// No intrinsic size.
+        case none
+
+        /// A width-only intrinsic size.
+        case width(Double)
+
+        /// A height-only intrinsic size.
+        case height(Double)
+
+        /// A width/height intrinsic size.
+        case size(UISize)
+
+        /// Gets the width of this intrinsic size, if present.
+        public var width: Double? {
+            switch self {
+            case .width(let value):
+                return value
+
+            case .size(let size):
+                return size.width
+
+            case .none, .height:
+                return nil
+            }
+        }
+
+        /// Gets the height of this intrinsic size, if present.
+        public var height: Double? {
+            switch self {
+            case .height(let value):
+                return value
+
+            case .size(let size):
+                return size.height
+
+            case .none, .width:
+                return nil
+            }
+        }
     }
 }
 
