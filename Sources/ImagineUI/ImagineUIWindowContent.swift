@@ -96,6 +96,8 @@ open class ImagineUIWindowContent: ImagineUIContentType, BaseControlSystemDelega
     ///
     /// - precondition: `view.superview == nil`
     open func addRootView(_ view: RootView) {
+        layoutIfDeferred()
+
         precondition(view.superview == nil)
 
         view.invalidationDelegate = self
@@ -113,20 +115,24 @@ open class ImagineUIWindowContent: ImagineUIContentType, BaseControlSystemDelega
     }
 
     open func removeRootView(_ view: RootView) {
+        layoutIfDeferred()
+
         view.invalidationDelegate = nil
         view.rootControlSystem = nil
         _rootViews.removeAll { $0 === view }
     }
 
     open func willStartLiveResize() {
-
+        layoutIfDeferred()
     }
 
     open func didEndLiveResize() {
-
+        layoutIfDeferred()
     }
 
     open func resize(_ newSize: UIIntSize) {
+        layoutIfDeferred()
+
         self.size = newSize
 
         rootView.location = .zero
@@ -157,6 +163,14 @@ open class ImagineUIWindowContent: ImagineUIContentType, BaseControlSystemDelega
         performLayout()
     }
 
+    /// Forces a re-layout of the root views if the current layout mode is
+    /// `LayoutMode.deferred`.
+    public func layoutIfDeferred() {
+        if layoutMode == .deferred {
+            performLayout()
+        }
+    }
+
     open func performLayout() {
         // Layout loop
         for rootView in _rootViews {
@@ -165,6 +179,8 @@ open class ImagineUIWindowContent: ImagineUIContentType, BaseControlSystemDelega
     }
 
     open func render(renderer: Renderer, renderScale: UIVector, clipRegion: ClipRegionType) {
+        layoutIfDeferred()
+
         renderer.scale(by: renderScale)
 
         if let backgroundColor = backgroundColor {
@@ -184,42 +200,60 @@ open class ImagineUIWindowContent: ImagineUIContentType, BaseControlSystemDelega
     }
 
     open func mouseLeave() {
+        layoutIfDeferred()
+
         controlSystem.onMouseLeave()
     }
 
     open func mouseDown(event: MouseEventArgs) {
+        layoutIfDeferred()
+
         controlSystem.onMouseDown(event)
     }
 
     open func mouseMoved(event: MouseEventArgs) {
+        layoutIfDeferred()
+
         _tooltipsManager.updateTooltipCursorLocation(event.location)
 
         controlSystem.onMouseMove(event)
     }
 
     open func mouseUp(event: MouseEventArgs) {
+        layoutIfDeferred()
+
         controlSystem.onMouseUp(event)
     }
 
     open func mouseScroll(event: MouseEventArgs) {
+        layoutIfDeferred()
+
         controlSystem.onMouseWheel(event)
     }
 
     open func keyDown(event: KeyEventArgs) {
+        layoutIfDeferred()
+
         controlSystem.onKeyDown(event)
     }
 
     open func keyUp(event: KeyEventArgs) {
+        layoutIfDeferred()
+
         controlSystem.onKeyUp(event)
     }
 
     open func keyPress(event: KeyPressEventArgs) -> Bool {
-        controlSystem.onKeyPress(event)
+        layoutIfDeferred()
+
+        return controlSystem.onKeyPress(event)
     }
 
     // MARK: - BaseControlSystemDelegate
 
     open func bringRootViewToFront(_ rootView: RootView) {
+        layoutIfDeferred()
+
         func ensureViewOnTop(_ rootViewOver: RootView) {
             _rootViews.removeAll(where: { $0 === rootViewOver })
             _rootViews.append(rootViewOver)
@@ -242,6 +276,8 @@ open class ImagineUIWindowContent: ImagineUIContentType, BaseControlSystemDelega
     }
 
     open func controlViewUnder(point: UIVector, controlKinds: ControlKinds) -> ControlView? {
+        layoutIfDeferred()
+
         let enabledOnly = !controlKinds.contains(.disabledFlag)
 
         if controlKinds.contains(.tooltips) {
@@ -268,6 +304,7 @@ open class ImagineUIWindowContent: ImagineUIContentType, BaseControlSystemDelega
         forEventRequest eventRequest: EventRequest,
         controlKinds: ControlKinds
     ) -> ControlView? {
+        layoutIfDeferred()
 
         let enabledOnly = !controlKinds.contains(.disabledFlag)
 
@@ -330,6 +367,9 @@ open class ImagineUIWindowContent: ImagineUIContentType, BaseControlSystemDelega
             performLayout()
 
         case .deferred:
+            break
+
+        case .delegate:
             delegate?.needsLayout(self, rootView)
         }
     }
@@ -341,6 +381,8 @@ open class ImagineUIWindowContent: ImagineUIContentType, BaseControlSystemDelega
     // MARK: - WindowDelegate
 
     open func windowWantsToClose(_ window: Window) {
+        layoutIfDeferred()
+
         if let index = _rootViews.firstIndex(of: window) {
             _rootViews.remove(at: index)
             invalidateScreen()
@@ -348,6 +390,8 @@ open class ImagineUIWindowContent: ImagineUIContentType, BaseControlSystemDelega
     }
 
     open func windowWantsToMaximize(_ window: Window) {
+        layoutIfDeferred()
+
         switch window.windowState {
         case .maximized:
             window.setWindowState(.normal)
@@ -358,20 +402,29 @@ open class ImagineUIWindowContent: ImagineUIContentType, BaseControlSystemDelega
     }
 
     open func windowWantsToMinimize(_ window: Window) {
+        layoutIfDeferred()
+
         window.setWindowState(.minimized)
     }
 
     open func windowSizeForFullscreen(_ window: Window) -> UISize {
+        layoutIfDeferred()
+
         return _bounds.size
     }
 
     /// Controls the layout mode of this window content.
     public enum LayoutMode {
         /// Calls to `setNeedsLayout` immediately layouts all root views without
-        /// invoking the content's delegate.
+        /// invoking the content's delegate or deferring the call.
         case immediate
 
-        /// Layout is deferred via delegate to be performed later.
+        /// Defers layout to entry points of interactions/render calls.
+        ///
+        /// Requires that subclasses call the super's methods.
         case deferred
+
+        /// Layout is deferred via delegate to be performed later.
+        case delegate
     }
 }
