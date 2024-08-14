@@ -22,7 +22,7 @@ public class SliderView: ControlView {
                 minimumValue = maximumValue
             }
 
-            value = limitValue(value)
+            updateValue(limitValue(value))
             updateLabels()
 
             invalidate()
@@ -38,7 +38,7 @@ public class SliderView: ControlView {
                 maximumValue = minimumValue
             }
 
-            value = limitValue(value)
+            updateValue(limitValue(value))
             updateLabels()
 
             invalidate()
@@ -61,15 +61,11 @@ public class SliderView: ControlView {
 
     public var value: Double = 0 {
         didSet {
-            if limitValue(value) == oldValue {
-                return
-            }
-
             value = limitValue(value)
 
-            onValueChanged(.init(oldValue: oldValue, newValue: value))
-
-            invalidate()
+            if value != oldValue {
+                invalidate()
+            }
         }
     }
 
@@ -168,7 +164,9 @@ public class SliderView: ControlView {
 
         if isMouseDown {
             let offset = event.location + mouseDownOffset
-            value = limitValue(valueAtOffset(x: offset.x))
+            updateValue(
+                limitValue(valueAtOffset(x: offset.x))
+            )
         }
     }
 
@@ -203,6 +201,17 @@ public class SliderView: ControlView {
         }
 
         setupLabelConstraints()
+    }
+
+    private func updateValue(_ value: Double) {
+        guard value != self.value else {
+            return
+        }
+
+        let oldValue = self.value
+        self.value = value
+
+        onValueChanged(.init(oldValue: oldValue, newValue: value))
     }
 
     private func updateLabels() {
