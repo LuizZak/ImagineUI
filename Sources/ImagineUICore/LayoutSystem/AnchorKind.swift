@@ -1,4 +1,4 @@
-public enum AnchorKind {
+public enum AnchorKind: Hashable {
     case width
     case height
     case left

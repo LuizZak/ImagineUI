@@ -3,6 +3,9 @@ import Geometry
 /// A rectangular area in a view that can interact with the layout constraint
 /// system.
 public final class LayoutGuide {
+    /// Used to map active constraints affecting anchors within this view.
+    internal var _constraintsPerAnchor: [AnchorKind: [LayoutConstraint]] = [:]
+
     var layoutVariables: LayoutVariables!
     var constraints: [LayoutConstraint] = []
 
@@ -59,11 +62,15 @@ extension LayoutGuide: LayoutVariablesContainer {
     }
 
     func hasConstraintsOnAnchorKind(_ anchorKind: AnchorKind) -> Bool {
-        constraints.contains { ($0.firstCast._owner === self && $0.firstCast.kind == anchorKind) || ($0.secondCast?._owner === self && $0.secondCast?.kind == anchorKind) }
+        guard let list = _constraintsPerAnchor[anchorKind] else {
+            return false
+        }
+
+        return !list.isEmpty
     }
 
     func constraintsOnAnchorKind(_ anchorKind: AnchorKind) -> [LayoutConstraint] {
-        constraints.filter { ($0.firstCast._owner === self && $0.firstCast.kind == anchorKind) || ($0.secondCast?._owner === self && $0.secondCast?.kind == anchorKind) }
+        return _constraintsPerAnchor[anchorKind, default: []]
     }
 
     func setAreaSkippingLayout(_ area: UIRectangle) {
@@ -83,6 +90,24 @@ extension LayoutGuide: LayoutVariablesContainer {
             try viewInHierarchy.withSuspendedLayout(setNeedsLayout: setNeedsLayout, block)
         } else {
             try block()
+        }
+    }
+
+    func didAddConstraint(_ constraint: LayoutConstraint) {
+        if constraint.firstCast._owner === self {
+            self._constraintsPerAnchor[constraint.firstCast.kind, default: []].append(constraint)
+        }
+        if let secondCast = constraint.secondCast, secondCast._owner === self {
+            self._constraintsPerAnchor[secondCast.kind, default: []].append(constraint)
+        }
+    }
+
+    func didRemoveConstraint(_ constraint: LayoutConstraint) {
+        if constraint.firstCast._owner === self {
+            self._constraintsPerAnchor[constraint.firstCast.kind, default: []].removeAll(where: { $0 == constraint })
+        }
+        if let secondCast = constraint.secondCast, secondCast._owner === self {
+            self._constraintsPerAnchor[secondCast.kind, default: []].removeAll(where: { $0 == constraint })
         }
     }
 }

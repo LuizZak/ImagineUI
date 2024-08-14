@@ -11,6 +11,9 @@ open class View {
     /// internally.
     private var _skipSetNeedsLayoutOnBounds: Bool = false
 
+    /// Used to map active constraints affecting anchors within this view.
+    internal var _constraintsPerAnchor: [AnchorKind: [LayoutConstraint]] = [:]
+
     /// An override to intrinsicSize. Used by View's methods that calculate
     /// minimal content sizes.
     internal var _targetLayoutSize: UISize? = nil
@@ -293,7 +296,7 @@ open class View {
     internal var containedConstraints: [LayoutConstraint] = []
 
     /// A list of constraints that are affecting this view.
-    internal(set) public var constraints: [LayoutConstraint] = []
+    internal(set) public var constraints: [LayoutConstraint] = [] // NOTE: Do not modify directly, except in LayoutConstraint!
 
     /// This view's intrinsic size.
     ///
@@ -409,6 +412,8 @@ open class View {
 
     }
 
+    // MARK: - Redraw Invalidation
+
     /// Suspends invalidate() from affecting this view and its parent
     /// hierarchy.
     ///
@@ -448,8 +453,6 @@ open class View {
 
         return try block()
     }
-
-    // MARK: - Redraw Invalidation
 
     /// Invalidates the entire redraw boundaries of this view.
     ///
@@ -1183,11 +1186,21 @@ open class View {
     // NOTE: adding the methods here instead of extension bellow to allow overriding.
 
     func didAddConstraint(_ constraint: LayoutConstraint) {
-
+        if constraint.firstCast._owner === self {
+            self._constraintsPerAnchor[constraint.firstCast.kind, default: []].append(constraint)
+        }
+        if let secondCast = constraint.secondCast, secondCast._owner === self {
+            self._constraintsPerAnchor[secondCast.kind, default: []].append(constraint)
+        }
     }
 
     func didRemoveConstraint(_ constraint: LayoutConstraint) {
-
+        if constraint.firstCast._owner === self {
+            self._constraintsPerAnchor[constraint.firstCast.kind, default: []].removeAll(where: { $0 == constraint })
+        }
+        if let secondCast = constraint.secondCast, secondCast._owner === self {
+            self._constraintsPerAnchor[secondCast.kind, default: []].removeAll(where: { $0 == constraint })
+        }
     }
 
     // MARK: - Descendent Checking / Hierarchy
@@ -1313,11 +1326,15 @@ extension View: LayoutVariablesContainer {
     }
 
     func hasConstraintsOnAnchorKind(_ anchorKind: AnchorKind) -> Bool {
-        constraints.contains { ($0.firstCast._owner === self && $0.firstCast.kind == anchorKind) || ($0.secondCast?._owner === self && $0.secondCast?.kind == anchorKind) }
+        guard let list = _constraintsPerAnchor[anchorKind] else {
+            return false
+        }
+
+        return !list.isEmpty
     }
 
     func constraintsOnAnchorKind(_ anchorKind: AnchorKind) -> [LayoutConstraint] {
-        constraints.filter { ($0.firstCast._owner === self && $0.firstCast.kind == anchorKind) || ($0.secondCast?._owner === self && $0.secondCast?.kind == anchorKind) }
+        return _constraintsPerAnchor[anchorKind, default: []]
     }
 
     func setAreaSkippingLayout(_ area: UIRectangle) {
