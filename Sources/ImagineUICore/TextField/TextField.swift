@@ -114,6 +114,10 @@ open class TextField: ControlView {
     /// Gets the current active style for this text field.
     public private(set) var style: VisualStyle = VisualStyle()
 
+    open override var intrinsicSize: View.IntrinsicSize {
+        .height(contentInset.top + Double(_label.font.metrics.ascent + _label.font.metrics.descent) + contentInset.bottom)
+    }
+
     open override var canBecomeFirstResponder: Bool { isEnabled }
 
     public override init() {
@@ -177,6 +181,7 @@ open class TextField: ControlView {
         onTextChanged()
 
         updateLabelSize()
+        updateLabelAndPlaceholder()
 
         updatePlaceholderVisibility()
         scrollLabel()
