@@ -15,9 +15,6 @@ open class View {
     /// An override to intrinsicSize. Used by View's methods that calculate
     /// minimal content sizes.
     internal var _targetLayoutSize: UISize? = nil
-    /// Whether this view is currently in the process of calculating an optimal
-    /// size during a `layoutSizeFitting` call.
-    internal var _isSizingLayout: Bool = false
 
     var horizontalCompressResistance: LayoutPriority? = .high {
         didSet {
@@ -52,12 +49,23 @@ open class View {
     let layoutVariables: LayoutVariables = LayoutVariables(name: "View")
 
     var layoutSuspendStackDepth: Int = 0
+    var invalidateSuspendStackDepth: Int = 0
 
     /// Whether the layout of this view is suspended.
-    /// When layout is suspended, the view does not propagates ``setNeedsLayout``
+    ///
+    /// When layout is suspended, the view does not propagate ``setNeedsLayout``
     /// invocations to parent views.
     public var isLayoutSuspended: Bool {
         return layoutSuspendStackDepth > 0
+    }
+
+    /// Whether the invalidations issued by this view or one of its subviews are
+    /// suspended.
+    ///
+    /// When invalidations are suspended, the view does not propagate `invalidate`
+    /// invocations to parent views.
+    public var isInvalidateSuspended: Bool {
+        return invalidateSuspendStackDepth > 0
     }
 
     var rootView: RootView? {
@@ -400,6 +408,94 @@ open class View {
 
     }
 
+    /// Suspends invalidate() from affecting this view and its parent
+    /// hierarchy.
+    ///
+    /// Sequential calls to `suspendInvalidation()` must be balanced with a matching
+    /// number of `resumeInvalidation(invalidate:)` calls later in order for
+    /// invalidation to resume successfully.
+    open func suspendInvalidation() {
+        invalidateSuspendStackDepth += 1
+    }
+
+    /// Resumes invalidation, optionally dispatching a `invalidate()` call
+    /// to the view at the end.
+    ///
+    /// Sequential calls to `resumeInvalidation(invalidate:)` must be balanced
+    /// with a matching number of earlier `suspendInvalidation()` calls in order for
+    /// invalidation to resume successfully.
+    open func resumeInvalidation(invalidate: Bool) {
+        if invalidateSuspendStackDepth > 0 {
+            invalidateSuspendStackDepth -= 1
+        }
+
+        if invalidateSuspendStackDepth == 0 && invalidate {
+            self.invalidate()
+        }
+    }
+
+    /// Performs a given closure while suspending the invalidation of this view,
+    /// optionally dispatching a `invalidate()` call to the view at the end.
+    ///
+    /// Invalidation is resumed whether or not the closure throws before the end
+    /// of the block.
+    open func withSuspendedInvalidation<T>(invalidate: Bool, _ block: () throws -> T) rethrows -> T {
+        suspendInvalidation()
+        defer {
+            resumeInvalidation(invalidate: invalidate)
+        }
+
+        return try block()
+    }
+
+    // MARK: - Redraw Invalidation
+
+    /// Invalidates the entire redraw boundaries of this view.
+    ///
+    /// Equivalent to `self.invalidate(bounds: self.boundsForRedraw())`.
+    open func invalidate() {
+        invalidate(bounds: boundsForRedraw())
+    }
+
+    /// Invalidates a specified region of this view's boundaries.
+    open func invalidate(bounds: UIRectangle) {
+        guard !isInvalidateSuspended else { return }
+
+        var bounds = bounds
+        if clipToBounds {
+            bounds = bounds.intersection(self.boundsForRedraw()) ?? .zero
+        }
+        if bounds.width <= 0 || bounds.height <= 0 {
+            return
+        }
+
+        invalidate(bounds: bounds, spatialReference: self)
+    }
+
+    internal func invalidate(bounds: UIRectangle, spatialReference: SpatialReferenceType) {
+        guard !isInvalidateSuspended else { return }
+
+        superview?.invalidate(bounds: bounds, spatialReference: spatialReference)
+    }
+
+    /// Returns a rectangle that represents the invalidation and redraw area of
+    /// this view in its local coordinates.
+    ///
+    /// Defaults to `self.bounds` on `View` class.
+    open func boundsForRedraw() -> UIRectangle {
+        return bounds
+    }
+
+    /// Returns the bounds for redrawing on the superview's coordinate system
+    func boundsForRedrawOnSuperview() -> UIRectangle {
+        return transform.transform(boundsForRedraw())
+    }
+
+    /// Returns the bounds for redrawing on the screen's coordinate system
+    func boundsForRedrawOnScreen() -> UIRectangle {
+        return absoluteTransform().transform(boundsForRedraw())
+    }
+
     // MARK: - Layout
 
     /// Method automatically called by `View.init()` that can be used to create
@@ -523,7 +619,6 @@ open class View {
     ///
     /// Also invokes `setNeedsLayout()` on superviews recursively.
     open func setNeedsLayout() {
-        guard !_isSizingLayout else { return }
         guard !isLayoutSuspended else { return }
 
         superview?.setNeedsLayout()
@@ -547,30 +642,30 @@ open class View {
     /// active constraints, while approaching the target size as much as possible.
     /// The layout of the view is kept as-is, and no changes to its size are made.
     open func layoutSizeFitting(size: UISize) -> UISize {
-        _isSizingLayout = true
+        return withSuspendedLayout(setNeedsLayout: false) {
+            return withSuspendedInvalidation(invalidate: false) {
+                // Store state for later restoring
+                let previousAreaIntoConstraintsMask = areaIntoConstraintsMask
+                let snapshot = LayoutAreaSnapshot.snapshotHierarchy(self)
 
-        // Store state for later restoring
-        let previousAreaIntoConstraintsMask = areaIntoConstraintsMask
-        let snapshot = LayoutAreaSnapshot.snapshotHierarchy(self)
+                _targetLayoutSize = size
+                areaIntoConstraintsMask = [.location]
 
-        _targetLayoutSize = size
-        areaIntoConstraintsMask = [.location]
+                performConstraintsLayout(cached: true)
 
-        performConstraintsLayout(cached: true)
+                let optimalSize = self.size
 
-        let optimalSize = self.size
+                // Restore views back to previous state
+                snapshot.restore()
+                _targetLayoutSize = nil
+                areaIntoConstraintsMask = previousAreaIntoConstraintsMask
 
-        // Restore views back to previous state
-        snapshot.restore()
-        _targetLayoutSize = nil
-        areaIntoConstraintsMask = previousAreaIntoConstraintsMask
+                // Update constraint cache back
+                performConstraintsLayout(cached: true)
 
-        // Update constraint cache back
-        performConstraintsLayout(cached: true)
-
-        _isSizingLayout = false
-
-        return optimalSize
+                return optimalSize
+            }
+        }
     }
 
     // MARK: - Subviews
@@ -726,52 +821,6 @@ open class View {
     /// - note: Do not add `guide` to any other view hierarchy within this method.
     open func willRemoveLayoutGuide(_ guide: LayoutGuide) {
 
-    }
-
-    // MARK: - Redraw Invalidation
-
-    /// Invalidates the entire redraw boundaries of this view.
-    ///
-    /// Equivalent to `self.invalidate(bounds: self.boundsForRedraw())`.
-    open func invalidate() {
-        invalidate(bounds: boundsForRedraw())
-    }
-
-    /// Invalidates a specified region of this view's boundaries.
-    open func invalidate(bounds: UIRectangle) {
-        var bounds = bounds
-        if clipToBounds {
-            bounds = bounds.intersection(self.boundsForRedraw()) ?? .zero
-        }
-        if bounds.width == 0 || bounds.height == 0 {
-            return
-        }
-
-        invalidate(bounds: bounds, spatialReference: self)
-    }
-
-    internal func invalidate(bounds: UIRectangle, spatialReference: SpatialReferenceType) {
-        guard !_isSizingLayout else { return }
-
-        superview?.invalidate(bounds: bounds, spatialReference: spatialReference)
-    }
-
-    /// Returns a rectangle that represents the invalidation and redraw area of
-    /// this view in its local coordinates.
-    ///
-    /// Defaults to `self.bounds` on `View` class.
-    open func boundsForRedraw() -> UIRectangle {
-        return bounds
-    }
-
-    /// Returns the bounds for redrawing on the superview's coordinate system
-    func boundsForRedrawOnSuperview() -> UIRectangle {
-        return transform.transform(boundsForRedraw())
-    }
-
-    /// Returns the bounds for redrawing on the screen's coordinate system
-    func boundsForRedrawOnScreen() -> UIRectangle {
-        return absoluteTransform().transform(boundsForRedraw())
     }
 
     /// Gets the absolute transformation matrix that encodes the exact transform
@@ -1166,6 +1215,14 @@ open class View {
         }
     }
 
+    /// Returns the first common ancestor between `view1` and `view2`.
+    ///
+    /// If the common ancestor between the views is either `view1` or `view2`,
+    /// that ancestor view is returned.
+    ///
+    /// If no common ancestor exists for the two views, `nil` is returned, instead.
+    ///
+    /// If both views refer to the same view, that view is returned.
     static func firstCommonAncestor(between view1: View, _ view2: View) -> View? {
         if view1 === view2 {
             return view1

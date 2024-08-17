@@ -116,7 +116,7 @@ open class ScrollView: ControlView {
     }
 
     func initialize() {
-        cacheAsBitmap = false
+        bitmapCacheBehavior = .noCaching
         _contentView.areaIntoConstraintsMask = [.location]
         _contentView.onResizeEvent.addListener(weakOwner: self) { [weak self] (_, _) in
             self?.updateScrollBarSizes()
@@ -650,51 +650,4 @@ public class ScrollBarControl: ControlView {
         case horizontal
         case vertical
     }
-
-    /*
-    struct SizeConstraintsInfo {
-        let target: View
-        var widthConstraints: [LayoutConstraint]
-        var heightConstraints: [LayoutConstraint]
-
-        mutating func updating(_ size: UISize?) {// Width
-            widthConstraints.forEach {
-                $0.removeConstraint()
-            }
-
-            if let width = size?.width, width > 0 {
-                widthConstraints =
-                    target.layout
-                    .makeConstraints(updateAreaIntoConstraintsMask: false) { make in
-                        make.width == width
-                    }
-            } else {
-                widthConstraints =
-                    target.layout
-                    .makeConstraints(updateAreaIntoConstraintsMask: false) { make in
-                        (make.width == 0) | LayoutPriority.low
-                    }
-            }
-
-            // Height
-            heightConstraints.forEach {
-                $0.removeConstraint()
-            }
-
-            if let height = size?.height, height > 0 {
-                heightConstraints =
-                    target.layout
-                    .makeConstraints(updateAreaIntoConstraintsMask: false) { make in
-                        make.height == height
-                    }
-            } else {
-                heightConstraints =
-                    target.layout
-                    .makeConstraints(updateAreaIntoConstraintsMask: false) { make in
-                        (make.height == 0) | LayoutPriority.low
-                    }
-            }
-        }
-    }
-    */
 }

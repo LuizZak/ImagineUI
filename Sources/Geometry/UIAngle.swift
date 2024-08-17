@@ -8,6 +8,11 @@ public struct UIAngle: Hashable, Comparable {
     /// Gets the radians representation of this angle.
     public let radians: Double
 
+    /// Gets the degrees representation of this angle.
+    public var degrees: Double {
+        radians * (180.0 / .pi)
+    }
+
     @inlinable
     public init(degrees: Double) {
         self.init(radians: degrees * (.pi / 180))

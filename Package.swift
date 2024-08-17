@@ -6,7 +6,7 @@ import PackageDescription
 var dependencies: [Package.Dependency] = [
     .package(url: "https://github.com/LuizZak/CassowarySwift.git", branch: "cassowary-swift-optimizations"),
     .package(url: "https://github.com/LuizZak/swift-blend2d.git", branch: "master"),
-    .package(url: "https://github.com/LuizZak/swift-bezier.git", branch: "main"),
+    .package(url: "https://github.com/LuizZak/swift-bezier.git", from: "0.6.0"),
 ]
 
 let testUtilsTarget: Target = .target(

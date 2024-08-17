@@ -7,6 +7,17 @@ public struct LayoutConstraintDefinition {
     var multiplier: Double
     var priority: LayoutPriority?
 
+    var affectedContainers: [LayoutVariablesContainer] {
+        var result: [LayoutVariablesContainer] = []
+        if let first = firstCast._owner {
+            result.append(first)
+        }
+        if let second = secondCast?._owner {
+            result.append(second)
+        }
+        return result
+    }
+
     /// Creates the layout constraint defined within this `LayoutConstraintDefinition`
     /// object.
     @discardableResult

@@ -46,7 +46,25 @@ public final class ImagineActorExecutor: SerialExecutor {
 
     public func enqueue(_ job: consuming ExecutorJob) {
         let job = UnownedJob(job)
+        Self.queue.async {
+            job.runSynchronously(on: ImagineActor.sharedUnownedExecutor)
+        }
+        /*
         Self.jobs.append(job)
+        */
+    }
+
+    public static func synchronousOperation(_ block: @ImagineActor () -> Void) {
+        queue.sync(flags: .barrier) {
+            ImagineActor.preconditionIsolated()
+            ImagineActor.shared.assumeIsolated { @ImagineActor _ in
+                block()
+            }
+        }
+    }
+
+    func checkIsolation() {
+        dispatchPrecondition(condition: .onQueue(Self.queue))
     }
 
     public static func flushJobsSynchronously() {

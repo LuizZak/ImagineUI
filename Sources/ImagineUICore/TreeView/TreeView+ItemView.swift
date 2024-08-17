@@ -82,7 +82,7 @@ extension TreeView {
 
             super.init()
 
-            cacheAsBitmap = false
+            bitmapCacheBehavior = .noCaching
             _applyStyle(style.itemStyle.normal)
 
             _iconImageView.scalingMode = .centeredAsIs
@@ -121,6 +121,10 @@ extension TreeView {
             addSubview(_chevronView)
             addSubview(_iconImageView)
             addSubview(_titleView)
+        }
+
+        override func hasIndependentInternalLayout() -> Bool {
+            return true
         }
 
         override func performInternalLayout() {
@@ -185,17 +189,19 @@ extension TreeView {
 
         override func layoutSizeFitting(size: UISize) -> UISize {
             return withSuspendedLayout(setNeedsLayout: false) {
-                let snapshot = LayoutAreaSnapshot.snapshotHierarchy(self)
+                return withSuspendedInvalidation(invalidate: false) {
+                    let snapshot = LayoutAreaSnapshot.snapshotHierarchy(self)
 
-                _performLayout(size: size)
+                    _performLayout(size: size)
 
-                var totalArea = UIRectangle.union(subviews.map(\.area))
-                totalArea = totalArea.stretchingLeft(to: 0)
-                totalArea = totalArea.inset(-_contentInset)
+                    var totalArea = UIRectangle.union(subviews.map(\.area))
+                    totalArea = totalArea.stretchingLeft(to: 0)
+                    totalArea = totalArea.inset(-_contentInset)
 
-                snapshot.restore()
+                    snapshot.restore()
 
-                return max(size, totalArea.size)
+                    return max(size, totalArea.size)
+                }
             }
         }
 
@@ -350,7 +356,7 @@ extension TreeView {
                 super.init()
 
                 foreColor = .gray
-                cacheAsBitmap = false
+                bitmapCacheBehavior = .noCaching
                 mouseDownSelected = true
             }
 

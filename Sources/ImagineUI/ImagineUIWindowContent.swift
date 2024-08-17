@@ -24,6 +24,10 @@ open class ImagineUIWindowContent: ImagineUIContentType, BaseControlSystemDelega
     @ImagineActor
     public let rootView = RootView()
 
+    /// Gets or sets the layout mode of this root view, affecting all future
+    /// `setNeedsLayout` calls.
+    public var layoutMode: LayoutMode = .immediate
+
     /// Control system for this instance.
     @ImagineActor
     public var controlSystem = DefaultControlSystem()
@@ -339,7 +343,15 @@ open class ImagineUIWindowContent: ImagineUIContentType, BaseControlSystemDelega
     /// Signals the delegate that a given root view has invalidated its layout
     /// and needs to update it.
     open func rootViewInvalidatedLayout(_ rootView: RootView) {
-        delegate?.needsLayout(self, rootView)
+        switch layoutMode {
+        case .immediate:
+            Task.detached { @ImagineActor in
+                self.performLayout()
+            }
+
+        case .deferred:
+            delegate?.needsLayout(self, rootView)
+        }
     }
 
     open func rootView(_ rootView: RootView, invalidateRect rect: UIRectangle) {
@@ -374,5 +386,15 @@ open class ImagineUIWindowContent: ImagineUIContentType, BaseControlSystemDelega
 
     open func windowSizeForFullscreen(_ window: Window) -> UISize {
         return _bounds.size
+    }
+
+    /// Controls the layout mode of this window content.
+    public enum LayoutMode {
+        /// Calls to `setNeedsLayout` immediately layouts all root views without
+        /// invoking the content's delegate.
+        case immediate
+
+        /// Layout is deferred via delegate to be performed later.
+        case deferred
     }
 }

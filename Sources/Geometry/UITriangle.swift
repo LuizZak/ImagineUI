@@ -8,12 +8,14 @@ public struct UITriangle: Hashable, Codable {
     /// The centroid of the triangle is at (0, 0).
     ///
     /// The first point is the top-most center point of the triangle.
-    public static let unitEquilateral = UITriangle(x0: 0,
-                                                   y0: -equilateralHeight / 2 - equilateralOffset,
-                                                   x1: 0.5,
-                                                   y1: equilateralHeight / 2 - equilateralOffset,
-                                                   x2: -0.5,
-                                                   y2: equilateralHeight / 2 - equilateralOffset)
+    public static let unitEquilateral = UITriangle(
+        x0: 0,
+        y0: -equilateralHeight / 2 - equilateralOffset,
+        x1: 0.5,
+        y1: equilateralHeight / 2 - equilateralOffset,
+        x2: -0.5,
+        y2: equilateralHeight / 2 - equilateralOffset
+    )
 
     public var p0: UIPoint
     public var p1: UIPoint
@@ -100,21 +102,25 @@ public struct UITriangle: Hashable, Codable {
     public func scaledBy(_ scale: UIVector) -> UITriangle {
         let center = centroid
 
-        return UITriangle(p0: center + (p0 - center) * scale,
-                          p1: center + (p1 - center) * scale,
-                          p2: center + (p2 - center) * scale)
+        return UITriangle(
+            p0: center + (p0 - center) * scale,
+            p1: center + (p1 - center) * scale,
+            p2: center + (p2 - center) * scale
+        )
     }
 
     /// Returns a new copy of this triangle with the vertices offset by a given
     /// pair of coordinates.
     @inlinable
     public func offsetBy(x: Double, y: Double) -> UITriangle {
-        return UITriangle(x0: x0 + x,
-                          y0: y0 + y,
-                          x1: x1 + x,
-                          y1: y1 + y,
-                          x2: x2 + x,
-                          y2: y2 + y)
+        return UITriangle(
+            x0: x0 + x,
+            y0: y0 + y,
+            x1: x1 + x,
+            y1: y1 + y,
+            x2: x2 + x,
+            y2: y2 + y
+        )
     }
 
     /// Returns a new copy of this triangle with the vertices offset by a given
@@ -145,8 +151,10 @@ public struct UITriangle: Hashable, Codable {
     /// Returns a new copy of this triangle with the vertices transformed around
     /// by a given matrix
     public func transformed(by matrix: UIMatrix) -> UITriangle {
-        return UITriangle(p0: matrix.transform(p0),
-                          p1: matrix.transform(p1),
-                          p2: matrix.transform(p2))
+        return UITriangle(
+            p0: matrix.transform(p0),
+            p1: matrix.transform(p1),
+            p2: matrix.transform(p2)
+        )
     }
 }

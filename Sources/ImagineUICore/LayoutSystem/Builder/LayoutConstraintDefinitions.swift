@@ -5,6 +5,35 @@ public struct LayoutConstraintDefinitions {
     @usableFromInline
     var definitions: [LayoutConstraintDefinition]
 
+    /// Returns all layout containers affected by constraints defined within this
+    /// layout constraint definition.
+    func affectedContainers() -> [LayoutVariablesContainer] {
+        definitions.flatMap(\.affectedContainers)
+    }
+
+    /// If the affected containers within this layout constraint definition collection
+    /// have a common superview, returns that superview.
+    ///
+    /// In case all constraints affect a single view, that view is returned.
+    @ImagineActor
+    func commonAffectedSuperview() -> View? {
+        let views = affectedContainers().compactMap(\.viewInHierarchy)
+        guard let first = views.first else {
+            return nil
+        }
+
+        var ancestor = first
+        for view in views.dropFirst() {
+            guard let next = View.firstCommonAncestor(between: ancestor, view) else {
+                return nil
+            }
+
+            ancestor = next
+        }
+
+        return ancestor
+    }
+
     /// Creates the layout constraints defined within this `LayoutConstraintDefinitions`
     /// object.
     @discardableResult

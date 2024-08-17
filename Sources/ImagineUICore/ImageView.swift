@@ -42,17 +42,17 @@ public class ImageView: View {
         guard let image = image else {
             return
         }
-        
+
         switch scalingMode {
         case .topLeftAsIs:
             renderer.drawImage(image, at: .zero)
-        
+
         default:
             let imageRect = scalingMode.apply(container: bounds, imageSize: UISize(image.size))
             renderer.drawImageScaled(image, area: imageRect)
         }
     }
-    
+
     /// Indicates the image scaling strategy to use when rendering an image that
     /// has a different size to the image view that contains it.
     public enum ImageScale {
@@ -91,7 +91,12 @@ public class ImageView: View {
                 let num2 = container.height / size2.height;
 
                 if size2.width <= container.width && size2.height <= container.height {
-                    return UIRectangle(x: container.width / 2 - size2.width / 2, y: container.height / 2 - size2.height / 2, width: size2.width, height: size2.height)
+                    return UIRectangle(
+                        x: container.width / 2 - size2.width / 2,
+                        y: container.height / 2 - size2.height / 2,
+                        width: size2.width,
+                        height: size2.height
+                    )
                 }
 
                 if num >= num2 {
