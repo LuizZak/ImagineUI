@@ -92,7 +92,7 @@ open class Button: ControlView {
     ///
     /// The color is automatically used to paint the button's background on
     /// subsequent `renderBackground(renderer:screenRegion:)` calls.
-    func setBackgroundColor(_ color: Color, forState state: ControlViewState) {
+    public func setBackgroundColor(_ color: Color, forState state: ControlViewState) {
         _backColor.setValue(color, forState: state)
 
         if state == controlState {
