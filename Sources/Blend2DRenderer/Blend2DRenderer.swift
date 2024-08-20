@@ -24,10 +24,22 @@ public class Blend2DRenderer: Renderer {
         _stroke.setStyle(in: _context)
     }
 
+    // MARK: - Composition mode
+
+    public var compositionMode: CompositionMode {
+        CompositionMode(compOp: _context.compOp) ?? .sourceOver
+    }
+
+    /// Changes the composition mode to a given value.
+    public func setCompositionMode(_ compositionMode: CompositionMode) {
+        _context.compOp = compositionMode.asBLCompOp
+    }
+
     // MARK: - Clear
 
     public func clear() {
         _context.clearAll()
+        _context.compOp = .colorBurn
     }
 
     /// Clears all the pixels back into a given color.

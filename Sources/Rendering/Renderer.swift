@@ -7,6 +7,14 @@ public protocol Renderer {
     /// Gets the context for this renderer
     var context: RenderContext { get }
 
+    // MARK: - Composition mode
+
+    /// Gets the active composition mode.
+    var compositionMode: CompositionMode { get }
+
+    /// Changes the composition mode to a given value.
+    func setCompositionMode(_ compositionMode: CompositionMode)
+
     // MARK: - Clear
 
     /// Clears all the pixels back into a transparent black (#000000) color.

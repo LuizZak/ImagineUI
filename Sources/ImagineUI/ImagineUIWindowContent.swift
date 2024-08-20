@@ -166,6 +166,7 @@ open class ImagineUIWindowContent: ImagineUIContentType, BaseControlSystemDelega
 
     open func render(renderer: Renderer, renderScale: UIVector, clipRegion: ClipRegionType) {
         renderer.resetTransform()
+        renderer.setCompositionMode(.sourceOver)
         renderer.scale(by: renderScale)
 
         if let backgroundColor = backgroundColor {
