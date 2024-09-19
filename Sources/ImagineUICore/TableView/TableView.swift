@@ -1,7 +1,7 @@
 import Text
 
 /// A view for displaying tabulated data with columns and rows.
-public class TableView {
+public class TableView: ControlView {
     /// Set of currently selected items.
     var selectedItems: Set<ItemIndex> = []
 
@@ -29,6 +29,14 @@ public class TableView {
 
     /// Reloads the data of this table view.
     public func reloadData() {
+
+    }
+
+    private func _populateColumns() {
+
+    }
+
+    private func _populateRows() {
 
     }
 }
