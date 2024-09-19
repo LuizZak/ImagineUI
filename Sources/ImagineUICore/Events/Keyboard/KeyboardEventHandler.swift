@@ -22,8 +22,8 @@ public protocol KeyboardEventHandler: EventHandler {
 }
 
 public extension KeyboardEventHandler {
-    func onKeyPress(_ event: KeyPressEventArgs) { }
-    func onKeyDown(_ event: KeyEventArgs) { }
-    func onKeyUp(_ event: KeyEventArgs) { }
-    func onPreviewKeyDown(_ event: PreviewKeyDownEventArgs) { }
+    func onKeyPress(_ event: KeyPressEventArgs) async { }
+    func onKeyDown(_ event: KeyEventArgs) async { }
+    func onKeyUp(_ event: KeyEventArgs) async { }
+    func onPreviewKeyDown(_ event: PreviewKeyDownEventArgs) async { }
 }

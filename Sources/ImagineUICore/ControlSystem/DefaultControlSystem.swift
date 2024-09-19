@@ -160,7 +160,7 @@ public class DefaultControlSystem: BaseControlSystem {
         hideTooltip(stopTimers: true)
 
         let request = InnerKeyboardEventRequest(eventType: .keyDown) { handler in
-            handler.onKeyDown(event)
+            await handler.onKeyDown(event)
         }
 
         await responder.handleOrPass(request)
@@ -174,7 +174,7 @@ public class DefaultControlSystem: BaseControlSystem {
         hideTooltip(stopTimers: true)
 
         let request = InnerKeyboardEventRequest(eventType: .keyUp) { handler in
-            handler.onKeyUp(event)
+            await handler.onKeyUp(event)
         }
 
         await responder.handleOrPass(request)
@@ -188,7 +188,7 @@ public class DefaultControlSystem: BaseControlSystem {
         hideTooltip(stopTimers: true)
 
         let request = InnerKeyboardEventRequest(eventType: .keyPress) { handler in
-            handler.onKeyPress(event)
+            await handler.onKeyPress(event)
         }
 
         await responder.handleOrPass(request)
@@ -202,7 +202,7 @@ public class DefaultControlSystem: BaseControlSystem {
         hideTooltip(stopTimers: true)
 
         let request = InnerKeyboardEventRequest(eventType: .previewKeyDown) { handler in
-            handler.onPreviewKeyDown(event)
+            await handler.onPreviewKeyDown(event)
         }
 
         await responder.handleOrPass(request)
