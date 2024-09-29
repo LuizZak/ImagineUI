@@ -1,7 +1,7 @@
 import Foundation
 
 /// A 2D size with double-precision floating point parameters
-public struct UISize: Hashable, Codable {
+public struct UISize: Hashable, Codable, Sendable {
     public typealias Scalar = Double
 
     public static let zero: Self = .init()

@@ -1,4 +1,4 @@
-public struct UIPolygon: Hashable, Codable {
+public struct UIPolygon: Hashable, Codable, Sendable {
     public typealias Scalar = UIPoint.Scalar
 
     public var vertices: [UIPoint]

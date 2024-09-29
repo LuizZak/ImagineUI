@@ -2,7 +2,7 @@ import Foundation
 
 /// A section of an ellipse represented as a center, radius, start angle, and sweep
 /// angle.
-public struct UIEllipseArc: Hashable, Codable {
+public struct UIEllipseArc: Hashable, Codable, Sendable {
     public typealias Scalar = Double
 
     public var center: UIPoint

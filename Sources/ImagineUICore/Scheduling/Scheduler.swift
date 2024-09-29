@@ -61,7 +61,7 @@ public final class Scheduler {
     public func scheduleTimer(interval: TimeInterval, repeats: Bool = false, _ block: @escaping () async -> Void) -> SchedulerTimerType {
         let task = Task.detached {
             repeat {
-                try await Task.sleep(until: .now + .seconds(interval))
+                try await Task.sleep(for: .seconds(interval))
 
                 await block()
             } while repeats

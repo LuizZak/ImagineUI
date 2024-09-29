@@ -1,6 +1,6 @@
 import Foundation
 
-public struct UICircle: Hashable, Codable {
+public struct UICircle: Hashable, Codable, Sendable {
     /// The arc type for a circle.
     public typealias Arc = UICircleArc
 

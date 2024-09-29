@@ -1,5 +1,5 @@
 /// A 2D size with integer parameters
-public struct UIIntSize: Hashable, Codable {
+public struct UIIntSize: Hashable, Codable, Sendable {
     public typealias Scalar = Int
 
     public static let zero: Self = .init()

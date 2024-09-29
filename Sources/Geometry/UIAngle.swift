@@ -1,6 +1,6 @@
 /// A representation of an angle, clamped to always be between 0 - 2pi, or
 /// 0 - 360 degrees.
-public struct UIAngle: Hashable, Comparable {
+public struct UIAngle: Hashable, Comparable, Sendable {
     /// Gets the angle for the mathematical constant pi (π), approximately equal
     /// to 3.14159.
     public static let pi: Self = Self(radians: .pi)

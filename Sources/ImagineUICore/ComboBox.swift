@@ -270,11 +270,13 @@ open class ComboBox: ControlView {
     /// A data source for combo box view contents.
     public protocol DataSource: AnyObject {
         /// Requests the number of items for this combo box.
+        @ImagineActor
         func comboBoxItemCount(
             _ comboBox: ComboBox
         ) -> Int
 
         /// Requests the combo box item for the given index.
+        @ImagineActor
         func comboBox(
             _ comboBox: ComboBox,
             itemAt index: Int
@@ -282,6 +284,7 @@ open class ComboBox: ControlView {
 
         /// Requests an index to use as a selected item to present on this combo
         /// box.
+        @ImagineActor
         func comboBoxSelectedItemIndex(
             _ comboBox: ComboBox
         ) -> Int

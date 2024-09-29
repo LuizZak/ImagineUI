@@ -1,6 +1,6 @@
 import Foundation
 
-public struct UIEllipse: Hashable, Codable {
+public struct UIEllipse: Hashable, Codable, Sendable {
     /// The arc type for an ellipse.
     public typealias Arc = UIEllipseArc
 

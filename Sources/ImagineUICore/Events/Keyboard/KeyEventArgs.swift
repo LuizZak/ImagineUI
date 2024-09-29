@@ -1,5 +1,5 @@
 /// The arguments for a keyboard event that is forwarded to event listeners.
-public class KeyEventArgs {
+public class KeyEventArgs: Sendable {
     /// The actual realized key code of the key press.
     public let keyCode: Keys
 
@@ -29,7 +29,7 @@ public class KeyEventArgs {
         self.handled = false
     }
 
-    /// Creates a copy of this event, modifying the return value's `keyCode` 
+    /// Creates a copy of this event, modifying the return value's `keyCode`
     /// to a specified value.
     public func withKeyCode(_ keyCode: Keys) -> KeyEventArgs {
         let result = KeyEventArgs(keyCode: keyCode, keyChar: keyChar, modifiers: modifiers)
@@ -38,7 +38,7 @@ public class KeyEventArgs {
         return result
     }
 
-    /// Creates a copy of this event, modifying the return value's `keyChar` 
+    /// Creates a copy of this event, modifying the return value's `keyChar`
     /// to a specified value.
     public func withKeyChar(_ keyChar: String?) -> KeyEventArgs {
         let result = KeyEventArgs(keyCode: keyCode, keyChar: keyChar, modifiers: modifiers)
@@ -47,7 +47,7 @@ public class KeyEventArgs {
         return result
     }
 
-    /// Creates a copy of this event, modifying the return value's `modifiers` 
+    /// Creates a copy of this event, modifying the return value's `modifiers`
     /// to a specified value.
     public func withModifiers(_ modifiers: KeyboardModifier) -> KeyEventArgs {
         let result = KeyEventArgs(keyCode: keyCode, keyChar: keyChar, modifiers: modifiers)

@@ -2,7 +2,7 @@ import Foundation
 
 /// A section of a circle represented as a center, radius, start angle, and sweep
 /// angle.
-public struct UICircleArc: Hashable, Codable {
+public struct UICircleArc: Hashable, Codable, Sendable {
     public typealias Scalar = Double
 
     public var center: UIPoint

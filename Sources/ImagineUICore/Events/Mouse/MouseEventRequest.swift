@@ -24,7 +24,7 @@ public protocol MouseEventRequest: EventRequest {
     /// Currently not implemented in `ImagineUICore`, but platform implementers
     /// may attribute this value to a sequential click counting, anyway.
     var clicks: Int { get }
-    
+
     /// Keyboard modifiers that where pressed when this event was issued.
     var modifiers: KeyboardModifier { get }
 }

@@ -1,7 +1,7 @@
 import Foundation
 
 /// A 2D point with integer coordinates
-public struct UIIntPoint: Hashable, Codable {
+public struct UIIntPoint: Hashable, Codable, Sendable {
     public typealias Scalar = Int
 
     public static let zero: Self = .init()

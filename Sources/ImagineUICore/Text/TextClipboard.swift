@@ -1,3 +1,4 @@
+@ImagineActor
 public var globalTextClipboard: TextClipboard? {
     @_transparent
     willSet {
@@ -18,6 +19,7 @@ public protocol TextClipboard {
     func containsText() -> Bool
 }
 
+@ImagineActor
 class GlobalTextClipboard: TextClipboard {
     func getText() -> String? {
         return globalTextClipboard?.getText()

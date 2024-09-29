@@ -1,7 +1,7 @@
 import Geometry
 
 /// Arguments for a mouse event that is forwarded to event listeners.
-public struct MouseEventArgs {
+public struct MouseEventArgs: Sendable {
     /// The coordinates of the mouse at the time of this event. This value is
     /// in local-coordinates space, and control systems already transform the
     /// mouse location from screen-space to local view-spaced based on the handler
@@ -27,7 +27,7 @@ public struct MouseEventArgs {
 
     /// Keyboard modifiers that where pressed when this event was issued.
     public var modifiers: KeyboardModifier
-    
+
     public init(
         location: UIVector,
         buttons: MouseButton,
@@ -35,7 +35,7 @@ public struct MouseEventArgs {
         clicks: Int,
         modifiers: KeyboardModifier
     ) {
-        
+
         self.location = location
         self.buttons = buttons
         self.delta = delta

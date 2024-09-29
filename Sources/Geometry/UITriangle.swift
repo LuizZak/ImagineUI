@@ -1,5 +1,5 @@
 /// A triangle consisting of three points.
-public struct UITriangle: Hashable, Codable {
+public struct UITriangle: Hashable, Codable, Sendable {
     private static let equilateralHeight = 0.866025404
     private static let equilateralOffset = 0.14433756733333333
 

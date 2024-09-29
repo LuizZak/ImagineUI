@@ -2,7 +2,7 @@ import ImagineUICore
 
 /// A protocol for types that implement a complete self-contained ImagineUI
 /// implementation.
-public protocol ImagineUIContentType: AnyObject {
+public protocol ImagineUIContentType: AnyObject, Sendable {
     /// Gets the current content's size, in pixels.
     var size: UIIntSize { get }
 

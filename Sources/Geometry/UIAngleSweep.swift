@@ -1,6 +1,6 @@
 /// A pair of angle + angle range values that can be used to test inclusivity of
 /// `UIAngle` values.
-public struct UIAngleSweep {
+public struct UIAngleSweep: Sendable {
     public typealias Scalar = Double
 
     public var start: UIAngle

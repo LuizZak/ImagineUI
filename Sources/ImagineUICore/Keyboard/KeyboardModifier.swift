@@ -1,4 +1,4 @@
-public struct KeyboardModifier: OptionSet {
+public struct KeyboardModifier: OptionSet, Sendable {
     public var rawValue: Int
 
     public init(rawValue: Int) {
@@ -17,10 +17,10 @@ public struct KeyboardModifier: OptionSet {
 
     /// Note: Only available on macOS
     public static let option = KeyboardModifier(rawValue: 0b10000)
-    
+
     /// Note: Only available on macOS
     public static let numericPad = KeyboardModifier(rawValue: 0b100000)
-    
+
     #endif
 }
 
@@ -28,16 +28,16 @@ public extension KeyboardModifier {
     #if os(macOS)
 
     /// OS-equivalent to 'control', for keyboard modifiers.
-    /// On macOS, this property is the same as ``command``, and on windows and 
+    /// On macOS, this property is the same as ``command``, and on windows and
     /// Linux, ``control``.
     static let osControlKey = KeyboardModifier.command
 
     #else
 
     /// OS-equivalent to 'control', for keyboard modifiers.
-    /// On macOS, this property is the same as ``command``, and on windows and 
+    /// On macOS, this property is the same as ``command``, and on windows and
     /// Linux, ``control``.
     static let osControlKey = KeyboardModifier.control
-    
+
     #endif
 }

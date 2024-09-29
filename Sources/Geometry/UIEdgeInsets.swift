@@ -1,4 +1,4 @@
-public struct UIEdgeInsets: Hashable, Codable {
+public struct UIEdgeInsets: Hashable, Codable, Sendable {
     public typealias Scalar = Double
 
     public static let zero: Self = .init()

@@ -1,5 +1,5 @@
 /// A 2D rectangle with integer coordinates and size
-public struct UIIntRectangle: Hashable, Codable {
+public struct UIIntRectangle: Hashable, Codable, Sendable {
     public typealias Scalar = Int
 
     public static let zero: Self = .init()

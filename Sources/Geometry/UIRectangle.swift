@@ -1,5 +1,5 @@
 /// A 2D rectangle with double-precision floating-point coordinates and size
-public struct UIRectangle: Hashable, Codable {
+public struct UIRectangle: Hashable, Codable, Sendable {
     public typealias Scalar = Double
 
     public static let zero: Self = .init()

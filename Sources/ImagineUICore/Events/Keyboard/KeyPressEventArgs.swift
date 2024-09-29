@@ -1,5 +1,5 @@
 /// The event arguments for a character-based key press event.
-public class KeyPressEventArgs {
+public class KeyPressEventArgs: Sendable {
     /// The textual character for the key press event.
     /// May be any valid character input from a user's keyboard.
     ///

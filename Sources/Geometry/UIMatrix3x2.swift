@@ -52,7 +52,7 @@ import Foundation
 /// double-precision floating-point components.
 ///
 /// [affine transformations]: http://en.wikipedia.org/wiki/Affine_transformation
-public struct UIMatrix: Hashable, Codable, CustomStringConvertible {
+public struct UIMatrix: Hashable, Codable, CustomStringConvertible, Sendable {
     public typealias Scalar = Double
     public typealias Vector = UIVector
 

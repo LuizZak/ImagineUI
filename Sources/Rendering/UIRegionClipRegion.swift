@@ -1,7 +1,7 @@
 import Geometry
 
 /// A clipping region backed by a `UIRegion` instance.
-public class UIRegionClipRegion: ClipRegionType {
+public class UIRegionClipRegion: ClipRegionType, @unchecked Sendable {
     private let _bounds: UIRectangle
     private let _region: UIRegion
 

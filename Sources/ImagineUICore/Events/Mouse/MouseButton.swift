@@ -1,5 +1,5 @@
 /// Specifies one or more mouse buttons as a set of options.
-public struct MouseButton: OptionSet {
+public struct MouseButton: OptionSet, Sendable {
     public var rawValue: Int
 
     public init(rawValue: Int) {

@@ -1,4 +1,4 @@
-public struct UIRoundRectangle: Hashable, Codable {
+public struct UIRoundRectangle: Hashable, Codable, Sendable {
     public typealias Scalar = UIRectangle.Scalar
 
     public static let zero: Self = .init()

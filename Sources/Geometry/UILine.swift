@@ -1,4 +1,4 @@
-public struct UILine: Hashable, Codable {
+public struct UILine: Hashable, Codable, Sendable {
     public typealias Scalar = UIPoint.Scalar
 
     public static let zero: Self = .init()

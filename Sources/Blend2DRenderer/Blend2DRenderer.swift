@@ -2,7 +2,7 @@
 import Text
 import Rendering
 
-public class Blend2DRenderer: Renderer {
+public class Blend2DRenderer: Renderer, @unchecked Sendable {
     private var _stroke: StrokeStyle
     private var _fill: FillStyle
     internal var _context: BLContext

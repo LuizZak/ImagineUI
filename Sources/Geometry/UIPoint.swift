@@ -1,7 +1,7 @@
 import Foundation
 
 /// A 2D point with double-precision floating point coordinates
-public struct UIPoint: Hashable, Codable {
+public struct UIPoint: Hashable, Codable, Sendable {
     public typealias Scalar = Double
 
     public static let zero: Self = .init()
