@@ -1,66 +1,50 @@
 import Geometry
 import SwiftBlend2D
 
-extension UIBezier.DrawOperation {
-    func apply(to path: BLPath) {
-        switch self {
-        case .line(let start, let end):
-            path.addLine(.init(start: start.asBLPoint, end: end.asBLPoint))
-
-        case .arc(let arc):
-            path.addArc(arc.asBLArc)
-
-        case .quadBezier(let bezier):
-            let points = bezier.points
-
-            path.moveTo(points[0].asBLPoint)
-            path.quadTo(points[1].asBLPoint, points[2].asBLPoint)
-
-        case .cubicBezier(let bezier):
-            let points = bezier.points
-
-            path.moveTo(points[0].asBLPoint)
-            path.cubicTo(points[1].asBLPoint, points[2].asBLPoint, points[3].asBLPoint)
-        }
-    }
-}
-
-extension Collection where Element == UIBezier.DrawOperation {
+extension Collection where Element == UIBezier.Operation {
     func toBLPath() -> BLPath {
         let path = BLPath()
-        var lastVertex: UIPoint?
+        var lastVertex: BLPoint?
 
         for op in self {
             switch op {
-            case .line(let start, let end):
-                path.addLine(.init(start: start.asBLPoint, end: end.asBLPoint))
+            case .moveTo(let point):
+                path.moveTo(point.asBLPoint)
+                lastVertex = point.asBLPoint
 
-                lastVertex = end
+            case .lineTo(let point):
+                path.lineTo(point.asBLPoint)
+                lastVertex = point.asBLPoint
 
-            case .arc(let arc):
-                path.addArc(arc.asBLArc)
-
-                lastVertex = arc.endPoint
-
-            case .quadBezier(let bezier):
-                let points = bezier.points
-
-                if points[0] != lastVertex {
-                    path.moveTo(points[0].asBLPoint)
+            case .arc(let end, let sweepAngle):
+                guard let start = lastVertex else {
+                    lastVertex = end.asBLPoint
+                    continue
                 }
-                path.quadTo(points[1].asBLPoint, points[2].asBLPoint)
 
-                lastVertex = bezier.lastPoint
+                let arc = UICircleArc(
+                    startPoint: start.asUIVector,
+                    endPoint: end,
+                    sweepAngle: sweepAngle
+                )
 
-            case .cubicBezier(let bezier):
-                let points = bezier.points
+                path.arcTo(
+                    center: arc.center.asBLPoint,
+                    radius: BLPoint(x: arc.radius, y: arc.radius),
+                    start: arc.startAngle,
+                    sweep: arc.sweepAngle,
+                    forceMoveTo: false
+                )
 
-                if points[0] != lastVertex {
-                    path.moveTo(points[0].asBLPoint)
-                }
-                path.cubicTo(points[1].asBLPoint, points[2].asBLPoint, points[3].asBLPoint)
+                lastVertex = end.asBLPoint
 
-                lastVertex = bezier.lastPoint
+            case .quadTo(let end, let cp1):
+                path.quadTo(end.asBLPoint, cp1.asBLPoint)
+                lastVertex = end.asBLPoint
+
+            case .cubicTo(let end, let cp1, let cp2):
+                path.cubicTo(cp1.asBLPoint, cp2.asBLPoint, end.asBLPoint)
+                lastVertex = end.asBLPoint
             }
         }
 

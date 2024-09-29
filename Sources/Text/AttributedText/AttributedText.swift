@@ -19,12 +19,20 @@ public struct AttributedText: Equatable {
         return segments.contains(where: { !$0.textAttributes.isEmpty })
     }
 
-    /// Returns true if this attributed text's string contents are empty.
+    /// Returns true if this attributed text's contents are empty.
+    ///
+    /// Certain attributes are flagged as non-empty even if the attached text
+    /// segments are textually empty, like image attributes.
     public var isEmpty: Bool {
+        return segments.allSatisfy(\.isEmpty)
+    }
+
+    /// Returns true if this attributed text's string contents are empty.
+    public var isTextEmpty: Bool {
         return text.isEmpty
     }
 
-    /// Returns the text segments for this attributed string
+    /// Returns the text segments for this attributed string.
     public var textSegments: [TextSegment] {
         return segments
     }
@@ -35,20 +43,27 @@ public struct AttributedText: Equatable {
         return TextRange(start: 0, length: length)
     }
 
+    /// Initializes a new empty `AttributedText` instance.
     public init() {
         self.init("")
     }
 
+    /// Initializes a new `AttributedText` instance with a given non-attributed
+    /// text segment.
     public init(_ text: String) {
         self.init(text, attributes: [:])
     }
 
+    /// Initializes a new `AttributedText` instance with a given text segment and
+    /// attribute set.
     public init(_ text: String, attributes: Attributes) {
         self.text = text
         segments = [
-            TextSegment(text: text,
-                        textAttributes: attributes,
-                        textRange: TextRange(start: 0, length: text.count))
+            TextSegment(
+                text: text,
+                textAttributes: attributes,
+                textRange: TextRange(start: 0, length: text.count)
+            )
         ]
     }
 
@@ -58,6 +73,8 @@ public struct AttributedText: Equatable {
         segments.reserveCapacity(segmentCount)
     }
 
+    /// Removes all segments, replacing them with a given non-attributed textual
+    /// string.
     public mutating func setText(_ text: String) {
         self.text = ""
         segments.removeAll()
@@ -65,12 +82,14 @@ public struct AttributedText: Equatable {
         append(text)
     }
 
+    /// Appends a new non-attributed segment at the end of this attributed text.
     public mutating func append(_ string: String) {
         append(string, attributes: [:])
     }
 
+    /// Appends an attributed segment at the end of this attributed text.
     public mutating func append(_ string: String, attributes: Attributes) {
-        if text.isEmpty {
+        if isEmpty {
             // Remove dummy empty segment
             segments.removeAll()
         }
@@ -88,6 +107,7 @@ public struct AttributedText: Equatable {
         mergeSegments()
     }
 
+    /// Appends a given attributed text at the end of this attributed text.
     public mutating func append(_ attributedText: AttributedText) {
         let newLimit = text.count
 
@@ -104,6 +124,7 @@ public struct AttributedText: Equatable {
         mergeSegments()
     }
 
+    /// Sets the attributes for a given textual range within this attributed text.
     public mutating func setAttributes(_ range: TextRange, _ attributes: Attributes) {
         if range.length == 0 {
             return
@@ -120,6 +141,8 @@ public struct AttributedText: Equatable {
         mergeSegments()
     }
 
+    /// Appends attributes to already existing attributes at a given textual range
+    /// within this attributed text.
     public mutating func addAttributes(_ range: TextRange, _ attributes: Attributes) {
         if range.length == 0 {
             return
@@ -141,7 +164,8 @@ public struct AttributedText: Equatable {
         mergeSegments()
     }
 
-    /// Removes all attributes on a given text range
+    /// Removes all attributes on a given textual range within this attributed
+    /// text.
     public mutating func removeAllAttributes(_ range: TextRange) {
         if range.length == 0 {
             return
@@ -158,6 +182,8 @@ public struct AttributedText: Equatable {
         mergeSegments()
     }
 
+    /// Removes all attributes matching the given keys on a given textual range
+    /// within this attributed text.
     public mutating func removeAttributes(_ range: TextRange, attributeKeys: Set<Attributes.Key>) {
         if range.length == 0 {
             return
@@ -179,6 +205,8 @@ public struct AttributedText: Equatable {
         mergeSegments()
     }
 
+    /// Inserts a new segment with an optional set of attributes at a given
+    /// grapheme-cluster index within this attributed text.
     public mutating func insert(_ string: String, at index: Int, attributes: Attributes = [:]) {
         splitSegmentUnder(index)
 
@@ -188,10 +216,16 @@ public struct AttributedText: Equatable {
             }
         }
 
-        let segment = TextSegment(text: string,
-                                  textAttributes: attributes,
-                                  textRange: TextRange(start: index, length: string.count))
-        let segmentIndex = segments.firstIndex(where: { $0.textRange.start > index }) ?? segments.count
+        let segment = TextSegment(
+            text: string,
+            textAttributes: attributes,
+            textRange: TextRange(start: index, length: string.count)
+        )
+        let segmentIndex =
+            segments.firstIndex(where: {
+                $0.textRange.start > index
+            }) ?? segments.count
+
         segments.insert(segment, at: segmentIndex)
 
         let offset = text.index(text.startIndex, offsetBy: index)
@@ -200,6 +234,8 @@ public struct AttributedText: Equatable {
         mergeSegments()
     }
 
+    /// Inserts an attributed text as a segment with an optional set of overriden
+    /// attributes at a given grapheme-cluster index within this attributed text.
     public mutating func insert(_ attributed: AttributedText, at index: Int, attributes: Attributes = [:]) {
         splitSegmentUnder(index)
 
@@ -363,12 +399,26 @@ public struct AttributedText: Equatable {
         public var textAttributes: Attributes
         public var textRange: TextRange
 
+        /// Returns `true` if this text segment is considered empty, i.e. it has
+        /// no text nor content-attributes like images.
+        public var isEmpty: Bool {
+            guard text.isEmpty else {
+                return false
+            }
+
+            return !textAttributes.values.contains(where: \.isContentAttribute)
+        }
+
         public func attribute<T: TextAttributeType>(named name: AttributeName, type: T.Type) -> T? {
             return textAttributes[name] as? T
         }
 
         func cloneWithAttributes(_ attributes: Attributes) -> TextSegment {
-            return TextSegment(text: text, textAttributes: attributes, textRange: textRange)
+            return TextSegment(
+                text: text,
+                textAttributes: attributes,
+                textRange: textRange
+            )
         }
 
         func attributesMatch(_ other: TextSegment) -> Bool {
@@ -390,9 +440,11 @@ public struct AttributedText: Equatable {
         }
 
         func merging(with other: TextSegment) -> TextSegment {
-            return TextSegment(text: text + other.text,
-                               textAttributes: textAttributes.merging(other.textAttributes, uniquingKeysWith: { $1 }),
-                               textRange: textRange.union(other.textRange))
+            return TextSegment(
+                text: text + other.text,
+                textAttributes: textAttributes.merging(other.textAttributes, uniquingKeysWith: { $1 }),
+                textRange: textRange.union(other.textRange)
+            )
         }
 
         public static func == (lhs: AttributedText.TextSegment, rhs: AttributedText.TextSegment) -> Bool {
@@ -478,7 +530,17 @@ struct Attribute<T> {
 /// Describes a type that can be used as a text attribute value in an
 /// `AttributedText`'s attributes dictionary
 public protocol TextAttributeType {
+    /// Returns `true` if the presence of this text attribute alone should constitute
+    /// as content in a segment it decorates.
+    ///
+    /// Should be `false` for attributes that strictly decorates attached text.
+    var isContentAttribute: Bool { get }
+
     func isEqual(to other: TextAttributeType) -> Bool
+}
+
+public extension TextAttributeType {
+    var isContentAttribute: Bool { false }
 }
 
 public extension TextAttributeType where Self: Equatable {

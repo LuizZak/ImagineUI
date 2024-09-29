@@ -146,22 +146,36 @@ public struct UIIntRectangle: Hashable, Codable, Sendable {
         self.location = location
         self.size = size
     }
+    @_transparent
+    public init(rounding rectangle: UIRectangle) {
+        self.init(
+            location: UIIntPoint(rounding: rectangle.location),
+            size: UIIntSize(rounding: rectangle.size)
+        )
+    }
 
     @_transparent
     public init(minimum: UIIntPoint, maximum: UIIntPoint) {
-        self.init(location: minimum, size: (maximum - minimum).asUIIntSize)
+        self.init(
+            location: minimum,
+            size: (maximum - minimum).asUIIntSize
+        )
     }
 
     @_transparent
     public init(x: Scalar, y: Scalar, width: Scalar, height: Scalar) {
-        self.init(location: .init(x: x, y: y),
-                  size: .init(width: width, height: height))
+        self.init(
+            location: .init(x: x, y: y),
+            size: .init(width: width, height: height)
+        )
     }
 
     @_transparent
     public init(left: Scalar, top: Scalar, right: Scalar, bottom: Scalar) {
-        self.init(minimum: .init(x: left, y: top),
-                  maximum: .init(x: right, y: bottom))
+        self.init(
+            minimum: .init(x: left, y: top),
+            maximum: .init(x: right, y: bottom)
+        )
     }
 
     @_transparent

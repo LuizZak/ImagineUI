@@ -6,7 +6,7 @@
       "location" : "https://github.com/LuizZak/CassowarySwift.git",
       "state" : {
         "branch" : "cassowary-swift-optimizations",
-        "revision" : "b2377a0bb3c0cb43f63278f1a2ef85384d370861"
+        "revision" : "eecee2e108fca14a002cf8bd6562f35722bc3627"
       }
     },
     {
@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/LuizZak/swift-bezier.git",
       "state" : {
-        "branch" : "main",
-        "revision" : "e75de4785793617e2f5190b5d0046bd360cdd259"
+        "revision" : "7061d2e5396e006e6b80313510c3689917d9569d",
+        "version" : "0.6.0"
       }
     },
     {
@@ -24,16 +24,7 @@
       "location" : "https://github.com/LuizZak/swift-blend2d.git",
       "state" : {
         "branch" : "master",
-        "revision" : "855fe139f972fea76afceba23a289846df03ec5d"
-      }
-    },
-    {
-      "identity" : "swift-libpng",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/LuizZak/swift-libpng.git",
-      "state" : {
-        "branch" : "master",
-        "revision" : "c059e4a34d0a84a2a1cc7eac8acdb8fa3ab8142f"
+        "revision" : "eb46af62b74d5a451116db54a8f9670dceb31ab1"
       }
     }
   ],

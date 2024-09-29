@@ -33,6 +33,12 @@ public class DefaultControlSystem: BaseControlSystem {
         delegate?.tooltipsManager()
     }
 
+    /// If this control system should issue `bringRootViewToFront(_:)` calls when
+    /// mouse interactions are issued to root views.
+    ///
+    /// Defaults to `true`.
+    public var shouldReorderRootViews: Bool = true
+
     override public init() {
 
     }
@@ -77,7 +83,7 @@ public class DefaultControlSystem: BaseControlSystem {
 
         // Request that the given root view be brought to the front of the views
         // list to be rendered on top of all other views.
-        if let rootView = control.rootView {
+        if shouldReorderRootViews, let rootView = control.rootView {
             bringRootViewToFront(rootView)
         }
 
@@ -180,9 +186,9 @@ public class DefaultControlSystem: BaseControlSystem {
         await responder.handleOrPass(request)
     }
 
-    public override func onKeyPress(_ event: KeyPressEventArgs) async {
+    public override func onKeyPress(_ event: KeyPressEventArgs) async -> Bool {
         guard let responder = _firstResponder else {
-            return
+            return false
         }
 
         hideTooltip(stopTimers: true)
@@ -192,6 +198,8 @@ public class DefaultControlSystem: BaseControlSystem {
         }
 
         await responder.handleOrPass(request)
+
+        return request.accepted
     }
 
     public override func onPreviewKeyDown(_ event: PreviewKeyDownEventArgs) async {
@@ -334,6 +342,7 @@ public class DefaultControlSystem: BaseControlSystem {
 
     // MARK: - Dialog
 
+    @discardableResult
     public override func openDialog(_ view: UIDialog, location: UIDialogInitialLocation) async -> Bool {
         return _openDialog(view, location: location)
     }

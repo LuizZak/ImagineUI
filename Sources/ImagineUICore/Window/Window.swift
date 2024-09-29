@@ -54,6 +54,15 @@ public class Window: RootView {
         }
     }
 
+    /// Gets or sets the enabled buttons mask for this window.
+    public var enabledButtons: ButtonsMask = [.close, .minimize, .maximize] {
+        didSet {
+            _buttons.minimize.isEnabled = enabledButtons.contains(.minimize)
+            _buttons.maximize.isEnabled = enabledButtons.contains(.maximize)
+            _buttons.close.isEnabled = enabledButtons.contains(.close)
+        }
+    }
+
     public override var intrinsicSize: UISize? {
         switch windowState {
         case .maximized:
@@ -471,6 +480,24 @@ public class Window: RootView {
         case right
         case topRight
     }
+
+    /// Mask used to enable/disable buttons.
+    public struct ButtonsMask: OptionSet {
+        public var rawValue: Int
+
+        public init(rawValue: Int) {
+            self.rawValue = rawValue
+        }
+
+        /// Enables the close button.
+        public static let close: Self = Self(rawValue: 0b0001)
+
+        /// Enables the maximize button.
+        public static let maximize: Self = Self(rawValue: 0b0010)
+
+        /// Enables the minimize button.
+        public static let minimize: Self = Self(rawValue: 0b0100)
+    }
 }
 
 extension Window: RadioButtonManagerType { }
@@ -522,6 +549,7 @@ class WindowButtons: View {
     }
 
     private func setButtonColor(_ button: Button, _ color: Color) {
+        button.setBackgroundColor(.gray, forState: .disabled)
         button.setBackgroundColor(color, forState: .normal)
         button.setBackgroundColor(color.faded(towards: .white, factor: 0.1), forState: .highlighted)
         button.setBackgroundColor(color.faded(towards: .black, factor: 0.1), forState: .selected)

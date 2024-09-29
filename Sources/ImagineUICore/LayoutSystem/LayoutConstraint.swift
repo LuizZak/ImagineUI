@@ -1,18 +1,22 @@
 import CassowarySwift
 
 @ImagineActor
-public class LayoutConstraint: Hashable {
-    var isRemoved: Bool = false
+public struct LayoutConstraint: Hashable {
+    let removedFlag: RemovedFlag = RemovedFlag()
 
+    nonisolated(unsafe)
     var definition: Definition {
         didSet {
             if definition == oldValue { return }
 
-            container?.setNeedsLayout()
+            Task.detached { @ImagineActor [container] in
+                container?.setNeedsLayout()
+            }
         }
     }
 
     /// The container that effectively contains this constraint
+    nonisolated(unsafe)
     var container: LayoutVariablesContainer? {
         definition.container
     }
@@ -129,19 +133,19 @@ public class LayoutConstraint: Hashable {
     }
 
     func removeConstraint() {
-        guard !isRemoved else {
-            return
+        guard !removedFlag.removed else {
+            fatalError("Attempted to remove the same constraint twice: \(self)")
         }
 
-        isRemoved = true
+        removedFlag.removed = true
 
         container?.setNeedsLayout()
         firstCast._owner?.setNeedsLayout()
         secondCast?._owner?.setNeedsLayout()
 
-        container?.viewInHierarchy?.containedConstraints.removeAll { $0 === self }
-        firstCast._owner?.constraints.removeAll { $0 === self }
-        secondCast?._owner?.constraints.removeAll { $0 === self }
+        container?.viewInHierarchy?.containedConstraints.removeAll { $0 == self }
+        firstCast._owner?.constraints.removeAll { $0 == self }
+        secondCast?._owner?.constraints.removeAll { $0 == self }
         firstCast._owner?.didRemoveConstraint(self)
         secondCast?._owner?.didRemoveConstraint(self)
     }
@@ -314,24 +318,29 @@ public class LayoutConstraint: Hashable {
         priority: LayoutPriority? = nil
     ) -> LayoutConstraint {
 
-        let constraint = first._owner?.constraints.first {
-            $0.firstCast == first
-                && $0.secondCast == second
-                && $0.relationship == relationship
-        }
-
-        if let constraint = constraint {
-            constraint.offset = offset
-            constraint.multiplier = multiplier
-
-            if let priority = priority {
-                constraint.priority = priority
+        func update(on owner: (any LayoutVariablesContainer)?) -> LayoutConstraint {
+            let constraintIndex = owner?.constraints.firstIndex {
+                $0.firstCast == first
+                    && $0.secondCast == second
+                    && $0.relationship == relationship
             }
 
-            return constraint
-        } else {
-            fatalError("Could not find constraint anchoring \(first) to \(second) to update")
+            if let constraintIndex, let owner {
+                owner.constraints[constraintIndex].offset = offset
+                owner.constraints[constraintIndex].multiplier = multiplier
+
+                if let priority = priority {
+                    owner.constraints[constraintIndex].priority = priority
+                }
+
+                return owner.constraints[constraintIndex]
+            } else {
+                fatalError("Could not find constraint anchoring \(first) to \(second) to update")
+            }
         }
+
+        _=update(on: first._owner)
+        return update(on: second._owner)
     }
 
     @discardableResult
@@ -343,34 +352,34 @@ public class LayoutConstraint: Hashable {
         priority: LayoutPriority? = nil
     ) -> LayoutConstraint {
 
-        let constraint = first._owner?.constraints.first {
+        let constraintIndex = first._owner?.constraints.firstIndex {
             $0.firstCast == first
                 && $0.second == nil
                 && $0.relationship == relationship
         }
 
-        if let constraint = constraint {
-            constraint.offset = offset
-            constraint.multiplier = multiplier
+        if let constraintIndex, let owner = first._owner {
+            owner.constraints[constraintIndex].offset = offset
+            owner.constraints[constraintIndex].multiplier = multiplier
 
             if let priority = priority {
-                constraint.priority = priority
+                owner.constraints[constraintIndex].priority = priority
             }
 
-            return constraint
+            return owner.constraints[constraintIndex]
         } else {
             fatalError("Could not find constraint anchoring \(first) to update")
         }
     }
 
-    nonisolated
+    nonisolated(unsafe)
     public static func == (lhs: LayoutConstraint, rhs: LayoutConstraint) -> Bool {
-        return lhs === rhs
+        return lhs.definition == rhs.definition
     }
 
-    nonisolated
+    nonisolated(unsafe)
     public func hash(into hasher: inout Hasher) {
-        hasher.combine(ObjectIdentifier(self))
+        hasher.combine(definition)
     }
 
     struct Definition: Hashable {
@@ -514,17 +523,21 @@ public class LayoutConstraint: Hashable {
         }
 
         static func == (lhs: Self, rhs: Self) -> Bool {
-            return lhs.relationship == rhs.relationship
+            return lhs.firstCast == rhs.firstCast
+                && lhs.secondCast == rhs.secondCast
+                && lhs.relationship == rhs.relationship
                 && lhs.offset == rhs.offset
                 && lhs.multiplier == rhs.multiplier
                 && lhs.priority == rhs.priority
-                && lhs.firstCast == rhs.firstCast
-                && lhs.secondCast == rhs.secondCast
         }
+    }
+
+    class RemovedFlag {
+        var removed: Bool = false
     }
 }
 
-extension LayoutConstraint: CustomStringConvertible {
+extension LayoutConstraint: @preconcurrency CustomStringConvertible {
     public var description: String {
         var trailing = ""
         if multiplier != 1 && second != nil {
@@ -551,9 +564,11 @@ extension LayoutConstraint: CustomStringConvertible {
 
 public extension Sequence where Element == LayoutConstraint {
     @ImagineActor
-    func setPriority(_ priority: LayoutPriority) {
-        for constraint in self {
+    func settingPriority(_ priority: LayoutPriority) -> [Element] {
+        map { constraint in
+            var constraint = constraint
             constraint.priority = priority
+            return constraint
         }
     }
 }

@@ -16,6 +16,24 @@ public enum Relationship: Hashable, CustomStringConvertible {
         }
     }
 
+    /// Returns the logical inverse of this relationship value.
+    ///
+    /// Returns `.equal` for `.equal`, `.greaterThanOrEqual` for
+    /// `.lessThanOrEqual`, and `.lessThanOrEqual` for `.greaterThanOrEqual`
+    /// relationships
+    public var inverse: Self {
+        switch self {
+        case .equal:
+            return .equal
+
+        case .greaterThanOrEqual:
+            return .lessThanOrEqual
+
+        case .lessThanOrEqual:
+            return .greaterThanOrEqual
+        }
+    }
+
     func makeConstraint(left: Variable, right: Variable, offset: Double, multiplier: Double) -> Constraint {
         if multiplier == 1 {
             return makeConstraint(left: left, right: right, offset: offset)

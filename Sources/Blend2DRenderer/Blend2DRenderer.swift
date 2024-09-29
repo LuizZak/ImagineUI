@@ -24,10 +24,22 @@ public class Blend2DRenderer: Renderer, @unchecked Sendable {
         _stroke.setStyle(in: _context)
     }
 
+    // MARK: - Composition mode
+
+    public var compositionMode: CompositionMode {
+        CompositionMode(compOp: _context.compOp) ?? .sourceOver
+    }
+
+    /// Changes the composition mode to a given value.
+    public func setCompositionMode(_ compositionMode: CompositionMode) {
+        _context.compOp = compositionMode.asBLCompOp
+    }
+
     // MARK: - Clear
 
     public func clear() {
         _context.clearAll()
+        _context.compOp = .colorBurn
     }
 
     /// Clears all the pixels back into a given color.
@@ -106,7 +118,7 @@ public class Blend2DRenderer: Renderer, @unchecked Sendable {
     }
 
     public func fill(_ bezier: UIBezier) {
-        let path = bezier.drawOperations().toBLPath()
+        let path = bezier.operations().toBLPath()
 
         _context.fillPath(path)
     }
@@ -162,7 +174,7 @@ public class Blend2DRenderer: Renderer, @unchecked Sendable {
     }
 
     public func stroke(_ bezier: UIBezier) {
-        let path = bezier.drawOperations().toBLPath()
+        let path = bezier.operations().toBLPath()
 
         _context.strokePath(path)
     }

@@ -48,8 +48,8 @@ open class BaseControlSystem: ControlSystemType {
 
     }
 
-    open func onKeyPress(_ event: KeyPressEventArgs) async {
-
+    open func onKeyPress(_ event: KeyPressEventArgs) async -> Bool {
+        return false
     }
 
     open func onPreviewKeyDown(_ event: PreviewKeyDownEventArgs) async {

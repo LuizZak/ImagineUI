@@ -98,9 +98,11 @@ open class StackView: View {
         }
 
         arrangedSubviews.insert(view, at: index)
-        addSubview(view)
 
-        recreateConstraints()
+        withSuspendedLayout(setNeedsLayout: true) {
+            addSubview(view)
+            recreateConstraints()
+        }
     }
 
     /// Adds a view to the end of the arranged view list on this stack view.
@@ -113,9 +115,11 @@ open class StackView: View {
         }
 
         arrangedSubviews.append(view)
-        addSubview(view)
 
-        recreateConstraints()
+        withSuspendedLayout(setNeedsLayout: true) {
+            addSubview(view)
+            recreateConstraints()
+        }
     }
 
     /// Adds a list of views to the end of the arranged view list on this stack

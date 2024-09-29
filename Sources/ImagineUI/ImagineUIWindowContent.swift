@@ -182,6 +182,8 @@ open class ImagineUIWindowContent: ImagineUIContentType, BaseControlSystemDelega
 
     @ImagineActor
     open func render(renderer: Renderer, renderScale: UIVector, clipRegion: ClipRegionType) {
+        renderer.resetTransform()
+        renderer.setCompositionMode(.sourceOver)
         renderer.scale(by: renderScale)
 
         if let backgroundColor = backgroundColor {
@@ -230,7 +232,7 @@ open class ImagineUIWindowContent: ImagineUIContentType, BaseControlSystemDelega
         await controlSystem.onKeyUp(event)
     }
 
-    open func keyPress(event: KeyPressEventArgs) async {
+    open func keyPress(event: KeyPressEventArgs) async -> Bool {
         await controlSystem.onKeyPress(event)
     }
 

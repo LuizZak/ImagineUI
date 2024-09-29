@@ -18,6 +18,7 @@ public class LayoutConstraintSolver {
             }
         } catch {
             ImagineUILogger.logger?.error("Error solving layout constraints: \(error)")
+            locCache.reset()
         }
     }
 }

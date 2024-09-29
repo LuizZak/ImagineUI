@@ -82,7 +82,7 @@ public protocol ImagineUIContentType: AnyObject, Sendable {
     func keyUp(event: KeyEventArgs) async
 
     /// Called to notify of key presses (character-based input) events.
-    func keyPress(event: KeyPressEventArgs) async
+    func keyPress(event: KeyPressEventArgs) async -> Bool
 
     /// Called to notify that the window associated with this ImagineUI content
     /// has been closed.

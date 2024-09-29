@@ -3,9 +3,13 @@ import CassowarySwift
 
 @ImagineActor
 public class LayoutConstraintSolverCache {
-    private var cacheState: CacheType
+    internal var cacheState: CacheType
 
     public init() {
+        cacheState = .split(horizontal: _LayoutConstraintSolverCache(), vertical: _LayoutConstraintSolverCache())
+    }
+
+    func reset() {
         cacheState = .split(horizontal: _LayoutConstraintSolverCache(), vertical: _LayoutConstraintSolverCache())
     }
 
@@ -134,7 +138,7 @@ public class LayoutConstraintSolverCache {
         }
     }
 
-    private enum CacheType {
+    internal enum CacheType {
         // Cache for horizontal and vertical constraints.
         case mixed(_LayoutConstraintSolverCache)
 
@@ -143,7 +147,7 @@ public class LayoutConstraintSolverCache {
     }
 
     @ImagineActor
-    private struct ConstraintViewVisitor: ViewVisitor {
+    internal struct ConstraintViewVisitor: ViewVisitor {
         var rootView: View
 
         init(rootView: View) {
@@ -190,7 +194,7 @@ public class LayoutConstraintSolverCache {
 }
 
 @ImagineActor
-fileprivate class _LayoutConstraintSolverCache {
+internal class _LayoutConstraintSolverCache {
     private var _constraintSet: [LayoutConstraint: ConstraintState] = [:]
     private var _viewConstraintList: [LayoutVariables: ViewConstraintList] = [:]
 
@@ -284,11 +288,11 @@ fileprivate class _LayoutConstraintSolverCache {
     }
     */
 
-    private func compareState() -> CacheStateDiff {
+    internal func compareState() -> CacheStateDiff {
         return _compareState()
     }
 
-    private func withConstraintList(
+    internal func withConstraintList(
         for container: LayoutVariablesContainer,
         orientations: Set<LayoutConstraintOrientation>,
         _ closure: (inout ViewConstraintList) -> Void
@@ -316,17 +320,19 @@ fileprivate class _LayoutConstraintSolverCache {
         _viewConstraintList[identifier] = list
     }
 
-    private func updateSolver(_ diff: CacheStateDiff) throws {
+    internal func updateSolver(_ diff: CacheStateDiff) throws {
         let transaction = solver.startTransaction()
 
         // Process removals first
         for constDiff in diff.constraintDiffs {
             switch constDiff {
             case .removed(_, let constraint):
-                transaction.removeConstraint(constraint.constraint)
+                if solver.hasConstraint(constraint.cassowaryConstraint) {
+                    transaction.removeConstraint(constraint.cassowaryConstraint)
+                }
 
             case .updated(_, let old, _):
-                transaction.removeConstraint(old.constraint)
+                transaction.removeConstraint(old.cassowaryConstraint)
 
             case .added:
                 break
@@ -337,10 +343,14 @@ fileprivate class _LayoutConstraintSolverCache {
             for constDiff in viewDiff.constraints {
                 switch constDiff {
                 case .removed(_, let const):
-                    transaction.removeConstraint(const)
+                    if solver.hasConstraint(const) {
+                        transaction.removeConstraint(const)
+                    }
 
                 case let .updated(_, old, _):
-                    transaction.removeConstraint(old)
+                    if solver.hasConstraint(old) {
+                        transaction.removeConstraint(old)
+                    }
 
                 case .added:
                     break
@@ -369,13 +379,13 @@ fileprivate class _LayoutConstraintSolverCache {
         for constDiff in diff.constraintDiffs {
             switch constDiff {
             case .added(_, let constraint):
-                transaction.addConstraint(constraint.constraint)
+                transaction.addConstraint(constraint.cassowaryConstraint)
 
             case .removed:
                 break // Already handled above
 
             case .updated(_, _, let new):
-                transaction.addConstraint(new.constraint)
+                transaction.addConstraint(new.cassowaryConstraint)
             }
         }
 
@@ -462,46 +472,19 @@ fileprivate class _LayoutConstraintSolverCache {
         #endif // DUMP_CONSTRAINTS_TO_DESKTOP
     }
 
-    private func _compareState() -> CacheStateDiff {
+    internal func _compareState() -> CacheStateDiff {
         let constDiff = _compareConstraints()
         let viewStateDiff = _compareViewState()
 
         return CacheStateDiff(constraintDiffs: constDiff, viewStateDiffs: viewStateDiff)
     }
 
-    private func _compareConstraints() -> [KeyedDifference<LayoutConstraint, ConstraintState>] {
-        var addedList: [(LayoutConstraint, ConstraintState)] = []
-        var updatedList: [(LayoutConstraint, old: ConstraintState, new: ConstraintState)] = []
-        var removedList: [(LayoutConstraint, ConstraintState)] = []
-
-        _constraintSet.makeDifference(
-            withPrevious: _previousConstraintSet,
-            addedList: &addedList,
-            updatedList: &updatedList,
-            removedList: &removedList
+    internal func _compareConstraints() -> [KeyedDifference<LayoutConstraint, ConstraintState>] {
+        let constDiff = _constraintSet.makeDifference(
+            withPrevious: _previousConstraintSet
         ) { (_, old, new) in
-            return old.definition == new.definition && old.constraint.hasSameEffects(as: new.constraint)
+            return old.constraint == new.constraint && old.cassowaryConstraint.hasSameEffects(as: new.cassowaryConstraint)
         }
-
-        var constDiff: [KeyedDifference<LayoutConstraint, ConstraintState>] = []
-
-        // Cross-check newly-added constraints can be interpreted as one of the
-        // constraints that where removed
-        for (added, addedState) in addedList {
-            var found = false
-            for (i, (removed, removedState)) in removedList.enumerated() where addedState.definition == removedState.definition {
-                removedList.remove(at: i)
-                _constraintSet[removed] = removedState
-                found = true
-                break
-            }
-
-            if !found {
-                constDiff.append(.added(added, addedState))
-            }
-        }
-
-        constDiff += removedList.map(KeyedDifference.removed) + updatedList.map(KeyedDifference.updated)
 
         return constDiff
     }
@@ -549,22 +532,22 @@ fileprivate class _LayoutConstraintSolverCache {
             return
         }
 
-        if let previous = _previousConstraintSet[layoutConstraint], previous.definition == layoutConstraint.definition {
+        if let previous = _previousConstraintSet[layoutConstraint], previous.constraint == layoutConstraint {
             _constraintSet[layoutConstraint] = previous
         } else {
             _constraintSet[layoutConstraint] = ConstraintState(
-                constraint: constraint,
-                definition: layoutConstraint.definition
+                cassowaryConstraint: constraint,
+                constraint: layoutConstraint
             )
         }
     }
 
-    private struct ConstraintState {
-        var constraint: Constraint
-        var definition: LayoutConstraint.Definition
+    internal struct ConstraintState {
+        var cassowaryConstraint: Constraint
+        var constraint: LayoutConstraint
     }
 
-    private struct CacheStateDiff {
+    internal struct CacheStateDiff {
         var constraintDiffs: [KeyedDifference<LayoutConstraint, ConstraintState>]
         var viewStateDiffs: [(LayoutVariables, ViewConstraintList.StateDiff)]
     }
