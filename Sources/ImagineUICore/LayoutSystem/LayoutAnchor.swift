@@ -14,7 +14,7 @@ public struct LayoutAnchor<T>: LayoutAnchorType, Equatable, CustomStringConverti
     }
 
     public var description: String {
-        return toInternalLayoutAnchor().getVariable()?.name ?? "<unowned anchor>"
+        return toInternalLayoutAnchor().getVariableName()
     }
 
     /// Removes all constraints attached to this layout anchor.

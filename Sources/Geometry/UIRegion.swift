@@ -1,6 +1,6 @@
 /// A mutable structure that represents an area composed by rectangles using
 /// addition, subtraction, intersection and xor-ing.
-public class UIRegion: Sendable {
+public final class UIRegion: Sendable {
     private var _rectangles: [UIRectangle]
 
     /// Returns `true` if the total area represented by this `UIRegion` is zero.

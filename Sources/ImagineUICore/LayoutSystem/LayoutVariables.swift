@@ -539,13 +539,13 @@ class LayoutVariables {
     }
 }
 
-extension LayoutVariables: Equatable {
+extension LayoutVariables: @preconcurrency Equatable {
     static func == (lhs: LayoutVariables, rhs: LayoutVariables) -> Bool {
         return lhs === rhs
     }
 }
 
-extension LayoutVariables: Hashable {
+extension LayoutVariables: @preconcurrency Hashable {
     func hash(into hasher: inout Hasher) {
         hasher.combine(ObjectIdentifier(self))
     }

@@ -10,12 +10,15 @@ public var globalTextClipboard: TextClipboard? {
 /// Basic text clipboard for a `TextEngine` to use during copy/cut/paste operations.
 public protocol TextClipboard {
     /// Returns text from this clipboard, if present.
+    @ImagineActor
     func getText() -> String?
 
     /// Sets the textual content to this clipboard
+    @ImagineActor
     func setText(_ text: String)
 
     /// Returns whether this clipboard contains any text content in it
+    @ImagineActor
     func containsText() -> Bool
 }
 

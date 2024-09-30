@@ -17,9 +17,10 @@ internal struct AnyLayoutAnchor: LayoutAnchorType, Hashable {
     }
 
     var description: String {
-        return getVariable()?.name ?? "<unowned anchor>"
+        return getVariableName()
     }
 
+    @ImagineActor
     func getVariable() -> Variable? {
         switch kind {
         case .width:
@@ -40,6 +41,29 @@ internal struct AnyLayoutAnchor: LayoutAnchorType, Hashable {
             return _owner?.layoutVariables.centerY
         case .firstBaseline:
             return _owner?.layoutVariables.firstBaseline
+        }
+    }
+
+    func getVariableName() -> String {
+        switch kind {
+        case .width:
+            return "width"
+        case .height:
+            return "height"
+        case .left:
+            return "left"
+        case .top:
+            return "top"
+        case .right:
+            return "right"
+        case .bottom:
+            return "bottom"
+        case .centerX:
+            return "centerX"
+        case .centerY:
+            return "centerY"
+        case .firstBaseline:
+            return "firstBaseline"
         }
     }
 

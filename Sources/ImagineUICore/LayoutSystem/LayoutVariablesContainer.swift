@@ -36,6 +36,7 @@ protocol LayoutVariablesContainer: AnyObject, SpatialReferenceType {
     /// Sequential calls to `suspendLayout()` must be balanced with a matching
     /// number of `resumeLayout(setNeedsLayout:)` calls later in order for
     /// layout to resume successfully.
+    @ImagineActor
     func suspendLayout()
 
     /// Resumes layout, optionally dispatching a `setNeedsLayout()` call to the
@@ -44,6 +45,7 @@ protocol LayoutVariablesContainer: AnyObject, SpatialReferenceType {
     /// Sequential calls to `resumeLayout(setNeedsLayout:)` must be balanced
     /// with a matching number of earlier `suspendLayout()` calls in order for
     /// layout to resume successfully.
+    @ImagineActor
     func resumeLayout(setNeedsLayout: Bool)
 
     /// Performs a given closure while suspending the layout of this container,
@@ -52,6 +54,7 @@ protocol LayoutVariablesContainer: AnyObject, SpatialReferenceType {
     ///
     /// Layout is resumed whether or not the closure throws before the end of
     /// the block.
+    @ImagineActor
     func withSuspendedLayout<T>(setNeedsLayout: Bool, _ block: () throws -> T) rethrows -> T
 
     // TODO: These methods are used exclusively by `RootView` to cache `hasIndependentInternalLayout`
