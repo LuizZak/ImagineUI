@@ -76,13 +76,13 @@ class AttributedTextTests: XCTestCase {
         XCTAssert(segments[0].textAttributes["test"] is TestAttribute)
         XCTAssert(segments[0].textAttributes["test2"] is TestAttribute2)
     }
-    
+
     func testAppendAttributedText() {
         let attributed = AttributedText("def", attributes: ["test": TestAttribute()])
         var sut = AttributedText("abc")
-        
+
         sut.append(attributed)
-        
+
         XCTAssertEqual(sut.string, "abcdef")
         let segments = sut.textSegments
         XCTAssertEqual(segments.count, 2)
@@ -117,7 +117,7 @@ class AttributedTextTests: XCTestCase {
 
         sut.setText("abcdef")
         sut.setAttributes(TextRange(start: 3, length: 3), ["test": TestAttribute()])
-        
+
         let segments = sut.textSegments
 
         XCTAssertEqual(6, sut.length)
@@ -134,11 +134,30 @@ class AttributedTextTests: XCTestCase {
         XCTAssert(segments[1].textAttributes["test"] is TestAttribute)
     }
 
+    func testSetAttributes_singleChar() {
+        var sut = AttributedText()
+
+        sut.setText("a")
+        sut.setAttributes(TextRange(start: 0, length: 1), ["test": TestAttribute()])
+
+        let segments = sut.textSegments
+
+        XCTAssertEqual(1, sut.length)
+        XCTAssertEqual("a", sut.string)
+        XCTAssertTrue(sut.hasAttributes)
+
+        XCTAssertEqual(1, segments.count)
+        XCTAssertEqual("a", segments[0].text)
+        XCTAssertEqual(TextRange(start: 0, length: 1), segments[0].textRange)
+        XCTAssertEqual(1, segments[0].textAttributes.count)
+        XCTAssertTrue(segments[0].textAttributes["test"] is TestAttribute)
+    }
+
     func testSetAttributesRangeMiddle() {
         var sut = AttributedText()
 
         sut.setText("abcdef")
-        
+
         // a b c d e f
         // 0 1 2 3 4 5
         //   1
@@ -163,12 +182,12 @@ class AttributedTextTests: XCTestCase {
         XCTAssertEqual(0, segments[2].textAttributes.count)
         XCTAssert(segments[1].textAttributes["test"] is TestAttribute)
     }
-    
+
     func testSetAttributesRangeMiddleDoubleApplication() {
         var sut = AttributedText()
 
         sut.setText("abcdef")
-        
+
         // a b c d e f
         // 0 1 2 3 4 5
         //   1
@@ -194,12 +213,12 @@ class AttributedTextTests: XCTestCase {
         XCTAssertEqual(0, segments[2].textAttributes.count)
         XCTAssert(segments[1].textAttributes["test"] is TestAttribute)
     }
-    
+
     func testInsert() {
         var sut = AttributedText("abcdef")
-        
+
         sut.insert("GHI", at: 3, attributes: ["test": TestAttribute()])
-        
+
         XCTAssertEqual(3, sut.textSegments.count)
         XCTAssertEqual("abcGHIdef", sut.string)
         XCTAssertEqual(sut.textSegments[0].textRange, TextRange(start: 0, length: 3))
@@ -209,23 +228,23 @@ class AttributedTextTests: XCTestCase {
         XCTAssertEqual(sut.textSegments[1].text, "GHI")
         XCTAssertEqual(sut.textSegments[2].text, "def")
     }
-    
+
     func testInsertAtEnd() {
         var sut = AttributedText("abc")
-        
+
         sut.insert("def", at: 3, attributes: ["test": TestAttribute()])
-        
+
         XCTAssertEqual(sut.textSegments.count, 2)
         XCTAssertEqual(sut.string, "abcdef")
         XCTAssertEqual(sut.textSegments[0].text, "abc")
         XCTAssertEqual(sut.textSegments[1].text, "def")
     }
-    
+
     func testInsertAtBeginning() {
         var sut = AttributedText("abc")
-        
+
         sut.insert("def", at: 0, attributes: ["test": TestAttribute()])
-        
+
         XCTAssertEqual(sut.textSegments.count, 2)
         XCTAssertEqual(sut.string, "defabc")
         XCTAssertEqual(sut.textSegments[0].text, "def")
@@ -233,13 +252,13 @@ class AttributedTextTests: XCTestCase {
         XCTAssertEqual(sut.textSegments[1].text, "abc")
         XCTAssert(sut.textSegments[1].textAttributes.isEmpty)
     }
-    
+
     func testInsertAttributedText() {
         let attributed = AttributedText("GHI", attributes: ["test": TestAttribute()])
         var sut = AttributedText("abcdef")
-        
+
         sut.insert(attributed, at: 3)
-        
+
         let segments = sut.textSegments
         XCTAssertEqual(segments.count, 3)
         XCTAssertEqual(segments[0].text, "abc")
@@ -252,13 +271,13 @@ class AttributedTextTests: XCTestCase {
         XCTAssert(segments[2].textAttributes.isEmpty)
         XCTAssertEqual(segments[2].textRange, TextRange(start: 6, length: 3))
     }
-    
+
     func testRemoveAttributes() {
         var sut = AttributedText()
         sut.append("abcdef", attributes: ["test": TestAttribute(), "test2": TestAttribute2()])
-        
+
         sut.removeAttributes(TextRange(start: 2, length: 2), attributeKeys: ["test"])
-        
+
         XCTAssertEqual(sut.textSegments.count, 3)
         XCTAssertEqual(sut.textSegments[0].text, "ab")
         XCTAssertNotNil(sut.textSegments[0].textAttributes["test"])
@@ -268,13 +287,13 @@ class AttributedTextTests: XCTestCase {
         XCTAssertEqual(sut.textSegments[2].text, "ef")
         XCTAssertNotNil(sut.textSegments[2].textAttributes["test"])
     }
-    
+
     func testRemoveAllAttributes() {
         var sut = AttributedText()
         sut.append("abcdef", attributes: ["test": TestAttribute()])
-        
+
         sut.removeAllAttributes(TextRange(start: 2, length: 2))
-        
+
         XCTAssertEqual(sut.textSegments.count, 3)
         XCTAssertEqual(sut.textSegments[0].text, "ab")
         XCTAssertNotNil(sut.textSegments[0].textAttributes["test"])
@@ -282,6 +301,125 @@ class AttributedTextTests: XCTestCase {
         XCTAssert(sut.textSegments[1].textAttributes.isEmpty)
         XCTAssertEqual(sut.textSegments[2].text, "ef")
         XCTAssertNotNil(sut.textSegments[2].textAttributes["test"])
+    }
+
+    func testReplace_sameLength_singleSegment_preserveAttributes() {
+        var sut = AttributedText()
+        sut.append("a", attributes: ["test": TestAttribute()])
+        sut.append("b", attributes: ["test2": TestAttribute2()])
+        sut.append("c", attributes: ["test3": TestAttribute3()])
+
+        sut.replace(TextRange(start: 1, length: 1), with: "d")
+
+        XCTAssertEqual(sut.textSegments.count, 3)
+        XCTAssertEqual(sut.textSegments[0].text, "a")
+        XCTAssertNotNil(sut.textSegments[0].textAttributes["test"])
+        XCTAssertEqual(sut.textSegments[1].text, "d")
+        XCTAssertNotNil(sut.textSegments[1].textAttributes["test2"])
+        XCTAssertEqual(sut.textSegments[2].text, "c")
+        XCTAssertNotNil(sut.textSegments[2].textAttributes["test3"])
+    }
+
+    func testReplace_sameLength_multiSegment_preserveAttributes() {
+        var sut = AttributedText()
+        sut.append("a", attributes: ["test": TestAttribute()])
+        sut.append("b", attributes: ["test2": TestAttribute2()])
+        sut.append("c", attributes: ["test3": TestAttribute3()])
+
+        sut.replace(TextRange(start: 1, length: 2), with: "de")
+
+        XCTAssertEqual(sut.textSegments.count, 3)
+        XCTAssertEqual(sut.textSegments[0].text, "a")
+        XCTAssertNotNil(sut.textSegments[0].textAttributes["test"])
+        XCTAssertEqual(sut.textSegments[1].text, "d")
+        XCTAssertNotNil(sut.textSegments[1].textAttributes["test2"])
+        XCTAssertEqual(sut.textSegments[2].text, "e")
+        XCTAssertNotNil(sut.textSegments[2].textAttributes["test3"])
+    }
+
+    func testReplace_sameLength_allSegments_preserveAttributes() {
+        var sut = AttributedText()
+        sut.append("a", attributes: ["test": TestAttribute()])
+        sut.append("b", attributes: ["test2": TestAttribute2()])
+        sut.append("c", attributes: ["test3": TestAttribute3()])
+
+        sut.replace(TextRange(start: 0, length: 3), with: "def")
+
+        XCTAssertEqual(sut.textSegments.count, 3)
+        XCTAssertEqual(sut.textSegments[0].text, "d")
+        XCTAssertNotNil(sut.textSegments[0].textAttributes["test"])
+        XCTAssertEqual(sut.textSegments[1].text, "e")
+        XCTAssertNotNil(sut.textSegments[1].textAttributes["test2"])
+        XCTAssertEqual(sut.textSegments[2].text, "f")
+        XCTAssertNotNil(sut.textSegments[2].textAttributes["test3"])
+    }
+
+    func testReplace_greaterLength_singleSegment_preserveAttributes() {
+        var sut = AttributedText()
+        sut.append("a", attributes: ["test": TestAttribute()])
+        sut.append("b", attributes: ["test2": TestAttribute2()])
+        sut.append("c", attributes: ["test3": TestAttribute3()])
+
+        sut.replace(TextRange(start: 1, length: 1), with: "de")
+
+        XCTAssertEqual(sut.textSegments.count, 3)
+        XCTAssertEqual(sut.textSegments[0].text, "a")
+        XCTAssertNotNil(sut.textSegments[0].textAttributes["test"])
+        XCTAssertEqual(sut.textSegments[1].text, "d")
+        XCTAssertNotNil(sut.textSegments[1].textAttributes["test2"])
+        XCTAssertEqual(sut.textSegments[2].text, "ec")
+        XCTAssertNotNil(sut.textSegments[2].textAttributes["test3"])
+    }
+
+    func testReplace_greaterLength_multiSegment_preserveAttributes() {
+        var sut = AttributedText()
+        sut.append("a", attributes: ["test": TestAttribute()])
+        sut.append("b", attributes: ["test2": TestAttribute2()])
+        sut.append("c", attributes: ["test3": TestAttribute3()])
+
+        sut.replace(TextRange(start: 1, length: 2), with: "def")
+
+        XCTAssertEqual(sut.textSegments.count, 3)
+        XCTAssertEqual(sut.textSegments[0].text, "a")
+        XCTAssertNotNil(sut.textSegments[0].textAttributes["test"])
+        XCTAssertEqual(sut.textSegments[1].text, "d")
+        XCTAssertNotNil(sut.textSegments[1].textAttributes["test2"])
+        XCTAssertEqual(sut.textSegments[2].text, "ef")
+        XCTAssertNotNil(sut.textSegments[2].textAttributes["test3"])
+    }
+
+    func testReplace_greaterLength_allSegments_preserveAttributes() {
+        var sut = AttributedText()
+        sut.append("a", attributes: ["test": TestAttribute()])
+        sut.append("b", attributes: ["test2": TestAttribute2()])
+        sut.append("c", attributes: ["test3": TestAttribute3()])
+
+        sut.replace(TextRange(start: 0, length: 3), with: "defg")
+
+        XCTAssertEqual(sut.textSegments.count, 3)
+        XCTAssertEqual(sut.textSegments[0].text, "d")
+        XCTAssertNotNil(sut.textSegments[0].textAttributes["test"])
+        XCTAssertEqual(sut.textSegments[1].text, "e")
+        XCTAssertNotNil(sut.textSegments[1].textAttributes["test2"])
+        XCTAssertEqual(sut.textSegments[2].text, "fg")
+        XCTAssertNotNil(sut.textSegments[2].textAttributes["test3"])
+    }
+
+    func testReplace_zeroLength_actsAsInsert() {
+        var sut = AttributedText()
+        sut.append("a", attributes: ["test": TestAttribute()])
+        sut.append("b", attributes: ["test2": TestAttribute2()])
+        sut.append("c", attributes: ["test3": TestAttribute3()])
+
+        sut.replace(TextRange(start: 1, length: 0), with: "d")
+
+        XCTAssertEqual(sut.textSegments.count, 3)
+        XCTAssertEqual(sut.textSegments[0].text, "a")
+        XCTAssertNotNil(sut.textSegments[0].textAttributes["test"])
+        XCTAssertEqual(sut.textSegments[1].text, "db")
+        XCTAssertNotNil(sut.textSegments[1].textAttributes["test2"])
+        XCTAssertEqual(sut.textSegments[2].text, "c")
+        XCTAssertNotNil(sut.textSegments[2].textAttributes["test3"])
     }
 }
 
@@ -294,6 +432,12 @@ private class TestAttribute: TextAttributeType {
 private class TestAttribute2: TextAttributeType {
     func isEqual(to other: TextAttributeType) -> Bool {
         other as? TestAttribute2 === self
+    }
+}
+
+private class TestAttribute3: TextAttributeType {
+    func isEqual(to other: TextAttributeType) -> Bool {
+        other as? TestAttribute3 === self
     }
 }
 

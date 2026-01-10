@@ -67,6 +67,19 @@ public struct AttributedText: Equatable {
         ]
     }
 
+    /// Returns the list of attributes for the text at a given position.
+    ///
+    /// - precondition: `index >= 0 && index < length`
+    public func attributes(at index: Int) -> Attributes {
+        precondition(index >= 0 && index < length)
+
+        guard let segment = segmentUnder(index) else {
+            return [:]
+        }
+
+        return segment.textAttributes
+    }
+
     /// Reserves a specified number of segments to be added to this `AttributedText`
     /// instance.
     public mutating func reserveCapacity(segmentCount: Int) {
@@ -260,6 +273,46 @@ public struct AttributedText: Equatable {
         mergeSegments()
     }
 
+    /// Replaces the given range with a replacement string.
+    ///
+    /// Attributes of text ranges that are fully contained within the replacement
+    /// string's range are erased.
+    public mutating func replace(_ range: TextRange, with replacement: String) {
+        if range.length == 0 {
+            let attributes = attributes(at: range.start)
+            insert(replacement, at: range.start, attributes: attributes)
+            return
+        }
+
+        // Replace in-place in current segments
+        var remaining: String = String(range.withStart(0).substring(in: replacement))
+        var index = range.start
+
+        while let nextChar = remaining.first {
+            guard let segmentIndex = segmentIndexUnder(index) else {
+                continue
+            }
+
+            var segment = segments[segmentIndex]
+            let offset = segment.textRange.start - index
+            let stringIndex = segment.text.index(segment.text.startIndex, offsetBy: offset)
+
+            segment.text.replaceSubrange(stringIndex...stringIndex, with: String(nextChar))
+
+            segments[segmentIndex] = segment
+
+            remaining = String(remaining.dropFirst())
+            index += 1
+        }
+
+        // Remaining characters get inserted at the end
+        let attributes = attributes(at: min(index, length - 1))
+        let toInsertRange = TextRange(start: range.length, length: replacement.count - range.length)
+        let toInsert = toInsertRange.substring(in: replacement)
+
+        insert(String(toInsert), at: index, attributes: attributes)
+    }
+
     @discardableResult
     private mutating func splitSegments(in range: TextRange) -> [TextSegment] {
         if range.length == 0 {
@@ -329,6 +382,10 @@ public struct AttributedText: Equatable {
 
     public func segmentUnder(_ position: Int) -> TextSegment? {
         return segments.first(where: { $0.textRange.contains(position) })
+    }
+
+    public func segmentIndexUnder(_ position: Int) -> Int? {
+        return segments.enumerated().first(where: { $0.element.textRange.contains(position) })?.offset
     }
 
     private func segmentsIntersecting(_ range: TextRange) -> [TextSegment] {

@@ -15,6 +15,14 @@ public struct TextRange: Hashable, CustomStringConvertible {
         self.length = length
     }
 
+    /// Returns the subrange of `string` by indexing with this `TextRange`.
+    public func substring<StringType: StringProtocol>(in string: StringType) -> StringType.SubSequence where StringType: StringProtocol {
+        let startIndex = string.index(string.startIndex, offsetBy: start)
+        let endIndex = string.index(string.startIndex, offsetBy: end)
+
+        return string[startIndex..<endIndex]
+    }
+
     /// Returns true if `value >= start && value < end`
     public func contains(_ value: Int) -> Bool {
         return value >= start && value < end
@@ -66,6 +74,11 @@ public struct TextRange: Hashable, CustomStringConvertible {
     public func union(_ other: TextRange) -> TextRange {
         return TextRange.fromOffsets(min(start, other.start),
                                      max(end, other.end))
+    }
+
+    /// Returns a copy of this `TextRange` with `start` set to a given value.
+    public func withStart(_ start: Int) -> TextRange {
+        TextRange(start: start, length: length)
     }
 
     /// Returns a new text range which is the same length as this text range, but

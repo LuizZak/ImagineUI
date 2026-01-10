@@ -2,6 +2,15 @@
   "object": {
     "pins": [
       {
+        "package": "CassowarySwift",
+        "repositoryURL": "https://github.com/LuizZak/CassowarySwift.git",
+        "state": {
+          "branch": "cassowary-swift-optimizations",
+          "revision": "eecee2e108fca14a002cf8bd6562f35722bc3627",
+          "version": null
+        }
+      },
+      {
         "package": "swift-bezier",
         "repositoryURL": "https://github.com/LuizZak/swift-bezier.git",
         "state": {
