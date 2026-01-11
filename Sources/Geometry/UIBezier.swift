@@ -32,6 +32,10 @@ public struct UIBezier {
         }
     }
 
+    private mutating func _clearCache() {
+        _cache = _Cache()
+    }
+
     /// Returns the absolute length of the lines drawn by this bezier instance.
     ///
     /// Counts only drawable operations, so move operations are ignored.
@@ -191,6 +195,7 @@ public struct UIBezier {
     private mutating func add(_ operation: Operation) {
         ensureUnique()
 
+        _clearCache()
         _operations.append(operation)
     }
 
@@ -560,6 +565,7 @@ extension UIBezier {
     public mutating func clear() {
         ensureUnique()
 
+        _clearCache()
         _operations.removeAll()
     }
 }
