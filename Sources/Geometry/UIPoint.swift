@@ -108,7 +108,6 @@ public struct UIPoint: Hashable, Codable {
     public static func lerp(_ start: UIPoint, _ end: UIPoint, factor: Double) -> UIPoint {
         return start * (1 - factor) + end * factor
     }
-
 }
 
 // MARK: Addition
