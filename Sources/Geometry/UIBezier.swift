@@ -113,10 +113,12 @@ public struct UIBezier {
         let outerPoint = UIPoint(x: self.bounds().right + 1, y: point.y)
         let line = UILine(start: point, end: outerPoint)
 
-        return intersect(line).count % 2 == 1
+        return intersections(with: line).count % 2 == 1
     }
 
-    func intersect(_ line: UILine) -> [UIPoint] {
+    /// Returns a list of intersection points between the given line and this
+    /// `UIBezier`.
+    public func intersections(with line: UILine) -> [UIPoint] {
         let ops = drawOperations()
 
         var result: [UIPoint] = []
