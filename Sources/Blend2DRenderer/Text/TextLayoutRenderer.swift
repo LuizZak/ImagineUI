@@ -61,38 +61,6 @@ class TextLayoutRenderer {
                 + .init(x: 0, y: Double(segment.ascent))
                 + location.asUIVector
 
-            // Image attribute
-            if let image = segment.textSegment.attribute(named: .image, type: ImageAttribute.self) {
-                let alignment = segment.textSegment.attribute(
-                    named: .imageVerticalAlignment,
-                    type: ImageVerticalAlignmentAttribute.self
-                ) ?? .baseline
-
-                let image = toBLImage(image.image)
-
-                var imageOffset: UIPoint = .zero
-                imageOffset.y = offset.y
-
-                switch alignment {
-                case .baseline:
-                    imageOffset.y -= Double(image.size.h)
-
-                case .underline:
-                    imageOffset.y -= Double(image.size.h)
-
-                case .ascent:
-                    imageOffset.y -= Double(segment.font.metrics.ascent)
-
-                case .capHeight:
-                    imageOffset.y -= Double(segment.font.metrics.capHeight)
-
-                case .centralized:
-                    imageOffset.y -= Double(segment.font.metrics.xHeight + Float(image.size.h)) / 2
-                }
-
-                context.blitImage(image, at: imageOffset.asBLPoint)
-            }
-
             // Background color attribute
             if let backColor = segment.textSegment.attribute(named: .backgroundColor,
                                                              type: Color.self) {
@@ -127,6 +95,38 @@ class TextLayoutRenderer {
                 context.restore()
             }
 
+            // Image attribute
+            if let image = segment.textSegment.attribute(named: .image, type: ImageAttribute.self) {
+                let alignment = segment.textSegment.attribute(
+                    named: .imageVerticalAlignment,
+                    type: ImageVerticalAlignmentAttribute.self
+                ) ?? .baseline
+
+                let image = toBLImage(image.image)
+
+                var imageOffset: UIPoint = .zero
+                imageOffset.y = offset.y
+
+                switch alignment {
+                case .baseline:
+                    imageOffset.y -= Double(image.size.h)
+
+                case .underline:
+                    imageOffset.y -= Double(image.size.h)
+
+                case .ascent:
+                    imageOffset.y -= Double(segment.font.metrics.ascent)
+
+                case .capHeight:
+                    imageOffset.y -= Double(segment.font.metrics.capHeight)
+
+                case .centralized:
+                    imageOffset.y -= Double(segment.font.metrics.xHeight + Float(image.size.h)) / 2
+                }
+
+                context.blitImage(image, at: imageOffset.asBLPoint)
+            }
+
             // Foreground color attribute
             if let foreColor = segment.textSegment.attribute(named: .foregroundColor,
                                                              type: Color.self) {
@@ -155,9 +155,11 @@ class TextLayoutRenderer {
                 context.restore()
             }
 
-            context.fillGlyphRun(glyphBufferMinusLineBreak.glyphRun,
-                                  at: offset.asBLPoint,
-                                  font: font)
+            context.fillGlyphRun(
+                glyphBufferMinusLineBreak.glyphRun,
+                at: offset.asBLPoint,
+                font: font
+            )
 
             // Stroke color attribute
             if let strokeColor = segment.textSegment.attribute(named: .strokeColor, type: Color.self) {
