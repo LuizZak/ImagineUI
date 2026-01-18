@@ -21,10 +21,12 @@ class TestView: NSView {
     
     var usingCGImage = false
     
-    var sample: Blend2DSample!
+    var sample: ImagineUIWindowContent!
     var blImage: BLImage!
     var redrawBounds: [NSRect] = []
+    var localRedrawBounds: [UIRectangle] = []
     var requestedLayout: Bool = false
+    var renderScale: UIVector = .one
     
     override var bounds: NSRect {
         get {
@@ -76,7 +78,9 @@ class TestView: NSView {
                   timeInSecondsFunction: { CACurrentMediaTime() })
         )
         
-        let sample = TreeSampleWindow(size: BLSizeI(w: Int32(bounds.width), h: Int32(bounds.height)))
+        ControlView.globallyCacheAsBitmap = false
+        
+        let sample = ImagineUISample(size: BLSizeI(w: Int32(bounds.width), h: Int32(bounds.height)))//TreeSampleWindow(size: BLSizeI(w: Int32(bounds.width), h: Int32(bounds.height)))
         sample.delegate = self
         self.sample = sample
         
@@ -97,19 +101,21 @@ class TestView: NSView {
         super.viewWillStartLiveResize()
         
         // sample.willStartLiveResize()
+        sample.willStartLiveResize()
     }
     
     override func viewDidEndLiveResize() {
         super.viewDidEndLiveResize()
         
         // sample.didEndLiveResize()
+        sample.didEndLiveResize()
     }
     
     private func resizeApp() {
-        sample.resize(width: Int(bounds.width), height: Int(bounds.height))
+        sample.resize(UIIntSize(width: Int(bounds.width), height: Int(bounds.height)))
         
-        blImage = BLImage(width: sample.width * Int(sample.sampleRenderScale.x),
-                          height: sample.height * Int(sample.sampleRenderScale.y),
+        blImage = BLImage(width: sample.width * Int(renderScale.x),
+                          height: sample.height * Int(renderScale.y),
                           format: .xrgb32)
         
         recreateCgImageContext()
@@ -285,7 +291,12 @@ class TestView: NSView {
             
             let ctx = BLContext(image: blImage, options: options)!
             
-            sample.render(context: ctx)
+            let clipRegion = UIRegion()
+            for bounds in localRedrawBounds {
+                clipRegion.addRectangle(bounds)
+            }
+            
+            sample.render(renderer: Blend2DRenderer(context: ctx), renderScale: renderScale, clipRegion: UIRegionClipRegion(region: clipRegion))
             
             ctx.flush(flags: .sync)
             ctx.end()
@@ -325,12 +336,12 @@ class TestView: NSView {
     }
 }
 
-extension TestView: Blend2DSampleDelegate {
-    func needsLayout(_ view: ImagineUI.View) {
+extension TestView: ImagineUIContentDelegate {
+    func needsLayout(_ content: any ImagineUIContentType, _ view: View) {
         requestedLayout = true
     }
     
-    func invalidate(bounds: UIRectangle) {
+    func invalidate(_ content: any ImagineUIContentType, bounds: UIRectangle) {
         let rectBounds = NSRect(x: bounds.x,
                                 y: Double(self.bounds.height) - bounds.y - bounds.height,
                                 width: bounds.width,
@@ -339,9 +350,10 @@ extension TestView: Blend2DSampleDelegate {
         let intersectedBounds = rectBounds.intersection(self.bounds)
         
         redrawBounds.append(intersectedBounds)
+        localRedrawBounds.append(bounds)
     }
-
-    func setMouseCursor(_ cursor: MouseCursorKind) {
+    
+    func setMouseCursor(_ content: any ImagineUI.ImagineUIContentType, cursor: ImagineUICore.MouseCursorKind) {
         switch cursor {
         case .iBeam:
             NSCursor.iBeam.set()
@@ -364,9 +376,21 @@ extension TestView: Blend2DSampleDelegate {
             cursor.set()
         }
     }
-
-    func setMouseHiddenUntilMouseMoves() {
+    
+    func setMouseHiddenUntilMouseMoves(_ content: any ImagineUIContentType) {
         NSCursor.setHiddenUntilMouseMoves(true)
+    }
+    
+    func firstResponderChanged(_ content: any ImagineUIContentType, _ newFirstResponder: (any KeyboardEventHandler)?) {
+        
+    }
+    
+    func preferredRenderScaleChanged(_ content: any ImagineUIContentType, renderScale: UIVector) {
+        self.renderScale = renderScale
+    }
+    
+    func windowDpiScalingFactor(_ content: any ImagineUIContentType) -> Double {
+        return 1.0
     }
 }
 

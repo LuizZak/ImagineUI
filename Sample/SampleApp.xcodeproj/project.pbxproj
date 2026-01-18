@@ -3,10 +3,11 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		25661CD62F1D81F80043CF5E /* Geometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25661CD52F1D81F50043CF5E /* Geometry.swift */; };
 		5C3FCFA023E20CCA0045A350 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C3FCF9F23E20CCA0045A350 /* AppDelegate.swift */; };
 		5C3FCFA223E20CCC0045A350 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5C3FCFA123E20CCC0045A350 /* Assets.xcassets */; };
 		5C3FCFA523E20CCC0045A350 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5C3FCFA323E20CCC0045A350 /* MainMenu.xib */; };
@@ -42,6 +43,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		25661CD52F1D81F50043CF5E /* Geometry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Geometry.swift; sourceTree = "<group>"; };
 		5C3FCF9C23E20CCA0045A350 /* SampleApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SampleApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C3FCF9F23E20CCA0045A350 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5C3FCFA123E20CCC0045A350 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -169,6 +171,7 @@
 		A01476FF2732EFDD00A07C9C /* Support */ = {
 			isa = PBXGroup;
 			children = (
+				25661CD52F1D81F50043CF5E /* Geometry.swift */,
 				A01477002732EFEA00A07C9C /* ReadWriteLock.swift */,
 				A01477022732F01C00A07C9C /* ConcurrentValue.swift */,
 			);
@@ -319,6 +322,7 @@
 				A000B5BC27356DB500C310C5 /* TreeViewSample.swift in Sources */,
 				5C3FCFA023E20CCA0045A350 /* AppDelegate.swift in Sources */,
 				5C3FCFDA23E2112D0045A350 /* Blend2DSample.swift in Sources */,
+				25661CD62F1D81F80043CF5E /* Geometry.swift in Sources */,
 				A01477032732F01C00A07C9C /* ConcurrentValue.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

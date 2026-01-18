@@ -6,30 +6,14 @@ import CassowarySwift
 import Cocoa
 import Blend2DRenderer
 
-class ImagineUISample: Blend2DSample {
-    private var lastFrame: TimeInterval = 0
-    weak var delegate: Blend2DSampleDelegate?
-    var bounds: BLRect
-    var width: Int
-    var height: Int
-    
+class ImagineUISample: ImagineUIWindowContent {
     let rendererContext = Blend2DRendererContext()
     
     var sampleRenderScale = BLPoint(x: 2, y: 2)
     
-    var controlSystem = DefaultControlSystem()
-    
-    var rootViews: [RootView]
-    
-    var currentRedrawRegion: UIRectangle? = nil
-    
-    var debugDrawFlags: Set<DebugDraw.DebugDrawFlags> = []
-    
     init(size: BLSizeI) {
-        width = Int(size.w)
-        height = Int(size.h)
-        bounds = BLRect(location: .zero, size: BLSize(w: Double(size.w), h: Double(size.h)))
-        rootViews = []
+        super.init(size: UIIntSize(width: Int(size.w), height: Int(size.h)))
+        
         controlSystem.delegate = self
         globalTextClipboard = MacOSTextClipboard()
     
@@ -191,101 +175,19 @@ class ImagineUISample: Blend2DSample {
             make.edges == scrollView.contentView
         }
         
-        button.mouseClicked.addListener(owner: self) { _ in
+        button.mouseClicked.addWeakListener(self) { (_, _) in
             label.isVisible.toggle()
         }
         
-        sliderView.valueChanged.addListener(owner: self) { (_, event) in
-            progressBar.progress = event.newValue
+        sliderView.valueChanged.addWeakListener(self) { (_, event) in
+            progressBar.progress = event.args.newValue
         }
         
         window.performLayout()
         
         createRenderSettingsWindow()
         
-        rootViews.append(window)
-        
-        lastFrame = CACurrentMediaTime()
-    }
-    
-    func resize(width: Int, height: Int) {
-        self.width = width
-        self.height = height
-        
-        bounds = BLRect(location: .zero, size: BLSize(w: Double(width), h: Double(height)))
-        currentRedrawRegion = bounds.asRectangle
-        
-        for case let window as Window in rootViews where window.windowState == .maximized {
-            window.setNeedsLayout()
-        }
-    }
-    
-    func invalidateScreen() {
-        currentRedrawRegion = bounds.asRectangle
-        delegate?.invalidate(bounds: bounds.asRectangle)
-    }
-    
-    func update(_ time: TimeInterval) {
-        // Fixed-frame update
-        let delta = time - lastFrame
-        lastFrame = time
-        Scheduler.instance.onFixedFrame(delta)
-    }
-    
-    func performLayout() {
-        // Layout loop
-        for rootView in rootViews {
-            rootView.performLayout()
-        }
-    }
-    
-    func render(context ctx: BLContext) {
-        guard let rect = currentRedrawRegion else {
-            return
-        }
-        
-        ctx.scale(by: sampleRenderScale)
-        ctx.setFillStyle(BLRgba32.cornflowerBlue)
-        
-        let redrawRegion = BLRegion(rectangle: BLRectI(rounding: rect.asBLRect))
-        
-        ctx.fillRect(rect.asBLRect)
-        
-        let renderer = Blend2DRenderer(context: ctx)
-        
-        // Redraw loop
-        for rootView in rootViews {
-            rootView.renderRecursive(in: renderer, screenRegion: Blend2DClipRegion(region: redrawRegion))
-        }
-        
-        // Debug render
-        for rootView in rootViews {
-            DebugDraw.debugDrawRecursive(rootView, flags: debugDrawFlags, in: renderer)
-        }
-    }
-    
-    func mouseDown(event: MouseEventArgs) {
-        controlSystem.onMouseDown(event)
-    }
-    
-    func mouseMoved(event: MouseEventArgs) {
-        controlSystem.onMouseMove(event)
-    }
-    
-    func mouseUp(event: MouseEventArgs) {
-        controlSystem.onMouseUp(event)
-    }
-    
-    func mouseScroll(event: MouseEventArgs) {
-        controlSystem.onMouseWheel(event)
-    }
-    
-    func keyDown(event: KeyEventArgs) {
-        controlSystem.onKeyDown(event)
-    }
-    
-    func keyUp(event: KeyEventArgs) {
-        controlSystem.onKeyUp(event)
+        addRootView(window)
     }
     
     func createRenderSettingsWindow() {
@@ -328,167 +230,63 @@ class ImagineUISample: Blend2DSample {
             make.right <= window.contentsLayoutArea - 12
         }
         
-        boundsCheckbox.checkboxStateWillChange.addListener(owner: self) { [weak self] (_, event) in
+        boundsCheckbox.checkboxStateWillChange.addWeakListener(self) { [weak self] (_, event) in
             guard let self = self else { return }
             
-            toggleFlag(self, .viewBounds, event)
+            toggleFlag(self, .viewBounds, event.args)
         }
-        layoutCheckbox.checkboxStateWillChange.addListener(owner: self) { [weak self] (_, event) in
+        layoutCheckbox.checkboxStateWillChange.addWeakListener(self) { [weak self] (_, event) in
             guard let self = self else { return }
             
-            toggleFlag(self, .layoutGuideBounds, event)
+            toggleFlag(self, .layoutGuideBounds, event.args)
         }
-        constrCheckbox.checkboxStateWillChange.addListener(owner: self) { [weak self] (_, event) in
+        constrCheckbox.checkboxStateWillChange.addWeakListener(self) { [weak self] (_, event) in
             guard let self = self else { return }
             
-            toggleFlag(self, .constraints, event)
+            toggleFlag(self, .constraints, event.args)
         }
         
-        rootViews.append(window)
+        addRootView(window)
     }
     
     func createSampleImage() -> Image {
         let imgRenderer = rendererContext.createImageRenderer(width: 64, height: 64)
         
-        let ctx = imgRenderer.renderer
-        
-        ctx.clear()
-        ctx.setFill(Color.skyBlue)
-        ctx.fill(UIRectangle(x: 0, y: 0, width: 64, height: 64))
-        
-        // Render two mountains
-        ctx.setFill(Color.forestGreen)
-        ctx.translate(x: 15, y: 40)
-        let mount1 = BLTriangle.unitEquilateral.scaledBy(x: 35, y: 35)
-        let mount2 = BLTriangle.unitEquilateral.scaledBy(x: 30, y: 30)
-        
-        ctx.fill(
-            UIPolygon(vertices: [
-                mount1.p0.asVector2,
-                mount1.p1.asVector2,
-                mount1.p2.asVector2
-            ])
-        )
-        ctx.translate(x: 15, y: 4)
-        ctx.fill(
-            UIPolygon(vertices: [
-                mount2.p0.asVector2,
-                mount2.p1.asVector2,
-                mount2.p2.asVector2
-            ])
-        )
-        
-        // Render ground
-        ctx.resetTransform()
-        ctx.fill(UIRectangle(x: 0, y: 45, width: 64, height: 64))
-        
-        // Render sun
-        ctx.setFill(Color.yellow)
-        ctx.fill(UICircle(x: 50, y: 20, radius: 10))
-        
-        return imgRenderer.renderedImage()
-    }
-}
-
-extension ImagineUISample: DefaultControlSystemDelegate {
-    func firstResponderChanged(_ newFirstResponder: KeyboardEventHandler?) {
-        
-    }
-    
-    func bringRootViewToFront(_ rootView: RootView) {
-        rootViews.removeAll(where: { $0 == rootView })
-        rootViews.append(rootView)
-        
-        rootView.invalidate()
-    }
-    
-    func controlViewUnder(point: UIVector, enabledOnly: Bool) -> ControlView? {
-        for window in rootViews.reversed() {
-            let converted = window.convertFromScreen(point)
-            if let view = window.hitTestControl(converted, enabledOnly: enabledOnly) {
-                return view
-            }
-        }
-        
-        return nil
-    }
-    
-    func setMouseCursor(_ cursor: MouseCursorKind) {
-        switch cursor {
-        case .iBeam:
-            NSCursor.iBeam.set()
-        case .arrow:
-            NSCursor.arrow.set()
-        case .resizeLeftRight:
-            NSCursor.resizeLeftRight.set()
-        case .resizeUpDown:
-            NSCursor.resizeUpDown.set()
-        case let .custom(imagePath, hotspot):
-            let cursor = NSCursor(image: NSImage(byReferencingFile: imagePath)!,
-                                  hotSpot: NSPoint(x: hotspot.x, y: hotspot.y))
+        return imgRenderer.withRenderer { ctx in
+            ctx.clear()
+            ctx.setFill(Color.skyBlue)
+            ctx.fill(UIRectangle(x: 0, y: 0, width: 64, height: 64))
             
-            cursor.set()
-        case .resizeTopLeftBottomRight:
-            // TODO: Add support to this cursor type.
-            break
-        case .resizeTopRightBottomLeft:
-            // TODO: Add support to this cursor type.
-            break
-        case .resizeAll:
-            // TODO: Add support to this cursor type.
-            break
-        }
-    }
-    
-    func setMouseHiddenUntilMouseMoves() {
-        NSCursor.setHiddenUntilMouseMoves(true)
-    }
-}
-
-extension ImagineUISample: RootViewRedrawInvalidationDelegate {
-    func rootViewInvalidatedLayout(_ rootView: RootView) {
-        self.delegate?.needsLayout(rootView)
-    }
-    
-    func rootView(_ rootView: RootView, invalidateRect rect: UIRectangle) {
-        guard let intersectedRect = rect.intersection(bounds.asRectangle) else {
-            return
-        }
-        
-        if let current = currentRedrawRegion {
-            currentRedrawRegion = current.union(intersectedRect)
-        } else {
-            currentRedrawRegion = intersectedRect
-        }
-        
-        delegate?.invalidate(bounds: intersectedRect)
-    }
-}
-
-extension ImagineUISample: WindowDelegate {
-    func windowWantsToClose(_ window: Window) {
-        if let index = rootViews.firstIndex(of: window) {
-            rootViews.remove(at: index)
-            invalidateScreen()
-        }
-    }
-    
-    func windowWantsToMaximize(_ window: Window) {
-        switch window.windowState {
-        case .maximized:
-            window.setWindowState(.normal)
+            // Render two mountains
+            ctx.setFill(Color.forestGreen)
+            ctx.translate(x: 15, y: 40)
+            let mount1 = BLTriangle.unitEquilateral.scaledBy(x: 35, y: 35)
+            let mount2 = BLTriangle.unitEquilateral.scaledBy(x: 30, y: 30)
             
-        case .normal, .minimized:
-            window.setWindowState(.maximized)
+            ctx.fill(
+                UIPolygon(vertices: [
+                    mount1.p0.asUIVector,
+                    mount1.p1.asUIVector,
+                    mount1.p2.asUIVector
+                ])
+            )
+            ctx.translate(x: 15, y: 4)
+            ctx.fill(
+                UIPolygon(vertices: [
+                    mount2.p0.asUIVector,
+                    mount2.p1.asUIVector,
+                    mount2.p2.asUIVector
+                ])
+            )
+            
+            // Render ground
+            ctx.resetTransform()
+            ctx.fill(UIRectangle(x: 0, y: 45, width: 64, height: 64))
+            
+            // Render sun
+            ctx.setFill(Color.yellow)
+            ctx.fill(UICircle(x: 50, y: 20, radius: 10))
         }
-    }
-    
-    func windowWantsToMinimize(_ window: Window) {
-        window.setWindowState(.minimized)
-    }
-    
-    func windowSizeForFullscreen(_ window: Window) -> UISize {
-        return bounds.asRectangle.size
     }
 }
 
