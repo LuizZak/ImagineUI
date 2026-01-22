@@ -487,6 +487,7 @@ extension UIBezier {
         // If the last operation is already a `.moveTo()` operation, replace it
         // instead of appending a new one.
         if _operations.last?.isMove == true {
+            _clearCache()
             _operations[_operations.count - 1] = op
         } else {
             add(op)

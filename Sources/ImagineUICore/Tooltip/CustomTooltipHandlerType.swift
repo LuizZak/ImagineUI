@@ -15,7 +15,7 @@ public protocol CustomTooltipHandlerType: AnyObject {
     )
 
     /// Updates the contents of the currently displayed tooltip.
-    /// Does nothing, if 
+    /// Does nothing, if the tooltip is not displayed.
     func updateTooltip(_ tooltip: Tooltip)
 
     /// Hides a tooltip that was previously shown with `showTooltip`

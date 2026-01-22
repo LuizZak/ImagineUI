@@ -72,6 +72,11 @@ public class ContextMenuView: ControlView {
 
                 _stackView.addArrangedSubview(view)
 
+            case .controlHost(let item):
+                let view = CustomControlItemView(item: item)
+
+                _stackView.addArrangedSubview(view)
+
             case .separator:
                 let view = SeparatorItem()
 
@@ -85,8 +90,10 @@ public class ContextMenuView: ControlView {
     }
 
     private class ContextMenuItemView: ControlView {
+        private let _imageView: ImageView = ImageView(image: nil)
         private let _label: Label = Label(textColor: .white)
-        private let _contentInset: UIEdgeInsets = UIEdgeInsets(left: 14, top: 2, right: 14, bottom: 2)
+        private let _imageContentInset: UIEdgeInsets = UIEdgeInsets(left: 2, top: 2, right: 0, bottom: 0)
+        private let _labelContentInset: UIEdgeInsets = UIEdgeInsets(left: 16, top: 2, right: 14, bottom: 2)
         private let item: ContextMenuItem
 
         init(item: ContextMenuItem) {
@@ -94,6 +101,8 @@ public class ContextMenuView: ControlView {
 
             super.init()
 
+            _imageView.image = item.icon
+            _imageView.scalingMode = .centeredAsIs
             _label.attributedText = item.title
             _label.font = Fonts.defaultFont(size: 12)
             mouseOverHighlight = true
@@ -108,11 +117,17 @@ public class ContextMenuView: ControlView {
         override func setupConstraints() {
             super.setupConstraints()
 
+            _imageView.layout.makeConstraints { make in
+                make.left == self + _imageContentInset.left
+                make.top == self + _imageContentInset.top
+                make.width == 12
+                make.height == 12
+            }
             _label.layout.makeConstraints { make in
-                make.left == self + _contentInset.left
-                make.top == self + _contentInset.top
-                make.right <= self - _contentInset.right
-                make.bottom == self - _contentInset.bottom
+                make.left == self + _labelContentInset.left
+                make.top == self + _labelContentInset.top
+                make.right <= self - _labelContentInset.right
+                make.bottom == self - _labelContentInset.bottom
             }
         }
 
@@ -140,6 +155,50 @@ public class ContextMenuView: ControlView {
         }
     }
 
+    private class CustomControlItemView: ControlView {
+        private let _imageView: ImageView = ImageView(image: nil)
+        private let _imageContentInset: UIEdgeInsets = UIEdgeInsets(left: 2, top: 2, right: 0, bottom: 0)
+        private let _controlContentInset: UIEdgeInsets = UIEdgeInsets(left: 16, top: 2, right: 14, bottom: 2)
+        let control: ControlView
+        let item: CustomControlContextMenuItem
+
+        init(item: CustomControlContextMenuItem) {
+            self.item = item
+            self.control = item.control
+
+            super.init()
+
+            _imageView.image = item.icon
+            _imageView.scalingMode = .centeredAsIs
+        }
+
+        override func setupConstraints() {
+            _imageView.layout.makeConstraints { make in
+                make.left == self + _imageContentInset.left
+                make.top == self + _imageContentInset.top
+                make.width == 12
+                make.height == 12
+            }
+            control.layout.makeConstraints { make in
+                make.left == self + _controlContentInset.left
+                make.top == self + _controlContentInset.top
+                make.right <= self - _controlContentInset.right
+                make.bottom == self - _controlContentInset.bottom
+            }
+        }
+
+        override func onStateChanged(_ event: ValueChangedEventArgs<ControlViewState>) {
+            super.onStateChanged(event)
+
+            switch controlState {
+            case .highlighted, .selected:
+                backColor = Color(red: 9, green: 71, blue: 113)
+            default:
+                backColor = .transparentBlack
+            }
+        }
+    }
+
     private class SeparatorItem: View {
         override var intrinsicSize: UISize? {
             .init(width: 0, height: 16)
@@ -156,7 +215,6 @@ public class ContextMenuView: ControlView {
         }
 
         override func render(in renderer: Renderer, screenRegion: ClipRegionType) {
-
             let inset: Double = 8
             let line = UILine(
                 start: UIPoint(x: inset, y: bounds.height / 2),
@@ -234,8 +292,24 @@ public enum ContextMenuItemEntry {
     /// An item with display information.
     case item(ContextMenuItem)
 
+    /// A custom item that hosts a given control view.
+    case controlHost(CustomControlContextMenuItem)
+
     /// A vertical separator.
     case separator
+}
+
+public struct CustomControlContextMenuItem {
+    public let icon: Image?
+    public let control: ControlView
+
+    public init(
+        icon: Image? = nil,
+        control: ControlView
+    ) {
+        self.icon = icon
+        self.control = control
+    }
 }
 
 public struct ContextMenuItem {
@@ -293,6 +367,10 @@ public struct ContextMenuViewBuilder {
 
     public static func buildExpression(_ expression: ContextMenuItemSeparator) -> ContextMenuItemEntry {
         .separator
+    }
+
+    public static func buildExpression(_ expression: CustomControlContextMenuItem) -> ContextMenuItemEntry {
+        .controlHost(expression)
     }
 
     public static func buildBlock(_ components: ContextMenuItemEntry) -> [ContextMenuItemEntry] {
