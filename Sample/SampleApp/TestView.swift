@@ -304,6 +304,7 @@ class TestView: NSView {
             let reduced = redrawBounds.reduce(first, { $0.union($1) })
             setNeedsDisplay(reduced)
             
+            localRedrawBounds.removeAll()
             redrawBounds.removeAll()
         }
         
