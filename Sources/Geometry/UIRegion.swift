@@ -472,14 +472,15 @@ private struct HorizontalEdge: Hashable, Comparable {
         max(self.left, left) < min(self.right, right)
     }
 
-    static func sortedEdges<S: Sequence>(from rectangles: S) -> [Self] where S.Element == UIRectangle {
+    static func sortedEdges<C: Collection>(from rectangles: C) -> [Self] where C.Element == UIRectangle {
         var edges: [Self] = []
-
+        edges.reserveCapacity(rectangles.count * 2)
+        
         for rect in rectangles {
             edges.append(rect.topEdge)
             edges.append(rect.bottomEdge)
         }
-
+        
         return edges.sorted()
     }
 
